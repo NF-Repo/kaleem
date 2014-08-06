@@ -1,0 +1,83 @@
+input[type="text"]{
+	padding: 3px !important;
+	margin-top:0px !important;
+}
+
+/* dropdown{
+	height: 30px !important;
+}  */
+
+
+.input-mini {
+    height: 30px !important;
+    
+}
+
+
+.input-large {
+    height: 30px !important;
+    
+}
+.form-item, .form-actions {
+    margin-bottom: 0.1em !important;
+    margin-top: 0.1em !important;
+   
+}
+
+
+table th, table td {
+    padding: 0.1em !important;;
+}
+
+
+/* #edit-guest th{
+	width: 100px !important;
+} */
+
+/* #edit-guest td{
+	float:left;
+	width: 100px !important;
+} */
+
+
+#edit-orderinfo .form-type-textfield input {
+    width: 250px;
+}
+
+
+/* #edit-guest table{
+	padding: 0px !important;
+	border:none !important;
+	
+} */
+
+
+
+
+.textareafield{
+width:289px !important;
+height:60px !important;
+margin-bottom: 18px !important;
+padding-left: 2px;
+/* border:1px solid #000000; */
+/* background-color:#CCCCCC; */
+/* border: none !important; */
+}
+
+
+.grippie{
+display:none;
+}
+
+
+
+
+.tdalignright{
+	text-align: right;
+	padding: 8px !important;
+}
+
+
+.eventslist{
+width :100%;	
+}

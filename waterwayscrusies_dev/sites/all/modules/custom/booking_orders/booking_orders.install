@@ -1,0 +1,46 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function orderedit_schema() {
+	$schema = array ();
+	
+	$schema ['orderedit_history'] = array (
+			'description' => 'Tracking Orders (Edit Mode).',
+			'fields' => array (
+					'id' => array (
+							'description' => 'Primary key.',
+							'type' => 'serial',
+							'unsigned' => TRUE,
+							'not null' => TRUE 
+					),
+					
+					'order_id' => array (
+							'description' => 'Ubercart Order ID',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+							'default' => 0 
+					),
+					
+					'data' => array (
+							'type' => 'blob',
+							'not null' => FALSE,
+							'size' => 'big' 
+					),
+					'created' => array(
+							'type' => 'varchar',
+							'length' => 12,
+							'description' => 'created date',
+					),
+			),
+			'primary key' => array (
+					'id' 
+			) 
+	);
+	
+	return $schema;
+}
+

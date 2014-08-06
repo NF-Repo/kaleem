@@ -1,0 +1,243 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function booking_orders_menu() {
+
+	$items = array();
+	$items['staffadmin/order/%/info'] = array(
+			'title' => '',
+			'page callback' => 'orderinfo',
+			'page arguments' => array(2),
+			'access arguments' => array('access content'),
+			'file' => 'inc/orderinfo.inc',
+			'type' => MENU_NORMAL_ITEM,
+	);
+	
+	
+	$items['staffadmin/order/%/updateorder'] = array(
+			'title' => '',
+			'page callback' => 'updateorder',
+			'page arguments' => array(2),
+			'access arguments' => array('access content'),
+			'file' => 'inc/updateorder.inc',
+			'type' => MENU_NORMAL_ITEM,
+	);
+	
+	
+	$items['staffadmin/order/%/reschedule'] = array(
+			'title' => '',
+			'page callback' => 'reschedule',
+			'page arguments' => array(2),
+			'access arguments' => array('access content'),
+			'file' => 'inc/reschedule.inc',
+			'type' => MENU_NORMAL_ITEM,
+	);
+	
+	
+// 	$items['staffadmin/order/%/changecruise'] = array(
+// 			'title' => '',
+// 			'page callback' => 'changecruise',
+// 			'page arguments' => array(2),
+// 			'access arguments' => array('access content'),
+// 			'file' => 'inc/changecruise.inc',
+// 			'type' => MENU_NORMAL_ITEM,
+// 	);
+	
+	
+	$items['staffadmin/%/%/%/changecruise'] = array(
+			'title' => t('Change Cruise'),
+			'page callback' => 'changecruise',
+			'description' => t('Change the content of the edit form'),
+			'page arguments' => array(1, 2, 3),
+			'access arguments' => array('access content'),
+			'file' => 'inc/changecruise.inc',
+			//'type' => MENU_NORMAL_ITEM,
+	);
+	
+	$items['staffadmin/order/%/payment'] = array(
+			'title' => '',
+			'page callback' => 'payment',
+			'page arguments' => array(2),
+			'access arguments' => array('access content'),
+			'file' => 'inc/payment.inc',
+			'type' => MENU_NORMAL_ITEM,
+	);
+	
+	
+	$items['staffadmin/order/%/history'] = array(
+			'title' => '',
+			'page callback' => 'history',
+			'page arguments' => array(2),
+			'access arguments' => array('access content'),
+			'file' => 'inc/history.inc',
+			'type' => MENU_NORMAL_ITEM,
+	);
+	
+	
+	
+	return $items;
+	
+}
+
+
+
+
+
+
+
+//class OrderEditHistory
+class OrderEditHistory {
+
+	public $order_id;
+	public $created;
+	public $orderData;
+
+	public function setOrderId($order_id) {
+		$this->order_id = $order_id;
+	}
+
+	public function setOrderData($orderData) {
+		$this->orderData = $orderData;
+	}
+
+	public function setCreated($created) {
+		$this->created = $created;
+	}
+
+	public function storeData() {
+		try {
+			$insertresults = db_insert('orderedit_history')
+			->fields(array(
+					'data' => $this->orderData,
+					'order_id' => $this->order_id,
+					'created' => $this->created,
+			))
+			->execute();
+		} catch (Exception $e) {
+			watchdog("orderedit", "insertion failed in orderedithistory");
+		}
+	}
+
+}
+
+
+
+
+
+
+
+
+
+//class OrderEdit
+class OrderEdit {
+	public $order_id;
+	public $tickets;
+	public $enhancements;
+	public $lineitems;
+	public $subtotal;
+	public $ordertotal;
+	public $couponcode;
+	public $taxlineitem;
+	public $discountlineitem;
+	public $orderProductIds;
+	public $lineItemIds;
+
+	//initialize order
+	public function __construct($order_id) {
+		$this->order_id = $order_id;
+	}
+
+	//Deleting Booking log
+	public function deleteOrderData() {
+		$order_id = $this->order_id;
+
+		//Logging
+		$oldOrder = new OrderEditHistory();
+		$oldOrder->setCreated(time());
+		$oldOrder->setOrderId($order_id);
+		$oldOrderData = uc_order_load($order_id);
+		$oldOrder->setOrderData(serialize($oldOrderData));
+		$oldOrder->storeData();
+
+
+		//Delete Products
+		$products = $oldOrderData->products;
+		$productIds = array();
+		foreach ($products as $key => $values) {
+			$productIds[] = $key;
+		}
+		uc_order_product_delete_multiple($productIds);
+		//$this->orderProductIds = $productIds;
+		//$this->deleteOrderProducts($productIds);
+
+
+		//Delete Line Item Ids
+		$lineItems = $oldOrderData->line_items;
+
+		// var_dump($lineItems); exit();
+		foreach ( $lineItems as $key => $values ) {
+			if (isset ( $values ['data'] ['name'] )) {
+				// stop deleting the following line items
+				// if($values['data']['name']!="PROMO_CODE" && $values['data']['name']!="VOUCHER_CODE" && $values['data']['name']!="GIFT_CARD" ){
+				//if ($values ['data'] ['name'] != "GIFT_CARD") {
+					$lineItemId = ( int ) $values ['line_item_id'];
+					$lineItemIds [] = $lineItemId;
+					uc_order_delete_line_item ( $lineItemId );
+				//}
+			}
+		}
+
+			uc_order_save($order);
+
+			//Delete Booking Logs
+			BookingLog::deleteLogTickets($order_id);
+			BookingLog::deleteLogEnhancements($order_id);
+		}
+
+		public function setOrderID($order_id) {
+			$this->order_id = $order_id;
+		}
+
+		public function getOrderId() {
+			return $this->order_id;
+		}
+
+		//Tickets
+		public function setTickets($tickets) {
+			$this->tickets = $tickets;
+		}
+
+		public function getTickets() {
+			return $this->tickets;
+		}
+
+		//Enhancements
+		public function setEnhancements($enhancements) {
+			$this->enhancements = $enhancements;
+		}
+
+		public function getEnhancements() {
+			return $this->enhancements;
+		}
+
+		//Delete Order Products
+		public function deleteOrderProducts($order_product_ids) {
+			uc_order_product_delete_multiple($order_product_ids);
+		}
+
+		//Delete Order LineItems
+		public function deleteOrderLineItems($id) {
+			uc_order_delete_line_item($id);
+		}
+
+		public function getAllOrderProductIDS() {
+			$res = uc_order_load($this->order_id);
+			$products = $res->products;
+			$productIds = array();
+			foreach ($products as $key => $values) {
+				$productIds[] = $key;
+			}
+			return $productIds;
+		}
+	}

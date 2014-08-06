@@ -1,0 +1,4 @@
+name = Manage Booking Orders
+description = booking orders edit
+core = 7.x
+version = VERSION
