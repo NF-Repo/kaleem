@@ -1,0 +1,6 @@
+; $Id$
+name = About Us Corporate Giving
+description = "Corporate Giving Template Page"
+core = 7.x
+version = VERSION
+package = WWC

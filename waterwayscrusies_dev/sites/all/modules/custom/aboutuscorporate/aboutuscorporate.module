@@ -1,0 +1,109 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function aboutuscorporate_menu() {
+    $items = array();
+    $items['aboutuscorporate'] = array(
+        'title' => 'Corporate Giving',
+        'page callback' => 'aboutus_corporategiving',
+        'access callback' => 'user_access',
+                'access arguments' => array('access content')
+ );
+    
+   return $items;
+}
+
+function aboutuscorporate_theme() {
+    $items['aboutuscorporate'] = array(
+        'template' => 'aboutuscorporate', // here comes your template name
+        'render element' => 'content'
+    );
+    
+
+    return $items;
+}
+
+
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function aboutus_corporategiving() {
+
+    try {
+
+
+        global $user;
+
+        //Get the Overview Content
+        //end of getting the Overview Content
+        
+       
+        
+        //end of loading corporate content
+        
+        
+
+        $loadaboutus = getAboutsMenu("Corporate Giving");
+        $pageload = getCorporategivingDetails();
+       
+        $templateresources = array(
+            'loadmenu' => $loadaboutus['aboutusmenu'],
+            'mobilemenu' => $loadaboutus['mobilemenu'],
+            'pagecontent' => $pageload['contentdescription'],
+            'corporatepageaddress' => $pageload['address'],
+            'corporatepagephone' => $pageload['phone'],
+            'corporatepagefax' => $pageload['fax'],
+            'corporatepagecontactemail' => $pageload['contactemail']
+        );
+
+
+
+        //get the product load 
+        return theme('aboutuscorporate', $templateresources);
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+function getCorporategivingDetails() {
+    
+     //loading corporate content
+         $corporate=  taxonomy_vocabulary_machine_name_load('corporategiving');
+     $$corporate_elements=taxonomy_get_tree($corporate->vid);
+     
+      foreach ($$corporate_elements as $element) {
+            $corporategiving=taxonomy_term_load($element->tid);
+            $name=$corporategiving->name;
+            $termid=$corporategiving->tid;
+            
+     $corporatedescription = getArrayloop($corporategiving->field_corporategving_page_descri);
+//      $corporatedescription = $corporate->description;
+    $corporateaddress = getArrayloop($corporategiving->field_address);
+    $corporatecontactemail = getArrayloop($corporategiving->field_contactemail);
+    $corporatephone = getArrayloop($corporategiving->field_phone);
+    $corporatefax = getArrayloop($corporategiving->field_fax);
+            
+      }
+    
+    $results = array(
+        'contentdescription' => $corporatedescription,
+        'address' => $corporateaddress,
+        'phone' => $corporatephone,
+        'contactemail' => $corporatecontactemail,
+        'fax' => $corporatefax
+    );
+    return $results;
+}
+
+function template_preprocess_aboutuscorporate(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'aboutuscorporate') . '/css/aboutuscorporate.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+

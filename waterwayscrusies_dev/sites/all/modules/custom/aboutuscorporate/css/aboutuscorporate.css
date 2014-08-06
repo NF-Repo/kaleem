@@ -1,0 +1,970 @@
+/* 
+    Document   : cruisesdetailview
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content{
+    display: block  !important;
+}
+
+#menu
+{
+    position: absolute !important;
+}
+
+.aboutusDownslider ol.carousel-indicators .active{
+    background-color:  inherit !important;
+    background-image:url("../images/Indicators-active.png") !important;
+    background-repeat: no-repeat !important;
+    width: 12px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.aboutusDownslider ol.carousel-indicators li{
+    background-color: inherit !important;
+    border-radius:0px !important;
+    background-image: url("../images/Indicators-inactive.png") !important;
+    background-repeat: no-repeat !important;
+    width: 11px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.aboutusDownslider a.carousel-control{
+    background: inherit !important;
+    border: solid 0px !important;
+}
+
+.aboutusDownslider .carousel-control{
+    width: auto !important;
+    height: auto !important;
+}
+
+.aboutusDownslider .carousel-indicators {
+    bottom: 20%;
+    left: 50%;
+    top: inherit;
+}
+#corporateGivingform input.error,#corporateGivingform select.error {
+    border: 1px solid red;
+}
+#corporateGivingform label.error {
+    color: red;
+    display: none !important;
+}
+
+.cruiseDetailinfo,.aboutcorporate{
+    width: 80% !important;
+    margin-left: 13% !important;
+}
+
+.corporateCity{
+    width: 219px !important;
+}
+.contentDetail .carousel
+{
+    margin-bottom: 0px;
+    margin-top:5%;
+}
+
+.sliderInnercontent{
+    margin-left:2%;
+}
+.sliderInnercontent img{
+    float: left;
+    margin-top: 7px;  
+}
+
+/* aboutus css start here */
+
+.aboutusTitle
+{
+    font-size: 46px;
+    font-family: georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 1%;
+    margin-top: 7%;
+}
+
+.contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+    height: 630px;
+    width: 100%;
+}
+/* submenu css start here */
+
+.subMenu
+{
+    width:auto;
+    position: absolute;
+    border: #bc9b6a 1px solid;
+    z-index: 10;
+}
+.subMenu ul
+{
+    list-style:none;
+    margin:0px;
+}
+.subMenu ul li
+{
+    float: left;
+}
+.subMenu ul li a
+{
+    background:rgba(252,251,249,0.8);
+    color:#454444;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+}
+
+.subMenu ul li a:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+}
+.line{
+    margin-top: 4% !important;
+}
+#routeMaplinesholder{
+    margin-top:6%;
+}
+.subMenu ul li a.active
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+}
+
+
+
+.aboutusDownsliderbox{
+    max-width: auto !important;
+}
+
+
+.sliderCaption{
+    font-size: 24px !important;
+}
+
+.aboutus-slider-buttons
+{
+    position: relative;
+    top: 0px;
+}
+.aboutusDownslider
+{
+    position: relative;
+    margin-top:3%;
+}
+
+.aboutusDownsliderbox{
+    position: absolute;
+    background: #fff;
+    top: 100px;
+    left: 11%;
+    max-width: 450px;
+    max-height: 250px;
+    border: 10px #bc9b6a solid;
+}
+
+.reoutemapDirectionsbox
+{
+    background:#fff;
+    min-width:100%;
+    min-height:500px;
+    border:10px #bc9b6a solid;
+}
+
+.reoutemapDirectionsboxInner
+{
+    width:100%;
+    min-height:500px;
+}
+
+.reoutemapDirectionsboxInnerleft{
+    background: #fff;
+    min-height:500px;
+    padding: 2%;
+}
+
+.reoutemapDirectionsboxInnerright{
+    background: #bebebe;
+    min-height:500px !important;
+    overflow: hidden;
+    position: relative;
+}
+
+.routemapContent{
+    color: #000;
+    height: 350px;
+}
+
+
+.routemapContent .item{
+    margin-bottom: 10px;
+}
+
+.reoutemapDirectionsboxInnerleft .sliderCaption
+{
+    font-family:georgia;
+    font-weight:600;
+    font-size:19px;
+    text-align:left;
+}
+.reoutemapDirectionsboxInnerleft ul
+{
+    list-style: none;
+}
+#routmapSlider .item img, #routmapSlider{
+    height:626px;
+    width: 100%;
+}
+
+
+.aboutusDownsliderInner {
+    padding: 5% !important;
+}
+
+.routeMaplinesholder .span2{
+    margin-top: -3px;
+}
+
+#routeMaplinesholder .span2{
+    margin-top: -7px;
+}
+
+
+
+/* vendor css start here */
+
+.aboutcorporate
+{
+    margin-top: 8%;
+    margin-bottom: 5%;
+}
+
+.aboutcorporate ul li{
+    line-height: 1.6em;
+}
+.requset-proposal .sunsetLinePadding {
+ padding-top: 8px;
+   
+}
+.address-content b{
+    font-size: 14px;
+}
+
+.requset-proposal .span6{
+    width:auto !important;
+}
+@media (max-width: 979px) and (min-width: 768px){
+    .aboutusDownsliderInner .span8{
+        width:73% !Important;
+    }
+    .aboutusDownsliderInner .span2 {
+        width:4% !important;
+    }
+    .requset-proposal {
+        margin-bottom: 5%;
+    }
+    #routeMaplinesholder{
+        padding-left:5%;
+    }
+    .aboutusDownsliderInner .left-line-margin{
+
+        margin-left:8% !important;
+    }
+    .aboutusDownsliderbox{
+        width:50%;
+        margin-left:25%;
+    }
+    .address-content{
+     width:100%;   
+    }
+
+}
+
+@media (min-width: 979px) {
+     .aboutcorporate .span6{
+        width: 55% !important; 
+    }
+  .aboutcorporate .span6.address-container{
+        width: 35% !important;
+margin-left: 10% !important;
+    }
+   
+}
+@media (max-width: 979px) {
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+       .requset-proposal{
+     width:50% !important;   
+    }
+    .requset-proposal .left-line-margin{
+        width:12% !important;
+
+    } 
+   .cruiseDetailinfo{
+        width: 95% !important;
+margin-left: 5% !important;
+position: static;
+    }
+  
+    .requset-proposal .right-line-margin{
+        width:12% !important;
+    }
+    .requset-proposal .span6{
+        width:50% !important;
+    }
+
+    .virtualtour{
+        display:none;
+    }
+    .contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+        height: auto !important;
+        width: 100%;
+    }
+
+    .request-proposal{
+        margin-bottom:6%;
+    }
+
+    .aboutusTitle{
+        margin-bottom: 4%;
+        margin-top: 4%;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left ;
+        width: 30% ;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+
+    .aboutusDownsliderbox{
+        /*        position: static !important;
+                max-height: auto !important;
+                max-width: 100% !important;*/
+        margin-bottom:20px; 
+    }
+
+
+    .aboutusDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        /*        width: 50% !important;*/
+    }
+    .aboutusDownsliderInner .span8 .sliderCaption{ 
+        font-size: 24px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+
+    .sliderInnercontent a{
+        display: block;
+    }
+
+    .contentDetail .span6{
+        float: none !important;
+        width: 100% !important;
+        margin-left: 0px !important;
+    }
+    .requset-proposal .span6{
+        float:left !important; 
+        width:auto !important;
+        margin-left: 3% !important;
+    }
+    .sunsetBannerBooknow .row-fluid .span6{
+        margin-left: 0px !important;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span2{
+        display: none;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span10{
+        width: 100%;
+        margin-left: 0px;
+    }
+    .contentDetail #rightsliderImages img{
+        width: 100%;
+    }
+    #routmapSlider .item img, #routmapSlider {
+        height: auto !important;
+        width: 100%;
+    }
+    .carousel-control
+    {
+        display: none;
+    }
+
+
+    .subMenu ul li a
+    {
+         padding-left: 13px;
+        padding-right: 13px;
+        font-size: 13px;
+    }
+
+    .subMenu ul li a:hover
+    {
+       padding-left: 13px;
+        padding-right: 13px;
+        font-size: 13px;
+    }
+
+    .subMenu ul li a.active
+    {
+         padding-left: 13px;
+        padding-right: 13px;
+        font-size: 13px;
+    }
+
+}
+
+@media screen and (max-width: 767px) { 
+
+    .carousel-control
+    {
+        display: none;
+    }
+    #routmapSlider .item img, #routmapSlider {
+        height: auto !important;
+        width: 100%;
+    }
+    .cruiseDetailinfo, .aboutcorporate{
+        width:97% !important;
+        margin-left:3% !important;
+    }
+    .container
+    {
+        width: auto !important;
+    }
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+
+
+    #corporateGiving input{
+        margin-bottom:5%;
+    }
+    #corporateGiving input {
+        width: 215px;
+    }
+    #corporateAddress{
+        margin-bottom:3% !important;
+    }
+    #corporatePhone{
+        margin-bottom:2% !important;
+    }
+ 
+    #corporateEmail,#corporateConfirmemail{
+        margin-top:2% !important;
+        margin-bottom: 3% !important;
+    }
+    #donation{
+        margin-bottom:4% !important;
+    }
+    .corporate-desc{
+        margin-bottom:3%;
+    }  
+    #corporatestate,input#corporateZipcode{
+        width:227px;
+    }
+
+    .aboutusTitle {
+        margin-bottom: 4%;
+        margin-top: 4%;
+        padding-left: 3%;
+    }
+      .cruiseDetailinfo {
+        position: relative;
+        width: 100% !important;
+        margin-left: 0% !important;
+    }
+
+    .aboutcorporate .span7,.aboutcorporate .span5{
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .sliderInnercontent{
+        margin-left:4%;
+    }
+    .requset-proposal{
+        margin-bottom: 5%;
+    }
+    #routeMaplinesholder .span5{
+        width: 40.4% !important;
+        float: left !important;
+    }
+    .aboutusDownsliderbox{
+        border-left:none;
+        border-right:none;
+        height:auto !important; 
+    }
+    .aboutusDownsliderInner .span2{
+        width: 5% !important;
+        float: left !important;
+    }
+    .aboutusDownsliderInner .span8{
+        width: 70% !Important;
+        float: left !Important;
+    }
+    .address-content{
+        width: 100%;
+        margin: auto;
+    }
+    .aboutusDownsliderInner .left-line-margin{
+        margin-left: 10% !important; 
+    }
+    #routeMaplinesholder .span2{
+        width: 14.8% !important;
+        float: left !important;
+    }
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+   .requset-proposal{
+     width:100% !important;   
+    }
+    .requset-proposal .left-line-margin{
+        margin-left: 2% !important;
+          width:12% !important;
+          float:left !important; 
+    }
+    .requset-proposal .right-line-margin{
+        width:12% !important;
+          float:left !important; 
+    }
+    .requset-proposal .span2{
+        float:left !important; 
+    }
+    .address-content{
+        width:100%;
+    }
+
+    .requset-proposal .span8{
+        float:left !important; 
+        width:auto !important;
+        margin-left:2% !Important;
+    }
+    .subMenu{
+        position:static;
+    }
+    .subMenu select {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;
+        border: 0px;
+    }
+
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 33% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+
+    .aboutusDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+    }
+
+
+    .aboutusDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        /*        width: 50% !important;*/
+    }
+    .aboutusDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: block;
+    }
+
+    .sliderInnercontent img{
+        margin-top: 6px;
+        float: left;
+        margin-right: 6px;
+    }
+    .sliderInnercontent .clickMapLink
+    {
+        font-size: 14px !important;
+    }
+    .contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+        height: auto !important;
+        width: 100%;
+    }
+
+    #parkingDirectionsModal
+    {
+        margin-left:0px;
+        position: absolute;
+    }
+}
+
+@media (min-width: 767px){
+
+    #corporateGiving input{
+        margin-bottom:10%;
+    }
+    #corporateGiving input {
+        width: 215px;
+    }
+    input#corporateZipcode{
+        width:125px;
+    }
+    #corporateAddress{
+        margin-bottom:5% !important;
+    }
+    #corporatePhone{
+        margin-bottom:4% !important;
+    }
+    #corporateEmail,#corporateConfirmemail{
+        margin-top:4% !important;
+        margin-bottom: 6% !important;
+    }
+    #donation{
+        margin-bottom:7% !important;
+    }
+    .corporate-desc{
+        margin-bottom:5%;
+    }
+     .requset-proposal .span8{
+        float:left !important; 
+/*        width:auto !important;
+        margin-left:2% !Important;*/
+    }
+   
+}
+
+@media (max-width: 480px) {
+
+    /* aboutus css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;   
+        padding-right:2%;
+        border:0px; 
+    }
+    .aboutusDownsliderInner {
+        margin: 5% 0 !important;
+    }
+    .custom-row-fluid .sunsetLinePadding
+    {
+        float: left !important;
+        width: 20% !important;
+        text-align: center;
+    }
+    .aboutusupsliderbox,.aboutusDownsliderbox{
+        border-left:none;
+        border-right:none;
+    }
+    .custom-row-fluid .request-custom
+    {
+        float: left !important;
+        width: 60% !important;
+        text-align: center;
+        padding-left: 5%;
+        padding-right: 5%;
+        margin-bottom: 5%;
+    }
+    .virtualtour
+    {
+        display: none;
+    }
+    .contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+        height: auto !important;
+        width: 100%;
+    }
+    .aboutusDownsliderbox{
+        border-left:none;
+        border-right:none;
+    }
+    .aboutusDescription{
+        margin-left: 3%;
+        margin-right: 3%;
+    }
+    #routeMaplinesholder .span5
+    {
+        width: 42%;
+        float: left;
+    }
+    .requset-proposal .left-line-margin{
+        margin-left: 0 !important;
+         width:18% !important;
+    }
+    .requset-proposal .right-line-margin{
+        width:18% !important;
+    }
+    .requset-proposal .span4{
+        width:auto !important;
+        float:left !important;
+    }
+    .requset-proposal .span6 {
+        float: left !important;
+        width: 57% !important;
+    }
+
+    .aboutusDownsliderInner .span8{
+        width: 85% !Important;
+        float: left !Important;
+    }
+    .aboutusDownsliderInner .left-line-margin{
+        margin-left: 0 !important; 
+    }
+    .aboutusDownsliderInner .span2{  
+        width:5% !Important;
+    }
+    #routeMaplinesholder .span2
+    {
+        width: 14.8% !important;
+        float: left;
+    }
+
+
+    .sliderInnercontent
+    {
+        padding-left: 20px;
+    }
+
+
+    .bx-controls-direction .bx-next {
+        background: url("../fleet/images/carousol-rightarrow-mobile.png") no-repeat;
+        position: static;
+        top: 0%;
+        right: 0%;
+        z-index: 5;
+        width: 18px;
+        height: 33px;
+        border: none;
+    }
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 33% !important;
+    }
+    #routeMaplinesholder .span5{
+        width: 40.5% !important;
+        float: left !important;
+    }
+
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+
+
+    .aboutusDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: none;
+    }
+
+
+    .bx-controls .bx-controls-direction{
+        display: block !important;
+    }
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+
+}
+
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+   
+
+    .sunsetBannerBooknow{
+        padding-bottom: 10px !important;
+        padding-top: 10px !important;
+    }
+
+
+    .sunsetBannerBooknow .row-fluid .span6{
+        float: none;
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    .carousel{
+        margin-bottom: 4px !important;
+    }
+
+    .aboutusDownsliderbox{
+        top: 4% !important;
+    }
+
+    .groupResNote{
+        margin-top: 12px;
+        margin-bottom: 10px;
+    }
+
+    .aboutusDownslider .carousel-indicators{
+        bottom: 6%;
+    }
+
+    .sliderCaption{
+        font-size: 26px !important;;
+    }
+
+    .contentDetail{
+        padding-left:0% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 32% !important;
+    }
+    .contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+        height: 630px;
+    }
+
+}
+
+@media (min-width: 1160px) and (max-width: 1200px) {
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+    .aboutusDownsliderInner{
+        width: 450px !important;
+        margin: 40px !important;
+    }
+
+}
+/*laxmi**/
+.contentDetail{
+    padding-left:0% !important;
+}
+
+corporate-details div{
+    line-height: 25px;
+}
+.captcha-code{
+ margin-bottom:0 !important;    
+}
