@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * Implements hook_schema()
+ */
+function appadmin_schema() {
+    $schema = array();
+// 	id 	parent_id 	position 	left 	right 	level 	title 	type
+    $schema['configurations'] = array(
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'type'=>array(
+                'description' => 'field type',
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+            ),
+            
+            'status'=>array(
+                'description' => 'status',
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+            ),
+            
+              'data'=>array(
+                'description' => 'data',
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+            ),
+            
+            'createdtime' => array(
+                'type' => 'varchar',
+                'length' => 12,
+                'description' => 'created date',
+            ),
+            
+        ),
+        'primary key' => array('id'),
+    );
+    //tree_node Schema 
+
+
+
+
+    return $schema;
+}

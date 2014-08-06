@@ -1,0 +1,6 @@
+; $Id$
+name = Applications Admin Interface
+description = "Application Admin Interface(Facebook and twitter..)"
+core = 7.x
+version = VERSION
+package = WWC

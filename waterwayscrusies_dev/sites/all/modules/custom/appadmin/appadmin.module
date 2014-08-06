@@ -1,0 +1,211 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function appadmin_menu() {
+    $items = array();
+    $items['appadmininterface'] = array(
+        'title' => 'Social Settings',
+        'page callback' => 'appadmin_interface',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function appadmin_interface() {
+    return drupal_get_form('appadmin_interface_form');
+}
+
+function appadmin_interface_form($form, &$form_state) {
+    $form['#tree'] = TRUE;
+    $values = app_exits_check('facebook');
+
+    foreach ($values as $res) {
+        $content = $res->data;
+    }
+    $resp = unserialize($content);
+
+
+    $twittervalues = app_exits_check('twitter');
+
+    foreach ($twittervalues as $res) {
+        $contenttwitter = $res->data;
+    }
+    $resptwitter = unserialize($contenttwitter);
+
+    $form['facebook_fieldset'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Facebook Configuration'),
+        '#collapsible' => TRUE, // Added
+        '#collapsed' => FALSE, // Added
+        // Set up the wrapper so that AJAX will be able to replace the fieldset.
+        '#prefix' => '<div id="names-fieldset-wrapper">',
+        '#suffix' => '</div>',
+    );
+
+
+
+
+
+    $form['facebook_fieldset']['app_id'] = array(
+        '#id' => 'facebook_appid',
+        '#type' => 'textfield',
+        '#title' => t('Facebook AppId'),
+//        '#required'=>true,
+        '#default_value' => isset($resp->Appid) ? $resp->Appid : ''
+//          '#default_value' =>' ',
+    );
+
+
+
+
+    $form['twitter_fieldset'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Twitter Configuration '),
+        // Set up the wrapper so that AJAX will be able to replace the fieldset.
+        '#collapsible' => TRUE, // Added
+        '#collapsed' => FALSE, // Added
+        '#prefix' => '<div id="names-fieldset-wrapper1">',
+        '#suffix' => '</div>',
+    );
+
+    $form['twitter_fieldset']['twitterconsumerkey'] = array(
+        '#id' => 'twitter_consumerkey',
+        '#type' => 'textfield',
+//         '#required'=>true,
+        '#title' => t('Twitter Consumer Key'),
+        '#default_value' => isset($resptwitter->twitterconsumerkey) ? $resptwitter->twitterconsumerkey : ''
+    );
+
+
+    $form['twitter_fieldset']['twittersecretkey'] = array(
+        '#id' => 'twitter_secretkey',
+        '#type' => 'textfield',
+//         '#required'=>true,
+        '#title' => t('Twitter Secret Key'),
+        '#default_value' => isset($resptwitter->twittersecretkey) ? $resptwitter->twittersecretkey : ''
+    );
+
+
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+    );
+//    $form['actions']['cancel'] = array(
+//        '#type' => 'submit',
+//        '#value' => t('Cancel'),
+//        '#submit' => array('form_cancel_action'),
+//        '#limit_validation_errors' => array(),
+//    );
+
+
+    return $form;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function appadmin_permission() {
+    return array(
+        'administer appadmininterface' => array(
+            'title' => t('Administer AppAdmin Interface'),
+            'restrict access' => TRUE,
+        ),
+    );
+}
+
+function appadmin_interface_form_submit($form, &$form_state) {
+
+    /* faceboook app configuration */
+    $facebookappid = $form_state['values']['facebook_fieldset']['app_id'];
+    $data1 = (object) array('Appid' => $facebookappid);
+    $facebookdetails = serialize($data1);
+
+
+    $data = app_exits_check('facebook');
+    
+if($facebookappid!=""){
+    
+    if (count($data) > 0) {
+        $detailsinsert1 = db_update('configurations')
+                ->fields(array(
+                    'data' => $facebookdetails,
+                    'type' => 'facebook',
+                    'createdtime' => REQUEST_TIME,
+                    'status' => 1
+                ))
+                ->condition('type', 'facebook', '=')
+                ->execute();
+    } else {
+        $detailsinsert1 = db_insert('configurations')
+                ->fields(array(
+                    'data' => $facebookdetails,
+                    'type' => 'facebook',
+                    'createdtime' => REQUEST_TIME,
+                    'status' => 1,
+                ))
+                ->execute();
+    }
+}
+
+    /* faceboook app configuration */
+
+    /* twitter app configuration */
+
+
+    $twitterconsumerkey = $form_state['values']['twitter_fieldset']['twitterconsumerkey'];
+    $twittersecretkey = $form_state['values']['twitter_fieldset']['twittersecretkey'];
+    $data = (object) array('twitterconsumerkey' => $twitterconsumerkey, 'twittersecretkey' => $twittersecretkey);
+    $twitterdetails = serialize($data);
+
+
+
+    $data = app_exits_check('twitter');
+    
+    if($twitterconsumerkey || $twittersecretkey!=""){
+    if (count($data) > 0) {
+        $detailsinsert = db_update('configurations')
+                ->fields(array(
+                    'data' => $twitterdetails,
+                    'type' => 'twitter',
+                    'createdtime' => REQUEST_TIME,
+                    'status' => 1
+                ))
+                ->condition('type', 'twitter', '=')
+                ->execute();
+    } else {
+        $detailsinsert = db_insert('configurations')
+                ->fields(array(
+                    'data' => $twitterdetails,
+                    'type' => 'twitter',
+                    'createdtime' => REQUEST_TIME,
+                    'status' => 1,
+                ))
+                ->execute();
+    }
+    }
+    /* twitter app configuration */
+
+    return $form;
+}
+
+function app_exits_check($type) {
+
+    $result = db_select('configurations', 'c')
+            ->fields('c')
+            ->condition('type', $type, '=')
+            ->execute()
+            ->fetchAll();
+    return $result;
+}
+
+function form_cancel_action($form, &$form_state) {
+
+    global $base_url;
+    $url = $base_url;
+
+    drupal_goto($url);
+}
