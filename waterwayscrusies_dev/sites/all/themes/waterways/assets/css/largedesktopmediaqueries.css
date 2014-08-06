@@ -1,0 +1,3841 @@
+/* Large screens DESKTOPS----------- */
+
+/* 1152px rosolution screen */
+@media only screen and (min-width:1001px) and (max-width: 1129px){
+
+    /*Header Styles*/ 
+    #header .container{
+        width: 980px;
+        margin: 0 auto;
+    }
+
+    .socialiconWidth{
+        padding-left: 3%;
+    }
+
+    /*Menu Styles*/ 
+    #menu .container{
+        width: 1000px;
+        margin: 0 auto;
+    }
+    
+    #menu .navbar .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .portRadioCustom{
+        margin-top:10px;
+    }
+    .menu ul .firstLink a{
+        padding-left: 9px;
+    }
+
+    .menu ul li a{
+        padding-left: 9px;
+        padding-right: 9px;
+        font-size: 16px;
+    }
+
+    .menu ul li a:hover{
+        padding-left: 9px;
+        padding-right: 9px;
+        font-size: 16px;
+    }
+    
+    .links{
+        margin-right: 14px;
+    }
+    
+    #footer .container{
+        width: 900px;
+        margin: 0 auto;
+    }
+
+    .footer-menu ul{
+        margin: 0px;
+    }
+
+    .footerInner{
+        width: 100%;
+    }
+
+    .footerWidth .span4{
+        float: right;
+    }
+
+    .footer-signup{
+        width: 99%;
+    }
+
+    .footer-signup-inner{
+        width: 99.2%;
+    }
+    
+    /* Home page styles */
+    .contentSliderController{
+        width: 90%;
+    }
+    
+    #sliderContent .slider-caption{
+        margin-top: -12px !important;
+        width: 52%;
+        top: auto;
+    }
+    
+    .sliderBottomMobile{
+        display: block;
+    }
+    
+    .welcomeline{
+        margin-top: 18%;
+    }
+    
+    .viewbuttonline{
+        margin-top: 2%;
+    }
+    
+    .contentbox-inner{
+        width: 900px !important;
+    }
+    
+    .contentbox-inner .voucherboxContainer{
+        width: 830px !important;
+        margin: 0px auto;
+    }
+
+    
+    /* Dining Cruise Detail View page styles */
+    .cruisedetailview .detailBackLink{
+        margin-left: 0%;
+    }
+    
+    .cruisedetailview .span2{
+        width: 26%;
+    }
+    
+    .cruisedetailview .span10{
+        width: 69%;
+    }
+    
+    .cruisedetailview #downArrow{
+        left: -8%;
+    }
+    
+    .sunset-slider-buttons .share{
+        left: 68.5% !important;
+    }
+    
+    .Reviews{
+        left: 40%;
+    }
+    
+    .sunsetDownsliderbox{
+        /*left: 14%;*/
+    }
+    
+    .sunsetMapView #upArrow{
+        left: 47.5%;
+    }
+    
+    .sunsetMapView #upArrow{
+        left: 47%;
+    }
+    
+    
+    /* Calendar page styles */
+    .calendarHeader{
+        width: 80%;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: 0%;
+        display: block;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: 0%;
+        display: block;
+    }
+    #CruisecalendarPrevious{
+        left: 5%;
+    }
+    #CruisecalendarNext{
+          right: 5%;
+    }
+    .mainCalendar #cruiseCalendar,.calendarTitlemargin{
+        max-width: 700px;
+    }
+    .calendarRadio .portRadio{
+        top: 11px;
+    }
+    
+    .calendarRadio{
+        margin-left: 0%;
+    }
+    
+    .calendarRadio label{
+    	font-size: 13px;
+    }
+    
+    .calendarRadioall label{
+    	font-size: 13px;
+    }
+    
+    .calendarHeader .selectbodholder{
+        width: 190px;
+    }
+    
+    .calendarHeader select{
+        background-position: 162px center;
+    }
+    
+    .cruiseKey{
+        margin-right: 9.8%;
+    }
+    
+    /* Private Events Details page styles */
+    .privateeventsdetailview .detailBackLink{
+        margin-left: 0%;
+    }
+    
+    .privateeventsdetailview .span2{
+        width: 10%;
+    }
+    
+    .privateeventsdetailview .span10{
+        width: 82.5%;
+    }
+    
+    .privateeventsdetailview #downArrow{
+        left: -8%;
+    }
+    
+    .weddingPackagesTitle, .weddingPackagesSubTitle, .weddingPackagesDescription{
+        padding-left: 0px;
+    }
+    
+    .sunsetBooknowMobile .weddingLinePadding{
+        width: 28%;
+    }
+    
+    .sunset-slider-buttons .share{
+        left: 68.5% !important;
+    }
+    
+    .weddingDownsliderboxContainer{
+        position: relative;
+        margin: -54% auto 0px auto;
+    }
+    
+    .weddingDownsliderboxContainer .weddingDownsliderbox{
+        left: 0%;
+        max-width: 43%;
+    }
+    
+    .weddingDownsliderboxContainer .leftweddingbox{
+        margin-left: 3%;
+    }
+    
+    .weddingDownsliderboxContainer .rightslider{
+        margin-left: 54%;
+    }
+    
+    .weddingDownslider #middlesliderscarousel > .item > img {
+        height: 550px;
+    }
+    
+    #pricingTable{
+        margin-top: 58%;
+    }
+    
+    .eventmydownIndicators{
+        bottom: 4%;
+        left: 49%;
+    }
+    
+    .contentDetail #rightsliderImages{
+        height: 708px;
+    }
+    
+    .contentDetail #rightsliderImages .item img{
+        height: 708px;
+    }
+    
+    #upArrow{
+        left: 47%;
+    }
+    
+    /* Private Events Weddings page styles */
+    .privateEventsWeddings .detailBackLink{
+        margin-left: -17%;
+    }
+    
+    .privateEventsWeddings .span2{
+        width: 9%;
+    }
+    
+    /* Food and Bar page styles */
+    .foodandbardetailview .detailBackLink{
+        margin-left: -19.7%;
+    }
+    
+    .foodandbardetailview .span2{
+        width: 1.5%;
+    }
+    
+    .foodandbardetailview .span10{
+        width: 90.9% !important;
+    }
+    
+    #eventmydownCarousel .carousel-control.left, #eventmydownCarousel .carousel-control.right{
+        display: none;
+    }
+    
+    /* Fleet Detail view page styles */
+    .fleetdetailview .span2{
+        width: 10%;
+    }
+    
+    .fleetdetailview .span10{
+        width: 75%;
+    }
+    
+    .fleetDownsliderbox{
+        left: 5.5%;
+    }
+    
+    .fleetDownslider #routmapSlider{
+        height: 430px;
+    }
+    
+    .fleetDownslider #routmapSlider .item img{
+        height: 430px;
+    }
+    
+    .virtualtour{
+        width: 93%;
+        left: 42%;
+    }
+    
+    .contentDetail .fleet-slider-buttons img{
+        height: 650px;
+    }
+    
+    .fleetdetailview #downArrow{
+        left: 47%;
+        top: 33%;
+    }
+    
+    .fleetDownslidermargin .bx-wrapper .bx-controls-direction .bx-prev{
+        width: 20px !important;
+        height: 35px !important;
+    }
+    
+    .fleetDownslidermargin .bx-wrapper .bx-controls-direction .bx-next{
+        width: 20px !important;
+        height: 35px !important;
+    }
+    
+    /* Ports and Direction page styles */
+    .departureMapView .detailBackLink{
+        margin-left: -9%;
+    }
+    
+    .mapDownsliderbox{
+        left: 1.5% !important;
+    }
+    
+    .detailShareLink{
+        right: 1.2%;
+    }
+    
+    .whetherHolder{
+        width: 90%;
+    }
+    
+    /* Blog page styles */
+    .blogBacktoMainlink{
+        margin-left: 0%;
+    }
+    
+    /* About Us page styles */
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 15.3%;
+    }
+    
+    .aboutusPagesContainer .detailBackLink{
+        margin-left: -8.5%;
+    }
+    
+    .jobContainerMargins .span2.responsiveWeb{
+        width: 5%;
+    }
+    
+    .jobContainerMargins .span7{
+        width: 85%;
+    }
+    
+    .jobContainerMargins .span3.responsiveWeb{
+        width: 5%;
+    }
+    
+    .aboutusupsliderbox{
+        left: 15.3%;
+        top: 170px;
+    }
+    
+    .aboutusDownsliderbox{
+        left: 15.3%;
+        top: 170px;
+    }
+    
+    .aboutsoverviewfirstindicators{
+        bottom: 4%;
+    }
+    
+    .aboutuscrewCarsouselindicators{
+        bottom: 4%;
+    }
+    
+    .crew-member .detailBackLink{
+        left: -3%;
+        position: absolute;
+    }
+    
+    .crew-member .crewTitle{
+        margin-left: 19%;
+        margin-top: 8%;
+    }
+    
+    .crew-member .cruiseDetailinfo{
+        margin-left: -1%;
+    }
+    
+    .crewtempfirstindicators{
+        bottom: 4%;
+    }
+    
+    .crewtempsecondindicators{
+        bottom: 4%;
+    }
+    
+    .aboutusTitle{
+        margin-top: 6.5%;
+    }
+    
+    .careers-container .cruiseDetailinfo{
+        margin-left: 15.2% !important;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: -1.5%;
+    }
+    
+    .aboutusAffiliationContainer .cruiseDetailinfo{
+        margin-left: 16.5% !important;
+        width: 80% !important;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: -1.5%;
+    }
+    
+    #aboutussecondCarousel .aboutussecondindicators{
+        bottom: 4%;
+    }
+    
+    .careersheroimage .aboutusDownsliderbox{
+        top: 291px;
+    }
+    
+    .affiliationscontent .aboutusDownsliderbox{
+        top: 291px;
+    }
+    
+    .aboutusAffiliationContainer .subMenu ul li a, .aboutusVendorsContainer .subMenu ul li a, .faqpageContainer .subMenu ul li a, .aboutusCorporateContainer .subMenu ul li a, .careers-container .subMenu ul li a{
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusAffiliationContainer .subMenu ul li a:hover, .aboutusVendorsContainer .subMenu ul li a:hover, .faqpageContainer .subMenu ul li a:hover, .aboutusCorporateContainer .subMenu ul li a:hover, .careers-container .subMenu ul li a:hover{
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusAffiliationContainer .subMenu ul li a:active, .aboutusVendorsContainer .subMenu ul li a:active, .faqpageContainer .subMenu ul li a:active, .aboutusCorporateContainer .subMenu ul li a:active, .careers-container .subMenu ul li a:active{
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        font-size: 14px !important;
+    }
+    
+    .careers-container .jobContainer{
+        width: 66%;
+    }
+    
+    .faqpageContainer .aboutusTitle{
+        margin-top: 5%;
+        margin-left: 13.5%;
+    }
+    
+    .faqpageContainer .subMenu{
+        margin-left: 13%;
+    }
+    
+    .faq-content{
+        width: 100%;
+        margin: 0%;
+    }
+    
+    .faq-question-answer{
+        width: 82.5%;
+        margin-left: 9.8%;
+    }
+    
+    .faqpageContainerbody .contentbox-inner{
+        padding-top: 8%;
+    }
+    
+    /* Press Room page styles */
+    .pressroomContainer{
+        width: 85%;
+    }
+    
+    .pressroomContainer .moreblogs{
+        width: 42%;
+    }
+    
+    .press-room-details .detailBackLink{
+        margin-left: -19%;
+    }
+    
+    .pressroomContainer .contentDetail{
+        padding-left: 0px;
+    }
+    
+    .pressroomContainer .contentDetail .press-room{
+        padding-left: 0px;
+        margin: 0px auto;   
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 26%;
+    }
+    
+    .backtoContainer .sharebtnContainer .booknow{
+        width: 43.5%;
+    }
+    
+    .press-room-details .pressroom-info{
+        width: 89% !important;
+    }
+    
+}
+
+
+
+
+
+
+
+
+/* 1152px rosolution screen */
+@media only screen and (min-width:1129px) and (max-width: 1257px){
+
+    /*Header Styles*/ 
+    #header .container{
+        width: 1090px;
+        margin: 0 auto;
+    }
+
+    .socialiconWidth{
+        padding-left: 3%;
+    }
+
+    /*Menu Styles*/ 
+    #menu .container{
+        width: 1120px;
+        margin: 0 auto;
+    }
+    
+    #menu .navbar .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .menu ul .firstLink a{
+        padding-left: 18px;
+    }
+
+    .menu ul li a{
+        padding-left: 18px;
+        padding-right: 18px;
+        font-size: 16px;
+    }
+
+    .menu ul li a:hover{
+        padding-left: 18px;
+        padding-right: 18px;
+        font-size: 16px;
+    }
+    
+    .links{
+        margin-right: 14px;
+    }
+    
+    #footer .container{
+        width: 1000px;
+        margin: 0 auto;
+    }
+
+    .footer-menu ul{
+        margin: 0px;
+    }
+
+    .footerInner{
+        width: 100%;
+    }
+
+    .footerWidth .span4{
+        float: right;
+    }
+
+    .footer-signup{
+        width: 99%;
+    }
+
+    .footer-signup-inner{
+        width: 99.2%;
+    }
+    
+    /* Home page styles */
+    
+    .logotext {
+        font-size: 50px;
+        line-height: 70px;
+    }
+    
+    .slider-caption .row-fluid .span12 p {
+        font-size: 14px;
+    }
+    
+    #sliderContent .slider-caption{
+        margin-top: -41px !important;
+        width: 56%;
+        top: -400px !important
+    }
+    
+    .sliderBottomMobile{
+        display: block;
+    }
+    
+    .welcomeline{
+        margin-top: 18%;
+    }
+    
+    .viewbuttonline{
+        margin-top: 2%;
+    }
+    
+    .contentbox-inner{
+        width: 1000px !important;
+    }
+
+    .contentbox-inner .voucherboxContainer{
+        width: 830px !important;
+        margin: 0px auto;
+    }
+
+    
+    /* Dining Cruise Detail View page styles */
+    .cruisedetailview .detailBackLink{
+        margin-left: 3%;
+    }
+    
+    .cruisedetailview .span2{
+        width: 26%;
+    }
+    
+    .cruisedetailview .span10{
+        width: 85%;
+        margin-left: 10%;
+    }
+    
+    .sunset-slider-buttons .share{
+        left: 70% !important;
+    }
+    
+    .Reviews{
+        left: 44%;
+    }
+    
+    .sunsetDownsliderbox{
+        /*left: 14%;*/
+    }
+    
+    .dinnermenu{
+        width: 1000px;
+    }
+    
+    .sunsetMapView #upArrow{
+        left: 47.5%;
+    }
+    
+    
+    /* Calendar page styles */
+    .calendarHeader{
+        width: 72%;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: -73%;
+        display: block;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: -48%;
+        display: block;
+    }
+    
+    .calendarRadio .portRadio{
+        top: 11px;
+    }
+    
+    .calendarRadio{
+        margin-left: 0%;
+    }
+    
+    .calendarRadio label{
+    	font-size: 13px;
+    }
+    
+    .calendarRadioall label{
+    	font-size: 13px;
+    }
+    
+    .calendarHeader .selectbodholder{
+        width: 190px;
+    }
+    
+    .calendarHeader select{
+        background-position: 162px center;
+    }
+    
+    .cruiseKey{
+        margin-right: 14%;
+    }
+    
+    /* Private Events Details page styles */
+    .privateeventsdetailview .detailBackLink{
+        margin-left: 3%;
+    }
+    
+    .privateeventsdetailview .span2{
+        width: 26%;
+    }
+    
+    .privateeventsdetailview .span10{
+        width: 68.5%;
+    }
+    
+    .weddingPackagesTitle, .weddingPackagesSubTitle, .weddingPackagesDescription{
+        padding-left: 0px;
+    }
+    
+    .sunsetBooknowMobile .weddingLinePadding{
+        width: 28%;
+    }
+    
+    .sunset-slider-buttons .share{
+        left: 70.5% !important;
+    }
+    
+    .weddingDownsliderboxContainer{
+        position: relative;
+        margin: -47% auto 0px auto;
+        width: 1000px;
+    }
+    
+    .weddingDownsliderboxContainer .weddingDownsliderbox{
+        left: 0%;
+        max-width: 43%;
+    }
+    
+    .weddingDownsliderboxContainer .leftweddingbox{
+        margin-left: 5%;
+    }
+    
+    .weddingDownsliderboxContainer .rightslider{
+        margin-left: 52%;
+    }
+    
+    #pricingTable{
+        width: 1000px;
+        margin-top: 50%;
+    }
+    
+    .eventmydownIndicators{
+        bottom: 4%;
+        left: 49%;
+    }
+    
+    .contentDetail #rightsliderImages{
+        height: 708px;
+    }
+    
+    .contentDetail #rightsliderImages .item img{
+        height: 708px;
+    }
+    
+    .weddingmenu{
+        width: 1000px;
+    }
+    
+    #upArrow{
+        left: 47.5%;
+    }
+    
+    /* Private Events Weddings page styles */
+    .privateEventsWeddings .detailBackLink{
+        margin-left: -17%;
+    }
+    
+    .privateEventsWeddings .span2{
+        width: 9%;
+    }
+    
+    /* Food and Bar page styles */
+    .foodandbardetailview .detailBackLink{
+        margin-left: -16.7%;
+    }
+    
+    .foodandbardetailview .span2{
+        width: 8.5%;
+    }
+    
+    .foodSelectionMenu{
+        width: 1000px;
+    }
+    
+    /* Fleet Detail view page styles */
+    .fleetdetailview .span2{
+        width: 25.5%;
+    }
+    
+    .fleetdetailview .span10{
+        width: 68.5%;
+    }
+    
+    .fleetDownsliderbox{
+        left: 13%;
+    }
+    
+    .virtualtour{
+        width: 93%;
+    }
+    
+    .contentDetail .fleet-slider-buttons img{
+        height: 650px;
+    }
+    
+    .fleetdetailview #downArrow{
+        left: 47.5%;
+    }
+    
+    /* Ports and Direction page styles */
+    .departureMapView .detailBackLink{
+        margin-left: -7.5%;
+    }
+    
+    .mapDownsliderbox{
+        left: 3% !important;
+    }
+    
+    .whetherHolder{
+        width: 1000px;
+    }
+    
+    .detailShareLink{
+        right: 2.2%;
+    }
+    
+    /* Blog page styles */
+    .blogBacktoMainlink{
+        margin-left: 1.5% !important;
+    }
+    
+    /* About Us page styles */
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 15.3%;
+    }
+    
+    .aboutusupsliderbox{
+        left: 15.3%;
+    }
+    
+    .aboutusDownsliderbox{
+        left: 15.3%;
+    }
+    
+    .aboutusTitle{
+        margin-top: 6.5%;
+    }
+    
+    .careers-container .cruiseDetailinfo{
+        margin-left: 15.2% !important;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: -1%;
+    }
+    
+    .aboutusAffiliationContainer .cruiseDetailinfo{
+        margin-left: 16.5% !important;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: -1.5%;
+    }
+    
+    .faqpageContainer .aboutusTitle{
+        margin-top: 5.6%;
+        margin-left: 5.5%;
+    }
+    
+    .faqpageContainer .subMenu{
+        margin-left: 5%;
+    }
+    
+    .faqpageContainer .subMenu ul li a{
+        padding-left: 28px !important;
+        padding-right: 27px !important;
+        font-size: 15px !important;
+    }
+    
+    .faqpageContainer .subMenu ul li a:hover{
+        padding-left: 28px !important;
+        padding-right: 27px !important;
+        font-size: 15px !important;
+    }
+    
+    .faqpageContainer .subMenu ul li a:active{
+        padding-left: 28px !important;
+        padding-right: 27px !important;
+        font-size: 15px !important;
+    }
+    
+    .faq-content{
+        width: 100%;
+        margin: 0%;
+    }
+    
+    
+    .faq-question-answer{
+        width: 971px;
+        margin-left: 0.4%;
+    }
+    
+    /* Press Room page styles */
+    .press-room-details .detailBackLink{
+        margin-left: -17%;
+    }
+    
+    .pressroomContainer .contentDetail{
+        padding-left: 0px;
+    }
+    
+    .pressroomContainer .contentDetail .press-room{
+        padding-left: 0px;
+        width: 1000px;
+        margin: 0px auto;   
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 26%;
+    }
+    
+    .backtoContainer .sharebtnContainer .booknow{
+        width: 42%;
+    }
+    
+    .press-room-details .pressroom-info{
+        width: 89% !important;
+    }
+    
+}
+
+
+
+/* 1280px rosolution screen */
+@media only screen and (min-width:1280px), (min-width: 1257px){
+
+    /*Header Styles*/ 
+    #header .container{
+        width: 1237px;
+        margin: 0 auto;
+    }
+
+    .socialiconWidth{
+        padding-left: 3%;
+    }
+
+    /*Menu Styles*/ 
+    #menu .navbar .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .menu ul .firstLink a{
+        padding-left: 21px;
+    }
+
+    .menu ul li a{
+        padding-left: 22px;
+        padding-right: 22px;
+        font-size: 18px;
+    }
+
+    .menu ul li a:hover{
+        padding-left: 22px;
+        padding-right: 22px;
+        font-size: 18px;
+    }
+
+    #menu .container{
+        width: 1280px;
+        margin: 0 auto;
+    }
+
+    #menu .container .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #menu .container .menu{
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    #footer .container{
+        width: 1000px;
+        margin: 0 auto;
+    }
+
+    .footer-menu ul{
+        margin: 0px;
+    }
+
+    .footerInner{
+        width: 100%;
+    }
+
+    .footerWidth .span4{
+        float: right;
+    }
+
+    .footer-signup{
+        width: 99%;
+    }
+
+    .footer-signup-inner{
+        width: 99.2%;
+    }
+
+
+    /* Home page adjustment styles */
+    
+    #sliderContent .slider-caption{
+        margin-top: -66%;
+        width: 60%;
+    }
+    
+    .contentbox-inner{
+        width: 1000px !important;
+    }
+
+    .contentbox-inner .voucherboxContainer{
+        width: 830px !important;
+        margin: 0px auto;
+    }
+
+    .slider-caption{
+        position: relative;
+        width: 100%;
+    }
+
+    .sliderBottomMobile{
+        position: relative;
+        width: 900px;
+        margin: 0px auto;
+    }
+
+    .slider-bottom{
+        width: 80%;
+        margin-left: 10%;
+        margin-top: -30%;
+        position: absolute;
+        z-index: 1;
+    }
+
+    #slider .carousel-control.right{
+        right: 30px;
+    }
+
+    #slider .carousel-control.left{
+        left: 30px;
+    }
+
+    #slider .carousel-inner .item img{
+        height: 800px;
+    }
+
+    .contentDetail{
+        padding-left: 0px; 
+    }
+    
+    .viewbuttonline{
+        margin-top: 3%;
+    }
+
+    /* Dining Cruies Details view page styles */
+    .Reviews{
+        left: 52%;
+    }
+
+    .cruiseDetailinfo .cruiseDownArrow{
+        left: -6% !important;
+    }
+    
+    .cruiseDetailinfo .cruiseUpArrow{
+        left: 48.8%;
+    }
+    
+    .dinnermenu{
+        width: 1000px;
+    }
+    
+    .sunsetDownsliderbox{
+        /*left: 13.4%;*/
+    }
+    
+    /* Cruise Calendar page Styles */
+    
+    .mainCalendar #cruiseCalendar,.calendarTitlemargin{
+        max-width: 1000px;
+    }
+    
+    .calendarRadio .portRadio{
+        top: 6px;
+    }
+    
+    .calendarHeader{
+        width: 74%;
+    }
+    
+    .calendar{
+        width: 1000px;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: -63%;
+        top: 0px;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: -48.8%;
+        top: 0px;
+    }
+    
+    .calendarHeader .selectbodholder{
+        width: 100%;
+    }
+    
+    .calendarHeader select{
+        background-position: 203px center;
+        width: 101% !important;
+    }
+    
+    .cruiseKey{
+        margin-right: 13%;
+    }
+    
+    .radioLine{
+        margin-top: 10px;
+    }
+
+    /* Private Events Cruise Detail page */
+
+    .detailBackLink{
+        margin-left: 3%;
+    }
+    
+    .weddingPackagesTitle{
+        font-size: 42px;
+    }
+
+    .cruiseDetailinfo .span2{
+        width: 28%;
+    }
+
+    .cruiseDetailinfo .span10{
+        width: 85%;
+        margin-left:10%;
+    }
+
+    #pricingTable{
+        width: 1000px;
+    }
+
+    .weddingmenu{
+        width: 1000px;
+    }
+
+    .sunset-slider-buttons .privatecruiseDownArrow{
+        left: -6% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 75% !important;
+    }
+
+    #upArrow{
+        left: 48%;
+    }
+
+    /* Private Events Weddings Page Styles */
+
+    .privateEventsWeddings .detailBackLink{
+        margin-left: 3%;
+    }
+
+    .privateEventsWeddings .span2{
+        width: 25%;
+    }
+
+    .privateEventsWeddings .span10{
+        width: 75%;
+    }
+
+    .sunsetDownslider .weddingDownsliderbox{
+        left: 49%;
+    }
+    
+/*    .weddingDownsliderboxContainer .weddingDownsliderbox{
+        left: 13%;
+        max-width: 35%;
+    }
+    
+    .weddingDownsliderboxContainer .rightslider{
+        margin-left: 40%;
+    }*/
+
+
+    /* Food and Bar page styles */
+
+    .wwcfixedContainer{
+        width: 1000px;
+        margin: 0px auto;
+    }
+
+    .contentbox-inner.menulist-container{
+        width: 100% !important;
+    }
+
+    .cruiseDetailinfo .span10.foodandbar-details{
+        width: 60% !important;
+    }
+
+    .foodSelectionMenu{
+        width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .foodandbar-details .span3.sunsetLinePadding{
+        width: 27% !important;
+    }
+    
+    .foodandbar-details .span6{
+        width: 40% !important;
+    }
+    
+    .detailShareLink{
+        right: 1%;
+    }
+    
+    .departureMapView .detailBackLink{
+        margin-left: -7.5%;
+    }
+
+    /* Fleet page styles */
+
+    .fleetdetailview .virtualtour{
+        width: 100%;
+        margin-left: 24%;
+        margin-top: 5%;
+    }
+
+    .cruiseDetailinfo #downArrow{
+        left: 48.3%;
+    }
+    
+    .fleetdetailview #downArrow{
+        left: 48.3%;
+        /*top: 30.2%;*/
+        top: 31.6%;
+    }
+
+    .fleetDownsliderbox{
+        left: 14%;
+    }
+
+    /* Ports and Directions Styles */
+
+    .mapDownsliderbox{
+        left: 13% !important;
+    }
+
+    .whetherHolder{
+        width: 1000px;
+    }
+
+    .socialiconblockview{
+        width: 1000px !important;
+    }
+
+    /* Connect pages styles */
+
+    .connectMain{
+        width: 1000px !important;
+    }
+    
+    /* Pressroom page styles */
+    .pressroomContainer{
+        width: 1000px;
+        margin: 0px auto;
+    }
+    
+    .pressroomContainer .pressroom-info{
+        width: 100% !important;
+        margin-left: 0px;
+    }
+    
+    .press-room-details .pressroom-info{
+        width: 1000px !important;
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 28%;
+    }
+    
+    /* Privacy Policy page styles */
+
+    #content #privacy_policy{
+        width: 1000px;
+    }
+    
+    /* Blog Pages styles */
+    
+    .blogBacktoMainlink{
+        margin-left: 10.5%;
+    }
+    
+    /* affliations page style */
+    
+    .affiliationslogos{
+        width: 1000px !important;
+        margin-left: auto;
+        margin-top: 2%;
+        margin-bottom: 5%;
+        margin-right: auto;
+    }
+    
+    .affiliattionLogo{
+        margin-right: 5%;
+        margin-left: 0%;
+    }
+    
+
+    /* About Us page styles */
+
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 14%;
+    }
+    
+    .aboutusupsliderbox{
+        left: 14%;
+    }
+
+    .aboutusDownsliderbox{
+        left: 14%;
+    }
+
+    .careers-container .jobContainer{
+        width: 936px;
+        padding: 32px;
+        margin: 2% auto;
+    }
+    
+    .careers-container .aboutusTitle{
+        margin-left: -3%;
+    }
+    
+    .careers-container .subMenu{
+        margin-left: -3%;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: -3%;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: -3%;
+    }
+    
+    .aboutusVendorsContainer .cruiseDetailinfo{
+        width: 1000px !important;
+        margin: 0px auto !important;
+    }
+    
+    .aboutusVendorsContainer .aboutvendors{
+        width: 1000px !important;
+        margin: 8% auto 5% auto !important;
+    }
+    
+    .aboutusCorporateContainer .cruiseDetailinfo{
+        width: 1000px !important;
+        margin: 0px auto !important;
+    }
+    
+    .aboutusCorporateContainer .aboutcorporate{
+        width: 1000px !important;
+        margin: 8% auto 5% auto !important;
+    }
+    
+    .faqpageContainer .aboutusTitle{
+        margin-left: 7.3%;
+    }
+    
+    .faqpageContainer .subMenu{
+        margin-left: 7.3%;
+    }
+    
+    .faq-content{
+        margin: 1% 0px;
+    }
+    
+    .faqpageContainer .subMenu ul li a{
+        padding-left: 29px !important;
+        padding-right: 30px !important;
+    }
+    
+    .faqpageContainer .subMenu ul li a:hover{
+        padding-left: 29px !important;
+        padding-right: 30px !important;
+    }
+    
+    .faqpageContainer .subMenu ul li a:active{
+        padding-left: 29px !important;
+        padding-right: 30px !important;
+    }
+    
+    .faq-question-answer{
+        width: 100%;
+    }
+
+    .featuredJobs{
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+/* 1280px rosolution screen */
+@media only screen and (min-width: 1257px){
+    /*Header Styles*/ 
+    #header .container{
+        width: 1214px;
+        margin: 0 auto;
+    }
+
+    .socialiconWidth{
+        padding-left: 3%;
+    }
+
+    /*Menu Styles*/ 
+    #menu .navbar .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .menu ul .firstLink a{
+        padding-left: 20px;
+    }
+
+    .menu ul li a{
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 18px;
+    }
+
+    .menu ul li a:hover{
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 18px;
+    }
+
+    #menu .container{
+        width: 1245px;
+        margin: 0 auto;
+    }
+
+    #menu .container .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    
+    /* Dining Cruise Detail view page */
+    .sunsetMapView #upArrow{
+        left: 48%;
+    }
+    
+    
+    /* Cruise Calendar styles */
+    .mainCalendar #cruiseCalendar,.calendarTitlemargin{
+        max-width: 931px;
+    }
+    
+    .calendar{
+        width: 931px;
+    }
+    
+    .calendarHeader select{
+        background-position: 188px center;
+    }
+    
+    /* Private Events page styles */
+    .sunsetBooknowMobile .weddingLinePadding{
+        width: 30%;
+    }
+    
+    .weddingPackagesTitle{
+        font-size: 39px;
+    }
+    
+    .privateEventsWeddings .span2{
+        width: 11%;
+    }
+    
+    /* Ports and Directions page styles */
+    .mapDownsliderbox{
+        left: 10% !important;
+    }
+    
+    /* Blog page Styles */
+    .blogBacktoMainlink{
+        margin-left: 1% !important;
+    }
+    
+    /* About Us pages styles */
+    .detailBackLink{
+        margin-left: -8%;
+    }
+    
+    .privateEventsWeddings .detailBackLink{
+        margin-left: -18%;
+    }
+    
+    .crew-member .cruisedetailBackLink{
+        margin-left: -5%;
+    }
+    
+    aboutusPagesContainer .detailBackLink{
+        margin-left: -8%;
+    }
+    
+    .cruiseDetailinfo .detailBackLink{
+        margin-left: 2%;
+    }
+    
+    .press-room-details .detailBackLink{
+        margin-left: 2%;
+    }
+    
+}
+
+
+
+
+
+@media only screen and (min-width: 1152px) and (max-width: 1343px){
+	
+	.navbar .nav > li > a{
+		padding: 0px 16px 0px 16px !important;
+	}
+	
+}
+
+
+
+
+
+
+/*@media only screen and (min-width:1343px) and (max-width:1897px){*/
+
+/* 1366px rosolution screen */
+@media only screen and (min-width:1343px){
+
+    /*Header Styles*/ 
+    #header .container{
+        width: 1297px;
+        margin: 0 auto;
+    }
+
+    .socialiconWidth{
+        padding-left: 3%;
+    }
+
+    /*Menu Styles*/ 
+    #menu .navbar .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .menu ul .firstLink a{
+        padding-left: 26px;
+    }
+
+    .menu ul li a{
+        padding-left: 26px;
+        padding-right: 26px;
+        font-size: 18px;
+    }
+
+    .menu ul li a:hover{
+        padding-left: 26px;
+        padding-right: 26px;
+        font-size: 18px;
+    }
+
+    #menu .container{
+        width: 1335px;
+        margin: 0 auto;
+    }
+
+    #menu .container .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #menu .container .menu{
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    #footer .container{
+        width: 1000px;
+        margin: 0 auto;
+    }
+
+    .footer-menu ul{
+        margin: 0px;
+    }
+
+    .footerInner{
+        width: 100%;
+    }
+
+    .footerWidth .span4{
+        float: right;
+    }
+
+    .footer-signup{
+        width: 99%;
+    }
+
+    .footer-signup-inner{
+        width: 99.2%;
+    }
+
+
+    /* Home page adjustment styles */
+    .contentbox-inner{
+        width: 1000px !important;
+    }
+
+    .contentbox-inner .voucherboxContainer{
+        width: 830px !important;
+        margin: 0px auto;
+    }
+
+    .slider-caption{
+        position: relative;
+        width: 100%;
+    }
+
+    .sliderBottomMobile{
+        position: relative;
+        width: 900px;
+        margin: 0px auto;
+    }
+
+    .slider-bottom{
+        width: 80%;
+        margin-left: 10%;
+        margin-top: -30%;
+        position: absolute;
+        z-index: 1;
+    }
+
+    #slider .carousel-control.right{
+        right: 30px;
+    }
+
+    #slider .carousel-control.left{
+        left: 30px;
+    }
+
+    #slider .carousel-inner .item img{
+        height: 800px;
+    }
+
+    .contentDetail{
+        padding-left: 0px; 
+    }
+
+    /* Dining Cruies Details view page styles */
+    .Reviews{
+        left: 53%;
+    }
+
+    .cruiseDetailinfo .cruiseDownArrow{
+        left: -6% !important;
+    }
+    
+    .cruiseDetailinfo .cruiseUpArrow{
+        left: 48.8%;
+    }
+    
+    .dinnermenu{
+        width: 1000px;
+    }
+    
+    .sunsetMapView .cruiseUpArrow{
+        left: 48.4% !important;
+    }
+    
+    .sunsetDownsliderbox{
+        /*left: 13.4%;*/
+    }
+    
+    /* Cruise Calendar page Styles */
+    
+    .mainCalendar #cruiseCalendar,.calendarTitlemargin{
+        max-width: 1000px;
+    }
+    
+    .calendarHeader{
+        width: 74%;
+    }
+    
+    .calendar{
+        width: 1000px;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: -63%;
+        top: 0px;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: -48.8%;
+        top: 0px;
+    }
+    
+    .calendarHeader .selectbodholder{
+        width: 100%;
+    }
+    
+    .calendarHeader select{
+        /*background-position: 203px center;*/
+         background-position: 90% center;
+        width: 108% !important;
+    }
+    
+    .cruiseKey{
+        margin-right: 14.6%;
+    }
+    
+    .radioLine{
+        margin-top: 10px;
+    }
+    
+    .calendarRadio .portRadio{
+        top: 7px;
+    }
+
+    /* Private Events Cruise Detail page */
+
+    .detailBackLink{
+        margin-left: 3%;
+    }
+    
+    .weddingPackagesTitle{
+        font-size: 42px;
+    }
+
+    .cruiseDetailinfo .span2{
+        width: 28%;
+    }
+
+    .cruiseDetailinfo .span10{
+        width: 72%;
+        margin: 0px;
+    }
+
+    #pricingTable{
+        width: 1000px;
+    }
+
+    .weddingmenu{
+        width: 1000px;
+    }
+
+    .sunset-slider-buttons .privatecruiseDownArrow{
+        left: -6% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 76% !important;
+    }
+
+    #upArrow{
+        left: 48%;
+    }
+
+    /* Private Events Weddings Page Styles */
+
+    .privateEventsWeddings .detailBackLink{
+        margin-left: 3%;
+    }
+
+    .privateEventsWeddings .span2{
+        width: 25%;
+    }
+
+    .privateEventsWeddings .span10{
+        width: 75%;
+    }
+
+    .sunsetDownslider .weddingDownsliderbox{
+        left: 49%;
+    }
+    
+    .weddingDownsliderboxContainer .weddingDownsliderbox{
+        left: 13%;
+        max-width: 35%;
+    }
+    
+    .weddingDownsliderboxContainer .rightslider{
+        margin-left: 40%;
+    }
+
+
+    /* Food and Bar page styles */
+
+    .wwcfixedContainer{
+        width: 1000px;
+        margin: 0px auto;
+    }
+
+    .contentbox-inner.menulist-container{
+        width: 100% !important;
+    }
+
+    .cruiseDetailinfo .span10.foodandbar-details{
+        width: 60% !important;
+    }
+
+    .foodSelectionMenu{
+        width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .foodandbar-details .span3.sunsetLinePadding{
+        width: 27% !important;
+    }
+    
+    .foodandbar-details .span6{
+        width: 40% !important;
+    }
+    
+    .detailShareLink{
+        right: 1%;
+    }
+    
+    .departureMapView .detailBackLink{
+        margin-left: -7.5%;
+    }
+
+    /* Fleet page styles */
+
+    .virtualtour{
+        width: 100%;
+        margin-left: 24%;
+        margin-top: 8%;
+    }
+
+    .cruiseDetailinfo #downArrow{
+        left: 48.3%;
+    }
+
+    .fleetDownsliderbox{
+        left: 14%;
+    }
+
+    /* Ports and Directions Styles */
+
+    .mapDownsliderbox{
+        left: 13% !important;
+    }
+
+    .whetherHolder{
+        width: 1000px;
+    }
+
+    .socialiconblockview{
+        width: 1000px !important;
+    }
+
+    /* Connect pages styles */
+
+    .connectMain{
+        width: 1000px !important;
+    }
+    
+    /* Pressroom page styles */
+    .pressroomContainer{
+        width: 1000px;
+        margin: 0px auto;
+    }
+    
+    .pressroomContainer .pressroom-info{
+        width: 100% !important;
+        margin-left: 0px;
+    }
+    
+    .press-room-details .pressroom-info{
+        width: 1000px !important;
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 28%;
+    }
+    
+    /* Privacy Policy page styles */
+
+    #content #privacy_policy{
+        width: 1000px;
+    }
+    
+    /* Blog Pages styles */
+    
+    .blogBacktoMainlink{
+        margin-left: 1.5%;
+    }
+    
+    /* affliations page style */
+    
+    .affiliationslogos{
+        width: 1000px !important;
+        margin-left: auto;
+        margin-top: 2%;
+        margin-bottom: 5%;
+        margin-right: auto;
+    }
+    
+    .affiliattionLogo{
+        margin-right: 5%;
+        margin-left: 0%;
+    }
+    
+
+    /* About Us page styles */
+
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 14%;
+    }
+    
+    .aboutusupsliderbox{
+        left: 14%;
+    }
+
+    .aboutusDownsliderbox{
+        left: 14%;
+    }
+    
+    .crew-member .cruisedetailBackLink{
+        margin-left: -8%;
+    }
+    
+    .aboutusPagesContainer .detailBackLink{
+        margin-left: -7.3%;
+    }
+
+    .careers-container .jobContainer{
+        width: 936px;
+        padding: 32px;
+        margin: 2% auto;
+    }
+    
+    .careers-container .aboutusTitle{
+        margin-left: -3%;
+    }
+    
+    .careers-container .subMenu{
+        margin-left: -3%;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: -3%;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: -3%;
+    }
+    
+    .aboutusVendorsContainer .cruiseDetailinfo{
+        width: 1000px !important;
+        margin: 0px auto !important;
+    }
+    
+    .aboutusVendorsContainer .aboutvendors{
+        width: 1000px !important;
+        margin: 8% auto 5% auto !important;
+    }
+    
+    .aboutusCorporateContainer .cruiseDetailinfo{
+        width: 1000px !important;
+        margin: 0px auto !important;
+    }
+    
+    .aboutusCorporateContainer .aboutcorporate{
+        width: 1000px !important;
+        margin: 8% auto 5% auto !important;
+    }
+    
+    .faqpageContainer .aboutusTitle{
+        margin-left: 7.3%;
+    }
+    
+    .faqpageContainer .subMenu{
+        margin-left: 7.3%;
+    }
+    
+    .faq-content{
+        margin: 1% 0px;
+    }
+    
+    .faqpageContainer .subMenu ul li a{
+        padding-left: 27px !important;
+        padding-right: 27px !important;
+    }
+    
+    .faqpageContainer .subMenu ul li a:hover{
+        padding-left: 27px !important;
+        padding-right: 27px !important;
+    }
+    
+    .faqpageContainer .subMenu ul li a:active{
+        padding-left: 27px !important;
+        padding-right: 27px !important;
+    }
+    
+    .faq-question-answer{
+        width: 100%;
+    }
+
+    .featuredJobs{
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 1440px rosolution screen */
+@media only screen and (min-width:1417px){ 
+
+    /*Menu Styles*/ 
+    .menu ul .firstLink a{
+        padding-left: 26px;
+    }
+
+    .menu ul li a{
+        padding-left: 26px;
+        padding-right: 26px;
+        font-size: 18px;
+    }
+
+    .menu ul li a:hover{
+        padding-left: 26px;
+        padding-right: 26px;
+        font-size: 18px;
+    }
+    
+    /* Dining Cruise Detail View page styles */
+    .cruisedetailview .detailBackLink{
+        margin-left: 8%;
+    }
+    
+    .cruisedetailview .span2{
+        width: 31%;
+    }
+    
+    .cruisedetailview .span10{
+        width: 69%;
+    }
+    
+    .sunset-slider-buttons .share{
+        left: 72% !important;
+    }
+    
+    .Reviews{
+        left: 51%;
+    }
+    
+    .sunsetDownsliderbox{
+        /*left: 15%;*/
+    }
+    
+    
+    /* Calendar page styles */
+    .calendarHeader{
+        width: 70%;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: -58%;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: -47.3%;
+    }
+    
+    .cruiseKey{
+        margin-left: 14.8%;
+    }
+    
+    /* Private Events Details page styles */
+    .privateeventsdetailview .detailBackLink{
+        margin-left: 8%;
+    }
+    
+    .privateeventsdetailview .span2{
+        width: 31.5%;
+    }
+    
+    .privateeventsdetailview .span10{
+        width: 68.5%;
+    }
+    
+    /* Private Events Weddings page styles */
+    .privateEventsWeddings .detailBackLink{
+        margin-left: -11%;
+    }
+    
+    .privateEventsWeddings .span2{
+        width: 15%;
+    }
+    
+    /* Food and Bar page styles */
+    .foodandbardetailview .detailBackLink{
+        margin-left: 8.3%;
+    }
+    
+    .foodandbardetailview .span2{
+        width: 31.5%;
+    }
+    
+    /* Fleet Detail view page styles */
+    .fleetdetailview .span2{
+        width: 31.5%;
+    }
+    
+    .fleetdetailview .span10{
+        width: 68.5%;
+    }
+    
+    .fleetDownsliderbox{
+        left: 15%;
+    }
+    
+    /* Ports and Direction page styles */
+    .departureMapView .detailBackLink{
+        margin-left: -5%;
+    }
+    
+    .mapDownsliderbox{
+        left: 15% !important;
+    }
+    
+    .detailShareLink{
+        right: 3.8%;
+    }
+    
+    /* Blog page styles */
+    .blogBacktoMainlink{
+        margin-left: 4% !important;
+    }
+    
+    /* About Us page styles */
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 15.3%;
+    }
+    
+    .aboutusupsliderbox{
+        left: 15.3%;
+    }
+    
+    .aboutusDownsliderbox{
+        left: 15.3%;
+    }
+    
+    .aboutusPagesContainer .detailBackLink{
+        margin-left: -4.4%;
+    }
+    
+    .careers-container .cruiseDetailinfo{
+        margin-left: 17.7% !important;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: -1%;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: -1.5%;
+    }
+    
+    /* Press Room page styles */
+    .press-room-details .detailBackLink{
+        margin-left: 8.5%;
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 26%;
+    }
+    
+    .backtoContainer .sharebtnContainer .booknow{
+        width: 39%;
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 1280px rosolution screen */
+@media only screen and (min-width: 1577px){
+    
+    /* Dining Cruise Detail view page */
+    .sunsetMapView #upArrow{
+        left: 48%;
+    }
+    
+    .cruiseDetailinfo .span2{
+        width: 38.5%;
+    }
+    
+    .cruiseDetailinfo .span10{
+        width: 61%;
+        margin: 0px;
+    }
+    
+    .cruiseDetailinfo .cruiseDownArrow{
+        left: -5% !important;
+    }
+    
+    .sunsetDownsliderbox{
+        /*left: 19%;*/
+    }
+    
+    
+    /* Cruise Calendar styles */
+    .calendarHeader{
+        width: 63%;
+    }
+    
+    .mainCalendar #cruiseCalendar{
+        max-width: 1000px;
+    }
+    
+    .calendar{
+        width: 1000px;
+    }
+    
+    .calendarHeader select{
+        background-position: 188px center;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: -47%;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: -43.8%;
+    }
+    
+    #CruisecalendarNext{
+        right: 92%;
+    }
+    
+    .cruiseKey{
+        margin-right: 18.3%;
+    }
+    
+    /* Private Events page styles */
+    .sunsetBooknowMobile .weddingLinePadding{
+        width: 30%;
+    }
+    
+    .weddingPackagesTitle{
+        font-size: 39px;
+    }
+    
+    .privateEventsWeddings .span2{
+        width: 22%;
+    }
+    
+    .privateeventsdetailview .privatecruiseDownArrow{
+        left: -5% !important;
+    }
+    
+    /* Ports and Directions page styles */
+    .mapDownsliderbox{
+        left: 18% !important;
+    }
+    
+    .detailShareLink{
+        right: 8.4%;
+    }
+    
+    /* Blog page Styles */
+    .blogBacktoMainlink{
+        margin-left: 8.7% !important;
+    }
+    
+    /* About Us pages styles */
+    .detailBackLink{
+        margin-left: -8%;
+    }
+    
+    .cruiseDetailinfo .detailBackLink{
+        margin-left: 18%;
+    }
+    
+    .foodandbardetailview .detailBackLink{
+        margin-left: 18.2%;
+    }
+    
+    .privateEventsWeddings .detailBackLink{
+        margin-left: -0.5%;
+    }
+    
+    .privateeventsdetailview .detailBackLink{
+        margin-left: 18%;
+    }
+    
+    .crew-member .cruisedetailBackLink{
+        margin-left: -7%;
+    }
+    
+    /* About Us pages Styles */
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 18.8%;
+    }
+    
+    .aboutusupsliderbox{
+        left: 18.8%;
+    }
+    
+    .aboutusDownsliderbox{
+        left: 18.8%;
+    }
+    
+    .careers-container .aboutusTitle{
+        margin-left: 3%;
+    }
+    
+    .careers-container .subMenu{
+        margin-left: 3%;
+    }
+    
+    .careers-container .cruiseDetailinfo{
+        margin-left: 16.3% !important;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: 3%;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: 3%;
+    }
+    
+    .press-room-details .detailBackLink{
+        margin-left: 18%;
+    }
+    
+    aboutusPagesContainer .detailBackLink{
+        margin-left: -8%;
+    }
+    
+    .aboutusPagesContainer .detailBackLink{
+        margin-left: 1.2%;
+    }
+    
+    #virtualTourModal{
+        margin-left: -40.5%;
+    }
+    
+    .cruisedetailview .detailBackLink{
+        margin-left: 18%;
+    }
+    
+    .cruiseDetailinfo #downArrow{
+        left: 48.8%;
+    }
+    
+    .fleetDownsliderbox{
+        left: 18.5%;
+    }
+    
+    .departureMapView .detailBackLink{
+        margin-left: -0.5%;
+    }
+    
+    .sharebtnContainer .booknow{
+        width: 29.6% !important;
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 25%;
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 1680px rosolution screen */
+@media only screen and (min-width:1657px){
+
+    /*Header Styles*/ 
+    #header .container{
+        width: 1306px;
+        margin: 0 auto;
+    }
+
+    .socialiconWidth{
+        padding-left: 3%;
+    }
+
+    /*Menu Styles*/ 
+    #menu .navbar .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .menu ul .firstLink a{
+        padding-left: 26px;
+    }
+
+    .menu ul li a{
+        padding-left: 26px;
+        padding-right: 26px;
+        font-size: 18px;
+    }
+
+    .menu ul li a:hover{
+        padding-left: 26px;
+        padding-right: 26px;
+        font-size: 18px;
+    }
+
+    #menu .container{
+        width: 1349px;
+        margin: 0 auto;
+    }
+
+    #menu .container .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #menu .container .menu{
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    #footer .container{
+        width: 1000px;
+        margin: 0 auto;
+    }
+
+    .footer-menu ul{
+        margin: 0px;
+    }
+
+    .footerInner{
+        width: 100%;
+    }
+
+    .footerWidth .span4{
+        float: right;
+    }
+
+    .footer-signup{
+        width: 99%;
+    }
+
+    .footer-signup-inner{
+        width: 99.2%;
+    }
+
+
+    /* Home page adjustment styles */
+    .contentbox-inner{
+        width: 1000px !important;
+    }
+
+    .contentbox-inner .voucherboxContainer{
+        width: 830px !important;
+        margin: 0px auto;
+    }
+
+    .slider-caption{
+        position: relative;
+        width: 100%;
+    }
+
+    .sliderBottomMobile{
+        position: relative;
+        width: 900px;
+        margin: 0px auto;
+    }
+
+    .slider-bottom{
+        width: 80%;
+        margin-left: 10%;
+        margin-top: -30%;
+        position: absolute;
+        z-index: 1;
+    }
+
+    #slider .carousel-control.right{
+        right: 175px;
+    }
+
+    #slider .carousel-control.left{
+        left: 180px;
+    }
+
+    #slider .carousel-inner .item img{
+        height: 800px;
+    }
+
+    .contentDetail{
+        padding-left: 0px; 
+    }
+
+    /* Dining Cruies Details view page styles */
+    .Reviews{
+        left: 45%;
+    }
+
+    .cruiseDetailinfo .cruiseDownArrow{
+        left: -5% !important;
+    }
+    
+    .cruiseDetailinfo .cruiseUpArrow{
+        left: 48.8%;
+    }
+    
+    .dinnermenu{
+        width: 1000px;
+    }
+    
+    .sunsetDownsliderbox{
+        /*left: 20%;*/
+    }
+    
+    #mydownCarousel #routmapSlider > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    /* Cruise Calendar page Styles */
+    
+    .mainCalendar #cruiseCalendar{
+        max-width: 1000px;
+    }
+    
+    .calendar{
+        width: 1000px;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: -42%;
+        top: 0px;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: -41.8%;
+        top: 0px;
+    }
+    
+    .calendarHeader{
+        width: 60%;
+    }
+    
+    .calendarHeader .selectbodholder{
+        width: 100%;
+    }
+    
+    .calendarHeader select{
+        background-position: 203px center;
+        width: 101% !important;
+    }
+    
+    .radioLine{
+        margin-top: 10px;
+    }
+    
+    .cruiseKey{
+        margin-right: 19.8%;
+    }
+
+    /* Private Events Cruise Detail page */
+
+    .detailBackLink{
+        margin-left: 21%;
+    }
+    
+    .weddingPackagesTitle{
+        font-size: 42px;
+    }
+
+    .cruiseDetailinfo .span2{
+        width: 40%;
+    }
+
+    .cruiseDetailinfo .span10{
+        width: 60%;
+        margin: 0px;
+    }
+
+    #pricingTable{
+        width: 1000px;
+        margin-top: 70%;
+    }
+
+    .weddingmenu{
+        width: 1000px;
+    }
+
+    .sunset-slider-buttons .privatecruiseDownArrow{
+        left: -5% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 62% !important;
+    }
+
+    #upArrow{
+        left: 48%;
+    }
+    
+    #eventmydownCarousel #middlesliderscarousel > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    .weddingDownsliderboxContainer{
+        position: relative;
+        margin: -45% auto 0px auto;
+        width: 1000px;
+    }
+    
+    .weddingDownsliderboxContainer .weddingDownsliderbox{
+        left: 0%;
+        max-width: 43%;
+    }
+    
+    .weddingDownsliderboxContainer .leftweddingbox{
+        margin-left: 3%;
+    }
+    
+    .weddingDownsliderboxContainer .rightslider{
+        margin-left: 56%;
+    }
+
+    /* Private Events Weddings Page Styles */
+
+    .privateEventsWeddings .detailBackLink{
+        margin-left: 3%;
+    }
+
+    .privateEventsWeddings .span2{
+        width: 25%;
+    }
+
+    .privateEventsWeddings .span10{
+        width: 75%;
+    }
+    
+    .privateeventsdetailview .detailBackLink{
+        margin-left: 21.3%;
+    }
+
+    .sunsetDownslider .weddingDownsliderbox{
+        left: 49%;
+    }
+    
+    .sunsetDownslider img.imagefixedwd{
+        width: 100%;
+        height: 767px;
+    }
+
+
+    /* Food and Bar page styles */
+    .wwcfixedContainer{
+        width: 1000px;
+        margin: 0px auto;
+    }
+    
+    .foodandbardetailview .detailBackLink{
+        margin-left: 21.3%;
+    }
+
+    .contentbox-inner.menulist-container{
+        width: 100% !important;
+    }
+
+    .cruiseDetailinfo .span10.foodandbar-details{
+        width: 60% !important;
+    }
+
+    .foodSelectionMenu{
+        width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .aboutusCorporateContainer .address-container .span8{
+        width: 53%;
+    }
+
+    /* Fleet page styles */
+
+    .virtualtour{
+        width: 100%;
+        margin-left: 24%;
+        margin-top: 8%;
+    }
+
+    .cruiseDetailinfo #downArrow{
+        left: 49%;
+    }
+
+    .fleetDownsliderbox{
+        left: 20%;
+    }
+
+    /* Ports and Directions Styles */
+
+    .mapDownsliderbox{
+        left: 20% !important;
+    }
+
+    .whetherHolder{
+        width: 1000px;
+    }
+
+    .socialiconblockview{
+        width: 1000px !important;
+    }
+    
+    .departureMapView .detailBackLink{
+        margin-left: 1.5%;
+    }
+    
+    .detailShareLink{
+        right: 10.1%;
+    }
+
+    /* Connect pages styles */
+
+    .connectMain{
+        width: 1000px !important;
+    }
+    
+    /* Pressroom page styles */
+    .pressroomContainer{
+        width: 1000px;
+        margin: 0px auto;
+    }
+    
+    .pressroomContainer .pressroom-info{
+        width: 100% !important;
+        margin-left: 0px;
+    }
+    
+    .press-room-details .pressroom-info{
+        width: 1000px !important;
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 28%;
+    }
+    
+    /* Privacy Policy page styles */
+
+    #content #privacy_policy{
+        width: 1000px;
+    }
+    
+    /* Blog Pages styles */
+    
+    .blogBacktoMainlink{
+        margin-left: 10.3% !important;
+    }
+    
+    /* affliations page style */
+    
+    .affiliationslogos{
+        width: 1000px !important;
+        margin-left: auto;
+        margin-top: 2%;
+        margin-bottom: 5%;
+        margin-right: auto;
+    }
+    
+    .affiliattionLogo{
+        margin-right: 5%;
+        margin-left: 0%;
+    }
+    
+
+    /* About Us page styles */
+
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 20%;
+    }
+    
+    .aboutusupsliderbox{
+        left: 20%;
+    }
+
+    .aboutusDownsliderbox{
+        left: 20%;
+    }
+
+    .careers-container .jobContainer{
+        width: 936px;
+        padding: 32px;
+        margin: 2% auto;
+    }
+    
+    .careers-container .aboutusTitle{
+        margin-left: 5%;
+    }
+    
+    .careers-container .subMenu{
+        margin-left: 4.4%;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: 5%;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: 4.4%;
+    }
+    
+    .aboutusVendorsContainer .cruiseDetailinfo{
+        width: 1000px !important;
+        margin: 0px auto !important;
+    }
+    
+    .aboutusVendorsContainer .aboutvendors{
+        width: 1000px !important;
+        margin: 8% auto 5% auto !important;
+    }
+    
+    .aboutusCorporateContainer .cruiseDetailinfo{
+        width: 1000px !important;
+        margin: 0px auto !important;
+    }
+    
+    .aboutusCorporateContainer .aboutcorporate{
+        width: 1000px !important;
+        margin: 8% auto 5% auto !important;
+    }
+    
+    .aboutusPagesContainer .detailBackLink{
+        margin-left: 2.6%;
+    }
+    
+    #aboutusfirstCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    #aboutussecondCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    #aboutuscrewCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    #crewtempfirstCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    #crewtempsecondCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    .crew-member .cruisedetailBackLink{
+        margin-left: -7%;
+    }
+    
+    .crewTitle{
+        margin-left: 5%;
+    }
+    
+    .faqpageContainer .aboutusTitle{
+        margin-left: 7.3%;
+    }
+    
+    .faqpageContainer .subMenu{
+        margin-left: 7.3%;
+    }
+    
+    .faq-content{
+        margin: 1% 0px;
+    }
+    
+    .faqpageContainer .subMenu ul li a{
+        padding-left: 27px;
+        padding-right: 27px;
+    }
+    
+    .faqpageContainer .subMenu ul li a:hover{
+        padding-left: 27px;
+        padding-right: 27px;
+    }
+    
+    .faqpageContainer .subMenu ul li a:active{
+        padding-left: 27px;
+        padding-right: 27px;
+    }
+    
+    .faq-question-answer{
+        width: 100%;
+    }
+
+    .featuredJobs{
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+    
+    .press-room-details .detailBackLink{
+        margin-left: 21.3%;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 1920px resolution screen */
+@media only screen and (min-width:1897px), (min-width:2537px){
+
+    /*Header Styles*/ 
+    #header .container{
+        width: 1800px;
+        margin: 0 auto;
+    }
+
+    .socialiconWidth{
+        padding-left: 3%;
+    }
+
+    /*Menu Styles*/ 
+    #menu .navbar .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .menu ul .firstLink a{
+        padding-left: 58px;
+    }
+
+    .menu ul li a{
+        padding-left: 58px;
+        padding-right: 60px;
+        font-size: 20px;
+    }
+
+    .menu ul li a:hover{
+        padding-left: 58px;
+        padding-right: 60px;
+        font-size: 20px;
+    }
+
+    #menu .container{
+        width: 1897px;
+        margin: 0 auto;
+    }
+
+    #menu .container .navbar-inner{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #menu .container .menu{
+        width: 100%;
+        margin: 0 auto;
+    }
+
+
+    /* Home page adjustment styles */
+    
+    .contentSliderController{
+        width: 1445px;
+    }
+    
+    .contentbox-inner{
+        width: 1000px !important;
+    }
+
+    .contentbox-inner .voucherboxContainer{
+        width: 830px !important;
+        margin: 0px auto;
+    }
+    
+    #sliderContent .slider-caption{
+        margin-top: -46%;
+    }
+
+    .slider-caption{
+        position: relative;
+        width: 100%;
+    }
+
+    .sliderBottomMobile{
+        position: relative;
+        width: 900px;
+        margin: 0px auto;
+    }
+
+    .slider-bottom{
+        width: 80%;
+        margin-left: 10%;
+        margin-top: -30%;
+        position: absolute;
+        z-index: 1;
+    }
+
+    #slider .carousel-control.right{
+        right: 50px;
+    }
+
+    #slider .carousel-control.left{
+        left: 53px;
+    }
+
+    #slider .carousel-inner .item img{
+        height: 800px;
+    }
+    
+    .welcomeline{
+        margin-top: 15%;
+    }
+    
+    .viewbuttonline{
+        margin-top: 2%;
+    }
+
+    .contentDetail{
+        padding-left: 0px; 
+    }
+
+    /* Dining Cruies Details view page styles */
+    .Reviews{
+        left: 65%;
+    }
+
+    .cruiseDetailinfo .cruiseDownArrow{
+        left: -4.3% !important;
+    }
+    
+    .cruiseDetailinfo .cruiseUpArrow{
+        left: 48.8%;
+    }
+    
+    .dinnermenu{
+        width: 1000px;
+    }
+    
+    .sunsetDownsliderbox{
+        /*left: 11.8%;*/
+    }
+    
+    .sunsetMapView #upArrow{
+        left: 49.5%;
+    }
+    
+    #mydownCarousel #routmapSlider > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    /* Cruise Calendar page Styles */
+    .mainCalendar #cruiseCalendar{
+        max-width: 1000px;
+    }
+    
+    .calendar{
+        width: 1000px;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: -31%;
+        top: 0px;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: -34.8%;
+        top: 0px;
+    }
+    
+    #CruisecalendarNext{
+        right: 86%;
+    }
+    
+    .calendarHeader{
+        width: 52%;
+    }
+    
+    .calendarHeader .selectbodholder{
+        width: 100%;
+    }
+    
+    .calendarHeader select{
+        background-position: 300px center;
+        width: 101% !important;
+    }
+    
+    .cruiseKey{
+        margin-right: 11.6%;
+    }
+    
+    .radioLine{
+        margin-top: 10px;
+    }
+
+    /* Private Events Cruise Detail page */
+    .cruisedetailview .detailBackLink{
+        margin-left: 5.5%;
+    }
+    
+    .weddingPackagesTitle{
+        font-size: 42px;
+    }
+
+    .cruiseDetailinfo .span2{
+        width: 24.4%;
+    }
+
+    .cruiseDetailinfo .span10{
+        width: 75.6%;
+        margin: 0px;
+    }
+    
+    #eventmydownCarousel #middlesliderscarousel > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+
+    #pricingTable{
+        width: 1000px;
+        margin-top: 70%;
+    }
+
+    .weddingmenu{
+        width: 1000px;
+    }
+
+    .sunset-slider-buttons .privatecruiseDownArrow{
+        left: -4.4% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 80.5% !important;
+    }
+
+    #upArrow{
+        left: 48%;
+    }
+    
+    .privateeventsdetailview .detailBackLink{
+        margin-left: 5.5%;
+    }
+
+    /* Private Events Weddings Page Styles */
+    .privateEventsWeddings .detailBackLink{
+        margin-left: -14.5%;
+    }
+
+    .privateEventsWeddings .span2{
+        width: 7%;
+    }
+
+    .privateEventsWeddings .span10{
+        width: 75%;
+    }
+
+    .sunsetDownslider .weddingDownsliderbox{
+        left: 49%;
+    }
+    
+    .weddingDownsliderboxContainer{
+        position: relative;
+        margin: -40% auto 0px auto;
+        width: 1000px;
+    }
+    
+    .weddingDownsliderboxContainer .weddingDownsliderbox{
+        left: 0%;
+        max-width: 43%;
+    }
+    
+    .weddingDownsliderboxContainer .leftweddingbox{
+        margin-left: 3%;
+    }
+    
+    .weddingDownsliderboxContainer .rightslider{
+        margin-left: 56%;
+    }
+
+
+    /* Food and Bar page styles */
+    .wwcfixedContainer{
+        width: 1000px;
+        margin: 0px auto;
+    }
+
+    .contentbox-inner.menulist-container{
+        width: 100% !important;
+    }
+
+    .cruiseDetailinfo .span10.foodandbar-details{
+        width: 60% !important;
+    }
+
+    .foodSelectionMenu{
+        width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .foodandbardetailview .detailBackLink{
+        margin-left: 5.5%;
+    }
+    
+    
+    /* Fleet page styles */
+    .fleetTitle{
+        margin-top: 11.5%;
+    }
+    
+    .virtualtour{
+        width: 100%;
+        margin-left: 24%;
+        margin-top: 4%;
+    }
+
+    .cruiseDetailinfo #downArrow{
+        left: 49.2%;
+    }
+
+    .fleetDownsliderbox{
+        left: 12%;
+    }
+    
+    .fleetdetailview .requset-proposal .requestProposalauto{
+        width: 25% !important;
+    }
+
+    /* Ports and Directions Styles */
+    .mapDownsliderbox{
+        left: 23.5% !important;
+    }
+
+    .whetherHolder{
+        width: 1000px;
+    }
+
+    .socialiconblockview{
+        width: 1000px !important;
+    }
+    
+    .departureMapView .detailBackLink{
+        margin-left: -6.5%;
+    }
+    
+    .detailShareLink{
+        right: 2.2%;
+    }
+
+    /* Connect pages styles */
+
+    .connectMain{
+        width: 1000px !important;
+    }
+    
+    /* Pressroom page styles */
+    .pressroomContainer{
+        width: 1000px;
+        margin: 0px auto;
+    }
+    
+    .pressroomContainer .pressroom-info{
+        width: 100% !important;
+        margin-left: 0px;
+    }
+    
+    .press-room-details .pressroom-info{
+        width: 1000px !important;
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 28%;
+    }
+    
+    .press-room-details .detailBackLink{
+        margin-left: 5.5%;
+    }
+    
+    .sharebtnContainer .booknow{
+        width: 41.6% !important;
+    }
+    
+    .backtoContainer .sharebtnContainer{
+        padding-left: 30%;
+    }
+    
+    /* Privacy Policy page styles */
+    #content #privacy_policy{
+        width: 1000px;
+    }
+    
+    /* Blog Pages styles */
+    .blogBacktoMainlink{
+        margin-left: 2.7% !important;
+    }
+    
+    /* affliations page style */
+    .affiliationslogos{
+        width: 1000px !important;
+        margin-left: auto;
+        margin-top: 2%;
+        margin-bottom: 5%;
+        margin-right: auto;
+    }
+    
+    .affiliattionLogo{
+        margin-right: 5%;
+        margin-left: 0%;
+    }
+    
+
+    /* About Us page styles */
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 12%;
+    }
+    
+    .aboutusupsliderbox{
+        left: 12%;
+        top: 225px;
+    }
+    
+    #aboutuscrewCarousel .aboutusDownsliderbox{
+        top: 223px;
+        left: 12%;
+    }
+    
+    .aboutusPagesContainer .detailBackLink{
+        margin-left: -5.5%;
+    }
+    
+    .careerscontent .aboutusDownsliderbox{
+        top: 345px;
+        left: 12%;
+    }
+
+    .careers-container .jobContainer{
+        width: 936px;
+        padding: 32px;
+        margin: 2% auto;
+    }
+    
+    .careers-container .aboutusTitle{
+        margin-left: -5%;
+    }
+    
+    .careers-container .subMenu{
+        margin-left: -5.7%;
+    }
+    
+    .careers-container .cruiseDetailinfo{
+        margin-left: 16.3% !important;
+    }
+    
+    #aboutusfirstCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    #aboutussecondCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    #aboutuscrewCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    #crewtempfirstCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    #crewtempsecondCarousel .carousel-inner > .item > img{
+        width: 100%;
+        height: 752px;
+    }
+    
+    .crew-member .cruisedetailBackLink{
+        margin-left: -22.5%;
+    }
+    
+    .crewTitle{
+        margin-left: -1%;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: -5.5%;
+    }
+    
+    .aboutusAffiliationContainer .aboutusDownsliderbox{
+        left: 12%;
+        top: 345px;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: -5.7%;
+    }
+    
+    .aboutusVendorsContainer .cruiseDetailinfo{
+        width: 1000px !important;
+        margin: 0px auto !important;
+    }
+    
+    .aboutusVendorsContainer .aboutvendors{
+        width: 1000px !important;
+        margin: 8% auto 5% auto !important;
+    }
+    
+    .aboutusCorporateContainer .cruiseDetailinfo{
+        width: 1000px !important;
+        margin: 0px auto !important;
+    }
+    
+    .aboutusCorporateContainer .aboutcorporate{
+        width: 1000px !important;
+        margin: 8% auto 5% auto !important;
+    }
+    
+    .faqpageContainer .aboutusTitle{
+        margin-left: 7.3%;
+    }
+    
+    .faqpageContainer .subMenu{
+        margin-left: 7.3%;
+    }
+    
+    .faq-content{
+        margin: 1% 0px;
+    }
+    
+    .faqpageContainer .subMenu ul li a{
+        padding-left: 27px;
+        padding-right: 27px;
+    }
+    
+    .faqpageContainer .subMenu ul li a:hover{
+        padding-left: 27px;
+        padding-right: 27px;
+    }
+    
+    .faqpageContainer .subMenu ul li a:active{
+        padding-left: 27px;
+        padding-right: 27px;
+    }
+    
+    .faq-question-answer{
+        width: 100%;
+    }
+
+    .featuredJobs{
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 2560px resolution screen */
+@media only screen and (min-width:2537px){
+    
+    #slider .carousel-control.left{
+        margin-left: 15%;
+    }
+    
+    #slider .carousel-control.right{
+        right: 14.5%;
+    }
+    
+    .detailBackLink{
+        margin-left: 29.8%;
+    }
+    
+    .cruiseDetailinfo .span2{
+        width: 44.2%;
+    }
+    
+    .cruiseDetailinfo .span10{
+        width: 55.8%;
+        margin: 0px;
+    }
+    
+    #parkingDirectionsModal{
+        width: 50%;
+        margin-left: -25%;
+        top: 10% !important;
+    }
+    
+    .mfp-arrow-right{
+        right: 23% !important;
+    }
+    
+    .mfp-arrow-left{
+        left: 23% !important;
+    }
+    
+    
+    .sunsetDownsliderbox{
+        /*left: 21.6%;*/
+    }
+    
+    .cruiseDetailinfo .cruiseDownArrow{
+        left: -3.3% !important;
+    }
+    
+    .crew-member .cruiseDetailinfo{
+        margin-left: -12.5%;
+    }
+    
+    .crew-member .cruisedetailBackLink{
+        margin-left: 0%;
+    }
+    
+    .cruisedetailview .detailBackLink{
+        margin-left: 30%;
+    }
+    
+    .cruisedetailview #downArrow{
+        top: 80%;
+    }
+    
+    .crewTitle{
+        margin-left: 9%;
+    }
+    
+    .Reviews{
+        left: 59.5%;
+    }
+    
+    .sunset-slider-buttons .share{
+        left: 59.5% !important;
+    }
+    
+    .calendarHeader{
+        width: 39%;
+    }
+    
+    .calendarRadio label{
+        width: 73px;
+    }
+    
+    .cruiseKey{
+        margin-right: 21.4%;
+    }
+    
+    .mainCalendar #cruiseCalendarleft{
+        left: -10%;
+    }
+    
+    .mainCalendar #cruiseCalendarright{
+        right: -20.5%;
+    }
+    
+    #CruisecalendarNext{
+        right: 77%;
+    }
+    
+    .weddingDownsliderboxContainer{
+        margin: -30% auto 0px auto;
+    }
+    
+    .weddingDownsliderboxContainer .leftweddingbox{
+        margin-left: 6%;
+    }
+    
+    .sunset-slider-buttons .privatecruiseDownArrow{
+        left: -3.4% !important;
+    }
+    
+    #upArrow{
+        left: 49.5%;
+    }
+    
+    .cruiseDetailinfo .span10.foodandbar-details{
+        width: 55.8% !important;
+    }
+    
+    .cruiseDetailinfo #downArrow{
+        left: 49.7%;
+        /*top: 29.5%;*/
+    }
+    
+    .fleetDownsliderbox{
+        left: 21.5%;
+    }
+    
+    .fleetdetailview #downArrow{
+        top: 29.5%;
+    }
+    
+    .fleetdetailview .requset-proposal .requestProposalauto{
+        width: 25% !important;
+        margin-left: 10px;
+    }
+    
+    .fleetdetailview .requset-proposal .sunsetLinePadding{
+        width: 35% !important;
+        margin-left: 10px;
+    }
+    
+    #virtualTourModal{
+        margin-left: -25%;
+        width: 50%;
+    }
+    
+    .departureMapView .detailBackLink{
+        margin-left: 5.5%;
+    }
+    
+    .mapDownsliderbox{
+        left: 30.3% !important;
+    }
+    
+    .detailShareLink{
+        right: 14.2%;
+    }
+    
+    .privateEventsWeddings .detailBackLink{
+        margin-left: 12.6%;
+    }
+    
+    .privateEventsWeddings .span2{
+        width: 28.5%;
+    }
+    
+    .privateeventsdetailview .detailBackLink{
+        margin-left: 29.8%;
+    }
+    
+    .aboutusPagesContainer .cruiseDetailinfo{
+        margin-left: 21.5%;
+        width: 78% !important;
+    }
+    
+    .aboutusupsliderbox{
+        left: 21.5%;
+        top: 261px;
+    }
+    
+    .aboutusDownsliderbox{
+        left: 21.5%;
+    }
+    
+    #aboutuscrewCarousel .aboutusDownsliderbox{
+        top: 261px;
+        left: 21.5%;
+    }
+    
+    .aboutusPagesContainer .detailBackLink{
+        margin-left: 7.6%;
+    }
+    
+    .foodandbardetailview .detailBackLink{
+        margin-left: 30%;
+    }
+    
+    .aboutusCorporateContainer .address-container .span8{
+        width: 53%;
+    }
+    
+    .careers-container .aboutusTitle{
+        margin-left: 6.4%;
+    }
+    
+    .careers-container .subMenu{
+        margin-left: 6.4%;
+    }
+    
+    .careerscontent .aboutusDownsliderbox{
+        top: 383px;
+        left: 21.6%;
+    }
+    
+    .careers-container .cruiseDetailinfo{
+        margin-left: 16.5% !important;
+    }
+    
+    .aboutusAffiliationContainer .aboutusTitle{
+        margin-left: 6.5%;
+    }
+    
+    .aboutusAffiliationContainer .subMenu{
+        margin-left: 6.3%;
+    }
+    
+    .aboutusAffiliationContainer .aboutusDownsliderbox{
+        left: 21.5%;
+        top: 383px;
+    }
+    
+    .press-room-details .detailBackLink{
+        margin-left: 30%;
+    }
+    
+    .blogBacktoMainlink{
+        margin-left: 14.5% !important;
+    }
+    
+    
+}
+@media only screen and (min-width:1900px){
+    .wwcfixedContainer{
+        width: 1250px;
+    }
+    .tiles .bx-wrapper{
+        max-width: 100% !important;
+    }
+}

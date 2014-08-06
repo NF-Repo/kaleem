@@ -1,0 +1,37 @@
+name = Waterways
+description = Seattle Dining Cruises and Private Events.
+core = 7.x
+
+stylesheets[all][] = assets/css/bootstrap-extra.css
+stylesheets[all][] = assets/css/drupal.css
+stylesheets[all][] = assets/css/style.css
+stylesheets[all][] = assets/css/layout.css
+;stylesheets[all][] = assets/css/largedesktopmediaqueries.css
+stylesheets[all][] = assets/css/mobile.css
+;stylesheets[all][] = assets/css/bootstrap-datetimepicker.min.css
+stylesheets[all][] = assets/css/datepicker.css
+
+regions[header] = Header
+regions[help] = Help
+regions[homeslider] = Homepage Slider
+regions[webmenu] = Web Menu
+regions[mobilemenu] = Mobile Menu
+regions[body_top] = Body top
+regions[body_bottom] = Body bottom
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+regions[highlighted] = Highlighted
+regions[featured] = Featured
+regions[content] = Content
+regions[sidebar_first] = Sidebar first
+regions[sidebar_first_affix] = Sidebar first affixed
+regions[sidebar_second] = Sidebar second
+regions[sidebar_second_affix] = Sidebar second affixed
+regions[footer] = Footer
+
+; Information added by drupal.org packaging script on 2013-05-20, removed "-alpha3" from version
+version = "7.x-1.1"
+core = "7.x"
+project = "waterways"
+datestamp = "1369037416"
+

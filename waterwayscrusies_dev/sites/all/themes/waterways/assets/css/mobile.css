@@ -1,0 +1,2553 @@
+@import url(http://fonts.googleapis.com/css?family=Crimson+Text);
+
+@media screen and (max-width: 767px) {
+
+    #sliderContent .slider-caption{
+        top: -200px;
+        width: 60%;
+    }
+
+    #content .messages{
+        margin: 0px 0 20px 0;
+    }
+
+    .responsiveWeb
+    {
+        display:none !important;
+    }
+    .responsiveMobile
+    {
+        display:block !important;
+    }
+
+    body
+    {
+        font-size: 80%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+    .logo
+    {
+        width:50%;
+        margin:auto;
+    }
+    .logo, .links, .search
+    {
+        width:80% !important;
+        margin:auto !important;
+        float:none !important;
+        text-align: center;
+    }
+
+    .responsiveMobile .search{
+        display: none;
+    }
+
+    #menu{
+        top: 0% !important;
+        position: static !important;
+        border-top: 0px;
+        border-bottom: 0px;
+    }
+
+    #menu .container
+    {
+        width:100%;
+    }
+
+    #menu .container .menu
+    {
+        width:100%;
+    }
+
+    #menu .navbar .navbar-inner{
+        background-color: #f2ebe1 !important;
+        padding-top: 2px;
+        width: 100%;
+        overflow-x: hidden;
+    }
+    .reoutemapDirectionsbox #routeMaplinesholder {
+        margin-top: 23px;
+    }
+    .navbar-inner{
+        border-radius: 0px;
+        box-shadow: none;
+    }
+
+    .links{
+        float: none !important;
+        padding: 4% 0% 3% 0% !important;
+        text-align:center !important;
+    }
+
+    .mobileFooterSpan{
+        float: left !important;
+        width: 50% !important;
+    }
+
+    .socialiconWidth{
+        width: 78% !important;
+        margin:auto;
+    }
+    .menu ul li a{
+        float: left !important;
+        font-size: 22px !important;
+        font-family:georgia;
+        line-height:50px !important;
+        width:100% !important;
+        padding:0px !important;
+        border-bottom: #bc9b6a 1px solid !important;
+        border-top: #bc9b6a 1px solid !important;
+        border-radius: 0px !important;
+        margin-bottom: 2px;
+    }
+    .menu ul li a:hover{
+        float: left !important;
+        font-size: 22px !important;
+        font-family:georgia;
+        line-height:50px !important;
+        width:100% !important;
+        padding:0px !important;
+        border-bottom: #bc9b6a 1px solid !important;
+        border-top: #bc9b6a 1px solid !important;
+        border-radius: 0px !important;
+    }
+
+    .navbar .mobilemenuicon{
+        background-color: #797673;
+        line-height: 50px;
+        margin-top: -2px;
+        height: 30px;
+        padding-top: 20px;
+        width: 100%;
+        border-top: #bc9b6a 1px solid !important;
+    }
+
+    select.mobileReview{
+        background-image: url('../img/dropdown-arrow.png') !important;
+        background-repeat: no-repeat !important;
+        background-position: 98% center !important;
+        -webkit-appearance: none !important;
+    }
+
+    .innerpagesMenuStyle{
+        border-bottom: #bc9b6a 1px solid;
+    }
+
+    .innerpagesMenuStyle .nav-collapse .nav > li > a{
+        margin-bottom: 0px;
+        border-top: 0px !important;
+        border-bottom: 0px !important;
+        font-weight: normal;
+    }
+
+    .mobileIconWrapper{
+        width: 103px;
+        margin: 0px auto;
+    }
+
+    .mobilemenuTitle{
+        font-size: 22px;
+        font-family: georgia;
+        line-height: 15px;
+        padding: 0px;
+        display: block;
+        float: left;
+        height: 30px;
+        margin: -13px 0px 0px 28px;
+        color: #fff;
+        font-weight: normal;
+    }
+
+    .navbar .mobilemenuicon .btn-navbar{
+        box-shadow: none;
+        background-image: none;
+        background-color: transparent;
+        border: 0px;
+        padding: 0px;
+        margin: 0px;
+        display: block;
+        width: 20px;
+        float: left;
+        text-shadow: 0 0 0;
+    }
+
+    .navbar .btn-navbar .icon-bar{
+        background-color: #fff;
+    }
+
+    #slider
+    {
+        min-height:146px !important;
+    }
+
+    .contentbox-inner{
+        width: auto !important;
+    }
+
+    .menu ul li{
+        /*border-bottom: solid 0px white !important;*/
+        text-align: center !important;
+    }
+
+    #menu .navbar-inner{
+        padding-left:  0px !important;
+        padding-right:  0px !important;
+    }
+
+    .navbar .nav > li > a{
+        padding: 0px !important;
+    }
+
+    .nav-collapse .dropdown-menu{
+        margin: 0px !important;
+    }
+
+    .nav-collapse .dropdown-menu a{
+        font-weight: normal !important;
+        border-bottom: 0px !important;
+        border-top: 0px !important;
+        margin-bottom: 0px;
+    }
+
+    .nav-collapse .dropdown-menu a:hover{
+        border-bottom: 0px !important;
+        border-top: 0px !important;
+    }
+
+    .navbar .nav li.dropdown>a .caret{
+        top: 13px;
+        right: 15px;
+    }
+
+    .nav-collapse .dropdown-menu li + li a{
+        margin-bottom: 0px;
+    }
+
+    .socialicon
+    {
+        border-left:none;
+        width:100%;
+    }
+    /*Suresh Style changes Start Here*/
+    .line
+    {
+        width:100%;
+        margin:auto;
+        margin-top: 8%;
+    }
+
+    .dropdown .caret{
+        margin-top:22px;
+        margin-left: 5px;
+    }
+    /*Suresh Style changes End Here*/
+    .searchInner
+    {
+        width:100% !important;
+    }
+    .search-input
+    {
+        width: 90% !important;
+    }
+
+    /* carousel css */
+    .slider a.carousel-control, .slider .carousel-indicators, .sliderBottomMobile, .slider .customIndicators
+    {
+        display:none;
+    }
+    .slider-caption
+    {
+        left:0px !important;
+        width:100%;
+    }
+    #sliderContent
+    {
+        top:10%;
+        left:4%;
+    }
+    .welcometext
+    {
+        font-size:37px;
+    }
+    .logotext
+    {
+        font-size: 40px;
+        line-height: 41px;
+    }
+
+    .slider-caption .mainheadding .span3
+    {
+        float:left;
+        width:15%;
+    }
+    .slider-caption .row-fluid .span6
+    {
+        float:left;
+        width:70%;
+    }
+    .line-padding
+    {
+        *padding-top:0px;
+    }
+    .viewbuttonline
+    {
+        margin-top:0px;
+    }
+
+
+    /* footer css */
+    .footer-menu
+    {
+        font-size:14px;
+    }
+    .footer-menu ul
+    {
+        margin-left:30px;
+    }
+    .footer-menu ul li
+    {
+        margin-bottom:0px;
+        line-height:30px;
+    }
+    .footerInner
+    {
+        width:100%;
+    }
+    .addressWidth
+    {
+        width:90%;
+        margin:auto;
+    }
+    .footer-address
+    {
+        width:90%;
+        margin:auto;
+        font-size:14px;
+        padding-top:0px;
+    }
+    .footer-address a
+    {
+        font-size:14px;
+    }
+
+    #footer-signup
+    {
+        width:93%;
+    }
+    .footer-signup-inner
+    {
+        font-size: 20px !important;
+    }
+
+
+    .content-facebook-widget, .content-twitter-widget, .content-pintrest-widget, .content-youtube-widget
+    {
+        font-size:12px;
+    }
+    .content-facebook-widget .widget-title, .content-twitter-widget .widget-title, .content-pintrest-widget .widget-title, .content-youtube-widget .widget-title
+    {
+        font-size: 14px;
+    }
+
+    .navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus
+    {
+        background-color:#454444 !important;
+        width: 100% !important;
+    }
+
+    #content #privacy_policy{
+        width: 90%;
+    }
+
+    /* home page slider styles */    
+    #sliderContent .slider-caption{
+        margin-top: -30% !important;
+        margin-left: 12%;
+        width: 53%;
+    }
+
+    #sliderContent .slider-caption .span3{
+        width: 28%;
+        float: left;
+    }
+
+    #sliderContent .slider-caption .span3 .welcomeline{
+        margin-top: 16%;
+    }
+
+    #sliderContent .slider-caption .span6{
+        float: left;
+        width: 44%;
+    }
+
+    #sliderContent .slider-caption .span4 .line-padding{
+        width: 100%;
+    }
+
+
+    /* calendar styles */
+    .mainCalendar #cruiseCalendar{
+        max-width: 750px;
+    }
+
+    /*Dining Crusies*/ 
+    .dininngcrusies
+    {
+        float: none !important;
+        margin:auto !important; 
+        width:300px !important;
+    }
+    .tileimages ul{
+        /*width: 100% !important;*/
+        float: none !important;
+    }
+    .tileimages .bx-wrapper .bx-controls{
+        display:none;
+    }
+
+    .tileimages .bx-wrapper .bx-viewport{
+        width: 100% !important;
+        margin-left: 0%;
+        height: auto !important;
+    }
+
+    .tileimages ul li{
+        float: none !important;
+        margin:auto !important; 
+        width:300px !important;
+    }
+
+    /*Dining Crusies*/
+    /*private Events*/
+    .tiles .bx-wrapper .bx-next, .bx-wrapper .bx-prev{
+        display: none;
+    }
+    .tiles .bx-wrapper{
+        margin-left:0 !important;
+        width:100% !important;
+        max-width:100% !important;
+    }
+    .tiles ul{
+        width: 100% !important;
+    }
+    .tiles .bx-controls{
+        display:none;
+    }
+    .tiles .bx-wrapper .bx-viewport{
+        width: 100% !important;
+        margin-left: 0%;
+        height: auto !important;
+    }
+    .tiles ul li{
+        float: none !important;
+        margin:auto !important; 
+        width:300px !important;
+    }
+    .foodSelectionMenu .bx-wrapper .bx-controls-direction a.disabled {
+        display: none !important;
+    }
+}
+
+
+
+@media (max-width: 768px) {
+    .responsiveMobile .dropdown-menu {
+        position: relative;
+        width: 100%;
+    }
+    #eventmydownCarousel{
+        display: none;
+    }
+}
+
+
+
+@media (max-width: 979px) {
+
+    .contentSliderController{
+        width: 90%;
+    }
+
+    #sliderContent .slider-caption{
+        /*top: -275px;*/
+        top: -92px;
+        width: 70%;
+        margin-top:-25%;
+    }
+
+    .viewbuttonline{
+        margin-top: 3%;
+    }
+
+    .widget-title a{
+        word-wrap:break-word;
+    }
+    .slider .customIndicators{
+        top:9%;
+    }
+    .footer-address a, .footer-address
+    {
+        font-size:13px;
+    }
+    .searchForTablet .span8
+    {
+        width:52%;
+    }
+    .searchForTablet .socialiconWidth
+    {
+        width:16% !important;
+        padding-left: 0 !important;
+    }
+    .searchForTablet .booknowMargin
+    {
+        width:28% !important;
+    }
+    .search-input
+    {
+        width: 86%;
+    }
+    .searchInner
+    {
+        /*float:left;*/
+        width:86%;
+    }
+    .container
+    {
+        width:98%;
+    }
+
+    #menu .container
+    {
+        width: 100%;
+    }
+
+    .contentbox-inner
+    {
+        width:95% !important;
+    }
+
+    .footerInner
+    {
+        width:100%
+    }
+
+
+    .contentbox-first-inner {
+
+        font-size: 14.34px;
+    }
+    .contentbox-first, .contentbox-second-inner, .contentbox-third-inner,.contentbox-firsthover, .contentbox-second, .contentbox-secondhover, .contentbox-third ,.contentbox-first-inner-normal,.contentbox-first-inner
+    {
+        width:200px;
+        height:200px;
+
+    }
+
+    .contentbox-first-inner .contentbox-vocher-inner, .contentbox-first-inner .contentbox-vocher-inner, .contentbox-first-inner .contentbox-vocher-inner{
+        padding-top:1%;
+    }
+
+
+    .contentbox-second-inner, .contentbox-third-inner
+    {
+        margin-top: 1%;
+        font-size: 22.34px;
+        color: #00529b;
+        line-height: 33px;
+    }
+    .contentbox-second-inner span, .contentbox-third-inner span
+    {
+        font-size: 35.34px;
+        line-height: 30px;
+    }
+
+    .footer-signup-inner
+    {
+        font-size:14px !Important;
+    }
+    /*    .welcometext
+        {
+            font-size: 52px;
+        }*/
+    .logotext
+    {
+        font-size: 50px;
+        line-height: 70px;
+    }
+    .slider-caption .row-fluid .span12 p
+    {
+        font-size: 14px;
+    }
+
+    .view-featured-button-inner
+    {
+        line-height: 23px;
+        font-size: 14px;
+    }
+    .sliderBottomMobile
+    {
+        /*display:none;*/
+    }
+    .menu ul li a
+    {
+        font-size: 12px ;
+        padding-left: 1.2% ;
+        padding-right: 1.2% ;
+    }
+    .menu ul li a:hover
+    {	
+        font-size: 12px ;
+        padding-left: 1.2% ;
+        padding-right: 1.2% ;
+
+    }
+
+    .menu ul .firstLink a
+    {
+        padding-left: 1.2% ;
+    }
+    .menu ul .lastLink a
+    {
+        padding-right: 1.2% ;
+    }
+
+    #menu
+    {
+        top: 80px;
+    }
+    .navbar-inner
+    {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    .contentbox-first-inner-normal
+    {
+
+        font-size:23.34px;
+        line-height:30px;
+    }
+    .contentbox-first-inner-normal span
+    {
+        font-size:30.34px;
+        line-height:30px;
+    }
+
+
+    .content-facebook-widget, .content-twitter-widget, .content-pintrest-widget, .content-youtube-widget
+    {
+        font-size:12px;
+    }
+    .content-facebook-widget .widget-title, .content-twitter-widget .widget-title, .content-pintrest-widget .widget-title, .content-youtube-widget .widget-title
+    {
+        font-size: 12px;
+    }
+
+    #content #privacy_policy{
+        width: 90%;
+        margin-top: 5%;
+    }
+
+    .tiles .bx-wrapper{
+        max-width: 84% !important;
+        margin-left: 64px !important;
+    }
+
+    .tiles .bx-wrapper .bx-prev {
+        top:9% !important;
+        left: -26% !important;
+        background: url(../img/carousol-leftarrow.png) no-repeat 87px 57px !important;
+        width: 27% !important;
+        height: 270px !important;
+    }
+
+    .tiles .bx-wrapper .bx-next {
+        top: 9% !important;
+        right: -12% !important;
+        background: url(../img/carousol-rightarrow.png) no-repeat 14px 57px !important;
+        width: 15% !important;
+        height: 270px !important;
+    }
+    .members-row .tiles .bx-wrapper .bx-next{
+        width: 16% !important;
+        right: -13% !important;
+    }
+    .members-row .tiles .bx-wrapper .bx-prev{
+        left: -30% !important;
+        width: 30% !important;
+    }
+    .tiles ul li{
+        width:300px !important;
+    }
+
+    .eventrequest{
+        width:21%;
+        margin-right: 9%;
+    }
+
+    .phonenumberfield4{
+        float: inherit;
+    }
+    .lastnamecontactus{
+        margin-top:20px;
+    }
+    .comments-contactus{
+        margin-bottom: 23px;
+    }
+}
+
+@media (max-width: 1150px){
+
+    .privateEventsGallery{
+        position: static;
+    }
+
+}
+
+
+
+@media (min-width: 767px) and (max-width: 1160px) {
+
+    #content #user-login{
+        width: 40%;
+    }
+    #user-login #edit-admintitle label{
+        font-size: 32px;
+    }
+
+    .menu ul .firstLink a{
+        padding-left:1%;
+    }
+    .menu ul li a{
+        padding-left: 0.9%;
+        padding-right: 0.9%;
+        font-size: 11px;
+    }
+    .menu ul li a:hover{
+        font-size: 11px;
+        padding-left: 0.9%;
+        padding-right: 0.9%;
+
+    }
+    .menu{
+        width:100%;
+    }
+
+    .navbar .nav > li > a{
+        padding: 0px 7px 0px 7px !important;
+    }
+
+    .navbar .nav{
+        margin: 0px;
+    }
+
+    .navbar .nav li.dropdown>a .caret{
+        top: 9px;
+        right: 0px;
+    }
+
+    .sunsetBannerBooknow .responsiveMobile{
+        display: none;
+    }
+
+    .calendarRadio label{
+        font-size: 13px;
+    }
+
+    .calendarRadioall label{
+        font-size: 13px;
+    }
+
+}
+
+
+/* Ipad mini portrait resolution styles */
+@media (min-width: 767px) and (max-width: 979px) {
+
+    .slider-bottom{
+        width: 70%;
+        margin-left: 15%;
+        top: 56%;
+    }
+
+    #sliderContent .slider-caption{
+        margin-top: -215px;
+        width: 63%;
+    }
+
+    .welcometext{
+        font-size: 42px;
+    }
+
+    .logotext{
+        font-size: 36px;
+        line-height: 40px;
+    }
+
+    .slider-caption .row-fluid .span12 p{
+        margin: 3px 0 5px 50px;
+    }
+
+    #sliderContent .slider-caption .row-fluid .span4:first-child{
+        width: 28%;
+    }
+
+
+    #sliderContent .slider-caption .row-fluid .span4:last-child{
+        width: 28%;
+    }
+
+
+    #sliderContent .slider-caption .row-fluid .span4{
+        width: 36%;
+    }
+
+
+
+
+    .links a, .links{
+        font-size:13px;
+    }
+    .footer-address a{
+        word-wrap: break-word;
+        float: left;
+        width: 90%;
+    }
+    .footer-address img{
+        float:left;
+        margin-top:5px;
+        margin-right:3px;
+    }
+
+    .footer-signup-inner{
+        width: 99.5%;
+    }
+
+    #footer-signup{
+        padding-right: 8px !important;
+    }
+
+
+    .cruiseKey{
+        margin-right: 6%;
+    }
+
+    /* Private Events detail view page styles */
+
+    .weddingPackagesTitle{
+        margin-bottom: 2%;
+        margin-top: 3%;
+    }
+
+    .weddingdownloadlink{
+        margin-bottom: 3%;
+        margin-left: 10px;
+        margin-top: -20px;
+    }
+
+    #cruiseDetailsHolder .subMenu{
+        left: 10px;
+    }
+
+    #cruiseDetailsHolder .subMenu ul li a{
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    #cruiseDetailsHolder .subMenu ul li a:hover{
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    #cruiseDetailsHolder .subMenu ul li a:active{
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .privateeventsdetailview .sunsetBooknowMobile{
+        width: 65% !important;
+    }
+
+    .privateeventsdetailview .share{
+        left: 45% !important;
+    }
+
+    #eventmydownCarousel{
+        display: none;
+    }
+    //image resolution image issue
+    .contentDetail #rightsliderImages{
+        margin-bottom: 5%;
+        /*height: 450px;(fixed height is making the image look stretched in 767px and 979px)*/
+        height:auto;
+        width:100%;
+    }
+
+    .contentDetail #rightsliderImages .item img{
+        /* height: 450px; (fixed height is making the image look stretched in 767px and 979px) */
+        height:auto;
+        width:100%;
+    }
+
+    //fixed image resolution css get applied over above
+
+
+    #pricingTable .sunsetBooknowMobile{
+        width: 100% !important;
+        margin-left: 14% !important;
+    }
+
+    .privatecruiseUpArrow{
+        display: none;
+    }
+    .weddingDownsliderboxContainer{
+        margin-top:1%;
+    }
+
+    .weddingDownsliderboxContainer .weddingDownsliderbox{
+        width: 45%;
+        max-width: 45%;
+        margin-left: 1.5%;
+    }
+
+    #pricingTable .sticky-enabled tbody tr td{
+        border: 0px;
+    }
+
+    #pricingTable table.sticky-enabled{
+        border-collapse: inherit;
+    }
+
+    .privateeventsdetailview .detailBackLink{
+        padding: 10px 10px 10px 13px;
+    }
+
+    .foodandbardetailview .detailBackLink{
+        padding: 10px 10px 10px 16px;
+    }
+
+
+    /* Fleet page styles */
+    .fleetdetailview .subMenu{
+        left: 25px;
+    }
+
+    .contentDetail .fleet-slider-buttons img{
+        height: 650px !important;
+    }
+
+    #upArrow{
+        display: none;
+    }
+
+    .fleetDownslidermargin .bx-wrapper .bx-prev{
+        left: 40% !important;
+    }
+
+    .fleetDownslidermargin .bx-wrapper .bx-next{
+        left: 58% !important;
+    }
+
+    .fleetDownslidermargin .bx-wrapper .bx-pager{
+        bottom: -33px;
+    }
+
+    .fleetDownsliderInner .left-line-margin{
+        margin-left: 0% !important;
+    }
+
+    .fleetDownsliderInner .span2{
+        width: 24% !important;
+    }
+
+    .fleetDownsliderInner .span8{
+        width: 45% !Important;
+    }
+
+    .fleetDownsliderInner #routeMaplinesholder{
+        padding-left: 1%;
+    }
+
+    .fleetDownsliderInner #routeMaplinesholder .span5{
+        width: 43%;
+    }
+
+    .fleetDownsliderInner #routeMaplinesholder .span2{
+        width: 5% !important;
+        margin-top: 0px;
+    }
+
+    .fleetdetailview .requset-proposal .left-line-margin{
+        margin-left: 27% !important;
+    }
+
+    /* Ports and Direction page styles */
+    .departureMapView .detailBackLink{
+        left: 1%;
+    }
+
+    .departureMapView .detailShareLink{
+        right: 0%;
+    }
+
+    /* Connect Pages Styles */
+    .galleryHolder .bx-wrapper .bx-next{
+        left: 57%;
+    }
+
+    .galleryHolder .bx-wrapper .bx-prev{
+        left: 41% !important;
+    }
+
+    .blogMain .moreblogs{
+        margin-left: 18px !important;
+    }
+
+    .postCommentBtn .booknow-inner{
+        line-height: 25px;
+        width: 98%;
+        padding: 0% 0.5%;
+    }
+
+    .voucherList h3{
+        font-size: 23px;
+    }
+
+    .voucherList .rightVoucherDate{
+        margin-left: 5%
+    }
+
+    .connectSpecialofferInner .offerTitle{
+        font-size: 25px;
+    }
+
+    .review-share .booknow-inner{
+        width: 98.5%;
+    }
+
+    /* Aboutus pages styles */
+    .aboutusPagesContainer .cruiseDetailinfo .subMenu ul li a{
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 14px;
+    }
+
+    .aboutusPagesContainer .cruiseDetailinfo .subMenu ul li a:hover{
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 14px;
+    }
+
+    .aboutusPagesContainer .cruiseDetailinfo .subMenu ul li a:active{
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 14px;
+    }
+
+    .careers-container .aboutusTitle{
+        margin-bottom: 1%;
+        margin-top: 6.5%;
+    }
+
+    .careers-container .cruiseDetailinfo .subMenu ul li a{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .careers-container .cruiseDetailinfo .subMenu ul li a:hover{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .careers-container .cruiseDetailinfo .subMenu ul li a:active{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusAffiliationContainer .cruiseDetailinfo{
+        margin-left: 3% !important;
+    }
+
+    .aboutusAffiliationContainer .cruiseDetailinfo .aboutusTitle{
+        padding-left: 0px;
+        margin-bottom: 1%;
+        margin-top: 6.5%;
+    }
+
+    .aboutusAffiliationContainer .cruiseDetailinfo .subMenu ul li a{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusAffiliationContainer .cruiseDetailinfo .subMenu ul li a:hover{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusAffiliationContainer .cruiseDetailinfo .subMenu ul li a:active{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+
+
+    .aboutusVendorsContainer .cruiseDetailinfo{
+        margin-left: 2% !important;
+    }
+
+    .aboutusVendorsContainer .cruiseDetailinfo .aboutusTitle{
+        padding-left: 0px;
+        margin-bottom: 1%;
+        margin-top: 6.5%;
+    }
+
+    .aboutusVendorsContainer .cruiseDetailinfo .subMenu ul li a{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusVendorsContainer .cruiseDetailinfo .subMenu ul li a:hover{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusVendorsContainer .cruiseDetailinfo .subMenu ul li a:active{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+
+    .aboutusCorporateContainer .cruiseDetailinfo{
+        margin-left: 2% !important;
+    }
+
+    .aboutusCorporateContainer .cruiseDetailinfo .aboutusTitle{
+        padding-left: 0px;
+        margin-bottom: 1%;
+        margin-top: 6.5%;
+    }
+
+    .aboutusCorporateContainer .cruiseDetailinfo .subMenu ul li a{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusCorporateContainer .cruiseDetailinfo .subMenu ul li a:hover{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusCorporateContainer .cruiseDetailinfo .subMenu ul li a:active{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusCorporateContainer .aboutcorporate{
+        margin-left: 2.3% !important;
+        margin-top: 8%;
+    }
+
+    .faqpageContainer{
+        margin-left: 2% !important;
+    }
+
+    .faqpageContainer .aboutusTitle{
+        padding-left: 0px;
+        margin-bottom: 1%;
+        margin-top: 6%;
+        margin-left: 1%;
+    }
+
+    .faq-content-inner.contentbox-inner{
+        margin-left: 2% !important;
+    }
+
+    .faqpageContainer .subMenu{
+        margin-left: 1% !important;
+    }
+
+    .faqpageContainerbody .faq-question-answer .faq-question{
+        /*background: url("images/plus.png") no-repeat scroll right top 2px;*/
+    }
+
+    .faqpageContainer .subMenu ul li a{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .faqpageContainer .subMenu ul li a:hover{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .faqpageContainer .subMenu ul li a:active{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .pressroom-list li{
+        margin-bottom: 14%;
+    }
+
+    .press-room-details .backtoContainer .sharebtnContainer{
+        padding-left: 62%;
+        margin-left: 0px !important;
+    }
+
+    .press-room-details .backtoContainer .sharebtnContainer .span3{
+        width: 43.5%;
+    }
+
+}
+
+
+
+
+
+
+
+  
+@media (max-width: 480px) {
+    .firstblogthump{
+        display:block !important;
+    }
+    #content .messages{
+        margin: 0px 0 20px 0;
+    }
+
+    .responsiveWeb
+    {
+        display:none !important;
+    }
+    .responsiveMobile
+    {
+        display:block !important;
+    }
+    .search{
+        padding-top:2%;
+    }
+
+    body
+    {
+        font-size: 80%;
+        padding-left:0px;
+        padding-right:0px;
+    }
+
+    /* Home page slider style */
+    #sliderContent .slider-caption{
+        top: -140px;
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    #sliderContent .slider-caption .span3{
+        padding-top: 32%;
+        width: 20%;
+    }
+
+    #sliderContent .slider-caption .span6{
+        padding-top: 25%;
+        width: 60%;
+    }
+
+    #sliderContent .slider-caption .span4.line-padding{
+        padding-top: 0px;
+    }
+
+    .footer-signup-inner{
+        width: 99.5%;
+    }
+
+    .logo, .links, .search
+    {
+        width:80% !important;
+        margin:auto !important;
+        float:none !important;
+    }
+
+    .responsiveMobile .search{
+        display: none;
+    }
+
+    #menu{
+        top: 0% !important;
+        position: static !important;
+        border-top: 0px;
+        border-bottom: 0px;
+    }
+
+    #menu .container
+    {
+        width:100%;
+    }
+
+    #menu .container .menu
+    {
+        width:100%;
+    }
+
+    #menu .navbar .navbar-inner{
+        background-color: #f2ebe1 !important;
+        padding-top: 2px;
+    }
+
+    .responsiveMobile .dropdown-menu {
+        position: relative;
+        width: 100%;
+    }
+
+    .navbar-inner{
+        border-radius: 0px;
+        box-shadow: none;
+    }
+
+    .links{
+        float: none !important;
+        padding: 4% 0% 3% 0% !important;
+        text-align:center !important;
+    }
+
+    .mobileFooterSpan{
+        float: left !important;
+        width: 50% !important;
+    }
+
+    .socialiconWidth{
+        width: 80% !important;
+        margin:auto;
+    }
+    .menu ul li a{
+        float: left !important;
+        font-size: 22px !important;
+        font-family:georgia;
+        line-height:50px !important;
+        width:100% !important;
+        padding:0px !important;
+        border-bottom: #bc9b6a 1px solid !important;
+        border-top: #bc9b6a 1px solid !important;
+        border-radius: 0px !important;
+        margin-bottom: 2px;
+    }
+    .menu ul li a:hover{
+        float: left !important;
+        font-size: 22px !important;
+        font-family:georgia;
+        line-height:50px !important;
+        width:100% !important;
+        padding:0px !important;
+        border-bottom: #bc9b6a 1px solid !important;
+        border-top: #bc9b6a 1px solid !important;
+        border-radius: 0px !important;
+    }
+
+    .menu .innerpagesMenuStyle ul li{
+        border-bottom: 0px !important;
+    }
+
+    .navbar .mobilemenuicon{
+        background-color: #797673;
+        line-height: 50px;
+        margin-top: -2px;
+        height: 30px;
+        padding-top: 20px;
+        width: 100%;
+        border-top: #bc9b6a 1px solid !important;
+    }
+
+    .innerpagesMenuStyle{
+        border-bottom: #bc9b6a 1px solid;
+    }
+
+    /*.innerpagesMenuStyle .nav-collapse .nav > li > a*/
+    .innerpagesMenuStyle .nav-collapse .menu > li > a{
+        margin-bottom: 0px;
+        border-top: 0px !important;
+        border-bottom: 0px !important;
+        font-weight: normal;
+        padding: 0px !important;
+    }
+
+    .mobileIconWrapper{
+        width: 103px;
+        margin: 0px auto;
+    }
+
+    .mobilemenuTitle{
+        font-size: 22px;
+        font-family: georgia;
+        line-height: 15px;
+        padding: 0px;
+        display: block;
+        float: left;
+        height: 30px;
+        margin: -13px 0px 0px 28px;
+        color: #fff;
+        font-weight: normal;
+    }
+
+    .navbar .mobilemenuicon .btn-navbar{
+        box-shadow: none;
+        background-image: none;
+        background-color: transparent;
+        border: 0px;
+        padding: 0px;
+        margin: 0px;
+        display: block;
+        width: 20px;
+        float: left;
+        text-shadow: 0 0 0;
+    }
+
+    .navbar .btn-navbar .icon-bar{
+        background-color: #fff;
+    }
+
+    #slider
+    {
+        min-height:146px !important;
+    }
+
+    .contentbox-inner{
+        width: auto !important;
+    }
+
+    .mobilebookingContainer {
+        width: 90% !important;
+    }
+
+    /*.menu ul li{
+        border-bottom: solid 2px white !important;
+        text-align: center !important;
+    }*/
+
+    #menu .navbar-inner{
+        padding-left:  0px !important;
+        padding-right:  0px !important;
+    }
+    .socialicon
+    {
+        border-left:none;
+        width:100%;
+    }
+    .line
+    {
+        width:90%;
+        margin:auto;
+        margin-top: 8%;
+    }
+    .searchInner
+    {
+        width:100% !important;
+    }
+    .search-input
+    {
+        width: 90% !important;
+    }
+
+    /* carousel css */
+    .slider a.carousel-control, .slider .carousel-indicators, .sliderBottomMobile, .slider .customIndicators
+    {
+        display:none;
+    }
+    .slider-caption
+    {
+        left:0px !important;
+        width:100%;
+    }
+    #sliderContent
+    {
+        top:7% !important;
+        left:4%;
+    }
+    .welcometext
+    {
+        font-size:37px !important;
+    }
+    .logotext
+    {
+        font-size: 40px !important;
+        line-height: 41px !important;
+    }
+
+    .slider-caption .mainheadding .span3
+    {
+        float:left;
+        width:15%;
+    }
+    .slider-caption .row-fluid .span6
+    {
+        float:left;
+        width:70%;
+    }
+    .line-padding
+    {
+        *padding-top:0px;
+    }
+    .viewbuttonline
+    {
+        margin-top:0px;
+    }
+
+    .menuItemTitle
+    {
+        margin-bottom:10px;
+    }
+
+    .dinnerCruiseMenu .bx-wrapper img{
+        margin-bottom: 5px;
+    }
+
+
+    /* footer css */
+    #footer-signup
+    {
+        width:88% !important;
+    }
+    .footer-menu
+    {
+        font-size:10px;
+    }
+    .footer-menu ul
+    {
+        margin-left:15px;
+    }
+    .footer-menu ul li
+    {
+        margin-bottom:0px;
+    }
+    .footerInner
+    {
+        width:100%;
+    }
+    .addressWidth
+    {
+        width:90%;
+        margin:auto;
+    }
+    .footer-address
+    {
+        width:90%;
+        margin:auto;
+        font-size:14px;
+        padding-top:0px;
+    }
+
+    .footer-address a
+    {
+        font-size:14px;
+        color: #606060;
+    }
+
+    .footer-address a.emailcolor
+    {
+        font-size:14px;
+        color: #00529b;
+    }
+
+    .requestbutton{
+        width: 45%;
+    }
+
+    .requestbuttonInner{
+        border-radius: 0px;
+        line-height: 28px;
+        width: 100% !important;   
+    }
+
+
+    /* calendar styles */
+    .mainCalendar #cruiseCalendar{
+        max-width: 100% !important;
+    }
+
+    .calendar{
+        width: 100% !important;
+    }
+
+    .calendarRadio label{
+        width: 65px !important;
+    }
+
+
+
+
+    /*Dinning Cruises css for responsive mobile*/
+    /* bxslider style here */
+
+    .sunsetBooknowMobile .span4 .booknow-inner{
+        width: 98%;
+    }
+
+    .groupResNote b{
+        color: #333;
+    }
+
+    .addthis_toolbox .share-text{
+        padding-top: 4px;
+    }
+
+    .share-mobile{
+        margin-top: 2%;
+    }
+
+    .share-mobile .booknow-inner{
+        width: 98%;
+        height: 33px;
+    }
+
+    .cruiseDownslidermargin .bx-wrapper ul.fleetbxslider li{
+        margin-left: 10px;
+    }
+
+    .cruiseDownslidermargin .bx-controls .bx-default-pager{
+        display: block;
+    }
+
+    .cruiseDownslidermargin .bx-wrapper .bx-prev{
+        display: block;
+        left: 8% !important;
+        width: 30px !important;
+        height: 35px !important;
+    }
+
+    .cruiseDownslidermargin .bx-wrapper .bx-next{
+        left: 85% !important;
+        width: 30px !important;
+        height: 35px !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 15% !important;
+    }
+
+    .sunsetDownsliderInner .span8{
+        width: 70% !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 36%;
+    }
+
+    /* .sunsetMapView .departurePortsclosebutton{
+         right: 10px;
+     }*/
+
+    .sunsetLinePadding, .linepadding{
+        padding-top: 10px !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        padding-top: 0px;
+    }
+
+    #parkingDirectionsModal{
+        width: 88%;
+    }
+
+    /* .reoutemapDirectionsbox .reoutemapDirectionsclosebutton{
+         right: -10px !important;
+     }*/
+
+    .reoutemapDirectionsbox #routeMaplinesholder .span5{
+        width: 36%;
+    }
+
+    .reoutemapDirectionsbox #routeMaplinesholder{
+        margin-top: 23px;
+    }
+
+    .reoutemapDirectionsbox #routeMaplinesholder .linepadding{
+        padding-top: 5px !important;
+    }
+
+    .reoutemapDirectionsboxInnerright .routemapContent{
+        padding: 30px 5px 0 5px;
+        overflow-x: inherit;
+        overflow-y: inherit;
+    }
+
+    /* Private Events page style */
+    .contentbox-inner .bx-wrapper .bx-viewport ul.weddingcategory li{
+        float: none !important;
+    }
+
+    .contentbox-inner .bx-wrapper .bx-viewport{
+        margin-left: 6px;
+    }
+
+    .sunsetDownslider img.imagefixedwd{
+        margin-top: 230px;
+    }
+
+    .sunsetDownslider .weddingDownsliderbox{
+        position: absolute;
+        left: 0px;
+        margin-top: 0%;
+        max-height: 100%;
+        height: auto;
+        top: 0px;
+    }
+
+    .privateEventsGallery .bx-controls .bx-controls-direction{
+        display: block;
+    }
+
+    .privateEventsGallery .bx-controls .bx-default-pager{
+        display: block;
+    }
+
+    .privateEventsGallery .bx-wrapper .bx-prev{
+        display: block;
+        left: 21% !important;
+        width: 20px;
+    }
+
+    .privateEventsGallery .bx-wrapper .bx-next{
+        left: 74% !important;
+        width: 20px;
+    }
+
+    .privateEventsGallery .bx-wrapper .bx-viewport{
+        left: -3px;
+        width: 101% !important;
+    }
+
+    .privateEventsGallery ul.eventsbxslider{
+        margin-left: 25px;
+    }
+
+    .privateEventsGallery ul.eventsbxslider li{
+        width: 250px !important;
+        margin-left: 10px;
+        margin-right: 0px !important;
+    }
+
+    .privateEventsGallery ul.eventsbxslider li .sliderBox{
+        margin: 5% 2% 5% 0%;
+    }
+
+    .privateEventsGallery ul.eventsbxslider li .sliderBoxout{
+        height: 230px;
+    }
+
+    .privateEventsGallery ul.eventsbxslider li img{
+        height: 230px;
+    }
+
+    .privateeventsdetailview .sunsetBooknowMobile .weddingLinePadding{
+        width: 22% !important;
+    }
+
+    .privateeventsdetailview .sunsetBooknowMobile .requestmobile{
+        width: 55% !important;
+    }
+
+    .weddingDownsliderboxContainer .weddingDownsliderbox .weddingDownsliderInner .sliderCaption{
+        font-size: 22px !important;
+    }
+
+    #cateringSelectionMenu .bx-wrapper .bx-controls-direction a.disabled{
+        display: none !important;
+    }
+
+
+    /* Fleet page styles */
+    .fleetdetailview .requset-proposal .span4.sunsetLinePadding{
+        padding-top: 20px !important;
+        margin-right: 2px;
+    }
+
+    .fleetDownslider .fleetDownsliderbox .fleetDownsliderInner .sliderCaption{
+        font-size: 20px !important;
+    }
+
+    #upArrow{
+        display: none;
+    }
+
+    .fleetDownslidermargin .bx-wrapper .bx-controls .bx-default-pager{
+        display: block;
+    }
+
+
+    .fleetDownslidermargin .bx-controls .bx-controls-direction{
+        display: block;
+    }
+
+    .fleetDownslidermargin .bx-controls .bx-controls-direction .bx-prev{
+        display: block;
+        left: 10% !important;
+        width: 20px !important;
+        height: 30px !important;
+    }
+
+    .fleetDownslidermargin .bx-controls .bx-controls-direction .bx-next{
+        left: 83% !important;
+        width: 20px !important;
+        height: 30px !important;
+    }
+
+    .fleetDownslidermargin .bx-wrapper .bx-viewport{
+        left: -3px;
+        width: 101% !important;
+    }
+
+    .fleetDownslidermargin ul.fleetbxslider{
+        margin-left: 25px;
+    }
+
+    .fleetDownslidermargin ul.fleetbxslider li{
+        width: 250px !important;
+        margin-left: 10px;
+        margin-right: 0px !important;
+    }
+
+    .fleetDownslidermargin ul.fleetbxslider li .sliderBox{
+        margin: 5% 2% 5% 0%;
+    }
+
+    .fleetDownslidermargin ul.fleetbxslider li .sliderBoxout{
+        height: 230px;
+    }
+
+    .fleetDownslidermargin ul.fleetbxslider li img{
+        height: 230px;
+    }
+
+    .mfp-container{
+        top: 100px !important;
+    }
+
+    .mfp-container:before{
+        display: inline !important;
+    }
+
+    .mfp-iframe-holder{
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
+
+    .mfp-iframe-holder .mfp-content{
+        width: 92% !important;
+    }
+
+    .mfp-container .mfp-arrow{
+        top: 8% !important;
+    }
+
+    .mfp-close{
+        padding: 3px !important;
+    }
+
+    .mfp-close.close-text{
+        margin: 3.9% !important;
+    }
+
+
+    /* Food and Bar page styles */
+    .foodSelectionMenu .bx-wrapper .bx-controls-direction a.disabled{
+        display: none !important;
+    }
+
+    .foodSelection .bx-wrapper .bx-next{
+        left: 78% !important;
+    }
+
+
+    /* Connect pages styles  */
+    .content-twitter-widget, .content-youtube-widget{
+        padding-left: 20px !important;
+    }
+
+    .galleryHolder .bx-wrapper .bx-controls .bx-default-pager{
+        display: block;
+    }
+
+
+    .galleryHolder .bx-controls .bx-controls-direction{
+        display: block;
+    }
+
+    .galleryHolder .bx-controls .bx-controls-direction .bx-prev{
+        display: block;
+        left: 10% !important;
+        width: 20px !important;
+        height: 30px !important;
+    }
+
+    .galleryHolder .bx-controls .bx-controls-direction .bx-next{
+        left: 83% !important;
+        width: 20px !important;
+        height: 30px !important;
+        display: block;
+    }
+
+    .galleryHolder .bx-controls .bx-pager{
+        bottom: -38px;
+    }
+
+    .galleryHolder .bx-wrapper .bx-viewport{
+        left: -3px;
+        width: 101% !important;
+    }
+
+    .galleryHolder ul.connectOverviewGallery{
+        margin-left: 25px;
+    }
+
+    .galleryHolder ul.connectOverviewGallery li{
+        width: 250px !important;
+        margin-left: 10px;
+        margin-right: 0px !important;
+    }
+
+    .galleryHolder ul.connectOverviewGallery li .sliderBox{
+        margin: 5% 2% 5% 0%;
+    }
+
+    .galleryHolder ul.connectOverviewGallery li .sliderBoxover{
+        height: 230px;
+        width: 225px;
+        margin: 0px;
+    }
+
+    .galleryHolder ul.connectOverviewGallery li .sliderBoxout{
+        height: 230px;
+        margin: 0px;
+    }
+
+    .galleryHolder ul.connectOverviewGallery li .sliderBoxout img{
+        height: 230px;
+    }
+
+    .galleryHolder .bx-wrapper .bx-controls-direction a.disabled{
+        display: none !important;
+    }
+
+    .content-facebook-widget span, .content-twitter-widget span, .content-pintrest-widget span, .content-youtube-widget span{
+        padding-top: 5px;
+    }
+
+    .socialiconblockview .mobileFeeds .socialiconblock .carousel-indicators{
+        margin-left: auto !important;
+        margin-right: auto;
+        width: 75px;
+    }
+
+    #totalblogs .blogsthumbnails .span6.blogInner{
+        width: 90% !important;
+        margin-right: 0px;
+        margin-left: 13px !important;
+    }
+
+    .blogMustRead .mustReadbloglist{
+        width: 100%;
+    }
+
+    .blogLike .blogLikelist{
+        width: 100%;
+    }
+
+    .blogMain .blogLike{
+        margin-top: 0px;
+    }
+
+    .blogMain .blogLikeTitle{
+        margin-top: 0px;
+    }
+
+    .reviews-list .review-share{
+        width: 35% !important;
+    }
+
+    .reviews-list .review-share .booknow{
+        width: 99%;
+    }
+
+    .reviews-list .review-share .booknow .booknow-inner{
+        width: 98.5%;
+    }
+
+    .cruiseDetailinfo{
+        width: 100% !important;
+        margin-left: 0% !important;
+    }
+
+    .aboutusPagesContainer .members-row{
+        width: 95% !important;
+    }
+
+    .aboutusPagesContainer .members-row .membersList li{
+        float: none !important;
+    }
+
+    .aboutusPagesContainer .members-row .bx-controls .bx-controls-direction{
+        display: none !important;
+    }
+
+    .aboutcorporate .requset-proposal .left-line-margin{
+        width: 12% !important;
+    }
+
+    .aboutcorporate .requset-proposal .span8{
+        width: 68% !important;
+    }
+
+    .captcha-field .captcha-refresh{
+        width: 88% !important;
+    }
+
+    .address-container .address-content{
+        width: 100%;
+    }
+
+    .corporate-details a.emailLinkColor{
+        color: #00529b;
+    }
+
+    .corporate-details a{
+        color: #333333;
+    }
+
+    .contactus-content .footer-address a{
+        color: #333333;
+    }
+
+    .contactus-content .footer-address a.emailLinkColor{
+        color: #00529b;
+    }
+
+    /* Press Room page Styles */
+    .press-room .moreblogs{
+        width: 75%;
+    }
+
+    .press-room .moreblogs .moreblogsInner{
+        font-size: 18px;
+        padding: 10px 0px;
+        height: auto;
+    }
+
+    .press-room .pressReleaseContainer{
+        width: 90%;
+        margin: 0px auto !important;
+    }
+
+    .press-room .pastPressReleaseTitle{
+        width: 90%;
+        margin: 0px auto;
+    }
+
+    .press-room .allPressroomReleases{
+        width: 90%;
+        margin: 0px auto;
+    }
+
+    .press-room .remainblogsInner{
+        width: 90%;
+        margin: 0px auto;
+    }
+
+    .press-room .pressroomTitle{
+        line-height: 35px;
+    }
+
+
+
+
+
+    #myCarousel .carousel-control{
+        display: none;
+    }
+
+    .contentDetail #rightsliderImages .item img{
+        height: 300px !important;
+    }
+
+    .bx-viewport{
+        height: hidden !important;
+    }
+
+    .diningCruises li, .featuredCruises li, .discoveryLunchCruises li{
+        float: none !important;
+        width: 300px !important;
+    }
+
+    .slides, .flex-control-nav, .flex-direction-nav{
+        display: none;
+    }
+
+    .bx-controls .bx-controls-direction{
+        display: none;
+    }
+
+    .bx-controls .bx-default-pager{
+        display: none;
+    }
+
+    section.slider{
+        width: 72% !important;
+    }
+
+    #captcha{
+        padding-left:0;
+    }
+
+    .navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus
+    {
+        background-color:#454444 !important;
+        width: 100% !important;
+    }
+
+    #content #privacy_policy{
+        width: 90%;
+    }
+
+
+
+    .tiles .bx-viewport{
+        width: 95% !important;
+        margin-left: 4%;
+    }
+
+    .tiles .bx-wrapper{
+        max-width: 100% !important;
+        margin-left: 0px !important;
+    }
+
+
+    /*   login css for mobile responsive   */
+    #content #user-login{
+        width:70%;
+    }
+    #user-login #edit-admintitle label{
+        font-size:30px;
+    }
+    #user-login .beforesubmit{
+        width:25%;
+    }
+    #user-login .aftersubmit{
+        width:25%;
+    }
+    .mainsubmitContainer{
+        width:40%;
+        max-width:105px;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+/* Ipad mini landscape resolution styles */
+@media (min-width: 979px) and (max-width: 1160px) {
+
+    .contentSliderController{
+        width: 90%;
+    }
+
+    #sliderContent .slider-caption{
+        top: -412px !important;
+        width: 54%;
+        margin-top: 0% !important;
+    }
+
+    .slider-bottom{
+        top: 62%;
+    }
+
+    .viewbuttonline{
+        margin-top: 3%;
+    }
+
+    #pricingTable table.sticky-enabled{
+        border-collapse: inherit;
+    }
+
+    .searchForTablet .span8
+    {
+        width:56%;
+    }
+    .searchForTablet .socialiconWidth
+    {
+        width:17% !important;
+    }
+    .searchForTablet .booknowMargin
+    {
+        width:22% !important;
+    }
+    .search-input
+    {
+        width: 90%;
+    }
+    .searchInner
+    {
+        /*float:left;*/
+        width:90%;
+    }
+    /*Suresh Style Start Here*/
+    .container
+    {
+        width: 98% !important;
+    }
+    /*Suresh Style End Here*/
+    .contentbox-inner
+    {
+        width:95% !important;
+    }
+    .footerInner
+    {
+        width:100%
+    }
+
+    .contentbox-first-inner-normal
+    {
+
+        font-size:23.34px;
+        line-height:30px;
+    }
+    .contentbox-first-inner-normal span
+    {
+        font-size:30.34px;
+        line-height:30px;
+    }
+
+    .contentbox-first-inner {
+        padding-top: 7%;
+        font-size: 14.34px;
+    }
+
+    .contentbox-first-inner .contentbox-vocher-inner, .contentbox-first-inner .contentbox-vocher-inner, .contentbox-first-inner .contentbox-vocher-inner{
+        padding-top:4%;
+    }
+
+    .contentbox-second-inner, .contentbox-third-inner
+    {
+        margin-top: 1%;
+        font-size: 22.34px;
+        color: #00529b;
+        line-height: 33px;
+    }
+    .contentbox-second-inner span, .contentbox-third-inner span
+    {
+        font-size: 35.34px;
+        line-height: 30px;
+    }
+
+    .footer-signup-inner
+    {
+        font-size:14px !Important;
+    }
+    .welcometext
+    {
+        font-size: 52px;
+    }
+    .logotext
+    {
+        font-size: 50px;
+        line-height: 70px;
+    }
+    .slider-caption .row-fluid .span12 p
+    {
+        font-size: 14px;
+    }
+
+    .view-featured-button-inner
+    {
+        line-height: 23px;
+        font-size: 14px;
+    }
+    .sliderBottomMobile
+    {
+        display:block;
+    }
+    .menu ul li a
+    {
+        font-size: 13px;
+        padding-left: 1.4%;
+        padding-right: 1.4%;
+    }
+    .menu ul li a:hover
+    {	
+        font-size: 13px;
+        padding-left: 1.4%;
+        padding-right: 1.4%;
+
+    }
+    .menu ul .firstLink a
+    {
+        padding-left: 1.4% ;
+    }
+    .menu ul .lastLink a
+    {
+        padding-right: 1.4% ;
+    }
+    #menu
+    {
+        top: 80px;
+    }
+    .navbar-inner
+    {
+        *padding-right: 5px;
+        *padding-left: 5px;
+    }
+    .content-facebook-widget, .content-twitter-widget, .content-pintrest-widget, .content-youtube-widget
+    {
+        font-size:12px;
+    }
+    .content-facebook-widget .widget-title, .content-twitter-widget .widget-title, .content-pintrest-widget .widget-title, .content-youtube-widget .widget-title
+    {
+        font-size: 14px;
+    }
+
+
+
+
+    .tiles .bx-wrapper{
+        margin-left: 64px !important;
+        max-width: 85% !important;
+    }
+
+    .tiles .bx-wrapper .bx-next {
+        top: 9% !important;
+        right: -11% !important;
+        background: url(../img/carousol-rightarrow.png) no-repeat 37px 49px !important;
+        width: 15% !important;
+        height: 270px !important;
+    }
+    .tiles .bx-wrapper .bx-prev {
+        top: 9% !important;
+        left: -21% !important;
+        background: url(../img/carousol-leftarrow.png) no-repeat 87px 50px !important;
+        width: 20% !important;
+
+    }
+    .members-row .tiles .bx-wrapper .bx-prev{
+        background: url(../img/carousol-leftarrow.png) no-repeat 33px 48px !important;
+    }
+    .members-row .tiles .bx-wrapper .bx-next{
+        width: 17% !important;
+    }
+
+    .footer-address a{
+        font-size: 14px !important;
+    }
+
+
+}
+
+@media (min-width: 1160px) and (max-width: 1200px) {
+
+    .searchForTablet .span8
+    {
+        width:55%;
+    }
+    .searchForTablet .socialiconWidth
+    {
+        width:21% !important;
+    }
+    .searchForTablet .booknowMargin
+    {
+        width:20% !important;
+    }
+    .search-input
+    {
+        width: 90%;
+    }
+    .searchInner
+    {
+        float:left;
+        width:90%;
+    }
+    .container
+    {
+        width:98%;
+    }
+    .contentbox-inner
+    {
+        width:95%;
+    }
+    .footerInner
+    {
+        width:100%
+    }
+    .contentbox-first-inner-normal
+    {
+        margin-top:15%;
+        font-size:23.34px;
+        line-height:30px;
+    }
+    .contentbox-first-inner-normal span
+    {
+        font-size:30.34px;
+        line-height:30px;
+    }
+
+
+    .contentbox-first-inner {
+        padding-top: 7%;
+        font-size: 14.34px;
+    }
+    /*.contentbox-first, .contentbox-firsthover, .contentbox-second, .contentbox-secondhover, .contentbox-third 
+    {
+        width:200px;
+        height:200px;
+    }*/
+
+    .contentbox-second-inner, .contentbox-third-inner
+    {
+        margin-top: 1%;
+        font-size: 22.34px;
+        color: #00529b;
+        line-height: 33px;
+    }
+    .contentbox-second-inner span, .contentbox-third-inner span
+    {
+        font-size: 35.34px;
+        line-height: 30px;
+    }
+
+    .footer-signup-inner
+    {
+        font-size:14px !Important;
+    }
+    .welcometext
+    {
+        font-size: 62px;
+    }
+    .logotext
+    {
+        font-size: 60px;
+        line-height: 70px;
+    }
+    .slider-caption .row-fluid .span12 p
+    {
+        font-size: 14px;
+    }
+
+    .view-featured-button-inner
+    {
+        line-height: 23px;
+        font-size: 14px;
+    }
+    .sliderBottomMobile
+    {
+        display:none;
+    }
+    .menu ul li a
+    {
+        font-size: 14px;
+        padding-left: 1.5%;
+        padding-right: 1.5%;
+    }
+    .menu ul li a:hover
+    {	
+        font-size: 14px;
+        padding-left: 1.5%;
+        padding-right: 1.5%;
+
+    }
+    .menu ul .firstLink a
+    {
+        padding-left: 1.5% ;
+    }
+    .menu ul .lastLink a
+    {
+        padding-right: 1.5% ;
+    }
+    #menu
+    {
+        top: 80px;
+    }
+    .navbar-inner
+    {
+        *padding-right: 5px;
+        *padding-left: 5px;
+    }
+
+    .viewbuttonline
+    {
+        margin-top:1% ;
+    }
+
+    .content-facebook-widget, .content-twitter-widget, .content-pintrest-widget, .content-youtube-widget
+    {
+        font-size:12px;
+    }
+    .content-facebook-widget .widget-title, .content-twitter-widget .widget-title, .content-pintrest-widget .widget-title, .content-youtube-widget .widget-title
+    {
+        font-size: 14px;
+    }
+
+
+
+}
+
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    .footer-address a {
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 1273px) and (max-width: 1600px) {
+    .logotext {
+        font-family: georgia;
+        font-size: 85px;
+        line-height: 95px;
+        text-align: center;
+    }
+
+    #sliderContent .slider-caption {
+        margin-top: -41px !important;
+        width: 56%;
+        top: -600px !important;
+    }
+
+
+    .slider-bottom{
+        margin-top: -260px !important;
+    }
+}
+
+
+/*
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px){
+  #sliderContent .slider-caption{
+       top: -50px;
+    }
+ 
+}*/
+
+
+@media (min-width: 768px) and (max-width: 880px) {
+    
+    .links a, .links {
+    font-size: 10px;
+}
+    
+}
