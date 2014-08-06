@@ -1,0 +1,15 @@
+name = Gift Card Purchase
+core = 7.x
+description = Gift Card Purchase
+files[] = giftcard.module
+files[] =includes/giftcard.form.inc
+files[] = includes/giftcard.navigation.inc
+files[] = includes/giftcard.submit.inc
+files[] =includes/giftcard.validate.inc
+files[] =css/giftcard.css
+files[]=js/giftcard.js
+files[]=js/mask.js
+files[]=GiftCard.class.inc
+
+
+

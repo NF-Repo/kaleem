@@ -1,0 +1,66 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function giftcard_schema() {
+	$schema = array ();
+
+	
+	$schema ['giftcard_orders'] = array (
+			'description' => 'giftcard order tracking.',
+			'fields' => array (
+					'id' => array (
+							'description' => 'Primary key of the Gift card.',
+							'type' => 'serial',
+							'unsigned' => TRUE,
+							'not null' => TRUE 
+					),
+					'order_id' => array (
+							'description' => 'The Giftcard purchased OrderId',
+							'type' => 'int',
+							'unsigned' => TRUE 
+					),
+					'uid' => array (
+							'description' => 'The Giftcard purchased user id',
+							'type' => 'int',
+							'unsigned' => TRUE 
+					),
+					'giftcard_qty' => array (
+							'description' => 'The Giftcard Quantity',
+							'type' => 'int',
+							'unsigned' => TRUE 
+					),
+					'giftcard_price' => array (
+							'description' => 'cruise fee prices',
+							'type' => 'numeric',
+							'precision' => 16,
+							'scale' => 5 
+					),
+					'giftcard_totalprice' => array (
+							'description' => 'cruise fee prices',
+							'type' => 'numeric',
+							'precision' => 16,
+							'scale' => 5 
+					),
+					'created' => array (
+							'description' => 'Created Date ',
+							'type' => 'int',
+							'unsigned' => TRUE 
+					),
+					'data' => array(
+							'type' => 'text',
+							'size' => 'big',
+							'description' => 'data',
+					),
+					
+			),
+			'primary key' => array (
+					'id' 
+			) 
+	);
+	
+	return $schema;
+}
+

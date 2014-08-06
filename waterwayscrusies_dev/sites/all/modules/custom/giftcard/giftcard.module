@@ -1,0 +1,84 @@
+<?php
+module_load_include ( 'inc', 'giftcard', 'includes/giftcard.navigation' );
+module_load_include ( 'inc', 'giftcard', 'includes/giftcard.validate' );
+module_load_include ( 'inc', 'giftcard', 'includes/giftcard.submit' );
+
+
+
+
+
+/**
+ * Implements hook_menu().
+ */
+function giftcard_menu() {
+	$items = array ();
+	
+	$items ['purchasegiftcard'] = array (
+		'title' => 'Purchase a Gift Card',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array (
+				'giftcard_form' 
+		),
+		'access arguments' => array (
+				'access content' 
+		),
+		'file' => 'includes/giftcard.form.inc',
+		'type' => MENU_NORMAL_ITEM 
+	);
+	
+	
+	$items ['purchasegiftcard-confirmation/%'] = array (
+			'title' => 'Gift Card Order Confirmation',
+			'page callback' => 'giftcard_confirmation_page',
+			'page arguments' => array (1),
+			'access arguments' => array (
+					'access content'
+			),
+			'file' => 'giftcardconfirmation.inc',
+			'type' => MENU_NORMAL_ITEM
+	);
+	
+	
+	
+	$items ['giftcard-orders'] = array (
+			'title' => 'Gift Card Orders',
+			'description' => 'Gift Card Orders',
+			'page callback' => 'giftcardorders_page',
+			'file' => 'giftcardorders.inc',
+			'access arguments' => array (
+					'manage giftcard' 
+			) 
+	);
+	
+	$items ['giftcardorder/%/view'] = array (
+			'page callback' => 'giftcard_order_view_page',
+			'access arguments' => array (
+					'manage giftcard' 
+			),
+			'page arguments' => array (
+					1 
+			),
+			'file' => 'giftcardorder.pages.inc' 
+	)	;
+	
+	return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function giftcard_permission() {
+	return array (
+			'manage giftcard' => array (
+					'title' => t ( 'Manage Gift Card' ) 
+			) 
+	);
+}
+
+
+
+
+
+
+
+

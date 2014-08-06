@@ -1,0 +1,739 @@
+/* 
+    Document   : connectgiftcards
+    Created on : 06 August, 2013, 10:00:00 AM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+#content{
+  display: block  !important;
+}
+/*
+.content-inner{
+    padding-top: 0px !important;
+    width: 1000px !important;
+}*/
+
+
+#menu
+{
+    position: static !important;
+}
+
+.connectMain
+{
+    width: 73.5% !important;
+    margin: 0px auto;
+}
+
+.connectTitle
+{
+    font-size: 46px;
+    font-family:georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 1.5%;
+    margin-top: 8%;
+    margin-left: 8%;
+}
+
+.responsiveMobile{
+    margin-left:0px !important;
+}
+ .maincontent-inner{
+       
+        margin-left: 8%;
+        //margin-left:7%;
+    }
+    
+  .span12 .row-fluid .span12 .field-title{
+        margin-left:8%;
+    }
+/* submenu css start here */
+
+.subMenuWrapper{
+    height: 200px;
+    width: 100%;
+    
+}
+
+.subMenu
+{
+    width:auto;
+    position:absolute;
+    border: #bc9b6a 1px solid;
+    margin-left: 7%;
+
+}
+
+
+
+
+.subMenu ul
+{
+    list-style:none;
+    margin:0px;
+}
+.subMenu ul li
+{
+    float: left;
+}
+.subMenu ul li a
+{
+    background:rgba(252,251,249,0.8);
+    color:#454444;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+}
+
+.subMenu ul li a:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+}
+
+.subMenu ul li a.active
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+}
+
+
+
+
+.menuRelative{
+    position: relative;
+    width: 96%;
+    height: 60px;
+    margin-top: 15px;
+}
+
+.subNav
+{
+  width: 564px;
+  /*position:absolute;*/
+  border: #bc9b6a 1px solid;
+  top: 30px;
+  left: 0px;
+  margin: 0px auto;
+  background-color: rgba(252,251,249,0.8);
+}
+.subNav ul
+{
+  list-style:none;
+  margin:0px !important;
+}
+
+.subNav ul li 
+{
+  float: left;
+  background:rgba(252,251,249,0.8);
+  color:#454444;
+  font-family:georgia;
+  font-size:24px;
+  float:left;
+  line-height:37px;
+  text-decoration:none;
+  padding-left: 50px;
+  padding-right: 50px;
+  text-shadow: none !important;
+  text-transform: uppercase;
+  /*cursor: pointer;*/
+  transition: all ease-in-out 0.3s;
+  -webkit-transition: all ease-in-out 0.3s;
+  -moz-transition: all ease-in-out 0.3s;
+  -o-transition: all ease-in-out 0.3s;
+}
+
+.subNav ul li.active
+{
+  background: #454444 !important;
+  color:#FFF;
+  font-family:georgia;
+  font-size:24px;
+  float:left;
+  line-height:37px;
+  text-decoration:none;
+  padding-left: 50px;
+  padding-right: 50px;
+  text-shadow: none !important;
+}
+
+.grippie{
+    display: none;
+}
+
+.giftCardDetails .form-item-deliverydate-date .description{
+    display: none;
+}
+
+.giftCardDetails .date-padding{
+    padding: 0px;
+}
+
+.inputfiledStyle{
+    background-color: #fff !important;
+    border: 1px solid #BC9B6A !important;
+    border-radius: 0px !important;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    height: 22px;
+    line-height: 20px;
+}
+
+.textareaStyle{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    padding-left: 5px;
+}
+
+.inputfieldVerySmall{
+    width: 66px;
+    margin-right: 3px;
+}
+
+.inputfieldSmall{
+    width: 150px;
+}
+
+.inputfieldMedium{
+    width: 230px;
+}
+
+.inputfieldLarge{
+    width: 320px;
+}
+
+.textarealarge{
+    width: 100%;
+}
+
+.dateFieldStyle{
+    background-color: #fff !important;
+    border: 1px solid #BC9B6A !important;
+    border-radius: 0px !important;
+    -webkit-appearance: none !important;
+    padding: 3px 3px !important;
+    height: 22px !important;
+    line-height: 20px !important;
+}
+
+.dateFieldMedium{
+    width: 237px !important;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center right 8px;
+    background-position-x:97%;
+    background-position-y:50%;
+    padding: 4px 0px 4px 6px;
+}
+
+.selectFieldStyle{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    height: 32px;
+    line-height: 20px;
+}
+
+.selectFieldVerySmall{
+    width: 120px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center right 8px;
+    background-position-x:97%;
+    background-position-y:50%;
+    margin-right: 3px;
+}
+
+.selectFieldSmall{
+    width: 150px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center right 8px;
+    background-position-x:97%;
+    background-position-y:50%;
+}
+
+.selectFieldMedium{
+    width: 243px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center right 8px;
+    background-position-x:97%;
+    background-position-y:50%;
+}
+
+.selectFieldLarge{
+    width: 320px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: center right 8px;
+    background-position-x:97%;
+    background-position-y:50%;
+}
+
+.multistepformWrapper{
+    width: 80% !important;
+    margin: 0px auto;
+}
+
+.btn
+{
+    width: 98%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px 3px 2px 2px;
+}
+
+.booknow-inner
+{
+    width:97%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:16px;
+    text-align:center;	
+    border:#f1dddf 1px dotted;
+    display: block;
+    cursor: pointer;
+    padding: 0% 1%;
+}
+
+.wcbooknowbtnWrap{
+    background-color:#ab323b !important;
+    padding: 2px;
+    float: left;
+    width: auto;
+    display: inline;
+}
+
+.wcbooknowbtnWrap:hover{
+    background-color:#772328 !important;
+}
+
+.wcbooknowbtn{
+    background-color: transparent !important;
+    margin:0px !important;
+    line-height:26px !important;
+    color:#ffffff !important;
+    font-family:georgia !important;
+    font-size:16px !important;
+    text-align:center !important;	
+    border:#f1dddf 1px dotted !important;
+    display: block !important;
+    cursor: pointer !important;
+    padding: 0px 20px !important;
+    background-image: none !important;
+    text-shadow: none !important;
+    border-radius: 0px !important;
+}
+
+.wcbooknowbtn:hover{
+    background-color: transparent !important;
+    margin:0px !important;
+    line-height:26px !important;
+    color:#ffffff !important;
+    font-family:georgia !important;
+    font-size:16px !important;
+    text-align:center !important;	
+    border:#f1dddf 1px dotted !important;
+    display: block !important;
+    cursor: pointer !important;
+    padding: 0px 20px !important;
+    background-image: none !important;
+    text-shadow: none !important;
+    border-radius: 0px !important;
+}
+
+/* Drupal AJAX & Throbber CSS */
+.progress-disabled {
+  float: none;
+  display:inline;
+}
+
+.ajax-progress {
+  float: none;
+  display:inline;
+  position: absolute;
+  margin-top: -22px;
+  margin-left: 90px;
+}
+.ajax-progress .throbber {
+  float: none;
+  height: 15px;
+  margin: 2px;
+  width: 15px;
+  display:inline-block;
+}
+.ajax-progress .message{
+    display: none;
+}
+
+
+.purchase-steps{
+    list-style-type: none;
+    margin-left: 15%;
+}
+.purchase-steps li{
+    width: 15%;
+    float: left;
+    border: 1px solid #000;
+    background: #fff;
+    text-align: center;
+    cursor: pointer;
+}
+.purchase-steps li.active{
+    background: #ab323b;
+    color:#fff;
+}
+.check-balance{
+    margin-top: 2%;
+    padding-bottom: 5%;
+    border-bottom: 1px solid #000;
+}
+.balance-info{
+    clear:both;
+}
+.check-balance .span7{
+    margin-left:0 !important;
+}
+.btnleftmargin{
+    margin-left: 5px;
+}
+#purchaseForm {
+    width: 65%;
+    margin: 0px auto 100px auto;
+    /*text-align: center;*/
+    position: relative;
+}
+#purchaseForm h3{
+    text-align: left; 
+}
+#purchaseForm label{
+    font-weight: bold; 
+}
+#purchaseForm label .paymentLable{
+    font-weight: normal; 
+}
+#purchaseForm fieldset {    
+    padding: 5% 2%;
+    margin: 2%;
+}
+#purchaseForm fieldset form {
+    background: white;
+    border: 0 none;
+    border-radius: 3px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 5% 8%;
+    /*    margin:5% 10%;*/
+    box-sizing: border-box;
+}
+#purchaseForm fieldset form label{
+    text-align:left;
+}
+label.input-medium{
+    text-align:center;
+}
+#purchaseForm fieldset:not(:first-of-type) {
+    display: none;
+}
+.next-form{
+    margin-left:10% !important;
+}
+
+#purchaseForm input.error,#purchaseForm select.error {
+    border: 1px solid red !important;
+}
+#purchaseForm label.error {
+    color: red;
+    display: none !important;
+}
+#purchaseForm .row-fluid{
+    margin: 10px 0px;;
+}
+.prev-form,.submit-btn{
+    margin-left:40% !important;
+}
+#review-details form{
+    margin-bottom: 0;
+    margin-top: 0;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+.creditcard-fieldset .booknow{
+    margin-top:5%;
+}
+#review-details{
+  box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+}
+.amount-field{
+    margin-top:4%;
+}
+
+.marginTop{
+    margin-top: 5% !important;
+}
+
+.form-item-deliverydate .date-padding{
+    padding: 0px;
+}
+
+.form-item-deliverydate .date-padding label,
+.form-item-deliverydate .date-padding .description{
+    display: none;
+}
+
+
+
+
+/* Media Queries Starts from here */
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+    .connectMain
+    {
+        width: 100%;
+    }
+}
+
+@media (max-width: 979px){
+
+    .connectMain
+    {
+        width: 90% !important;
+    }
+}
+@media (max-width: 767px){
+    .connectMain
+    {
+        width: 100% !important;
+    }
+    .container
+    {
+        width: 100% !important;
+    }
+    .connectTitle
+    {
+        padding-left: 5px;
+    }
+    /* wedding css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+        margin-bottom: 30px;
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;     
+        border:0px; 
+    }
+
+	/*Suresh Style Start Here*/
+    .content-inner {
+        width: 100% !important;
+    }
+    .content-inner h3.field-title{
+        width: 90%;
+        margin: 0 auto
+    }
+    .maincontent-inner{
+        width: 90%;
+        margin: 0 auto
+        //margin-left:7%;
+    }
+    
+	/*Suresh Style End Here*/
+	
+	.form-item-recipientemail .inputfieldMedium{
+    	width: 97% !important;
+    }
+    
+    .form-item-yourname .inputfieldMedium{
+    	width: 97% !important;
+    }
+    
+    .form-item-deliverydate, #deliverydate, .form-item-deliverydate-date{
+    	width: 99% !important;
+    }
+    
+    .form-item-deliverydate #deliverydate .form-item-deliverydate-date .dateFieldStyle{
+    	width: 100% !important;
+    }
+	  
+}
+
+@media (max-width: 768px){
+    .subNav{
+        width: 100% !important;
+        margin-left: 10px;
+    }
+    .item-list ul li {
+        width: 100%;
+    }
+    .subNav ul li.active {
+        padding-left: 0px;
+        padding-right: 0px;
+        text-align: center;
+    }
+    .subNav ul li {
+		padding-left: 0px;
+		padding-right: 0px;
+		text-align: center;
+    }
+    .inputfieldMedium {
+        width: 97%;
+    }
+    .selectFieldMedium {
+        width: 100%;
+        background-position: center right 8px;
+	    background-position-x:97%;
+	    background-position-y:50%;
+    }
+    
+    .form-item-recipientemail .inputfieldMedium{
+    	width: 94%;
+    }
+    
+    .form-item-yourname .inputfieldMedium{
+    	width: 94%;
+    }
+    
+    .form-item-deliverydate-date .dateFieldMedium{
+    	width: 225px !important;
+    }
+}
+
+@media (max-width: 480px){
+    .connectMain
+    {
+        width: 100%;
+    }
+    .container
+    {
+        width: 100% !important;
+    }
+    .connectTitle
+    {
+        padding-left: 5px;
+    }
+    /* wedding css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+        margin-bottom: 30px;
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;     
+        border:0px; 
+    }
+	/*Suresh Style Start Here*/
+
+    .subNav {
+        width: 100%;
+        margin-left: 5px;
+    }
+    .subNav ul li.active {
+        width: 100%;
+        text-align: center;
+        padding-left:  0px;
+        padding-right: 0px;
+    }
+    .subNav ul li {
+        width: 100%;
+        text-align: center;
+        padding-left:  0px;
+        padding-right: 0px;
+    }
+    .selectFieldMedium {
+        width: 100%;
+        background-repeat: no-repeat;
+        background-position: center right 8px;
+	    background-position-x:97%;
+	    background-position-y:50%;
+    }
+    .inputfieldMedium{
+        width: 95%;
+    }
+    
+    .wcbooknowbtnWrap {
+        margin-bottom: 5px;
+    }
+    .btnleftmargin {
+    margin-left: 5px !important;
+    }
+    
+    .dateFieldMedium {
+     width: 100% !important;
+     background-position: center right 8px;
+    }
+    
+    /*Suresh Style End Here*/
+    
+    .form-item-recipientemail .inputfieldMedium{
+    	width: 95% !important;
+    }
+    
+    .form-item-yourname .inputfieldMedium{
+    	width: 95% !important;
+    }
+    
+    .btnleftmargin{
+       margin-left:0px !important;
+    }
+    
+
+}
