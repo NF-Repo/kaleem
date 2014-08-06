@@ -1,0 +1,6 @@
+; $Id$
+name = Cart session Items
+description = "Cruise Booking Tickets and General selected Options"
+core = 7.x
+version = VERSION
+package = WWC

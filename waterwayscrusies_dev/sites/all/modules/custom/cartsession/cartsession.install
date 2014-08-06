@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * Implements hook_schema()
+ */
+function cartsession_schema() {
+    $schema = array();
+// 	id 	cartid 	sessionid 	bookitems
+    $schema['cartsession'] = array(
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'cartid' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'description' => 'The random Generated string as CartId',
+            ),
+            'sessionid' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'description' => 'The cart session Id',
+            ),
+            'bookitems' => array(
+                'type' => 'blob',
+                'not null' => FALSE,
+                'size' => 'big',
+                'serialize' => TRUE,
+                'description' => 'A serialized object contains of Booking Items and Price qty options.',
+            ),
+            'createdtime' => array(
+                'type' => 'varchar',
+                'length' => 12,
+                'description' => 'created date',
+            ),
+            'feeitems' => array(
+                'description' => 'fee items',
+                'type' => 'text',
+                'size' => 'big',
+            ),
+            'promocode' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'description' => 'promocode',
+            ),
+            'giftcard' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'description' => 'giftcard',
+            ),
+            'vouchercodes' => array(
+                'type' => 'text',
+                'size' => 'big',
+                'description' => 'vouchercodes',
+            ),
+            'tickets' => array(
+                'type' => 'text',
+                'size' => 'big',
+                'description' => 'tickets',
+            ),
+            'enhancements' => array(
+                'type' => 'text',
+                'size' => 'big',
+                'description' => 'enhancements',
+            ),
+            
+            'ticketstotalprice' => array(
+            		'type' => 'varchar',
+            		'length' => 255,
+            		'description' => 'ticketstotalprice',
+            ),
+            
+            'enhancementstotalprice' => array(
+            		'type' => 'varchar',
+            		'length' => 255,
+            		'description' => 'enhancementstotalprice',
+            ),
+            'subtotal' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'description' => 'subtotal',
+            ),
+            'tax' => array(
+            		'type' => 'text',
+                'size' => 'big',
+            		'description' => 'tax',
+            ),
+            'total' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'description' => 'total',
+            ),
+            
+            'order_id' => array(
+            		'type' => 'varchar',
+            		'length' => 10,
+            		'description' => 'order id',
+            ),
+            
+            'tax_lineitem' => array(
+            		'type' => 'varchar',
+                'length' => 255,
+            		'description' => 'tax line items',
+            ),
+            
+            
+            'discount_lineitem' => array(
+            		'type' => 'varchar',
+                'length' => 255,
+            		'description' => 'discount line items',
+            ),
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        ),
+        'primary key' => array('id'),
+    );
+//tree_node Schema 
+
+
+    return $schema;
+}

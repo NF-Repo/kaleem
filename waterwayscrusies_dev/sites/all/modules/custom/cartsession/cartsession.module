@@ -1,0 +1,676 @@
+<?php
+
+class CartSession{
+	
+	
+	//create cartsession
+	/**
+	 * First Checking for the existence of sessionid if available
+	 * then we are updating the session or else
+	 	* we are inserting this one
+	 *
+	 *
+	 */
+	public static function createCartSession($cartsesison){
+		$query = db_select('cartsession', 'c');
+		$query->fields('c');
+		$query->condition('sessionid', $cartsesison->sessionid, '=');
+		
+		$ticketentrees = $query->execute();
+		$num_of_results = $ticketentrees->rowCount();
+		if($num_of_results > 0)
+		{
+			//update
+			$insertresults = db_update('cartsession') // Table name no longer needs {}
+			->fields(array(
+					'bookitems' =>serialize($cartsesison->bookitems),
+					//'feeitems'=>'',
+					//'promocode'=>'',
+					//'giftcard'=>'',
+					//vouchercodes
+					'feeitems'=>$cartsesison->feeitems,
+					'tickets'=>$cartsesison->tickets,
+					//enhancements
+					'subtotal'=>$cartsesison->subtotal,
+					'total'=>$cartsesison->total,
+					'ticketstotalprice'=>$cartsesison->ticketstotalprice,
+					'tax'=>$cartsesison->tax,
+					
+					))
+			->condition('sessionid',$cartsesison->sessionid, '=')
+			->execute();
+		}
+		else {
+			$insertresults = db_insert('cartsession') // Table name no longer needs {}
+			->fields(array(
+					'bookitems' =>serialize($cartsesison->bookitems),
+					//'feeitems'=>'',
+					//'promocode'=>'',
+					//'giftcard'=>'',
+					//vouchercodes
+					'tickets'=>$cartsesison->tickets,
+					'feeitems'=>$cartsesison->feeitems,
+					//enhancements
+					'subtotal'=>$cartsesison->subtotal,
+					'total'=>$cartsesison->total,
+					'ticketstotalprice'=>$cartsesison->ticketstotalprice,
+					'sessionid'=>$cartsesison->sessionid,
+					'cartid'=>$cartsesison->cartid,
+					'createdtime'=>$cartsesison->createdtime,
+					'tax'=>$cartsesison->tax,
+						
+			))
+			//->condition('sessionid',$cartsesison->sessionid, '=')
+			->execute();
+			
+			//$insertresults=drupal_write_record('cartsession', $cartsesison);
+		}
+		
+		return $insertresults;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//Coupon
+	public static function insertPromoCode($sessionid,$promocode){
+		
+		try{
+		$cart_updated = db_update('cartsession')
+		->fields(array(
+				'promocode' => serialize($promocode),
+		))
+		->condition('sessionid', $sessionid, '=')
+		->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Promocode in Cartsession table", $e);
+		}
+	}
+	
+	
+	
+	public static function removePromocode($sessionid){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'promocode' => '',
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Promocode in Cartsession table", $e);
+		}
+	}
+	
+	
+	public static function getPromocode($sessionid){
+		
+		
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('promocode'));
+		$result=$query->execute()->fetchField();
+		return $result;
+		
+	}
+	
+	//voucher code
+	public static function insertGiftCard($sessionid,$giftcard){
+	
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'giftcard' => serialize($giftcard),
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Promocode in Cartsession table", $e);
+		}
+	}
+	
+	public static function getGiftCard($sessionid){
+		
+			$query = db_select('cartsession', 'c');
+			$query->condition('sessionid', $sessionid, '=');
+			$query->fields('c', array('giftcard'));
+			$result=$query->execute()->fetchField();
+			return $result;
+	}
+	
+	public static function getGiftCardPrice($sessionid){
+		$price=0;
+		$result=CartSession::getGiftCard($sessionid);
+		if($result){
+			$giftCardArray=unserialize($result);
+			foreach($giftCardArray as $key=>$values){
+				$price=$giftCardArray[$key]['deductedamount'];
+			}
+			
+		}
+		
+		return $price;
+		
+		
+	}
+	
+	public static function removeGiftCard($sessionid){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'giftcard' => '',
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Giftcard in Cartsession table", $e);
+		}
+	}
+	
+	public static function checkGiftCardExistence($sessionid){
+		$result=false;
+		$result=CartSession::getGiftCard($sessionid);
+		return $result;
+	}
+	
+	//voucher code
+	public static function insertVoucherCode($sessionid,$vouchercode){
+	
+		$existingVouchersArray=array();
+		$existingVoucherSerializedObject=CartSession::getVoucherCodes($sessionid);
+		if($existingVoucherSerializedObject){
+			$existingVouchersArray=unserialize($existingVoucherSerializedObject);
+		}
+		
+		$newVouchersArray=array();
+		if(count($existingVouchersArray)>0){
+			$newVouchersArray=array_merge($existingVouchersArray,$vouchercode);
+		}else{
+			$newVouchersArray=$vouchercode;
+		}
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'vouchercodes' => serialize($newVouchersArray),
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Voucher Codes in Cartsession table", $e);
+		}
+	}
+	
+	
+	public static function getVoucherCodes($sessionid){
+	
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('vouchercodes'));
+		$result=$query->execute()->fetchField();
+		return $result;
+	}
+	
+	public static function getVoucherCodesPrice($sessionid){
+		$totalPrice=0;
+		$existingVoucherSerializedObject=CartSession::getVoucherCodes($sessionid);
+		if($existingVoucherSerializedObject){
+			$existingVouchersArray=unserialize($existingVoucherSerializedObject);
+			
+			foreach($existingVouchersArray as $key=>$value){
+				$totalPrice=$totalPrice+$value;
+			}
+		}
+		return $totalPrice;
+	}
+	
+	
+	public static function checkVoucherExistence($vouchercode,$sessionid){
+		$result=false;
+		$existingVoucherSerializedObject=CartSession::getVoucherCodes($sessionid);
+		if($existingVoucherSerializedObject){
+			$existingVouchersArray=unserialize($existingVoucherSerializedObject);
+				
+			foreach($existingVouchersArray as $key=>$value){
+				if($vouchercode==$key){
+					$result=true;
+					break;
+				}
+				
+			}
+		}
+		return $result;
+		
+	}
+	
+	public static function removeVoucher($sessionid){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'vouchercodes' => '',
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Vouchercodes in Cartsession table", $e);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//Cruise Fee Items
+	public static function insertCruiseFeeItems($sessionid,$feeitems){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'feeitems' => serialize($feeitems),
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Promocode in Cartsession table", $e);
+		}
+	}
+	
+	public static function getCruieFeeItemModifiedPrice($sessionid,$feeid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('feeitems'));
+		$result=$query->execute()->fetchField();
+		
+		$cruiseFeeArray=unserialize($result);
+		
+		$rate=0;
+		foreach($cruiseFeeArray as $key => $values){
+			if($feeid==$key){
+				$rate=$values['updatedrate'];
+				break;
+			}
+		}
+		
+		return $rate;
+	}
+	
+	
+	public static function getCruiseFeeItems($sessionid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('feeitems'));
+		$result=$query->execute()->fetchField();
+		
+		$cruiseFeeArray=unserialize($result);
+		return $cruiseFeeArray;
+	}
+	
+	
+	//tickets
+	public static function insertTickets($sessionid,$tickets){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'tickets' => serialize($tickets),
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Promocode in Cartsession table", $e);
+		}
+	}
+	
+	
+	public static function getTickets($sessionid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('tickets'));
+		$result=$query->execute()->fetchField();
+		return $result;
+	
+	}
+	
+	//ticket price
+	public static function insertTotalTicketsPrice($sessionid,$ticketstotalprice){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'ticketstotalprice' => $ticketstotalprice,
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Promocode in Cartsession table", $e);
+		}
+	}
+	
+	public static function getTotalTicketsPrice($sessionid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('ticketstotalprice'));
+		$result=$query->execute()->fetchField();
+		return $result;
+	
+	}
+	
+	//enhancementstotalprice
+	public static function insertTotalEnhancementsPrice($sessionid,$enhancementstotalprice){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'enhancementstotalprice' => $enhancementstotalprice,
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Promocode in Cartsession table", $e);
+		}
+	}
+	
+	public static function getTotalEnhancementsPrice($sessionid){
+		$price=0;
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('enhancementstotalprice'));
+		$result=$query->execute()->fetchField();
+		if($result){
+			$price=$result;
+		}
+		return $result;
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//enhancements
+	public static function insertEnhancements($sessionid,$enhancements){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'enhancements' => serialize($enhancements),
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Enhancements in Cartsession table", $e);
+		}
+	}
+	
+	
+	public static function getEnhancements($sessionid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('enhancements'));
+		$result=$query->execute()->fetchField();
+		return $result;
+	
+	}
+	
+	
+	//subtotal
+	public static function insertOrderSubTotal($sessionid,$subTotal){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'subtotal' => $subTotal,
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Sub Total in Cartsession table", $e);
+		}
+	}
+	
+	public static function getOrderSubTotal($sessionid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('subtotal'));
+		$result=$query->execute()->fetchField();
+		return $result;
+	
+	}
+	
+	//total
+	public static function insertOrderTotal($sessionid,$total){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'total' => $total,
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Sub Total in Cartsession table", $e);
+		}
+	}
+	
+	public static function getOrderTotal($sessionid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('total'));
+		$result=$query->execute()->fetchField();
+		return $result;
+	
+	}
+	
+	//tax
+	public static function insertTaxItems($sessionid,$taxitems){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'tax' => $taxitems,
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Tax Total in Cartsession table", $e);
+		}
+	}
+	
+	public static function getTaxAmt($sessionid){
+		$taxamt=false;
+		try{
+			$query = db_select('cartsession', 'c');
+			$query->condition('sessionid', $sessionid, '=');
+			$query->fields('c', array('tax'));
+			$result=$query->execute()->fetchField();
+			
+			if($result){
+				$arr=unserialize($result);
+				$taxamt=$arr['total_tax'];
+			}
+			
+		}catch(Exception $e){
+			watchdog('Error in Retrieving Tax from Cartsession Table', $e);
+		}
+		return $taxamt;
+	}
+	
+	
+	public static function getTaxAmtItems($sessionid){
+		$result=false;
+		try{
+			$query = db_select('cartsession', 'c');
+			$query->condition('sessionid', $sessionid, '=');
+			$query->fields('c', array('tax'));
+			$result=$query->execute()->fetchField();
+		}catch(Exception $e){
+			watchdog('Error in Retrieving Tax from Cartsession Table', $e);
+		}
+		return $result;
+	}
+	
+	
+	
+	//tax line itme
+	public static function insertTaxLineItem($sessionid,$tax_lineitem){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'tax_lineitem' => serialize($tax_lineitem),
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Tax Lineitem in Cartsession table", $e);
+		}
+	}
+	
+	
+	public static function insertDiscountLineItem($sessionid,$discount_lineitem){
+		try{
+			$cart_updated = db_update('cartsession')
+			->fields(array(
+					'discount_lineitem' => serialize($discount_lineitem),
+			))
+			->condition('sessionid', $sessionid, '=')
+			->execute();
+		}catch(Exception $e){
+			watchdog("Error Updating the Discount line item in Cartsession table", $e);
+		}
+	}
+	
+
+
+	public static function getTaxLineItem($sessionid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('tax_lineitem'));
+		$result=$query->execute()->fetchField();
+		return $result;
+	}
+	
+	
+	public static function getDiscountLineItem($sessionid){
+		$query = db_select('cartsession', 'c');
+		$query->condition('sessionid', $sessionid, '=');
+		$query->fields('c', array('discount_lineitem'));
+		$result=$query->execute()->fetchField();
+		return $result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function cartsession_menu() {
+  $items = array();
+  $items['cartsession'] = array(
+      'title' => 'Cart session',
+      'page callback' => 'cartsession_page',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+function cartsession_theme() {
+    $items['cartsession'] = array(
+        'template' => 'cartsession',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function cartsession_page() {
+  
+  
+  
+}
+
+
+function getCartSessionItemsbysessionId($sessionId)
+{
+  $resultsset=array();
+  $result = db_select('cartsession', 'c')
+            ->fields('c')
+           ->condition('sessionid', $sessionId, '=')
+            ->execute();
+    foreach ($result as $value) {
+//       var_dump((unserialize($value->bookitems)));
+       $bookeditems=unserialize($value->bookitems);
+      foreach ($bookeditems->ticketoptions as $attribs)
+      {
+       
+        if($attribs['qty'] > 0)
+        {
+          $resultsset[]=$attribs;
+        }
+      }
+    }
+  return $resultsset;
+}
+
+function cartsessionCreate($cartsesison)
+{
+	
+	
+//  id 	cartid 	sessionid 	bookitems
+  
+  
+  /**
+   * First Checking for the existence of sessionid if available
+   * then we are updating the session or else
+   * we are inserting this one
+   * 
+   * 
+   */
+  $query = db_select('cartsession', 'c');
+    $query->fields('c');
+    $query->condition('sessionid', $cartsesison->sessionid, '=');
+   
+    $ticketentrees = $query->execute();
+   $num_of_results = $ticketentrees->rowCount();
+   if($num_of_results > 0)
+   {
+     //update
+     $insertresults = db_update('cartsession') // Table name no longer needs {}
+    ->fields(array('bookitems' =>serialize($cartsesison->bookitems)))
+  ->condition('sessionid',$cartsesison->sessionid, '=')
+ ->execute();
+   }
+   else {
+     $insertresults=drupal_write_record('cartsession', $cartsesison);
+   }
+   
+   return $insertresults;
+}
+
+function template_preprocess_cartsession(&$variables) {
+
+}
+
