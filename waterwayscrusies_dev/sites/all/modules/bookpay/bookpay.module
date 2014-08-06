@@ -1,0 +1,386 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function bookpay_menu() {
+  $items = array();
+
+  // The admin form for Donations, using the existing pay_settings forms.
+  //The admin form for Booking Payments,using the existing pay_settings forms
+  $items['admin/structure/bookpay'] = array(
+    'title' => 'Bookpay forms',
+    'page callback' => 'bookpay_admin_overview',
+    'access arguments' => array('administer bookpay'),
+      'file'=>'bookpay.admin.inc',
+      'file path'=>drupal_get_path('module','bookpay').'/includes',
+    );
+  //The Booking Payment list View
+  $items['admin/structure/bookpay/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,//Defines the local task based upon menu.inc
+    'weight' => -10,
+  );
+  //Adding basic bookpay form this is one time form generation add according to the requirement
+  $items['admin/structure/bookpay/add'] = array(
+    'title' => 'Add a bookpay form',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pay_form_settings', 'bookpay'),
+    'access arguments' => array('administer bookpay'),
+    'file' => 'pay.admin.inc',
+    'file path' => drupal_get_path('module', 'pay') .'/includes',
+    'type' => MENU_LOCAL_TASK,
+  );
+  //Form Edit Operations
+  
+  $items['admin/structure/bookpay/%pay_form/edit'] = array(
+    'title' => 'Bookpay forms',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('pay_form_settings', 3),
+    'access arguments' => array('administer bookpay'),
+    'file' => 'pay.admin.inc',
+    'file path' => drupal_get_path('module', 'pay') .'/includes',
+  );
+//Preparing the Book pay menu dynamically using payform table 
+  if (db_table_exists('pay_form')) {
+    $res = db_query("SELECT * FROM {pay_form} 
+      WHERE status = 1 AND handler = 'bookpay'");
+
+    foreach ($res as $row) {
+      $pay_form = pay_form_load($row);
+     
+      $items[$pay_form->menu_path] = array(
+        'title' => $pay_form->title,
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('pay_form', $pay_form->pfid, $pay_form->table),
+        'access arguments' => array('payments bookpay'),
+      );
+    }
+  }
+  return $items;
+}
+
+/**
+ * Implements hook_perm().
+ */
+function bookpay_permission() {
+  return array(
+    'payments bookpay' => array(
+      'title' => t('Payments bookpay'), 
+    ),
+    'administer bookpay' => array(
+      'title' => t('Administer bookpay settings'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_pay_form_handler_info().
+ */
+function bookpay_pay_form_handler_info() {
+  return array(
+    'bookpay' => array(
+      'title' => t('Bookpay'),
+      'description' => t('A form to handle online Booking payments .'),
+      'handler' => 'bookpay',
+      'path' => drupal_get_path('module', 'bookpay') .'/includes'
+    ),
+  );
+}
+
+
+
+function autorize($payformInputObj) {
+  $form = drupal_get_form('pay_form', 2, 'pay_form');
+  $payform = array();
+  $payform['submit'] = "Submit payment";
+  $payform['form_build_id'] = "form-STDTL_hTaC750Q6EwBALO0zZie378vq1_iYM8UKxsHM";
+  $payform['form_id'] = "pay_form";
+  $payform['op'] = "Submit payment";
+  $payform['amount_other'] = $payformInputObj->amount_other;
+  $payform['total'] = $payformInputObj->total;
+
+  $payform['bookpay']['amount_other'] = $payformInputObj->amount_other;
+  $payform['bookpay']['total'] =$payformInputObj->total;
+  $payform['bookpay']['notes'] =$payformInputObj->notes;
+
+  //book pay payment method
+  $payform['bookpay']['pay_method'][1] = array(
+      "payment_type" =>$payformInputObj->payment_type,
+      "first_name" => $payformInputObj->first_name,
+      "last_name" =>$payformInputObj->last_name,
+      "mail" =>$payformInputObj->mail,
+      "cc_type" => $payformInputObj->cc_type,
+      "cc_number" =>$payformInputObj->cc_number,
+      "cc_ccv2" =>$payformInputObj->cc_ccv2,
+      "cc_exp_month" =>$payformInputObj->cc_exp_month,
+      "cc_exp_year" =>$payformInputObj->cc_exp_year,
+      "total" => $payformInputObj->total
+  );
+
+  $payform['bookpay']['pay_method']['selected'][1] = array(
+      "authorizenet_email_customer" => 0,
+      "authorizenet_email_merchant" => 1,
+      "authorizenet_cim" => 0,
+      "gateway_supports_ach" => false,
+      "gateway_supports_cc" => true,
+      "gateway_supports_recurring" => false,
+      "authorizenet_payment_profile" => null,
+  );
+
+  $payform['bookpay']['pay_method']['selected'][1]['payment_types'] = array(
+      "visa" => "visa",
+      "mc" => "mc",
+      "amex" => "amex",
+      "discover" => "discover",
+      "diners" => 0,
+      "laser" => 0,
+      "maestro" => 0,
+      "switch" => 0,
+      "solo" => 0
+  );
+
+
+
+
+  $payform['bookpay']['pay_method']['selected'][1]['permissions']['default'] = array(
+      "all" => "all",
+      "owner" => "owner",
+      "permission:administer pay" => "permission:administer pay",
+      "permission:administer payments for any form" => "permission:administer payments for any form",
+      "permission:make payments on any form" => "permission:make payments on any form",
+      "permission:administer payments for donate forms" => "permission:administer payments for donate forms",
+      "permission:make payments on donate forms" => "permission:make payments on donate forms",
+      "role:1" => "role:1",
+      "role:2" => "role:2",
+      "role:3" => "role:3"
+  );
+
+  //pay form
+  //
+  $payform['bookpay']['pay_method']['selected'][1]['pay_form'] = array(
+      'menu_path' => 'cruisebook',
+      'header_text' => array(
+          "value" => "Cruise",
+          "format" => "filtered_html"
+      ),
+      'confirmation_text' => array(
+          "value" => "Thanks for Your Paying for Cruise.",
+          "format" => "filtered_html"
+      ),
+      "confirmation_path" => "",
+      "embeddable" => true,
+      "pfid" => "3",
+      "title" => "Cruisebooking Page",
+      "status" => 1,
+      "uid" => 1,
+      "min_amount" => "1.00",
+      "max_amount" => "1000.00",
+      "total_goal" => null,
+      "currency" => "USD",
+      'pay_methods' => array(
+          "1" => "1",
+      ),
+      "notes_title" => "Comments",
+      "notes_format" => "plain_text",
+      "notes_description" => "",
+      "user_register" => false,
+      "table" => "pay_form",
+      "key" => "pfid",
+      'permissions' => array(
+          "default" => array('all' => 1),
+      ),
+      "handler" => "bookpay",
+      "notes" => $payformInputObj->notes
+  );
+  //end of laxmi json object buidling here
+
+
+  $payform['bookpay']['pay_method']['selected'][1]['authorizenet'] = array(
+      'login' => array(
+          "id" => 1,
+          "name" => "39nwg5SN766",
+          "transaction_key" => "874e2XJx9rC8F7Tt",
+          "developer" => 1
+      ),
+      "emailCustomer" => 0,
+      "emailMerchant" => 1,
+      "testMode" => 1,
+      "email" => null,
+      'account' => array(
+          "uid" => 0,
+          "hostname" => "::1",
+          "roles" => array("1" => "anonymous user"),
+          "cache" => 0
+      ),
+  );
+
+
+  //form of paymenthod
+  $payform['pay_method'] = array(
+      '1' => array(
+          "payment_type" =>$payformInputObj->payment_type,
+          "first_name" =>$payformInputObj->first_name,
+          "last_name" =>$payformInputObj->last_name,
+          "mail" =>$payformInputObj->mail,
+          "cc_type" => $payformInputObj->cc_type,
+          "cc_number" =>$payformInputObj->cc_number,
+          "cc_ccv2" =>$payformInputObj->cc_ccv2,
+          "cc_exp_month" =>$payformInputObj->cc_exp_month,
+          "cc_exp_year" =>$payformInputObj->cc_exp_year,
+          "total" => $payformInputObj->total
+      ),
+     //
+       'selected' => array(
+          1=> array(
+              "authorizenet_email_customer" => 0,
+              "authorizenet_email_merchant" => 1,
+              "authorizenet_cim" => 0,
+              "gateway_supports_ach" => false,
+              "gateway_supports_cc" => true,
+              "gateway_supports_recurring" => false,
+              "authorizenet_payment_profile" => null,
+              'payment_types' => array(
+                  "visa" => "visa",
+                  "mc" => "mc",
+                  "amex" => "amex",
+                  "discover" => "discover",
+                  "diners" => 0,
+                  "laser" => 0,
+                  "maestro" => 0,
+                  "switch" => 0,
+                  "solo" => 0,
+              ),
+              'gateway_testmode' => 1,
+              "payment_type" => null,
+              "cc_type" => null,
+              "cc_number" => "",
+              "cc_ccv2" => "",
+              "cc_exp_month" => null,
+              "cc_exp_year" => null,
+              "cc_issue_number" => "",
+              "pmid" => "1",
+              "title" => "Authorize.Net",
+              "description" => "Payment processing using the Authorize.Net payment gateway",
+              "min_amount" => 0,
+              "max_amount" => 1000,
+              "pay_form_action" => "complete",
+              "total" => 0,
+              "status" => 1,
+              "first_name" => null,
+              "last_name" => null,
+              "mail" => null,
+              "billto" => array(),
+              "table" => "pay_method",
+              "key" => "pmid",
+              'permissions' => array(
+                  'default' => array(
+                      "all" => "all",
+                      "owner" => "owner",
+                      "permission:administer pay" => "permission:administer pay",
+                      "permission:administer payments for any form" => "permission:administer payments for any form",
+                      "permission:make payments on any form" => "permission:make payments on any form",
+                      "permission:administer payments for donate forms" => "permission:administer payments for donate forms",
+                      "permission:make payments on donate forms" => "permission:make payments on donate forms",
+                      "role:1" => "role:1",
+                      "role:2" => "role:2",
+                      "role:3" => "role:3"
+                  ),
+              ),
+              'pay_form' => array(
+                  'menu_path' => 'cruisebook',
+                  'header_text' => array(
+                      "value" => "Cruise",
+                      "format" => "filtered_html"
+                  ),
+                  'confirmation_text' => array(
+                      "value" => "Thanks for Your Paying for Cruise.",
+                      "format" => "filtered_html"
+                  ),
+                  "confirmation_path" => "",
+                  "embeddable" => true,
+                  "pfid" => "3",
+                  "title" => "Cruisebooking Page",
+                  "status" => 1,
+                  "uid" => 1,
+                  "min_amount" => "1.00",
+                  "max_amount" => "1000.00",
+                  "total_goal" => null,
+                  "currency" => "USD",
+                  'pay_methods' => array(1 => '1'),
+                  "notes_title" => "Comments",
+                  "notes_format" => "plain_text",
+                  "notes_description" => "",
+                  "user_register" => false,
+                  "table" => "pay_form",
+                  "key" => "pfid",
+                  'permissions' => array(
+                      'default' => array('all' => 1)
+                  ),
+                  'handler' => "bookpay",
+                  "notes" => $payformInputObj->notes,
+              ),
+              'authorizenet' => array(
+                  'login' => array(
+                      "id" => 1,
+                      "name" => "39nwg5SN766",
+                      "transaction_key" => "874e2XJx9rC8F7Tt",
+                      "developer" => 1
+                  ),
+                  "emailCustomer" => 0,
+                  "emailMerchant" => 1,
+                  "testMode" => 1,
+                  "email" => null,
+                  'account' => array(
+                      'uid' => 0,
+                      "hostname" => "::1",
+                      'roles' => array("1" => "anonymous user"),
+                      'cache' => 0
+                  ),
+              ),
+          ),
+      ),
+      //
+  );
+  $payform['notes'] = $payformInputObj->notes;
+  module_load_include('inc', 'pay', 'includes/handlers/pay_form');
+  $values = $payform;
+  module_load_include('inc', 'pay', 'includes/handlers/pay_transaction');
+  $transaction = New pay_transaction($values);
+  if (!$transaction->pfid) {
+    $transaction->pfid = 2;
+  }
+
+  $transaction->save($values);
+
+  // Run payment activities for the 1 or more selected payment methods.
+  $selected = $values['pay_method']['selected'];
+  if (!is_array($selected)) {
+    $selected = array($selected => 1);
+  }
+
+  foreach ($selected as $pmid => $status) {
+    if (!$status) {
+      continue;
+    }
+
+
+    $method_values = $values['pay_method'][$pmid];
+    $method_values['pmid'] = $pmid;
+    $test = array();
+
+    $test['methodvalues'] = $method_values;
+    $pay_method = pay_method_load($method_values);
+    $test['paymethod'] = $pay_method;
+//       drupal_json_output($test);exit();
+    $transaction->save($method_values);
+
+    $activity = $transaction->add_activity($pay_method);
+
+    $activity->do_activity($pay_method->pay_form_action, $method_values);
+//     
+//exit();
+    // Add this activity to form_state for other modules to use.
+    $form_state['pay_activity'][] = $activity;
+    return $activity;
+}
+}

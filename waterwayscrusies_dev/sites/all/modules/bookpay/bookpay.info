@@ -1,0 +1,13 @@
+; $Id: bookpay.info,v 1.1 2013/08/20  Laxmi Exp $ 
+name = Bookpay
+description = Accept payments using the Pay API
+package = Payment forms
+core = 7.x
+dependencies[] = pay
+
+; Information added by drupal.org packaging script on 2013-08-20
+version = "7.x"
+core = "7.x"
+project = "bookpay"
+datestamp = "1332348345"
+

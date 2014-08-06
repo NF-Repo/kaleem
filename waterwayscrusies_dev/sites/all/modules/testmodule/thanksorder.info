@@ -1,0 +1,6 @@
+; $Id$
+name = thanksorder
+description = "Thank you page for Registration"
+core = 7.x
+version = VERSION
+package = Pokenlink

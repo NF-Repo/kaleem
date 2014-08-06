@@ -1,0 +1,190 @@
+
+#getdirections_directions {
+  width: 250px;
+  padding: 2px;
+
+}
+#getdirections_map_canvas {
+}
+
+.getdirections {
+  margin-top: 8px;
+}
+.getdirections td {
+  vertical-align: top;
+}
+
+.getdirections-list {
+  background: #FFFFFF;
+}
+.getdirections-map {
+  padding: 2px;
+  border: 1px solid #C0C0C0;
+  text-align: center;
+  background: #FFFFFF;
+  vertical-align: top;
+}
+
+.getdirections_display {
+  margin-bottom: 8px;
+}
+.getdirections_display label {
+  font-weight: 600;
+}
+
+tbody, thead {
+  border-top: 0;
+  border-bottom: 0;
+}
+
+.getdirections_returnlink {
+  margin-bottom: 8px;
+}
+#getdirections_trafficinfo {
+  margin-bottom: 8px;
+}
+#getdirections_bicycleinfo {
+  margin-bottom: 8px;
+}
+#getdirections_transitinfo {
+  margin-bottom: 8px;
+}
+#getdirections_panoramio {
+  margin-bottom: 8px;
+}
+#getdirections_switchfromto {
+  margin-bottom: 8px;
+}
+#getdirections_show_distance {
+  margin-top: 8px;
+}
+#getdirections_show_duration {
+  margin-top: 8px;
+}
+
+
+/* my css */
+
+.getdirections_form .form-item
+{
+  width:35%;
+ margin-left: 10px;
+  float: left;
+  margin-top: 5%;
+}
+.form-item
+{
+  margin-top: 0px;
+}
+#getdirections_btn
+{
+  width: 25%;
+  float: left;
+  margin-top: 5%;
+  /*padding-top:1%;*/
+}
+.getdirections table
+{
+  width: 670px;
+  float: left;
+}
+
+.getdirections table tbody tr td
+{
+  width:670px;
+  float: left;
+}
+.getdirections table tbody tr .getdirections-map
+{
+  padding: 0px;
+  border: none;
+}
+.getdirections table tbody tr .getdirections-map #getdirections_map_canvas
+{
+  width: 100% ;
+}
+.getdirections-list table tbody tr td{
+    width: auto !important;
+    float: none !important;
+}
+.getdirectionsSubmit
+{
+     width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    padding-right: 0px;
+    cursor: pointer;
+}
+.getdirectionsSubmitInner input
+{
+    width: 98% !important;
+    background-color: #ab323b;
+    margin: 0px;
+    line-height: 25px;
+    color: #ffffff;
+    font-family: georgia;
+    font-size: 15px;
+    text-align: center;
+    border: #f1dddf 1px dotted;
+    background-image: none;
+    padding: 0px;
+    border-radius: 0px;
+}
+
+.getdirectionsSubmit:hover{
+    background-color: #772328;
+}
+
+.getdirectionsSubmitInner input:hover{
+    border-color: #fcfbf9;
+    background-color: #772328;
+    color: #fcfbf9;
+}
+
+
+@media (max-width: 767px) {
+    .seereoutemapDirectionsclosebutton
+    {
+        width: 25%;
+    }
+    #seeparkingDirectionsModal
+    {
+        width: 95%;
+        position:absolute;
+        left: 10px;
+    }
+    
+    .getdirections_form .form-item
+{
+  width:100%;
+  float: none;
+}
+#getdirections_btn
+{
+  width: 50%;
+  float: none;
+  padding-top:1%;
+}
+.getdirections table tbody tr td
+{
+  width:100%;
+  float: left;
+}
+#getdirections_directions{
+    width: 100%;
+}
+
+.getdirections table
+{
+  width: 100%;
+  float: none;
+}
+.getdirections table tbody tr .getdirections-map #getdirections_map_canvas
+{
+  width: 100% !important;
+}
+
+}
+

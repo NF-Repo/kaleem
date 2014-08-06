@@ -1,0 +1,26 @@
+<?php 
+
+/**
+ * Implementation of hook_install().
+ */
+function bookpay_install() {
+  // Update the pay_form if pay_bookpay has been used to create any forms in the past.
+  if (db_table_exists('pay_form')) {
+    db_query("UPDATE {pay_form} SET handler = 'bookpay' WHERE handler = 'pay_bookpay'");
+  }
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function bookpay_uninstall() {
+  // Whack the schema cache.
+  drupal_get_schema(NULL, TRUE);
+
+  // Deactivate all of our bookpay  forms from the pay list.
+  // It seems irresponsible to delete them if there's still financial
+  // data lying around.
+  if (db_table_exists('pay_form')) {
+    db_query("UPDATE {pay_form} SET status = 0 WHERE handler = 'bookpay'");
+  }
+}

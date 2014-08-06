@@ -1,0 +1,35 @@
+/* 
+    Document   : thanksorder
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* order form css starts here */
+
+.cap_font
+{
+    font-size: 23px;
+    font-family: "Monotype Corsiva";
+    src: url(fonts/MTCORSVA.TTF); /*if IE*/
+    src: local("Grandesign Regular"), url("fonts/MTCORSVA.TTF") format("truetype");  /*non-IE*/
+}
+
+@font-face {
+    font-family: "Monotype Corsiva";
+    font-style: normal;
+    src: url(fonts/MTCORSVA.TTF); /*if IE */
+    src: local("Grandesign Regular"), url("fonts/MTCORSVA.TTF") format("truetype"); /* non-IE */
+}
+
+.registrationtypeHeading{
+    font-size: 1.375em;
+    margin: 5px 0px;
+    font-weight: normal;
+    padding-left: 28px;
+}
+
+.item img {
+  width:100%;
+}
