@@ -1,0 +1,330 @@
+<?php
+
+class AuthnetXMLException extends Exception {}
+
+class AuthnetXML
+{
+	const USE_PRODUCTION_SERVER  = 0;
+	const USE_DEVELOPMENT_SERVER = 1;
+
+	const EXCEPTION_CURL = 10;
+
+	private $ch;
+	private $login;
+	private $response;
+	private $response_xml;
+	private $results;
+	private $transkey;
+	private $url;
+	private $xml;
+
+	public function __construct($login, $transkey, $mode)
+	{
+		
+			$this->login    = trim($login);
+			$this->transkey = trim($transkey);
+			$authnet_aim_txn_mode=$mode;
+				
+			//Production   https://api.authorize.net/xml/v1/request.api
+			//Developer Test https://apitest.authorize.net/xml/v1/request.api
+
+			if($authnet_aim_txn_mode=="live"){
+				$this->url = 'https://api.authorize.net/xml/v1/request.api';
+			}else{
+				$this->url = 'https://apitest.authorize.net/xml/v1/request.api';
+			}
+				
+	}
+	
+
+
+	/**
+	 * remove XML response namespaces
+	 * without this php will spit out warinings
+	 * @see http://community.developer.authorize.net/t5/Integration-and-Testing/ARB-with-SimpleXML-PHP-Issue/m-p/7128#M5139
+	 */
+	private function removeResponseXMLNS($input)
+	{
+		// why remove them one at a time? all three aren't consistantly used in the response
+		$input = str_replace(' xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd"','',$input);
+		$input = str_replace(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"','',$input);
+		return str_replace(' xmlns:xsd="http://www.w3.org/2001/XMLSchema"','',$input);
+	}
+
+	public function __toString()
+	{
+		$output  = '';
+		$output .= '<table summary="Authorize.Net Results" id="authnet">' . "\n";
+		$output .= '<tr>' . "\n\t\t" . '<th colspan="2"><b>Class Parameters</b></th>' . "\n" . '</tr>' . "\n";
+		$output .= '<tr>' . "\n\t\t" . '<td><b>API Login ID</b></td><td>' . $this->login . '</td>' . "\n" . '</tr>' . "\n";
+		$output .= '<tr>' . "\n\t\t" . '<td><b>Transaction Key</b></td><td>' . $this->transkey . '</td>' . "\n" . '</tr>' . "\n";
+		$output .= '<tr>' . "\n\t\t" . '<td><b>Authnet Server URL</b></td><td>' . $this->url . '</td>' . "\n" . '</tr>' . "\n";
+		$output .= '<tr>' . "\n\t\t" . '<th colspan="2"><b>Request XML</b></th>' . "\n" . '</tr>' . "\n";
+		if (isset($this->xml) && !empty($this->xml))
+		{
+			$dom = new DOMDocument('1.0');
+			$dom->preserveWhiteSpace = false;
+			$dom->formatOutput = true;
+			$dom->loadXML(self::removeResponseXMLNS($this->xml));
+			$outgoing_xml = $dom->saveXML();
+
+			$output .= '<tr><td>' . "\n";
+			$output .= 'XML:</td><td><pre>' . "\n";
+			$output .= htmlentities($outgoing_xml) . "\n";
+			$output .= '</pre></td></tr>' . "\n";
+		}
+		if (!empty($this->response))
+		{
+			$dom = new DOMDocument('1.0');
+			$dom->preserveWhiteSpace = false;
+			$dom->formatOutput = true;
+			$dom->loadXML(self::removeResponseXMLNS($this->response));
+			$response_xml = $dom->saveXML();
+
+			$output .= '<tr>' . "\n\t\t" . '<th colspan="2"><b>Response XML</b></th>' . "\n" . '</tr>' . "\n";
+			$output .= '<tr><td>' . "\n";
+			$output .= 'XML:</td><td><pre>' . "\n";
+			$output .= htmlentities($response_xml) . "\n";
+			$output .= '</pre></td></tr>' . "\n";
+		}
+		$output .= '</table>';
+
+		return $output;
+	}
+
+	public function __destruct()
+	{
+		if (isset($this->ch))
+		{
+			curl_close($this->ch);
+		}
+	}
+
+	public function __get($var)
+	{
+		return $this->response_xml->$var;
+	}
+
+	public function __set($key, $value)
+	{
+		trigger_error('You cannot set parameters directly in ' . __CLASS__ . '.', E_USER_WARNING);
+		return false;
+	}
+
+	public function __call($api_call, $args)
+	{
+		$this->xml = new SimpleXMLElement('<' . $api_call . '></' . $api_call . '>');
+		$this->xml->addAttribute('xmlns', 'AnetApi/xml/v1/schema/AnetApiSchema.xsd');
+		$merch_auth = $this->xml->addChild('merchantAuthentication');
+		$merch_auth->addChild('name', $this->login);
+		$merch_auth->addChild('transactionKey', $this->transkey);
+
+		$this->setParameters($this->xml, $args[0]);
+		$this->process();
+	}
+
+	private function setParameters($xml, $array)
+	{
+		if (is_array($array))
+		{
+			$first = true;
+			foreach ($array as $key => $value)
+			{
+				if (is_array($value))
+				{
+					if(is_numeric($key))
+					{
+						if($first === true)
+						{
+							$xmlx  = $xml;
+							$first = false;
+						}
+						else
+						{
+							$parent = $xml->xpath('parent::*');
+							$xmlx = $parent[0]->addChild($xml->getName());
+						}
+					}
+					else
+					{
+						$xmlx = $xml->addChild($key);
+					}
+					$this->setParameters($xmlx, $value);
+				}
+				else
+				{
+					$xml->$key = $value;
+				}
+			}
+		}
+	}
+
+	private function process()
+	{
+		$this->xml = $this->xml->asXML();
+
+		$this->ch = curl_init();
+		curl_setopt($this->ch, CURLOPT_URL, $this->url);
+		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($this->ch, CURLOPT_HTTPHEADER, Array("Content-Type: text/xml"));
+		curl_setopt($this->ch, CURLOPT_HEADER, 0);
+		curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->xml);
+		curl_setopt($this->ch, CURLOPT_POST, 1);
+		curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, 0);
+		//curl_setopt($this->ch, CURLOPT_CAINFO, dirname(__FILE__) . '/ssl/cert.pem');
+
+		if(($this->response = curl_exec($this->ch)) !== false)
+		{
+			$this->response_xml = @new SimpleXMLElement($this->response);
+
+			curl_close($this->ch);
+			unset($this->ch);
+			return;
+		}
+		throw new AuthnetXMLException('Connection error: ' . curl_error($this->ch) . ' (' . curl_errno($this->ch) . ')', self::EXCEPTION_CURL);
+	}
+
+	public function isSuccessful()
+	{
+		return (int)$this->response_xml->transactionResponse->responseCode === 1;
+	}
+
+	public function isError()
+	{
+		return !$this->isSuccessful();
+	}
+}
+
+
+
+/*
+ * Implements hook_menu()
+ */
+
+function authoizenet_payment_refund_menu() {
+	$items = array();
+	$items['authoizenet_payment_refund_test'] = array(
+			'title' => 'Test Module ',
+			'page callback' => 'authoizenet_payment_refund_test',
+			'access callback' => 'user_access',
+			'access arguments' => array('access content'),
+			
+	);
+	
+	//Input Parameters
+	$items['refund/%'] = array(
+		'title' => 'Refund Transaction',
+		'page callback' => 'authoizenet_payment_refund_page',
+		'page arguments' => array(1),
+		'file'=>'refundform.php',
+		'access arguments' => array('payment refund'),
+	);
+	
+	
+	return $items;
+
+}
+
+function authoizenet_payment_refund_permission() {
+	return array(
+			'payment refund' => array(
+					'title' => t('Payment Refund'),
+			),
+	);
+}
+
+
+
+
+
+
+
+
+
+
+function authoizenet_payment_refund_test(){
+	
+	return drupal_get_form("refund_form");
+	
+	
+	//API Login ID : 4rLuU885Hx6
+	$login=trim(variable_get('uc_authnet_api_login_id', ''));
+	
+	
+	//Transaction Key : 3H8MxX5hAP5365pP
+	$transkey=trim(variable_get('uc_authnet_api_transaction_key', ''));
+	
+	/*
+	 uc_authnet_aim_txn_mode : developer_test
+	'live' => t('Live transactions in a live account'),
+	'live_test' => t('Test transactions in a live account'),
+	'developer_test' => t('Developer test account transactions'),
+	*/
+	$authnet_aim_txn_mode=variable_get('uc_authnet_aim_txn_mode', 'live_test');
+	
+	
+	
+	
+	$xml=new AuthnetXML($login,$transkey,$authnet_aim_txn_mode);
+	
+	
+	$xml->createTransactionRequest(array(
+			'refId' => rand(1000000, 100000000),
+			'transactionRequest' => array(
+					'transactionType' => 'refundTransaction',
+					'amount' => 5,
+					'payment' => array(
+							'creditCard' => array(
+									'cardNumber' => '6011000000000012',
+									'expirationDate' => '122016'
+							)
+					),
+					'authCode' => '2210468469'
+			),
+	));
+	
+	
+	
+echo "<br/>Code". $xml->messages->message->code;
+echo "Successful ?".($xml->isSuccessful()) ? 'yes' : 'no';
+echo "Error".($xml->isError()) ? 'yes' : 'no';
+echo "Transaction ID: ".$xml->transactionResponse->transId;
+
+	          
+	        
+	        
+	
+	
+	//var_dump($xml);
+	exit();
+	
+	
+	
+	var_dump($t);
+	exit();
+	
+	//API Login ID : 4rLuU885Hx6
+	$api_id=variable_get('uc_authnet_api_login_id', '');
+	
+	//Transaction Key : 3H8MxX5hAP5365pP
+	$api_key=variable_get('uc_authnet_api_transaction_key', '');
+	
+	//Authorize.net Test Gateway URL  : https://test.authorize.net/gateway/transact.dll
+	$authnet_api_test_gateway_url=variable_get('uc_authnet_api_test_gateway_url', UC_AUTHORIZENET_TEST_GATEWAY_URL);
+	
+	//Authorize.net Live Gateway URL : https://secure.authorize.net/gateway/transact.dll
+	$authnet_api_live_gateway_url=variable_get('uc_authnet_api_live_gateway_url', UC_AUTHORIZENET_LIVE_GATEWAY_URL);
+	
+	
+	/*
+	 uc_authnet_aim_txn_mode : developer_test
+	 'live' => t('Live transactions in a live account'),
+	'live_test' => t('Test transactions in a live account'),
+	'developer_test' => t('Developer test account transactions'),
+	*/
+	$authnet_aim_txn_mode=variable_get('uc_authnet_aim_txn_mode', 'live_test');
+	
+}
+
+
+
