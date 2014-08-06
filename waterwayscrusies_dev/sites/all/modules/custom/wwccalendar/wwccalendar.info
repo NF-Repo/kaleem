@@ -1,0 +1,7 @@
+; $Id$
+name =wwccalendar
+description = WaterwaysCruise Calendar
+core = 7.x
+package = WWC
+
+

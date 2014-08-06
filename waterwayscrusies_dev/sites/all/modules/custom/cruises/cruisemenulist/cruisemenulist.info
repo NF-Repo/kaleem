@@ -1,0 +1,6 @@
+name = Cruise Menus
+description = Maintain Cruise Course Menu List by Cruise ID
+core = 7.x
+version = VERSION
+package = WWC_CRUISES
+;Date 22Oct2013

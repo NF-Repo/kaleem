@@ -1,0 +1,203 @@
+<?php
+
+/**
+ * @file
+ * Install for a basic Request Quote Form entity - need to create 
+ * the base table for RequestQuote entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * 
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function requestquote_schema() {
+  $schema = array();
+
+  // The name of the table can be any name we choose. However, namespacing the
+  // table with the module name is best practice.
+  $schema['requestquote'] = array(
+      'description' => 'The base table for requestqutoe.',
+      'fields' => array(
+          'id' => array(
+              'description' => 'Primary key of the requestquiote.',
+              'type' => 'serial',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+          ),
+           'eventType' => array(
+              'description' => 'The type of event of userchoice',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+          
+          'eventTypeOther' => array(
+              'description' => 'The type of event of userchoice for other',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+          'firstName' => array(
+              'description' => 'The user firstname in the requestquote application form',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+           'lastName' => array(
+              'description' => 'The user lastname in the requestquote application form',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+          'email' => array(
+              'description' => 'The user email in the requestquote application form',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          'phoneNumber' => array(
+              'description' => 'The user phonenumber in the requestquote application form',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+           'company' => array(
+              'description' => 'The user company in the requestquote application form',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+           'bestTimetoCall' => array(
+              'description' => 'The user best-time-to-call in the requestquote application form',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          'preferredDateofEvent' => array(
+              'description' => 'The Preffered Date of Event',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+         
+           'preferredTimeofEvent' => array(
+              'description' => 'The Preffered Time of Event Date and time',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          'noOfGuests' => array(
+              'description' => 'The No Of Guests for Event attendance.',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+//          'preferedvenue' => array(
+//              'description' => 'The preferedvenue wwc by',
+//              'type' => 'varchar',
+//              'length' => 255,
+//              'not null' => TRUE,
+//              'default' => '',
+//          ),
+          
+          
+          
+          
+          'specialEmailRequired' => array(
+              'description' => 'The boolean value for SpecailEmailRequired',
+              'type' => 'int',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+          ),
+             
+           'usercomment' => array(
+              'description' => 'The comments filled in the requestquoteform',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+           
+                    
+             'preferedtocontact' => array(
+              'description' => 'The type of preferedtocontact of userchoice',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          'preferedtochareter' => array(
+              'description' => 'The type of preferedtocharter of userchoice',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+         'estimatedbudget' => array(
+              'description' => 'Estimated Budget.',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          'findusby' => array(
+              'description' => 'How did u Find us',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          'created' => array(
+              'description' => 'The QuestQuote Created Date and time',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+      ),
+      'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+
+/*
+ * Implements hook_uninstall().
+ *
+ * At uninstall time we'll notify field.module that the entity was deleted
+ * so that attached fields can be cleaned up.
+ */
+
+function requestquote_uninstall() {
+//field_attach_delete_bundle('userdocuments_basic', 'first_example_bundle');
+}

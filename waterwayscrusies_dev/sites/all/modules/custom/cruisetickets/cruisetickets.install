@@ -1,0 +1,189 @@
+<?php
+
+/**
+ * @file
+ * Install for a basic Request Quote Form entity - need to create 
+ * the base table for RequestQuote entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * 
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function cruisetickets_schema() {
+    $schema = array();
+
+    // The name of the table can be any name we choose. However, namespacing the
+    // table with the module name is best practice.
+
+
+    /**
+
+
+      Table fields ::
+      id
+      title
+      weight
+
+      //note for enhancment image we will use the default ubercart prouct image
+
+     */
+    $schema['cruisetickets'] = array(
+        'description' => 'The base table for cruisetickets Entity.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the cruisetickets Entity.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'title' => array(
+                'description' => 'The Enhancement title',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'ordering' => array(
+                'description' => 'Determines the list position of Tickets.',
+                'type' => 'int',
+                'size' => 'tiny',
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'ticket_status' => array(
+                'description' => 'Ticket Status',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0
+            ),
+            
+            'is_childticket' => array(
+            		'description' => 'is Child Ticket',
+            		'type' => 'int',
+            		'unsigned' => TRUE,
+            		'not null' => TRUE,
+            		'default' => 0
+            ),
+            
+            'is_taxable' => array(
+            		'description' => 'is Taxable Ticket',
+            		'type' => 'int',
+            		'unsigned' => TRUE,
+            		'not null' => TRUE,
+            		'default' => 0
+            ),
+            
+//             'parentticketid' => array(
+//                 'description' => 'Parent Ticket ID',
+//                 'type' => 'varchar',
+//                 'length' => 255,
+//                 'default' => '',
+//             ),
+            
+            
+            
+            'created' => array(
+                'description' => 'The Object created date and time',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+    //cruise template enhancments
+
+    $schema['cruise_template_tickets'] = array(
+        'description' => 'The base table for cruisetickets Entity.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the Cruise Templates.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+        		
+        		'activestatus' => array(
+        				'description' => 'Ticket Status',
+        				'type' => 'int',
+        				'unsigned' => TRUE,
+        				'not null' => TRUE,
+        				'default' => 0,
+        		),
+        		
+        		
+            'cruisetemplateid' => array(
+                'description' => 'The cruise template id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'ticketid' => array(
+                'description' => 'The cruise ticket id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+        	
+        	'entreeids' => array(
+        		'type' => 'text',
+        		'size' => 'big',
+        		'not null' => TRUE
+        	),
+        	
+        	
+        		
+            'price' => array(
+                'description' => 'The amount the store pays to sell the product.',
+                'type' => 'numeric',
+                'precision' => 16,
+                'scale' => 5,
+                'not null' => TRUE,
+                'default' => 0.0,
+            ),
+            
+            'weight' => array(
+            		'description' => 'Sorting Order',
+            		'type' => 'int',
+            		'size' => 'tiny',
+            		'not null' => TRUE,
+            		'default' => 0,
+            ),
+            
+            'created' => array(
+                'description' => 'The Object created date and time',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+
+    return $schema;
+}
+
+/*
+ * Implements hook_uninstall().
+ *
+ * At uninstall time we'll notify field.module that the entity was deleted
+ * so that attached fields can be cleaned up.
+ */
+
+function cruisetickets_uninstall() {
+//field_attach_delete_bundle('userdocuments_basic', 'first_example_bundle');
+}

@@ -1,0 +1,843 @@
+/* 
+    Document   : wwccalendar
+    Created on : Jun 25, 2013, 6:54:59 PM
+    Author     : LSN37
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+table.calendar { 
+  background-color:white;
+  line-height: 35px;
+}
+.calendar{
+    max-width:842px;
+    margin:0px auto; 
+    font-size:14px; 
+    line-height: 25px;
+    margin-top: 1%;
+    margin-bottom: 10%;
+}
+
+table.calendar tr td{
+  line-height: 35px ;
+  border:#dfceb6 1px solid;
+  font-weight: bold;
+  font-size: 25px;
+  width: 118px;
+  height: 118px;
+  vertical-align: top;
+}
+#menu
+{
+    position: static !important;
+}
+.mainCalendar
+{
+  width:100%;
+  position:relative;
+  overflow:hidden; 
+}
+
+.mainCalendar #cruiseCalendarleft
+{
+  position:absolute;
+  left:-43%;
+  top:0px;
+  width:60%;
+}
+#cruiseCalendarleft table
+{
+    opacity: 0.3;
+}
+#cruiseCalendarright table
+{
+    opacity: 0.3;
+}
+.mainCalendar #cruiseCalendar
+{
+  max-width:840px;
+  margin:auto;
+}
+.mainCalendar #cruiseCalendarright
+{
+  position:absolute;
+  right:-43%;
+  top:0px;
+  width:60%;
+}
+#CruisecalendarPrevious{
+    background:url("../wwccalendar/images/carousol-leftarrow.png") no-repeat;
+    position: absolute;
+    top:12%;
+    left:10%;
+    width: 74px;
+    height: 144px;
+    border: none;
+    z-index: 5;
+}
+#CruisecalendarNext
+{
+    background:url("../wwccalendar/images/carousol-rightarrow.png") no-repeat;
+    position: absolute;
+    top:12%;
+    right:10%;
+    z-index: 5;
+    width: 74px;
+    height: 144px;
+    border: none;
+}
+/* calender Header Css */
+.calendarHeader
+{
+  width:60%;
+  margin:0px auto;
+  padding-top: 5%;
+}
+.monthName
+{
+    text-align: center;
+    font-family: "CrimsonSemiBold";
+    font-size: 30px;
+    color:#454444;
+}
+.calendarTitle
+{
+    font-family: "CrimsonSemiBold";
+    font-size: 40px;
+    line-height: 50px;
+    color:#454444;
+}
+.calendarLine
+{
+    height: 1px;
+    width: 100%;
+    margin-top: 4%;
+    background: #bc9b6a;
+}
+.radioLine
+{
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    margin-top: 12px;
+    background: #bc9b6a;
+}
+.choose
+{
+    float: left;
+    width: 100%;
+    font-family:"CrimsonSemiBold";
+    font-size: 20px;
+    color: #818181;
+}
+.choosePortRadio
+{
+    position: relative;
+    float: left;
+    width: 100%;
+}
+.calendarRadio
+{
+    width: 30%;
+    float: left;
+    margin-left: 3%;
+    text-align: center;
+}
+.calendarPortRadio{
+    position: absolute;
+}
+.calendarRadio .portRadio
+{ 
+    width: 100%;
+   
+}
+
+/* calendar inner css */
+
+.calendar-row .calendar-day-head
+{
+    border: none;
+    background-color:#f2ebe1;  
+    font-family: "CrimsonRoman";
+    font-size: 14px ;
+    color: #818181;
+    height:20px;
+    font-weight:normal;
+    line-height: 20px;
+    padding-left: 2%;
+}
+table tbody
+{
+    border-top: none;
+}
+
+table tbody .day-number a
+{
+    font-family: "CrimsonSemiBold";
+    font-size: 50px;
+    color: #d6d5d4;
+    text-decoration: none;
+}
+table tbody .currentDay
+{
+    
+    
+    background-color: #cad9e6;
+    height: 118px;
+    
+}
+table tbody .currentDay a{
+    font-family: "CrimsonSemiBold";
+    font-size: 100px;
+    line-height: 100px;
+    color: #abb8c3;
+    text-decoration: none;
+}
+
+table tbody .day-number ul li{
+  list-style: none;
+  width: 100%;
+  float: left;
+}
+table tbody .day-number ul li a
+{
+    font-family: "CrimsonRoman";
+    font-size: 13.5px ;
+    color: #00529b;
+    font-weight: bold;
+    float: left;    
+    width:80%;
+}
+table tbody .eventDay
+{
+    position: relative;
+}
+table tbody .day-number ul{
+    position: absolute;
+    top: 0px;
+    height: 118px;
+    overflow: hidden;
+    margin-left: 10px;
+}
+/*table tbody .day-number ul:hover{
+    overflow: visible;
+}*/
+.day-number ul li span
+{
+    font-family: "CrimsonRoman";
+    font-size: 13px ;
+    color: #818181;
+    margin-left: 12px;
+    line-height: 15px;
+    float: left;
+}
+
+.cruiseKey
+{
+    background-color: #fff;
+    width: 125px;
+    height: 32px;
+    padding: 2px;
+    margin-right: 19%;
+    float: right;
+    margin-bottom: 2%;
+}
+.cruiseKeyInner
+{
+    border: #ab323b 1px dotted;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+/* end calendar inner css */
+
+
+/* end Calender Header css */
+.homeKeyColor
+{
+    background-color: #4598bf;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.shilsholeKeyColor
+{
+    background-color: #d38a42;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+.southlakeKeyColor
+{
+    background-color: #199a46;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+.pierKeyColor
+{
+    background-color: #932c27;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.marinaKeyColor
+{
+    background-color: #40c9d2;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+} 
+.carillonKeyColor
+{
+    background-color: #a12e82;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.popover ul{
+    list-style: none;
+    margin:0px;
+}
+
+
+/* responsive  css */
+@media (max-width: 480px) {
+#content
+{
+    display: block !important;
+}
+#cruiseCalendarleft, #cruiseCalendarright, table tbody .day-number ul
+{
+    display: none;
+}
+#CruisecalendarNext, #CruisecalendarPrevious
+{
+    display: block !important;
+}
+
+table tbody .day-number a
+{
+    font-family: "CrimsonSemiBold";
+    font-size: 30px;
+    color: #d6d5d4;
+    text-decoration: none;
+}
+table tbody .currentDay a{
+    font-family: "CrimsonSemiBold";
+    font-size: 30px;
+    line-height: 55px;
+    color: #abb8c3;
+    text-decoration: none;
+    vertical-align: middle;
+}
+table tbody .currentDay
+{ 
+    background-color: #cad9e6;
+    height: 58px !important;
+}
+table.calendar tr td{
+  line-height: 35px ;
+  border:#dfceb6 1px solid;
+  font-weight: bold;
+  font-size: 25px;
+  width: 58px !important;
+  height: 58px !important;
+  vertical-align:middle;
+}
+.radioLine
+{
+    margin-top: 12px !important;
+}
+.choose
+{
+    margin-top: 15%;
+    width: 80%;
+}
+.calendarHeader
+{
+    width: 90%;
+}
+.calendarHeader .row-fluid .span5
+{
+    float: left;
+    width: 40%;
+}
+.calendarHeader .row-fluid .span2
+{
+    float: left;
+    width: 20%;
+}
+.calendarLine
+{
+    margin-top: 8% !important;
+}
+.day-number ul li span
+{
+    float: none;
+}
+.day-number ul li
+{
+   font-family: "CrimsonRoman";
+    font-size: 13px ;
+    color: #00529b;
+    font-weight: bold;
+    list-style: none;
+    width: 94%; 
+}
+.eventDay ul{
+margin-left: 0px;
+}
+.eventDay ul li
+{
+    padding-left: 20px;
+}
+.brunchpopup{
+    background-color: #fcfbf9;
+}
+.brunchpopup .brunchdate
+{
+    font-family: "CrimsonSemiBold";
+    font-size: 20px;
+    line-height: 25px;
+    color: #454444;
+    margin-top: 2%;
+}
+.brunchpopup .brunchDeparture
+{
+     font-family: "CrimsonSemiBold";
+    font-size: 15px;
+    color: #454444;
+     line-height: 25px;
+}
+.brunchpopup .seeDirections
+{
+    margin-top: 5%;
+}
+.brunchpopup .seeDirections a
+{
+    font-family: "CrimsonSemiBold";
+    font-size: 15px;
+    color: #00529b;
+     line-height: 25px;
+     
+     font-weight: 600;
+     text-decoration: none;
+}
+.brunchpopup .booknow
+{
+    width: 35%;
+    float: none;
+}
+.cruiseKeyTitle
+{
+    font-family: "CrimsonRoman";
+    font-size: 16px ;
+    color: #454444;
+    padding-left: 10px;
+}
+.cruiseKey
+{
+    background-color: #fff;
+    width: 95%;
+    height: 90px;
+    padding: 2px;
+    margin: 0px auto;
+    float: none;
+    margin-bottom: 2%;
+}
+.cruiseKeyInner
+{
+    border: #ab323b 1px dotted;
+    text-align: left;
+    line-height: 30px;
+    height: 89px;
+    font-family: "CrimsonSemiBold";
+    font-size: 16px;
+    color: #454444;
+}
+.cruiseKeyInner span{
+    float: left;
+    line-height: 20px;
+}
+
+.homeKeyColor
+{
+    background-color: #4598bf;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.shilsholeKeyColor
+{
+    background-color: #d38a42;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+.southlakeKeyColor
+{
+    background-color: #199a46;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+.pierKeyColor
+{
+    background-color: #932c27;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.marinaKeyColor
+{
+    background-color: #40c9d2;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+} 
+.carillonKeyColor
+{
+    background-color: #a12e82;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+#CruisecalendarPrevious{
+    background:url("../wwccalendar/images/carousol-leftarrow-mobile.png") no-repeat;
+    position: absolute;
+    top:24%;
+    left:18%;
+    width: 18px;
+    height: 33px;
+    border: none;
+}
+#CruisecalendarNext
+{
+    background:url("../wwccalendar/images/carousol-rightarrow-mobile.png") no-repeat;
+    position: absolute;
+    top:24%;
+    right:18%;
+    z-index: 5;
+    width: 18px;
+    height: 33px;
+    border: none;
+}
+
+
+}
+@media screen and (max-width: 767px) { 
+    #content
+{
+    display: block !important;
+}
+#cruiseCalendarleft, #cruiseCalendarright, #CruisecalendarNext, #CruisecalendarPrevious, table tbody .day-number ul
+{
+    display: none;
+}
+
+table tbody .day-number a
+{
+    font-family: "CrimsonSemiBold";
+    font-size: 30px;
+    color: #d6d5d4;
+    text-decoration: none;
+}
+table tbody .currentDay a{
+    font-family: "CrimsonSemiBold";
+    font-size: 30px;
+    line-height: 55px;
+    color: #abb8c3;
+    text-decoration: none;
+    vertical-align: middle;
+}
+table tbody .currentDay
+{ 
+    background-color: #cad9e6;
+    height: 80px;
+}
+table.calendar tr td{
+  line-height: 35px ;
+  border:#dfceb6 1px solid;
+  font-weight: bold;
+  font-size: 25px;
+  width: 80px;
+  height: 80px;
+  vertical-align:middle;
+}
+.radioLine
+{
+    margin-top: 12px !important;
+}
+.choose
+{
+    margin-top: 15%;
+    width: 80%;
+}
+.calendarHeader
+{
+    width: 90%;
+}
+.calendarHeader .row-fluid .span5
+{
+    float: left;
+    width: 40%;
+}
+.calendarHeader .row-fluid .span2
+{
+    float: left;
+    width: 20%;
+}
+.calendarLine
+{
+    margin-top: 5%;
+}
+.day-number ul li span
+{
+    float: none;
+}
+.day-number ul li
+{
+   font-family: "CrimsonRoman";
+    font-size: 13px ;
+    color: #00529b;
+    font-weight: bold;
+    list-style: none;
+    width: 94%; 
+}
+.eventDay ul{
+margin-left: 0px;
+}
+.eventDay ul li
+{
+    padding-left: 20px;
+}
+.brunchpopup{
+    background-color: #fcfbf9;
+}
+.brunchpopup .brunchdate
+{
+    font-family: "CrimsonSemiBold";
+    font-size: 20px;
+    line-height: 25px;
+    color: #454444;
+    margin-top: 2%;
+}
+.brunchpopup .brunchDeparture
+{
+     font-family: "CrimsonSemiBold";
+    font-size: 15px;
+    color: #454444;
+     line-height: 25px;
+}
+.brunchpopup .seeDirections
+{
+    margin-top: 5%;
+}
+.brunchpopup .seeDirections a
+{
+    font-family: "CrimsonSemiBold";
+    font-size: 15px;
+    color: #00529b;
+     line-height: 25px;
+     font-weight: 600;
+     text-decoration: none;
+}
+.brunchpopup .booknow
+{
+    width: 35%;
+    float: none;
+}
+.cruiseKeyTitle
+{
+    font-family: "CrimsonRoman";
+    font-size: 16px ;
+    color: #454444;
+    padding-left: 10px;
+}
+.cruiseKey
+{
+    background-color: #fff;
+    width: 95%;
+    height: 90px;
+    padding: 2px;
+    margin: 0px auto;
+    float: none;
+    margin-bottom: 2%;
+}
+.cruiseKeyInner
+{
+    border: #ab323b 1px dotted;
+    text-align: left;
+    line-height: 30px;
+    height: 89px;
+    font-family: "CrimsonSemiBold";
+    font-size: 16px;
+    color: #454444;
+}
+.cruiseKeyInner span{
+    float: left;
+    line-height: 20px;
+}
+
+.homeKeyColor
+{
+    background-color: #4598bf;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.shilsholeKeyColor
+{
+    background-color: #d38a42;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+.southlakeKeyColor
+{
+    background-color: #199a46;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+.pierKeyColor
+{
+    background-color: #932c27;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.marinaKeyColor
+{
+    background-color: #40c9d2;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+} 
+.carillonKeyColor
+{
+    background-color: #a12e82;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+}
+@media (max-width: 979px) { 
+    
+     #content
+{
+    display: block !important;
+}
+#cruiseCalendarleft, #cruiseCalendarright
+{
+    display: none;
+}
+.calendarHeader
+{
+    width: 98%;
+}
+.radioLine
+{
+    margin-top: 16px;
+}
+
+
+
+}
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+.calendarHeader
+{
+    width: 80%;
+   
+}
+.radioLine
+{
+    margin-top: 16px;
+}
+
+#cruiseCalendarleft, #cruiseCalendarright
+{
+    display: none;
+}
+
+
+#CruisecalendarPrevious{
+   
+    left:5%; 
+}
+#CruisecalendarNext
+{
+    right:5%;   
+}
+
+
+
+}
+/* end responsive  css */
+

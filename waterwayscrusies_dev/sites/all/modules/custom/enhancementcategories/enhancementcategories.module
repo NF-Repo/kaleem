@@ -1,0 +1,261 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function enhancementcategories_menu() {
+	$items = array ();
+	$items ['enhancementcategories'] = array (
+			'title' => 'Enhancements',
+			'page callback' => 'enhancementcategories_listview',
+			'access callback' => 'user_access',
+			'access arguments' => array (
+					'view enhancementcategories' 
+			) 
+	);
+	$items ['enhancementcategories/add'] = array (
+			'title' => 'Categories',
+			'page callback' => 'add_enhancementcategories',
+			'access callback' => 'user_access',
+			'access arguments' => array (
+					'create enhancementcategories' 
+			) 
+	);
+	
+	$items ['enhancementcategories/%/edit'] = array (
+			'title' => 'Edit Enhancement Category',
+			'page callback' => 'edit_enhancementcategories',
+			'access callback' => 'user_access',
+			'access arguments' => array (
+					'edit enhancementcategories' 
+			),
+			'page arguments' => array (
+					1 
+			) 
+	);
+	
+	$items ['enhancementcategories/%/delete'] = array (
+			'title' => 'Delete Enhancement Category',
+			'page callback' => 'delete_enhancementcategories',
+			'access callback' => 'user_access',
+			'access arguments' => array (
+					'delete enhancementcategories' 
+			),
+			'page arguments' => array (
+					1 
+			) 
+	);
+	
+	return $items;
+}
+function enhancementcategories_theme() {
+	$items ['enhancementcategories'] = array (
+			'template' => 'enhancementcategories', // here comes your template name
+			'render element' => 'content' 
+	);
+	return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function enhancementcategories_permission() {
+	return array (
+			
+			'view enhancementcategories' => array (
+					'title' => t ( 'View Cruise Enhancementcategories' ) 
+			),
+			'edit enhancementcategories' => array (
+					'title' => t ( 'Edit Cruise Enhancementcategories' ) 
+			),
+			'create enhancementcategories' => array (
+					'title' => t ( 'Create Cruise Enhancementcategories' ) 
+			),
+			
+			'delete enhancementcategories' => array (
+					'title' => t ( 'Delete Cruise Enhancementcategories' ) 
+			) 
+	)
+	;
+}
+function enhancementcategories_listview() {
+	global $base_url;
+	
+	
+	
+	$taxonomydata = taxonomy_get_children ( '', '231' );
+	$treeObjects = taxonomy_get_tree ( '13' );
+	$enhancementsList = array ();
+	foreach ( $treeObjects as $object ) {
+		foreach ( $object->parents as $parent ) {
+			if ($parent == '231') {
+				$enhancementsList [] = $object;
+			}
+		}
+	}
+	
+	$rows = array ();
+	foreach ( $enhancementsList as $enhancement ) {
+		$rows [] = array (
+				$enhancement->tid,
+				$enhancement->name,
+				
+				'<a href="' . $base_url . '/enhancementcategories/' . $enhancement->tid . '/edit">Edit |</a>
+               <a href="' . $base_url . '/enhancementcategories/' . $enhancement->tid . '/delete">Delete</a>' 
+		);
+	}
+	
+	// var_dump($enhancementsList);
+	// exit();
+	
+	$output = '';
+	$header = array (
+			array (
+					'data' => 'Id' 
+			),
+			array (
+					'data' => 'Name' 
+			),
+			array (
+					'data' => 'Actions' 
+			) 
+	);
+	
+	$output .= '<div class="">';
+	$output .= '<div class="">';
+	
+	$output .= '</div>';
+	
+	$output .= '<a href="' . base_path () . 'enhancementcategories/add">Add New Enhancement</a>';
+	
+	$output .= theme_table ( array (
+			'header' => $header,
+			'rows' => $rows,
+			'attributes' => array (
+					'class' => array (
+							'' 
+					) 
+			),
+			'sticky' => true,
+			'caption' => '',
+			'colgroups' => array (),
+			'empty' => t ( "No Records!" ) 
+	) ) . theme ( 'pager' );
+	
+	$output .= '</div>';
+	
+	return $output;
+}
+function add_enhancementcategories() {
+	return drupal_get_form ( 'enhancementcategories_form' );
+}
+function edit_enhancementcategories($tid) {
+	$taxonomytermobject = taxonomy_term_load ( $tid );
+	return drupal_get_form ( 'enhancementcategories_form', $taxonomytermobject );
+}
+function enhancementcategories_form($form, &$form_state, $taxonomytermobject = NULL) {
+	$categoryid = '';
+	$categoryname = '';
+	if (! is_null ( $taxonomytermobject )) {
+		$categoryid = $taxonomytermobject->tid;
+		$categoryname = $taxonomytermobject->name;
+	}
+	
+	$form = array ();
+	$form ['categories'] = array (
+			'#type' => 'textfield',
+			'#title' => t ( 'Categoryname' ),
+			'#default_value' => $categoryname 
+	);
+	
+	$form ['tid'] = array (
+			'#type' => 'hidden',
+			'#value' => $categoryid 
+	);
+	
+	$form ['actions'] = array (
+			'#type' => 'actions' 
+	);
+	
+	$form ['actions'] ['submit'] = array (
+			'#type' => 'submit',
+			'#value' => t ( 'Save' ) 
+	);
+	
+	$form ['actions'] ['cancel'] = array (
+			'#type' => 'submit',
+			'#value' => t ( 'Cancel' ),
+			'#submit' => array (
+					'enhancementcategories_form_cancel' 
+			) 
+	);
+	
+	// $form ['actions'] ['cancel'] = array (
+	// '#markup' => l ( t ( 'Cancel' ), 'foo/bar' )
+	// );
+	return $form;
+}
+function enhancementcategories_form_cancel($form, &$form_state) {
+	$form_state ['redirect'] = 'enhancementcategories';
+}
+function enhancementcategories_form_validate($form, &$form_state) {
+}
+function enhancementcategories_form_submit($form, &$form_state) {
+	$tid = '';
+	$msg = "failed";
+	if ($form_state ['values'] ['tid'] != '') {
+		$tid = $form_state ['values'] ['tid'];
+		$msg = "Updated";
+	} else {
+		$msg = "Created";
+	}
+	
+	try {
+		$termName = $form_state ['values'] ['categories'];
+		$description = "";
+		$term = new stdClass ();
+		$term->tid = $tid;
+		$term->name = $termName;
+		$term->vid = 13; //here here vid is Catalog Taxonomy Term 
+		$term->description = $description;
+		$term->parent = 231;  //here 231 is Taxonomyterm ID for Enhancements
+		$t = taxonomy_term_save ( $term );
+	} catch ( Exception $e ) {
+		_drupal_log_error($e);
+	}
+	
+	$operationmsg="Enhancement Category".$msg. " Successfully";
+	$path='';
+	drupal_set_message($operationmsg);
+	//drupal_goto($path);
+	//exit();
+	
+	$form_state ['redirect'] = 'enhancementcategories';
+	
+	// taxonomy_term_save((object) array(
+	// 'name' => $form_state['values']['categories'],
+	// 'vid' => '231',
+	// ));
+}
+function delete_enhancementcategories($tid) {
+	$msg="Deleted Operation failed";
+	
+	try{
+		//Uncomment this for delete operation
+		//taxonomy_term_delete($tid);
+		//$msg="Deleted Successfully";
+		$msg="Delete Operation is disabled Please contact the site Administer.";
+	}catch(Exception $e){
+		_drupal_log_error($e);
+	}
+	
+
+	
+	
+	$path='enhancementcategories';
+	drupal_set_message($msg);
+	drupal_goto($path);
+	
+	exit();
+}
+

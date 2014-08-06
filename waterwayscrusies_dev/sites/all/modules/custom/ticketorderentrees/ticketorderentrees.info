@@ -1,0 +1,9 @@
+name = Ticket Order Entrees
+description = Storing the Ticket,Order ID, Entrees and Dietary Restriction Details
+core = 7.x
+files[] = ticketorderentrees.controller.inc
+files[] = ticketorderentrees.module
+files[] = ticketorderentrees.form.inc
+files[] = ticketorderentrees.install
+;Date 24Oct2013
+

@@ -1,0 +1,82 @@
+/* 
+    Document   : thanksorder
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* order form css starts here */
+
+.cap_font
+{
+    font-size: 23px;
+    font-family: "Monotype Corsiva";
+    src: url(fonts/MTCORSVA.TTF); /*if IE*/
+    src: local("Grandesign Regular"), url("fonts/MTCORSVA.TTF") format("truetype");  /*non-IE*/
+}
+
+@font-face {
+    font-family: "Monotype Corsiva";
+    font-style: normal;
+    src: url(fonts/MTCORSVA.TTF); /*if IE */
+    src: local("Grandesign Regular"), url("fonts/MTCORSVA.TTF") format("truetype"); /* non-IE */
+}
+
+.registrationtypeHeading{
+    font-size: 1.375em;
+    margin: 5px 0px;
+    font-weight: normal;
+    padding-left: 28px;
+}
+
+.contentbox-first-inner-normal
+{
+    margin-top:22%;
+    font-size:30.34px;
+    color:#00529b;
+    line-height:35px;
+    margin-left: 15px;
+    margin-right: 13px;
+    font-family:"CrimsonRoman";
+}
+.contentbox-first-inner-normal span
+{
+    font-family:"England";
+    font-size:43.34px;
+    line-height:40px;
+}
+
+/*.item img {
+  width:100%;
+}*/
+
+.slider ol.carousel-indicators .active{
+    background-color:  inherit !important;
+    background-image:url("images/Indicators-active.png") !important;
+    background-repeat: no-repeat !important;
+    width: 12px !important;
+    height: 12px !important;
+    background-size: 100%;
+    /*text-indent: 0px !important;*/
+}
+
+.slider ol.carousel-indicators li{
+    background-color: inherit !important;
+    border-radius:0px !important;
+    background-image: url("images/Indicators-inactive.png") !important;
+    background-repeat: no-repeat !important;
+    width: 11px !important;
+    height: 12px !important;
+    background-size: 100%;
+    /*text-indent: 0px !important;*/
+}
+
+.slider a.carousel-control{
+    background: inherit !important;
+    border: solid 0px !important;
+}
+
+/*.slider ol.carousel-indicators{
+    z-index: -10 !important;
+}*/

@@ -1,0 +1,7 @@
+name = Cruise Courses
+description = Maintain Cruise Courses by Cruise ID
+core = 7.x
+version = VERSION
+package = WWC_CRUISES
+;Date 22Oct2013
+

@@ -1,0 +1,57 @@
+<?php 
+/*
+ * Dependance Function For all Taxonomy Terms
+ */
+
+function getArrayloop($data = array()) {
+    if (is_array($data)) {
+        foreach ($data as $fields) {
+
+            foreach ($fields as $field) {
+                if (is_array($field)) {
+                    foreach ($field as $key => $fieldvalue) {
+                        if ($key == 'value') {
+                            return $fieldvalue;
+                        }
+                        if ($key == 'uri') {
+                            return $fieldvalue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+function getSlidersfeet($tid,$fieldname)
+{
+  
+  $results=array();
+//  $tid=55;
+//  $fieldname='field_eventcruiseslider1';
+  $sliders=taxonomy_term_load($tid);
+  
+    foreach ($sliders->$fieldname as $sliderfields) {
+       return $sliderfields; 
+    }
+  }
+  
+//Getting Image sliders
+function getSliders($tid, $fieldname) {
+    $results = array();
+    $sliderHtml = '';
+    $sliders = taxonomy_term_load($tid);
+    foreach ($sliders->$fieldname as $sliderfields) {
+
+        foreach ($sliderfields as $sliderdata) {
+          foreach ($sliderdata as $key => $fieldvalues) {
+         if ($key == 'uri') {
+            $sliderHtml.='<div class="item"><img src="'.file_create_url($fieldvalues).'"/></div>';
+        }
+          }
+        }
+
+        return $sliderHtml;
+    }
+}

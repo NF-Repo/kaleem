@@ -1,0 +1,11 @@
+; $Id$
+name = Email Templates
+description = WWC Email Template system
+core = 7.x
+version = VERSION
+package = WWC
+files[] = email_system.module
+
+project = "WWC"
+;Sat, 16 Mar 2013 11:48:00 GMT.
+datestamp = "1365434480"

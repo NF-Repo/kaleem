@@ -1,0 +1,136 @@
+<?php
+
+function cruisepackages_schema() {
+    $schema = array();
+    $schema['cruise_package_ticket_prices'] = array(
+        'description' => 'Cruise Package Ticket Pricing',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'time' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        		
+        	'boarding' => array(
+        		'type' => 'varchar',
+        		'length' => 255,
+        		'not null' => TRUE,
+        		'default' => '',
+        	),
+        		
+        		
+        	'price_40_60' => array(
+        		'description' => 'cruise fee prices',
+        		'type' => 'numeric',
+        		'precision' => 16,
+        		'scale' => 2,
+        		'not null' => TRUE,
+        		'default' => 0.0,
+        	),
+
+        	'price_61_90' => array(
+        		'description' => 'cruise fee prices',
+        		'type' => 'numeric',
+        		'precision' => 16,
+        		'scale' => 2,
+        		'not null' => TRUE,
+        		'default' => 0.0,
+        	),
+        		
+        	'price_91_130' => array(
+        		'description' => 'cruise fee prices',
+        		'type' => 'numeric',
+        		'precision' => 16,
+        		'scale' => 2,
+        		'not null' => TRUE,
+        		'default' => 0.0,
+        	),
+            
+        		'tid' => array (
+        				'description' => 'tid',
+        				'type' => 'int',
+        				'unsigned' => TRUE,
+        		),
+        			
+        		'status' => array (
+        				'description' => 'status',
+        				'type' => 'int',
+        				'unsigned' => TRUE,
+        		),
+        		
+        ),
+        'primary key' => array('id'),
+    );
+    
+    
+	$schema ['cruise_package_catering_selections'] = array (
+			'description' => 'Cruise Package Ticket Pricing',
+			'fields' => array (
+			
+					'id' => array (
+							'description' => 'Primary key.',
+							'type' => 'serial',
+							'unsigned' => TRUE,
+							'not null' => TRUE 
+					),
+					
+					'tid' => array (
+							'description' => 'tid',
+							'type' => 'int',
+							'unsigned' => TRUE,
+					),
+					
+					'status' => array (
+							'description' => 'status',
+							'type' => 'int',
+							'unsigned' => TRUE,
+					),
+					
+					
+					'buffet_title' => array (
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					
+					'buffet_image' => array(
+							'description' => 'image_path',
+							'type' => 'text',
+							'size' => 'big',
+					),
+					
+					
+					'buffet_caption' => array(
+							'description' => 'buffet caption',
+							'type' => 'text',
+							'size' => 'big',
+					),
+					
+					'buffet_content' => array(
+							'description' => 'buffet content',
+							'type' => 'text',
+							'size' => 'big',
+					),
+					
+					
+			)
+			,
+			'primary key' => array (
+					'id' 
+			) 
+	);
+    
+    
+    
+
+    return $schema;
+}
+

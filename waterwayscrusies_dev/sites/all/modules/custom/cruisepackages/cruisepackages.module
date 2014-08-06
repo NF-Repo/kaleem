@@ -1,0 +1,2359 @@
+<?php
+
+/*
+ * Pending Tasks in this module
+ * 
+ * 1. Image Delete Operation
+ * 2. Catering Selection Edit operation
+ * 3. Catering Remove Operation
+ * 
+ * 
+ * 
+ */
+
+class CruisePrices {
+
+    public $id;
+    public $time;
+    public $boarding;
+    public $price_40_60;
+    public $price_61_90;
+    public $price_91_130;
+    public $tid;
+    public $status;
+
+    public function create_prices() {
+
+
+        try {
+
+            $pricetable = 'cruise_package_ticket_prices';
+            //deleting the exiting records and get saving with the new records.
+
+            if (isset($this->id) && $this->id != '') {
+                $query = db_update($pricetable);
+                $query->fields(array(
+                    'time' => $this->time,
+                    'boarding' => $this->boarding,
+                    'price_40_60' => $this->price_40_60,
+                    'price_61_90' => $this->price_61_90,
+                    'price_91_130' => $this->price_91_130,
+                    'tid' => $this->tid,
+                    'status' => $this->status,
+                ));
+                $query->where("id=$this->id");
+            } else {
+                $query = db_insert($pricetable);
+                $query->fields(array(
+                    'time' => $this->time,
+                    'boarding' => $this->boarding,
+                    'price_40_60' => $this->price_40_60,
+                    'price_61_90' => $this->price_61_90,
+                    'price_91_130' => $this->price_91_130,
+                    'tid' => $this->tid,
+                    'status' => $this->status,
+                ));
+            }
+
+
+
+
+
+
+            $query->execute();
+        } catch (Exception $e) {
+            watchdog('Price Table Error', $e);
+        }
+    }
+
+    /*
+     * Getting the Price List Table Here
+     * 
+     * 
+     * 
+     * 
+     */
+
+    function getPriceListTablemobile($tid) {
+        $query = db_select('cruise_package_ticket_prices', 'tp');
+        $query->fields('tp');
+        $query->condition('tid', $tid, '=');
+        $result = $query->execute();
+
+
+        $tableoutput = '';
+
+
+        $tableoutput.='<table>';
+
+        $html4060 = '<tr><td class="pricelistheader"><b>TIME</b></td><td class="pricelistheader2"><b>40-60 GUESTS</b></td></tr>';
+        $html6090 = '<tr><td class="pricelistheader"></td><td class="pricelistheader2"><b>61-90 GUESTS</b></td></tr>';
+        $html90130 = '<tr><td class="pricelistheader"></td><td class="pricelistheader2"><b>91-130 GUESTS</b></td></tr>';
+        foreach ($result as $tableprice) {
+
+            $html4060.='<tr><td width="50%"><b>' . $tableprice->time . '</b><br>' . $tableprice->boarding . '</td><td class="pricelist">$' . $tableprice->price_40_60 . '</td></tr>';
+            $html6090.='<tr><td width="50%"><b>' . $tableprice->time . '</b><br>' . $tableprice->boarding . '</td><td  class="pricelist">$' . $tableprice->price_61_90 . '</td></tr>';
+            $html90130.='<tr><td width="50%"><b>' . $tableprice->time . '</b><br>' . $tableprice->boarding . '</td><td  class="pricelist">$' . $tableprice->price_91_130 . '</td></tr>';
+        }
+
+
+
+        $tableoutput.=$html4060 . $html6090 . $html90130;
+        $tableoutput.='</tbody>';
+        $tableoutput.='</table>';
+
+        return $tableoutput;
+    }
+
+    function getPriceListTableBytermId($tid) {
+        $query = db_select('cruise_package_ticket_prices', 'tp');
+        $query->fields('tp');
+        $query->condition('tid', $tid, '=');
+        $result = $query->execute();
+
+
+        $tableoutput = ' ';
+
+
+        $tableoutput.='<table class="sticky-enabled">';
+
+        $tableoutput.='<thead>';
+        $tableoutput.='<tr>';
+        $tableoutput.='<th>TIME</th>';
+        $tableoutput.='<th>40-60 GUESTS</th>';
+        $tableoutput.='<th>61-90 GUESTS</th>';
+        $tableoutput.='<th>91-130 GUESTS</th>';
+        $tableoutput.='</tr>';
+        $tableoutput.='</thead>';
+
+
+        $tableoutput.='<tbody>';
+
+
+
+
+        foreach ($result as $tableprice) {
+//            var_dump($tableprice);
+            $tableoutput.='<tr class="odd">';
+            $tableoutput.='<td><b>' . $tableprice->time . '</b><br>' . $tableprice->boarding . '</td>';
+            $tableoutput.='<td>$' . $tableprice->price_40_60 . '</td>';
+            $tableoutput.='<td>$' . $tableprice->price_61_90 . '</td>';
+            $tableoutput.='<td>$' . $tableprice->price_91_130 . '</td>';
+            $tableoutput.='</tr>';
+
+//            var_dump($tableprice->time);
+//                var_dump($tableprice->boarding);
+//                var_dump($tableprice->price_40_60);
+//                var_dump($tableprice->price_61_90);
+//                var_dump($tableprice->price_91_130);
+//                var_dump($tableprice->tid);
+//                var_dump($tableprice->status);
+//                
+//            
+        }
+
+        $tableoutput.='</tbody>';
+        $tableoutput.='</table>';
+
+        return $tableoutput;
+    }
+
+}
+
+class CruisePackages {
+
+    public $buffet_title;
+    public $buffet_image;
+    public $buffet_caption;
+    //public $num_of_catering_items;
+    public $buffet_content;
+    public $status;
+    public $tid;
+
+    public function create_catering_selections() {
+
+        try {
+            $query = db_insert('cruise_package_catering_selections');
+            $query->fields(array(
+                'buffet_title' => $this->buffet_title,
+                'buffet_image' => $this->buffet_image,
+                'buffet_caption' => $this->buffet_caption,
+                'buffet_image' => $this->buffet_image,
+                'buffet_content' => $this->buffet_content,
+                'tid' => $this->tid,
+                'status' => $this->status,
+            ));
+            $query->execute();
+        } catch (Exception $e) {
+            watchdog('error', 'err');
+        }
+    }
+
+    public function generate_alias_name($tid, $aliass, $modulename) {
+
+
+        $alias = preg_replace('/\s+/', '', $aliass);
+        $aliasname = strtolower($alias);
+
+        try {
+
+            $query = db_select("url_alias", "u");
+            $query->fields('u');
+            $query->where("alias='$aliasname' or source='$modulename/$tid'");
+            $result = $query->execute();
+
+            $records = array();
+            foreach ($result as $record) {
+                $records[] = $record;
+            }
+
+            if (count($records) < 1) {
+
+                $query = db_insert('url_alias');
+                $query->fields(array(
+                    'source' => $modulename . '/' . $tid,
+                    'alias' => $aliasname,
+                    'language' => 'und',
+                ));
+
+                $query->execute();
+            } else {
+                $query = db_update('url_alias');
+                $query->fields(array(
+                    'source' => $modulename . '/' . $tid,
+                    'alias' => $aliasname,
+                    'language' => 'und',
+                ));
+                $query->where("source='$modulename/$tid'");
+                $num_updated = $query->execute();
+            }
+        } catch (Exception $e) {
+            watchdog('error', 'err');
+        }
+    }
+
+    /**
+     * 
+     * @param type $tid
+     * @param type $tempid
+     * 
+     * 
+     */
+    public function getBuffetMenuBytermId($tid) {
+
+        $query = db_select('cruise_package_catering_selections', 'buffetmenu');
+        $query->fields('buffetmenu');
+        $query->condition('tid', $tid, '=');
+        $result = $query->execute();
+        $buffetmenuhtml = ' ';
+
+
+        $colcount = 1;
+
+        foreach ($result as $cateringbuffet) {
+
+
+//            if ($colcount % 3 == 1) {
+//
+//                $buffetmenuhtml.='<li class="cruisebuffet">';
+//            } else {
+//                $buffetmenuhtml.='<li>';
+//            }
+
+            $buffetmenuhtml.='<li>';
+
+
+            $buffetmenuhtml.='<div class="weddingmenuItem">';
+            $buffetmenuhtml.='<div class="menuItemTitle">' . $cateringbuffet->buffet_title . '<br>';
+            $buffetmenuhtml.='</div>';
+            $buffetmenuhtml.='<div class="menuItemthirdinner">';
+            if ($cateringbuffet->buffet_image != '') {
+                $fileurlload = file_load($cateringbuffet->buffet_image);
+                $fileuri = isset($fileurlload->uri) ? $fileurlload->uri : '';
+                if ($fileuri != '') {
+                    $buffetmenuhtml.='<div style="max-width:95px;"><img src="' . file_create_url($fileurlload->uri) . '"></div>';
+                }
+            }
+
+
+
+            $buffetmenuhtml.='<div class="itemImgText">';
+//            $buffetmenuhtml.='<div class="menuItmeSubTitle">' . $cateringbuffet->buffet_caption . '<br><br>';
+            $buffetmenuhtml.='<div class="menuItmeSubTitle">';
+
+
+            foreach (unserialize($cateringbuffet->buffet_content) as $buffetcontent) {
+                $buffetmenuhtml.=$buffetcontent . '<br><br>';
+            }
+
+            $buffetmenuhtml.='</div>';
+
+            $buffetmenuhtml.='</div>';
+            $buffetmenuhtml.='</div>';
+            $buffetmenuhtml.='</div>';
+
+            $buffetmenuhtml.='</li>';
+
+            $colcount++;
+        }
+
+        return $buffetmenuhtml;
+    }
+
+    /**
+     * 
+     * @return string
+     * 
+     * Remove Buffet Menu funcitonality
+     * 
+     */
+    public static function removeBuffetmenurowById($id) {
+        try {
+            $buffet_deleted = db_delete('cruise_package_catering_selections')
+                    ->condition('id', $id, '=')
+                    ->execute();
+
+            return $buffet_deleted;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public static function update_catering_selections($tid, $tempid) {
+
+        try {
+
+            $query = db_update('cruise_package_catering_selections');
+            $query->fields(array(
+                'tid' => $tid,
+                'status' => 1,
+            ));
+            $query->condition('tid', $tempid, '=');
+            $num_updated = $query->execute();
+        } catch (Exception $e) {
+            
+        }
+    }
+
+    public static function remove_price_fieldset($id) {
+        try {
+            $pricefiedset_deleted = db_delete('cruise_package_ticket_prices')
+                    ->condition('id', $id, '=')
+                    ->execute();
+
+            return $pricefiedset_deleted;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
+
+    public static function update_catering_selectionsByid($buffet_row_id, $cateringarray) {
+        try {
+            $query = db_update('cruise_package_catering_selections');
+            $query->fields($cateringarray);
+            $query->condition('id', $buffet_row_id, '=');
+            $num_updated = $query->execute();
+            return $num_updated;
+        } catch (Exception $e) {
+            
+        }
+    }
+
+    public static function getTableFormattedMenuData($id) {
+
+        $output = '<table class="table table-striped">';
+//        $output.='<tr><th>Buffet Title</th><th>Buffet Image</th><th>Buffet Caption</th><th>Buffet Content</th><th>Edit</th><th>Remove</th></tr>';
+        $output.='<tr><th>Buffet Title</th><th>Buffet Image</th><th>Buffet Content</th><th>Edit</th><th>Remove</th></tr>';
+
+        $data = db_select('cruise_package_catering_selections', 'c')
+                ->fields('c')
+                ->condition('tid', $id, '=')
+                ->execute()
+                ->fetchAll();
+
+
+        for ($i = 0; $i < count($data); $i++) {
+
+            $output.="<tr>";
+            $output.="<td>" . $data[$i]->buffet_title . "</td>";
+            $fileloc = file_load($data[$i]->buffet_image);
+            $output.="<td><img src=" . file_create_url($fileloc->uri) . " style='width:150px;'></td>";
+            //$output.="<td>".$data[$i]->buffet_image."</td>";
+//            $output.="<td>" . $data[$i]->buffet_caption . "</td>";
+
+            //$output.="<td>".unserialize($data[$i]->buffet_content)."</td>";
+
+            $output.="<td>";
+            $contentData = unserialize($data[$i]->buffet_content);
+            if (count($contentData) > 0) {
+                for ($j = 0; $j < count($contentData); $j++) {
+//                    $output.="Content" . ($j + 1) . "=" . $contentData[$j] . "<br/>";
+                    $output.= $contentData[$j] . "<br/>";
+                }
+            } else {
+                $output.="--";
+            }
+
+
+            $output.="</td>";
+
+
+
+
+            $buffet_removelink = l(t('Remove'), 'removebuffetmenurow/ajax/' . $data[$i]->id, array('attributes' => array('class' => array('use-ajax'))));
+
+            ctools_include('modal');
+            ctools_modal_add_js();
+            $buffet_Editlink = '<div id="magical-modal-link"><a href="#"'
+                    . 'style="color:#0088CC;text-decoration:none;" onclick="getbuffetdata(' . $data[$i]->id . ')">Edit</a></div>';
+//            $buffet_Editlink = '<div id="magical-modal-link">'
+//                    . l('Edit', 'buffeteditwindow/nojs/bid/' . $data[$i]->id, array('attributes' => array('class' => 'ctools-use-modal'))) . '</div>';
+
+            $output.='<td>' . $buffet_Editlink . '</td>';
+            $output.='<td>' . $buffet_removelink . '</td>';
+
+
+
+
+
+            $output.=$outputlink;
+
+            $output.="</tr>";
+        }
+        $output.='</table>';
+
+        return $output;
+    }
+
+}
+
+function removebuffetmenurow_ajaxcallback($type = 'ajax', $id) {
+
+
+
+    if ($type == 'ajax') {
+
+
+        $command = array();
+
+
+
+        $result = CruisePackages::removeBuffetmenurowById($id);
+
+        if ($result) {
+            //deleted
+
+            $data = CruisePackages::getTableFormattedMenuData($_SESSION['taxonomy_temp_id']);
+            $commands [] = ajax_command_replace("#buffetcateringdiv", "<div id='buffetcateringdiv'>" . $data . "</div>");
+        } else {
+            //delefailed
+
+            $data = CruisePackages::getTableFormattedMenuData($_SESSION['taxonomy_temp_id']);
+            $commands [] = ajax_command_replace("#buffetcateringdiv", "<div id='buffetcateringdiv'>" . $data . "</div>");
+        }
+
+
+
+        $commands[] = ajax_command_append('#sayinghello', $output);
+        $page = array('#type' => 'ajax', '#commands' => $commands);
+        ajax_deliver($page);
+    } else {
+        return t("Hello world in new page.");
+    }
+}
+
+function editbuffetmenurow_ajaxcallback($type = 'ajax', $id) {
+
+
+
+    if ($type == 'ajax') {
+
+        $command = array();
+//    $form['catering_selection_fieldset']=array();
+//         $commands[] = ajax_command_alert($id);
+//    $formget=drupal_get_form('cruisepackages_form');
+//    $formget['catering_selection_fieldset']['buffet_title'][]='laxmi';
+//    
+//    $commands[] = ajax_command_replace('#buffet_title', drupal_render($formget['catering_selection_fieldset']['buffet_title']));
+//    return $form['catering_selection_fieldset'];
+//    $page = array('#type' => 'ajax', '#commands' => $commands); 
+//    ajax_deliver($page);
+    } else {
+        return t("Something went wrong.");
+    }
+}
+
+function buffeteditwindow_callback($ajax, $id) {
+
+
+
+
+
+
+
+
+
+
+
+
+    if ($ajax) {
+        ctools_include('ajax');
+        ctools_include('modal');
+
+        $form_state = array(
+            'ajax' => TRUE,
+            'title' => t('Buffet Menu Edit View'),
+            'bid' => $id
+        );
+
+        // Use ctools to generate ajax instructions for the browser to create
+        // a form in a modal popup.
+        $output = ctools_modal_form_wrapper('ctool_buffet_popup_form', $form_state);
+// ctool_buffet_popup_form
+        // If the form has been submitted, there may be additional instructions
+        // such as dismissing the modal popup.
+        if (!empty($form_state['ajax_commands'])) {
+            $output = $form_state['ajax_commands'];
+        }
+
+        // Return the ajax instructions to the browser via ajax_render().
+        print ajax_render($output);
+        drupal_exit();
+    } else {
+//        $form_state['rebuild'] = TRUE;        
+//        return drupal_rebuild_form('ctool_buffet_popup_form', $form_state);
+
+
+
+
+        return drupal_get_form('ctool_buffet_popup_form');
+    }
+}
+
+//laxmi add more
+
+
+function ctool_buffet_popup_form($form, &$form_state, $no_js_use = FALSE) {
+    drupal_add_js(drupal_get_path('module', 'cruisepackages') . '/cruisepackages.js');
+//  $form_state['bid']=268;
+    $data = db_select('cruise_package_catering_selections', 'c')
+            ->fields('c')
+            ->condition('id', $form_state['bid'], '=')
+            ->execute()
+            ->fetchAll();
+//    $data = db_select('cruise_package_catering_selections', 'c')
+//            ->fields('c')
+//            ->condition('id', $form_state['bid'], '=')
+//            ->execute()
+//            ->fetchAll();
+
+    $buffetcontent = unserialize($data[0]->buffet_content);
+
+
+    if (empty($form_state['buffet_content_edit'])) {
+        $form_state['buffet_content_edit'] = count($buffetcontent);
+    }
+
+    drupal_add_js('test();', 'inline');
+    $form['description'] = array(
+        '#markup' => '<div>' . t('')
+        . '</div>',
+    );
+
+
+
+    // Because we have many fields with the same values, we have to set
+    // #tree to be able to access them.
+    $form['#tree'] = TRUE;
+    $form['buffet_edit_fieldset'] = array(
+        '#type' => 'fieldset',
+        '#title' => t(' '),
+        // Set up the wrapper so that AJAX will be able to replace the fieldset.
+        '#prefix' => '<div id="names-fieldset-wrapper">',
+        '#suffix' => '</div>',
+    );
+
+    //hidden field for row id storage purpose
+    $form['buffet_edit_fieldset']['buffet_edit_id'] = array(
+        '#id' => 'buffet_title',
+        '#type' => 'hidden',
+        '#title' => t('Buffet Title'),
+        '#default_value' => isset($form_state['bid']) ? $form_state['bid'] : ' '
+    );
+
+
+
+
+    $form['buffet_edit_fieldset']['buffet_title'] = array(
+        '#id' => 'buffet_title',
+        '#type' => 'textfield',
+        '#title' => t('Buffet Title'),
+        '#default_value' => isset($data[0]->buffet_title) ? $data[0]->buffet_title : ' '
+    );
+
+
+    $fileloc = file_load($data[0]->buffet_image);
+//    $form['buffet_edit_fieldset']['preview_buffet_image'] = array(
+//        '#type' => 'markup',
+//        '#markup' => '<img src="' . file_create_url($fileloc->uri) . '">',
+//    );
+    $fid = isset($data[0]->buffet_image) ? $data[0]->buffet_image : '';
+    $form['buffet_edit_fieldset']['buffet_fid'] = array(
+        '#id' => 'buffet_fid',
+        '#type' => 'textfield',
+        '#title' => t('Buffet fid'),
+        '#prefix' => '<div style="display:none;">',
+        '#suffix' => "</div>",
+        '#default_value' => $fid
+    );
+    $fidhtml = '';
+    if ($fid != '') {
+        $file = file_load($fid);
+        $fileurl = file_create_url($file->uri);
+        $fidhtml = '<img src="' . $fileurl . '" width="300">';
+    }
+    $form['buffet_edit_fieldset']['buffet_image_edit'] = array(
+        '#id' => 'buffet_image_edit',
+//        '#name'=>'buffet_image',
+        '#name' => 'files[buffet_image_edit]',
+        '#type' => 'managed_file',
+//        '#type' => 'file',
+        '#prefix' => $fidhtml,
+//        '#default_value' => (isset($data[0]->buffet_image) ? $data[0]->buffet_image : ''),
+        '#upload_location' => 'public://imageuploads/',
+        "#upload_validators" => array("file_validate_extensions" => array("png gif jpg jpeg")),
+        '#title' => t('Buffet Image'),
+    );
+
+
+
+    $form['buffet_edit_fieldset']['buffet_caption'] = array(
+        '#id' => 'buffet_caption',
+        '#type' => 'textfield',
+        '#title' => t('Buffet Caption'),
+        '#default_value' => isset($data[0]->buffet_caption) ? $data[0]->buffet_caption : ' '
+    );
+
+
+    // Build the fieldset with the proper number of names. We'll use
+    // $form_state['buffet_content_edit'] to determine the number of textfields to build.
+//  if (empty($form_state['buffet_content_edit'])) {
+//    $form_state['buffet_content_edit'] = 1;
+//  }
+//  
+
+    for ($i = 0; $i < $form_state['buffet_content_edit']; $i++) {
+//    for ($i = 0; $i < $form['buffetcontentcount']['#value']; $i++) {
+//    $form['buffet_edit_fieldset']['name'][$i] = array(
+//      '#type' => 'textfield',
+//      '#title' => t('Name'),
+//    );
+
+        if (($i + 1) == $form_state['buffet_content_edit']) {
+            $form['buffet_edit_fieldset']['buffetcontentcount'] = array(
+                '#id' => 'buffetcontentcount',
+                '#type' => 'textfield',
+                '#prefix' => '<div style="display:none;"><script type="text/javascript"> 
+                                test();              
+                              </script>',
+                '#suffix' => '</div>',
+                '#default_value' => isset($buffetcontent) ? count($buffetcontent) : ($i + 1)
+            );
+        }
+        if ($i == 0) {
+            $form['buffet_edit_fieldset']['buffet_content_edit' . $i] = array(
+                '#id' => 'buffet_content_edit' . $i,
+                '#type' => 'text_format',
+                '#format' => 'templateeditor',
+                '#title' => t('Buffet Content'),
+                '#default_value' => isset($buffetcontent[$i]) ? $buffetcontent[$i] : ' ',
+//                '#prefix' => '<script type="text/javascript"> 
+//                                test();              
+//                              </script>',
+            );
+        } else {
+            $form['buffet_edit_fieldset']['buffet_content_edit' . $i] = array(
+                '#id' => 'buffet_content_edit' . $i,
+//            '#type' => 'textarea',
+                '#type' => 'text_format',
+                '#format' => 'templateeditor',
+                '#title' => t('Buffet Content'),
+                '#default_value' => isset($buffetcontent[$i]) ? $buffetcontent[$i] : ' '
+            );
+        }
+    }
+    $form['buffet_edit_fieldset']['add_name'] = array(
+        '#id' => 'addcontent',
+        '#type' => 'submit',
+        '#value' => t('Add one more'),
+        '#submit' => array('ctool_buffet_popup_form_add_one'),
+        // See the examples in ajax_example.module for more details on the
+        // properties of #ajax.
+        '#ajax' => array(
+            'callback' => 'ctool_buffet_popup_form_callback',
+            'wrapper' => 'names-fieldset-wrapper',
+        ),
+    );
+    if ($form_state['buffet_content_edit'] > 1) {
+        $form['buffet_edit_fieldset']['remove_name'] = array(
+            '#id' => 'removecontent',
+            '#type' => 'submit',
+            '#value' => t('Remove one'),
+            '#submit' => array('ctool_buffet_popup_form_remove_one'),
+            '#ajax' => array(
+                'event' => 'click',
+                'callback' => 'ctool_buffet_popup_form_callback',
+                'wrapper' => 'names-fieldset-wrapper',
+            ),
+        );
+    }
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit'),
+    );
+    $form['cancel'] = array(
+        '#type' => 'submit',
+        '#value' => t('Cancel'),
+        '#submit' => array('ctool_buffet_popup_form_cancel'),
+        '#ajax' => array(
+            'event' => 'click',
+            'callback' => 'ctool_buffet_popup_form_cancel',
+            'wrapper' => 'names-fieldset-wrapper',
+        ),
+    );
+
+    // This simply allows us to demonstrate no-javascript use without
+    // actually turning off javascript in the browser. Removing the #ajax
+    // element turns off AJAX behaviors on that element and as a result
+    // ajax.js doesn't get loaded.
+    // For demonstration only! You don't need this.
+    if ($no_js_use) {
+        // Remove the #ajax from the above, so ajax.js won't be loaded.
+        if (!empty($form['buffet_edit_fieldset']['remove_name']['#ajax'])) {
+            unset($form['buffet_edit_fieldset']['remove_name']['#ajax']);
+        }
+        unset($form['buffet_edit_fieldset']['add_name']['#ajax']);
+    }
+
+    return $form;
+}
+
+/**
+ * Callback for both ajax-enabled buttons.
+ *
+ * Selects and returns the fieldset with the names in it.
+ */
+function ctool_buffet_popup_form_callback($form, $form_state) {
+    return $form['buffet_edit_fieldset'];
+}
+
+/**
+ * Submit handler for the "add-one-more" button.
+ *
+ * Increments the max counter and causes a rebuild.
+ */
+function ctool_buffet_popup_form_add_one($form, &$form_state) {
+
+    $form_state['buffet_content_edit'] ++;
+    $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Submit handler for the "remove one" button.
+ *
+ * Decrements the max counter and causes a form rebuild.
+ */
+function ctool_buffet_popup_form_remove_one($form, &$form_state) {
+    if ($form_state['buffet_content_edit'] > 1) {
+        $form_state['buffet_content_edit'] --;
+    }
+    $form_state['rebuild'] = TRUE;
+}
+
+function ctool_buffet_popup_form_cancel($form, &$form_state) {
+    ctools_include('modal');
+    ctools_modal_add_js();
+    $commands = array();
+    $commands[] = array('command' => 'resetbuffeteditcontent');
+    $commands[] = ctools_modal_command_dismiss();
+    print ajax_render($commands);
+    exit;
+}
+
+/**
+ * Final submit handler.
+ *
+ * Reports what values were finally set.
+ */
+function ctool_buffet_popup_form_submit($form, &$form_state) {
+
+    //call update function
+
+    $buffet_title = trim($form_state['values']['buffet_edit_fieldset']['buffet_title']);
+    $buffet_caption = trim($form_state['values']['buffet_edit_fieldset']['buffet_caption']);
+    $numOfBuffetContent = $form_state['buffet_content_edit'];
+
+
+    $buffetContentData = array();
+    for ($i = 0; $i < $numOfBuffetContent; $i++) {
+        $buffetContentData[$i] = $form_state['values']['buffet_edit_fieldset']['buffet_content_edit' . $i]['value'];
+    }
+
+    $buffet_row_id = $form_state['values']['buffet_edit_fieldset']['buffet_edit_id'];
+
+    $cateringarray = array();
+    $cateringarray['buffet_title'] = $buffet_title;
+    $cateringarray['buffet_caption'] = $buffet_caption;
+    $cateringarray['buffet_content'] = serialize($buffetContentData);
+
+
+
+
+    $dest_dir = file_default_scheme() . '://imageuploads/'; // Note: file_directory_path() was removed in Drupal 7.x. // $dest_dir contains the destination directory for the file.
+    $validators = array('file_validate_extensions' => array('jpg png gif'));
+    $oldfilefid = isset($form_state['values']['buffet_edit_fieldset']['buffet_fid']) ? $form_state['values']['buffet_edit_fieldset']['buffet_fid'] : '';
+    $cateringarray['buffet_image'] = '';
+    if ($oldfilefid != '') {
+        $oldfile = file_load($oldfilefid);
+        $cateringarray['buffet_image'] = $oldfile->fid;
+    }
+
+
+    if ($_FILES['files']['name']['buffet_image_edit'] != '') {
+
+
+        $filename = '';
+        if ($file = file_save_upload('buffet_image_edit', $validators, $dest_dir)) {
+            $fileURI = $file->uri;
+            $file->status = "1";
+            $fileuploadsucess = file_save($file);
+            $cateringarray['buffet_image'] = $file->fid;
+            if ($oldfilefid != '') {
+                file_delete($oldfile);
+            }
+        } else {
+            //form_set_error('', 'Could not upload file.');
+        }
+    }
+//    $validators = array('file_validate_extensions' => array('jpg png gif'));
+//
+//
+//    $file = file_load($form_state['values']['buffet_edit_fieldset']['buffet_image_edit']);
+//
+////    if($file->filename !=''){
+//    $file->status = "1";
+//    $fileupload = file_save_upload($file->uri, $validators, 'public://imageuploads/' . $file->filename, FILE_EXISTS_REPLACE);
+//
+//
+//    file_save($file);
+//    $cateringarray['buffet_image'] = $file->fid;
+//         buffet_edit_fieldset[buffet_image_edit][fid]
+//    }
+//    if ($fileuploadsucess) {
+//
+//        $fileURI = $file->uri;
+//        db_delete('file_managed')->condition('fid', $file->fid, '=')->execute();
+//        $filename = isset($file->filename) ? $file->filename : "";
+//
+//        $cateringarray['buffet_image'] = $fileURI;
+//    } else {
+//        $commands[] = ajax_command_alert('file upload failed');
+//        form_set_error('', 'Could not upload file.');
+//    }
+//    }
+    //call the Update function for catering Package section
+
+    $update_catering_results = CruisePackages::update_catering_selectionsByid($buffet_row_id, $cateringarray);
+
+//    $form_state['ajax_commands'][] = ctools_modal_command_dismiss();
+    ctools_include('modal');
+    ctools_modal_add_js();
+    $commands[] = array('command' => 'resetbuffeteditcontent');
+    $commands[] = ctools_modal_command_dismiss();
+    $data = CruisePackages::getTableFormattedMenuData($_SESSION['taxonomy_temp_id']);
+    $commands [] = ajax_command_replace("#buffetcateringdiv", "<div id='buffetcateringdiv'>" . $data . "</div>");
+
+    print ajax_render($commands);
+    exit;
+//  return array(
+//        '#type' => 'ajax',
+//        '#commands' => $commands
+//    );
+}
+
+/**
+ * @} End of "defgroup ajax_degradation_example".
+ */
+//laxmi add more end
+
+/**
+ * Drupal form submit handler.
+ */
+function cruisepackagepopup_form_submit(&$form, &$form_state) {
+    // Generate the new link using the submitted text value.
+    $link = _cruisepackagepopup_make_link($form_state['values']['new_link_text']);
+
+    // Tell the browser to close the modal.
+    $form_state['ajax_commands'][] = ctools_modal_command_dismiss();
+
+    // Tell the browser to replace the old link with the new one.
+    $form_state['ajax_commands'][] = ajax_command_replace('#magical-modal-link', $link);
+}
+
+function cruisepackages_menu() {
+    $items = array();
+
+    $items ['cruisepackages'] = array(
+        'title' => 'Cruise Packages',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array(
+            'ctool_buffet_popup_form'
+        ),
+        'access callback' => 'user_access',
+        'access arguments' => array('access content')
+    );
+
+
+
+    $items ['ajaxcruisepackages'] = array(
+        'title' => 'Cruise Packages',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array(
+            'cruisepackagepopup_form'
+        ),
+        'access callback' => 'user_access',
+        'access arguments' => array('access content')
+    );
+
+    $items['removebuffetmenurow'] = array(
+        'page callback' => 'removebuffetmenurow_ajaxcallback',
+        'access arguments' => array('access content'),
+    );
+
+
+
+    $items['editbuffetmenurow'] = array(
+        'page callback' => 'editbuffetmenurow_ajaxcallback',
+        'access arguments' => array('access content'),
+    );
+    $items['getbuffetdatabybuffetid'] = array(
+        'page callback' => 'getbuffetdatabybuffetid_ajaxcallback',
+        'access arguments' => array('access content'),
+    );
+
+    //ctool modal popup
+
+    $items['buffeteditwindow/%ctools_js/bid/%'] = array(
+        'page callback' => 'buffeteditwindow_callback',
+        'page arguments' => array(1, 3),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+
+
+    return $items;
+}
+
+function ajax_check_taxonomy_urlalias_callback($form, &$form_state) {
+	$commands = array ();
+	$taxaliasurl = $form_state ['values'] ['taxonomy_alias_url'];
+	$taxhiddenaliasurl = $form_state ['values'] ['taxonomy_alias_url_hidden'];
+	
+	
+	$name=trim(str_replace(" ","",$taxaliasurl));
+	//taxonomy_alias_url_hidden
+	$data='';
+	if($name!=''){
+		
+		if($taxaliasurl!=$taxhiddenaliasurl){
+			$result=UrlAlias::checkUrlAlias($name);
+			if ($result) {
+				$data = 'The url alias ' . $name . ' is already taken!.';
+				$commands [] = ajax_command_invoke('#taxonomy_alias_url', 'attr', array('value', ''));
+				$commands [] = ajax_command_replace ( "#taxonomyurlaliastatusdiv", "<div id='taxonomyurlaliastatusdiv'><span class='error'>" . $data . "</span></div>" );
+			
+			}else{
+				$commands [] = ajax_command_replace ( "#taxonomyurlaliastatusdiv", "<div id='taxonomyurlaliastatusdiv'><span class='error'>" . $data . "</span></div>" );
+			}
+			
+		}else{
+			$commands [] = ajax_command_replace ( "#taxonomyurlaliastatusdiv", "<div id='taxonomyurlaliastatusdiv'><span class='error'>" . $data . "</span></div>" );
+		}
+
+		
+	}
+
+	return array (
+			'#type' => 'ajax',
+			'#commands' => $commands
+	);
+}
+
+
+
+function cruisepackages_form_taxonomy_form_term_alter(&$form, &$form_state, $no_js_use = FALSE) {
+
+    //checking for the form termId if it is available then we need to provide the edit options
+    //load the form related Price table information
+//var_dump($form_state['values']['op']);
+    
+
+    $urlaliaspid = '';
+    $taxonomy_alias_url = '';
+    
+    
+    /**
+     * 
+     * Taking session storage based on session elements
+     * we will identify the fields and implementing hidden concept 
+     * for wedding template and package template
+     *  
+     * 
+     * 
+     */
+//    $templatetype='wedding';
+//    $templatetype="packagetemplate";
+    $templatetype=$_SESSION['templatetype'];
+   $termname=null;
+// Private Events Hidding fields concept
+    if($form_state['term']->vocabulary_machine_name == 'private_events'){
+       //wedding template section takes place here
+        if($form_state['term']->tid!=NULL){
+
+    $parents=taxonomy_get_parents($form_state['term']->tid);
+    if(count($parents) > 0)
+    {
+        foreach ($parents as $parentterm) {
+            $termname=$parentterm->name;
+        } 
+    }
+   
+    }
+   
+    
+    $packageEvents=array(
+        'WEDDINGS PACKAGES',
+        'COMMITMENT CEREMONIES',
+        'REHEARSAL DINNER',
+        'MEETINGS',
+        'CORPORATE INCENTIVE',
+        'HOLIDAY PARTIES'
+    );
+    $weddingtypetemplate=array(
+        'Wedding',
+        'Corporate Cruises',
+        'SPECIAL OCCASIONS'
+    );
+        if($templatetype=='wedding' || in_array($termname, $weddingtypetemplate))
+        {
+       $form_state['templatetype']='wedding';
+            unset($form['description']);
+            unset($form['field_over_short_description']);
+            unset($form['field_image' ]);
+            unset($form['field_eventcruiseslider1']);
+            unset($form['field_eventcruiseslider2']);
+            unset($form['field_download_wedding_packages']);
+            unset($form['field_download_menu_pdf']);
+            unset($form['field_events']);
+            unset($form['field_event_videourl']);
+            unset($form['field_field_overview_link']);
+            unset($form['field_package_inclusions']);
+            unset($form['field_package_options']);
+            unset($form['field_pricetable_description']);
+           
+        }
+        
+        
+       //End of wedding template section
+        
+        
+        //loading the package fields
+        
+        if($templatetype=='packagetemplate' || in_array($termname, $packageEvents))
+        {
+           
+             $form_state['templatetype']='package';
+                unset($form['field_over_short_description']);
+                unset($form['field_image']);
+                unset($form['field_tab_bg_image']);
+                unset($form['field_events']);
+                unset($form['field_event_videourl']);
+                unset($form['field_field_overview_link']);
+                unset($form['field_sliderboxcontent']);
+        }
+        
+        
+        //Create Private Event Categor Template
+        if($templatetype=='privateeventcategory')
+        {
+            unset($form['field_title']);
+            unset($form['field_over_short_description']);
+            unset($form['field_image']); 
+            unset($form['field_tab_bg_image']);
+            unset($form['field_eventcruiseslider1']);
+            unset($form['field_eventcruiseslider2']);
+            unset($form['field_download_wedding_packages']);
+            unset($form['field_download_menu_pdf']);
+            unset($form['field_events']);
+            unset($form['field_event_videourl']);
+            unset($form['field_field_overview_link']);
+            unset($form['field_package_inclusions']);
+            unset($form['field_package_options']);
+            unset($form['field_pricetable_description']);
+            unset($form['field_sliderboxcontent']);
+        }
+        //End of Creating the Private Event Category Template
+        
+        
+        //end of loading the package template fields
+    }
+    
+//Private Events End of Hidin Concepts
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //private events
+    if($form_state['term']->vocabulary_machine_name == 'private_events'){
+    	$auto_id=$form_state['term']->tid;
+    	if (! empty ( $auto_id )) {
+    		
+    		$eventcategories=array(38,91,99);
+    		//$isprivatecategory=false;
+    		$tid=$form_state['term']->tid;
+    		$data=reset(taxonomy_get_parents($tid));
+    		if($data->tid){
+    			if(in_array($data->tid, $eventcategories)){
+    				$urlsource = "privateevents/category/" . $auto_id;
+    			}else{
+    				$urlsource = "eventscruise/" . $auto_id;
+    			}
+    		}else{
+    			$urlsource = "eventscruise/" . $auto_id;
+    		}
+    		
+    		$urlAliasObject = UrlAlias::getUrlAliasDetailsBySource ( $urlsource );
+    		if ($urlAliasObject) {
+    			$urlaliaspid = $urlAliasObject->pid;
+    			$taxonomy_alias_url = $urlAliasObject->alias;
+    		}
+    	}
+    }
+    
+    
+    //fleet
+    if($form_state['term']->vocabulary_machine_name == 'fleet'){
+    	$auto_id=$form_state['term']->tid;
+    	if (! empty ( $auto_id )) {
+    		$urlsource = "fleet/" . $auto_id;
+    		$urlAliasObject = UrlAlias::getUrlAliasDetailsBySource ( $urlsource );
+    		if ($urlAliasObject) {
+    			$urlaliaspid = $urlAliasObject->pid;
+    			$taxonomy_alias_url = $urlAliasObject->alias;
+    		}
+    	}
+    }
+    
+    //departure_ports
+    if($form_state['term']->vocabulary_machine_name == 'departure_ports'){
+    	$auto_id=$form_state['term']->tid;
+    	if (! empty ( $auto_id )) {
+    		$urlsource = "portsdetailview/portid/" . $auto_id;
+    		$urlAliasObject = UrlAlias::getUrlAliasDetailsBySource ( $urlsource );
+    		if ($urlAliasObject) {
+    			$urlaliaspid = $urlAliasObject->pid;
+    			$taxonomy_alias_url = $urlAliasObject->alias;
+    		}
+    	}
+    }
+    
+    //food_and_bar
+    if($form_state['term']->vocabulary_machine_name == 'food_and_bar'){
+    	$auto_id=$form_state['term']->tid;
+    	if (! empty ( $auto_id )) {
+    		$urlsource = "foodandbar/category/" . $auto_id;
+    		$urlAliasObject = UrlAlias::getUrlAliasDetailsBySource ( $urlsource );
+    		if ($urlAliasObject) {
+    			$urlaliaspid = $urlAliasObject->pid;
+    			$taxonomy_alias_url = $urlAliasObject->alias;
+    		}
+    	}
+    }
+    
+    
+    $vocbularyname=$form_state['term']->vocabulary_machine_name;
+    if($vocbularyname == 'private_events' || $vocbularyname =="departure_ports" || $vocbularyname=="food_and_bar" || $vocbularyname=="fleet"){
+    $form['urlaliaspid'] = array(
+    		'#id'=>'urlaliaspid',
+    		'#type' => 'textfield',
+    		'#title' => t('URL alias PID'),
+    		'#default_value' => $urlaliaspid,
+    		'#prefix'=>'<div style="display:none;">',
+    		'#suffix'=>'</div>',
+    		//'#required'=>TRUE,
+    		 
+    );
+    
+    
+    
+    $form['taxonomy_alias_url'] = array(
+    		'#id'=>'taxonomy_alias_url',
+    		'#type' => 'textfield',
+    		'#title' => t('URL alias'),
+    		'#ajax' => array (
+    				'callback' => 'ajax_check_taxonomy_urlalias_callback',
+    		),
+    		'#default_value' => $taxonomy_alias_url,
+    		'#required'=>TRUE,
+    		'#maxlength' => 255,
+    );
+    
+    $form['taxonomy_alias_url_hidden'] = array(
+    		'#id'=>'taxonomy_alias_url_hidden',
+    		'#type' => 'textfield',
+    		'#default_value' => $taxonomy_alias_url,
+    		'#prefix'=>'<div style="display:none;">',
+    		'#suffix'=>'</div>',
+    );
+    
+    
+    
+    $form ['taxonomyurlaliastatusdiv'] = array (
+    		'#type' => 'markup',
+    		'#markup' => '<div id="taxonomyurlaliastatusdiv"></div>'
+    );
+    }
+  
+    
+    if (isset($form_state['term']->tid) && 
+            $form_state['term']->vocabulary_machine_name == 'private_events' 
+            && $form_state['values']['op'] != "Delete" && $form_state['templatetype']!='wedding') { //condition loop start
+
+       
+        
+        //Form State
+        if (empty($form_state['num_pricing'])) {
+
+            $query = db_select('cruise_package_ticket_prices', 'tp');
+            $query->fields('tp');
+            $query->condition('tid', $form_state['term']->tid, '=');
+            $result = $query->execute();
+            $form_state['num_pricing'] = $result->rowCount();
+            $total_price_edit_values = array();
+            foreach ($result as $taxonomytermeditvalue) {
+                $total_price_edit_values[] = $taxonomytermeditvalue;
+            }
+//        var_dump($total_price_edit_values);
+        }
+
+
+
+
+
+        $form['prices_fieldset'] = array(
+            '#type' => 'fieldset',
+            '#title' => 'Prices',
+            '#prefix' => '<div id="prices-fieldset-wrapper">',
+            '#suffix' => '</div>',
+            '#collapsible' => TRUE,
+            '#tree' => TRUE,
+        );
+
+
+        $form['prices_fieldset']['tablestart'] = array(
+            '#type' => 'markup',
+            '#markup' => '<table>',
+        );
+
+
+        $form['prices_fieldset']['tableheader'] = array(
+            '#type' => 'markup',
+            '#markup' => '<tr><th>Time</th><th>Boarding</th><th>40-60 Guests</th><th>61-90 Guests</th><th>91-130 Guests</th><th>Remove</th></tr>',
+        );
+
+
+        for ($i = 0; $i < $form_state['num_pricing']; $i++) {
+
+
+
+            $form['prices_fieldset']['id'] = array(
+                '#type' => 'hidden',
+                '#value' => $total_price_edit_values[$i]->id,
+            );
+
+            $form['prices_fieldset']['rowstart' . $i] = array(
+                '#type' => 'markup',
+                '#markup' => '<tr>',
+            );
+
+
+            $form['prices_fieldset']['priceid' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<div style="display:none;">',
+                '#suffix' => '</div>',
+                '#attributes' => array('class' => array('input-medium')),
+                '#default_value' => isset($total_price_edit_values[$i]->id) ? $total_price_edit_values[$i]->id : ''
+            );
+
+            $form['prices_fieldset']['time' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+                '#attributes' => array('class' => array('input-medium')),
+                '#default_value' => isset($total_price_edit_values[$i]->time) ? $total_price_edit_values[$i]->time : ' '
+            );
+
+            $form['prices_fieldset']['boarding' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+                '#attributes' => array('class' => array('input-medium')),
+                '#default_value' => isset($total_price_edit_values[$i]->boarding) ? $total_price_edit_values[$i]->boarding : ' '
+            );
+
+            $form['prices_fieldset']['4060guests' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+                '#attributes' => array('class' => array('input-medium')),
+                '#default_value' => isset($total_price_edit_values[$i]->price_40_60) ? $total_price_edit_values[$i]->price_40_60 : ' '
+            );
+
+            $form['prices_fieldset']['6190guests' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+                '#attributes' => array('class' => array('input-medium')),
+                '#default_value' => isset($total_price_edit_values[$i]->price_61_90) ? $total_price_edit_values[$i]->price_61_90 : ' '
+            );
+
+            $form['prices_fieldset']['91130guests' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+                '#attributes' => array('class' => array('input-medium')),
+                '#default_value' => isset($total_price_edit_values[$i]->price_91_130) ? $total_price_edit_values[$i]->price_91_130 : ' '
+            );
+
+
+            $form['prices_fieldset']['remove' . $i] = array(
+                '#type' => 'button',
+                '#name' => 'removebtn' . $i,
+                '#value' => t('Remove'),
+                '#indx' => $i,
+                '#submit' => array('removepricefieldset_row_submit'),
+                '#ajax' => array(
+                    'callback' => 'removepricefieldset_row_submit',
+//                    'callback' => 'removepricefieldset_row',
+                    'wrapper' => 'prices-fieldset-wrapper',
+                ),
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+            );
+
+            $form['prices_fieldset']['rowend' . $i] = array(
+                '#type' => 'markup',
+                '#markup' => '</tr>',
+            );
+        }
+
+//exit();
+        $form['prices_fieldset']['tableend'] = array(
+            '#type' => 'markup',
+            '#markup' => '</table>',
+        );
+
+
+
+        $form['prices_fieldset']['add_name'] = array(
+            '#type' => 'submit',
+            '#value' => t('Add another item'),
+            '#submit' => array('add_price_content'),
+            '#ajax' => array(
+                'callback' => 'add_price_callback',
+                'wrapper' => 'prices-fieldset-wrapper',
+            ),
+        );
+
+//        if ($form_state['num_pricing'] > 1) {
+//            $form['prices_fieldset']['remove_name'] = array(
+//                '#type' => 'submit',
+//                '#value' => t('Remove one'),
+//                '#submit' => array('remove_price_content'),
+//                '#ajax' => array(
+//                    'callback' => 'remove_price_callback',
+//                    'wrapper' => 'prices-fieldset-wrapper',
+//                ),
+//            );
+//        }
+    
+            }
+    //end of loop starts
+    //buffet menu catering section
+
+
+    if (isset($form_state['term']->tid) &&
+            $form_state['values']['op'] != "Delete" &&   $form_state['templatetype']!='wedding' &&
+            ($form_state['term']->vocabulary_machine_name == 'private_events') 
+                     ||
+                    $form_state['term']->vocabulary_machine_name == 'food_and_bar') {
+
+        $form['catering_selection_fieldset'] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Catering Selection Menu'),
+            '#prefix' => '<div id="catering-selection-wrapper">',
+            '#suffix' => '</div>',
+            '#tree' => TRUE,
+            '#weight' => 6,
+            '#collapsible' => FALSE,
+        );
+
+
+        if (empty($form_state['num_of_catering_items'])) {
+            $form_state['num_of_catering_items'] = 1;
+        }
+
+        $form['catering_selection_fieldset']['buffet_title'] = array(
+            '#id' => 'buffet_title',
+            '#type' => 'textfield',
+            '#title' => t('Buffet Title'),
+            '#suffix' => '<div class="rowfluid"><div class="span12" style="margin-left:2px;"><div class="pull-left" id="buffimgpreview"></div></div></div>',
+        );
+
+
+        $form['catering_selection_fieldset']['buffet_image'] = array(
+            '#id' => 'buffet_image',
+//        '#name'=>'buffet_image',
+            '#name' => 'files[buffet_image]',
+//            '#type' => 'managed_file',
+            '#type' => 'file',
+            '#default_value' => '',
+            '#title' => t('Buffet Image'),
+            '#upload_location' => 'public://imageuploads/',
+            "#upload_validators" => array("file_validate_extensions" => array("png gif jpg jpeg")),
+        );
+
+
+
+        $form['catering_selection_fieldset']['buffet_caption'] = array(
+            '#id' => 'buffet_caption',
+            '#type' => 'textfield',
+            '#prefix' => '<div style="display:none;"',
+            '#suffix' => '</div>',
+            '#title' => t('Buffet Caption'),
+        );
+
+
+        for ($i = 0; $i < $form_state['num_of_catering_items']; $i++) {
+            $form['catering_selection_fieldset']['buffet_content' . $i] = array(
+                '#id' => 'buffet_content' . $i,
+//                '#type' => 'textarea',
+                '#type' => 'text_format',
+                '#format' => 'templateeditor',
+                '#title' => t('Buffet Content'),
+            );
+        }
+
+
+//        $form['catering_selection_fieldset']['add_name'] = array(
+//            '#type' => 'submit',
+//            '#value' => t('Add one more'),
+//            '#submit' => array('add_buffet_content'),
+//            '#ajax' => array(
+//                'callback' => 'add_buffet_callback',
+//                'wrapper' => 'catering-selection-wrapper',
+//            ),
+//        );
+
+
+        if ($form_state['num_of_catering_items'] > 1) {
+            $form['catering_selection_fieldset']['remove_name'] = array(
+                '#type' => 'submit',
+                '#value' => t('Remove one'),
+                '#submit' => array('remove_buffet_content'),
+                '#ajax' => array(
+                    'callback' => 'remove_buffet_callback',
+                    'wrapper' => 'catering-selection-wrapper',
+                ),
+            );
+        }
+
+        $form['catering_selection_fieldset']['add_course'] = array(
+            '#id' => 'add_course',
+            '#type' => 'submit',
+            '#value' => t('Submit'),
+//            '#submit' => array('catering_submit_callback'),
+//            '#ajax' => array(
+//                'callback' => 'catering_submit_callback',
+//            ),
+            '#submit' => array('catering_submit_content'),
+            '#ajax' => array(
+                'callback' => 'catering_submit_callback',
+                'wrapper' => 'catering-selection-wrapper',
+            ),
+            '#prefix' => '<div class="row-fluid"><div class="span12"><div id="addcoursediv" class="pull-left">',
+            '#suffix' => '</div>',
+        );
+
+
+        $form['catering_selection_fieldset']['buffet_id'] = array(
+            '#id' => 'buffet_id',
+            '#type' => 'textfield',
+            '#prefix' => '<div style="display:none;">',
+            '#suffix' => '</div>',
+        );
+        $form['catering_selection_fieldset']['buffimgremove'] = array(
+            '#id' => 'buffimgremove',
+            '#type' => 'textfield',
+            '#default_value' => '0',
+            '#prefix' => '<div style="display:none;">',
+            '#suffix' => '</div>',
+        );
+//        $form['catering_selection_fieldset']['update_course'] = array(
+//            '#id' => 'update_course',
+//            '#type' => 'submit',
+//            '#value' => t('Update'),
+////            '#limit_validation_errors' => array(),
+//            '#submit' => array('remove_buffet_content'),
+//            
+//            '#ajax' => array(
+//                'callback' => 'updatecatering_submit_callback',
+//                'wrapper' => 'catering-selection-wrapper',
+//            ),
+//        );
+        $form['catering_selection_fieldset']['update_course'] = array(
+            '#type' => 'submit',
+            '#value' => t('Update'),
+            '#submit' => array('update_buffet_content'),
+            '#ajax' => array(
+                'callback' => 'updatecatering_submit_callback',
+                'wrapper' => 'catering-selection-wrapper',
+            ),
+            '#prefix' => '<div style="display:none;" class="pull-left" id="updatecoursediv">',
+            '#suffix' => '</div>',
+        );
+        $form['catering_selection_fieldset']['cancel'] = array(
+            '#markup' => '<div class="pull-left"><span class="button" onclick="buffetmenucancel()">Cancel</span></div></div></div>',
+        );
+
+
+     
+
+        $_SESSION['taxonomy_temp_id'] = $form_state['term']->tid;
+        $data = CruisePackages::getTableFormattedMenuData($_SESSION['taxonomy_temp_id']);
+
+        $form['catering_selection_fieldset']['data'] = array(
+            '#type' => 'markup',
+            '#markup' => '<div id="buffetcateringdiv">' . $data . '</div>'
+        );
+
+
+        //end of buffet menu catering section
+    }
+
+
+
+
+    //load the buffet menu section using termid 
+    //private events term ids
+    //getting the taxonomy value if it is null then it is in empty state or else it is in edit state
+
+    if (!isset($form_state['term']->tid) &&  $form_state['templatetype']!='wedding' &&
+            ($form_state['term']->vocabulary_machine_name == 'private_events' 
+                    )) {
+
+        //Taxonomy id
+        //$tid=11;
+        if (!isset($_SESSION['taxonomy_temp_id'])) {
+            if ($tid != '') {
+                //edit operation
+                $_SESSION['taxonomy_temp_id'] = $tid;
+            } else {
+                //add operation
+                $_SESSION['taxonomy_temp_id'] = time();
+            }
+        }
+
+
+        //*****************  Ticket  Prices ********************************
+
+
+
+
+
+
+        $form['prices_fieldset'] = array(
+            '#type' => 'fieldset',
+            '#title' => 'Prices',
+            '#prefix' => '<div id="prices-fieldset-wrapper">',
+            '#suffix' => '</div>',
+            '#collapsible' => TRUE,
+            '#tree' => TRUE,
+        );
+
+        //Form State
+        if (empty($form_state['num_pricing'])) {
+            $form_state['num_pricing'] = 1;
+        }
+
+
+        $form['prices_fieldset']['tablestart'] = array(
+            '#type' => 'markup',
+            '#markup' => '<table>',
+        );
+
+
+        $form['prices_fieldset']['tableheader'] = array(
+            '#type' => 'markup',
+            '#markup' => '<tr><th>Time</th><th>Boarding</th><th>40-60 Guests</th><th>61-90 Guests</th><th>91-130 Guests</th></tr>',
+        );
+
+
+        for ($i = 0; $i < $form_state['num_pricing']; $i++) {
+            $form['prices_fieldset']['rowstart' . $i] = array(
+                '#type' => 'markup',
+                '#markup' => '<tr>',
+            );
+
+            $form['prices_fieldset']['time' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+            );
+
+            $form['prices_fieldset']['boarding' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+            );
+
+            $form['prices_fieldset']['4060guests' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+            );
+
+            $form['prices_fieldset']['6190guests' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+            );
+
+            $form['prices_fieldset']['91130guests' . $i] = array(
+                '#type' => 'textfield',
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+            );
+
+
+            $form['prices_fieldset']['rowend' . $i] = array(
+                '#type' => 'markup',
+                '#markup' => '</tr>',
+            );
+        }
+
+
+        $form['prices_fieldset']['tableend'] = array(
+            '#type' => 'markup',
+            '#markup' => '</table>',
+        );
+
+
+
+        $form['prices_fieldset']['add_name'] = array(
+            '#type' => 'submit',
+            '#value' => t('Add another item'),
+            '#submit' => array('add_price_content'),
+            '#ajax' => array(
+                'callback' => 'add_price_callback',
+                'wrapper' => 'prices-fieldset-wrapper',
+            ),
+        );
+
+//        if ($form_state['num_pricing'] > 1) {
+//            $form['prices_fieldset']['remove_name'] = array(
+//                '#type' => 'submit',
+//                '#value' => t('Remove one'),
+//                '#submit' => array('remove_price_content'),
+//                '#ajax' => array(
+//                    'callback' => 'remove_price_callback',
+//                    'wrapper' => 'prices-fieldset-wrapper',
+//                ),
+//            );
+//        }
+    }
+    //*****************  Ticket  Prices Ends here********************************
+    //Buffet Menu Catering gets starts here
+
+    if (!isset($form_state['term']->tid) && $form_state['templatetype']!='wedding' &&
+            ($form_state['term']->vocabulary_machine_name == 'food_and_bar' ||
+            ($form_state['term']->vocabulary_machine_name == 'private_events' 
+                    ))) {
+
+
+        $form['catering_selection_fieldset'] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Catering Selection Menu'),
+            '#prefix' => '<div id="catering-selection-wrapper">',
+            '#suffix' => '</div>',
+            '#tree' => TRUE,
+            '#collapsible' => TRUE,
+        );
+
+
+        if (empty($form_state['num_of_catering_items'])) {
+            $form_state['num_of_catering_items'] = 1;
+        }
+
+        $form['catering_selection_fieldset']['buffet_title'] = array(
+            '#id' => 'buffet_title',
+            '#type' => 'textfield',
+            '#title' => t('Buffet Title'),
+        );
+
+
+
+        $form['catering_selection_fieldset']['buffet_image'] = array(
+            '#id' => 'buffet_image',
+//        '#name'=>'buffet_image',
+            '#name' => 'files[buffet_image]',
+//            '#type' => 'managed_file',
+            '#type' => 'file',
+            '#default_value' => '',
+            '#title' => t('Buffet Image'),
+            '#upload_location' => 'public://imageuploads/',
+            "#upload_validators" => array("file_validate_extensions" => array("png gif jpg jpeg")),
+        );
+
+
+
+        $form['catering_selection_fieldset']['buffet_imagefid'] = array(
+            '#id' => 'buffet_imagefid',
+            '#type' => 'textfield',
+            '#prefix' => '<div style="display:none;">',
+            '#suffix' => '</div>',
+        );
+        $form['catering_selection_fieldset']['buffet_caption'] = array(
+            '#id' => 'buffet_caption',
+            '#type' => 'textfield',
+            '#title' => t('Buffet Caption'),
+        );
+
+
+//        for ($i = 0; $i < $form_state['num_of_catering_items']; $i++) {
+        for ($i = 0; $i < ($form_state['num_of_catering_items'] != '' ? $form_state['num_of_catering_items'] : 1); $i++) {
+            $form['catering_selection_fieldset']['buffet_content' . $i] = array(
+//                '#id' => 'buffet_caption' . $i,
+//                 '#type' => 'textarea',
+                '#type' => 'text_format',
+                '#format' => 'templateeditor',
+                '#title' => t('Buffet Content'),
+            );
+        }
+
+
+        $form['catering_selection_fieldset']['add_name'] = array(
+            '#type' => 'submit',
+            '#value' => t('Add one more'),
+            '#submit' => array('add_buffet_content'),
+            '#ajax' => array(
+                'callback' => 'add_buffet_callback',
+                'wrapper' => 'catering-selection-wrapper',
+            ),
+        );
+
+
+        if ($form_state['num_of_catering_items'] > 1) {
+            $form['catering_selection_fieldset']['remove_name'] = array(
+                '#type' => 'submit',
+                '#value' => t('Remove one'),
+                '#submit' => array('remove_buffet_content'),
+                '#ajax' => array(
+                    'callback' => 'remove_buffet_callback',
+                    'wrapper' => 'catering-selection-wrapper',
+                ),
+            );
+        }
+
+        $form['catering_selection_fieldset']['add_course'] = array(
+            '#id' => 'add_course',
+            '#type' => 'submit',
+            '#value' => t('Submit'),
+            '#limit_validation_errors' => array(),
+//            '#submit' => array('catering_submit_callback'),
+//            '#ajax' => array(
+//                'callback' => 'catering_submit_callback',
+//            ),
+            '#submit' => array('catering_submit_content'),
+            '#ajax' => array(
+                'callback' => 'catering_submit_callback',
+                'wrapper' => 'catering-selection-wrapper',
+            ),
+        );
+
+
+        $data = CruisePackages::getTableFormattedMenuData($_SESSION['taxonomy_temp_id']);
+
+        $form['catering_selection_fieldset']['data'] = array(
+            '#type' => 'markup',
+            '#markup' => '<div id="buffetcateringdiv">' . $data . '</div>'
+        );
+    }
+
+    $form['#submit'][] = 'cruisepackages_form_submit';
+}
+
+//*****************  Ticket  Prices********************************
+//add
+function add_price_content($form, &$form_state) {
+    $form_state['num_pricing'] ++;
+    $form_state['rebuild'] = TRUE;
+}
+
+function add_price_callback($form, $form_state) {
+    return $form['prices_fieldset'];
+}
+
+//remove
+function remove_price_content($form, &$form_state) {
+    if ($form_state['num_pricing'] > 1) {
+        $form_state['num_pricing'] --;
+    }
+    $form_state['rebuild'] = TRUE;
+}
+
+function remove_price_callback($form, $form_state) {
+    return $form['prices_fieldset'];
+}
+
+function removepricefieldset_row($form, $form_state) {
+
+    return $form['prices_fieldset'];
+}
+
+function removepricefieldset_row_submit($form, &$form_state) {
+//   
+    $removableid = $form_state['triggering_element']['#name'];
+
+    $commands = array();
+    $id = '';
+
+    $count = $form_state['num_pricing'];
+    $pricetable = array();
+    for ($i = 0; $i < $count; $i++) {
+        if ($removableid != 'removebtn' . $i) {
+            $priceobj = new stdClass();
+            $priceobj->priceid = $form_state['values']['prices_fieldset']['priceid' . $i];
+            $priceobj->time = $form_state['values']['prices_fieldset']['time' . $i];
+            $priceobj->boarding = $form_state['values']['prices_fieldset']['boarding' . $i];
+            $priceobj->guests1 = $form_state['values']['prices_fieldset']['4060guests' . $i];
+            $priceobj->guests2 = $form_state['values']['prices_fieldset']['6190guests' . $i];
+            $priceobj->guests3 = $form_state['values']['prices_fieldset']['91130guests' . $i];
+            $pricetable[] = $priceobj;
+        } else {
+            $id = $form_state['values']['prices_fieldset']['priceid' . $i];
+        }
+    }
+    for ($i = 0; $i < $count; $i++) {
+
+        if ($i != ($count - 1)) {
+            $commands[] = ajax_command_invoke('#edit-prices-fieldset-priceid' . $i, 'attr', array('value', $pricetable[$i]->priceid));
+            $commands[] = ajax_command_invoke('#edit-prices-fieldset-time' . $i, 'attr', array('value', $pricetable[$i]->time));
+            $commands[] = ajax_command_invoke('#edit-prices-fieldset-boarding' . $i, 'attr', array('value', $pricetable[$i]->boarding));
+            $commands[] = ajax_command_invoke('#edit-prices-fieldset-4060guests' . $i, 'attr', array('value', $pricetable[$i]->guests1));
+            $commands[] = ajax_command_invoke('#edit-prices-fieldset-6190guests' . $i, 'attr', array('value', $pricetable[$i]->guests2));
+            $commands[] = ajax_command_invoke('#edit-prices-fieldset-91130guests' . $i, 'attr', array('value', $pricetable[$i]->guests3));
+        } else {
+            $commands[] = ajax_command_remove('#edit-prices-fieldset-priceid' . $i);
+            $commands[] = ajax_command_remove('#edit-prices-fieldset-time' . $i);
+            $commands[] = ajax_command_remove('#edit-prices-fieldset-boarding' . $i);
+            $commands[] = ajax_command_remove('#edit-prices-fieldset-4060guests' . $i);
+            $commands[] = ajax_command_remove('#edit-prices-fieldset-6190guests' . $i);
+            $commands[] = ajax_command_remove('#edit-prices-fieldset-91130guests' . $i);
+            $commands[] = ajax_command_remove('#edit-prices-fieldset-remove' . $i);
+        }
+    }
+
+
+
+    CruisePackages::remove_price_fieldset($id);
+//   return array('#type' => 'ajax', '#commands' => $commands);
+    $form_state['num_pricing'] --;
+    $form_state['rebuild'] = TRUE;
+
+
+//    ajax_dataupdate($form, $form_state);
+
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands,
+    );
+
+//  $count=$form_state['num_pricing'];
+//  $pricetable=array();
+//  for($i=0;$i<4;$i++){
+////      if(!isset($form_state['values']['prices_fieldset']['remove'.$i])){
+//      if($i!=2){
+////          $priceobj=new stdClass();
+////          $priceobj->priceid=$form_state['values']['prices_fieldset']['priceid'.$i];
+////          $priceobj->time=$form_state['values']['prices_fieldset']['time'.$i];
+////          $priceobj->boarding=$form_state['values']['prices_fieldset']['boarding'.$i];
+////          $priceobj->guests1=$form_state['values']['prices_fieldset']['4060guests'.$i];
+////          $priceobj->guests2=$form_state['values']['prices_fieldset']['6190guests'.$i];
+////          $priceobj->guests3=$form_state['values']['prices_fieldset']['91130guests'.$i];
+//          $pricetable[]='$priceobj';
+//      }
+//  }
+//   var_dump($pricetable);
+//   exit();
+//     $indx = $form_state['triggering_element']['#indx'];
+//       
+//    $selector = "#items_del_" . $indx;
+//    $commands = array();
+//    $commands[] = ajax_command_remove($selector);
+//   var_dump($form_state['values']['prices_fieldset']['id']);
+//   exit();
+}
+
+//add
+
+function add_buffet_content($form, &$form_state) {
+    $form_state['num_of_catering_items'] ++;
+    $form_state['rebuild'] = TRUE;
+}
+
+function add_buffet_callback($form, $form_state) {
+    return $form['catering_selection_fieldset'];
+}
+
+//remove
+function remove_buffet_content($form, &$form_state) {
+    if ($form_state['num_of_catering_items'] > 1) {
+        $form_state['num_of_catering_items'] --;
+    }
+    $form_state['rebuild'] = TRUE;
+}
+
+function remove_buffet_callback($form, $form_state) {
+    return $form['catering_selection_fieldset'];
+}
+
+function catering_submit_callback($form, $form_state) {
+//    return $form['catering_selection_fieldset'];
+    $data = CruisePackages::getTableFormattedMenuData($_SESSION['taxonomy_temp_id']);
+    $commands [] = ajax_command_invoke('#buffet_title', 'attr', array('value', ''));
+    $commands [] = ajax_command_invoke('#buffet_image', 'attr', array('value', ''));
+    $commands [] = ajax_command_invoke('#buffet_caption', 'attr', array('value', ''));
+    for ($i = 0; $i < $numOfBuffetContent; $i++) {
+        $commands [] = ajax_command_invoke('#buffet_caption' . $i, 'attr', array('value', ''));
+        $contentid = 'edit-buffet_content' . $i . '-value';
+        $commands[] = array('command' => 'resetbuffetcontent("' . $contentid . '")');
+    }
+    $commands [] = ajax_command_replace("#buffetcateringdiv", "<div id='buffetcateringdiv'>" . $data . "</div>");
+
+//    $commands[] = ajax_command_replace(NULL, drupal_render($form));
+    $commands[] = array('command' => 'resetbuffetcontent');
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+//catering submit 
+function catering_submit_content($form, &$form_state) {
+
+    $buffet_title = trim($form_state['values']['catering_selection_fieldset']['buffet_title']);
+    $buffet_caption = trim($form_state['values']['catering_selection_fieldset']['buffet_caption']);
+    $numOfBuffetContent = $form_state['num_of_catering_items'];
+    $buffetContentData = array();
+    for ($i = 0; $i < $numOfBuffetContent; $i++) {
+        $buffetContentData[$i] = $form_state['values']['catering_selection_fieldset']['buffet_content' . $i]['value'];
+    }
+    if ($form_state['num_of_catering_items'] > 1) {
+        $form_state['num_of_catering_items'] = 1;
+    }
+//    $form_state['rebuild'] = TRUE;
+
+    if (empty($buffet_title) || empty($buffet_title)) {
+        $commands[] = ajax_command_alert("Please fill all the fields ");
+    } else {
+
+        $dest_dir = file_default_scheme() . '://crusemenuimages/'; // Note: file_directory_path() was removed in Drupal 7.x. // $dest_dir contains the destination directory for the file.
+//        if ($form_state['values']['catering_selection_fieldset']['buffet_image']["fid"] != '') {
+//            $validators = array('file_validate_extensions' => array('jpg png gif'));
+//            $file = file_load($form_state['values']['catering_selection_fieldset']['buffet_image']);
+//            $fileupload = file_save_upload($file->uri, $validators, 'public://imageuploads/' . $file->filename, FILE_EXISTS_REPLACE);
+//            $file->status = "1";
+//            $fileuploadsucess = file_save($file);
+//        }else{
+//            
+//        }
+        $buffet_image = '';
+        $dest_dir = file_default_scheme() . '://imageuploads/'; // Note: file_directory_path() was removed in Drupal 7.x. // $dest_dir contains the destination directory for the file.
+        $validators = array('file_validate_extensions' => array('jpg png gif'));
+        if ($_FILES['files']['name']['buffet_image'] != '') {
+            $filename = '';
+            if ($file = file_save_upload('buffet_image', $validators, $dest_dir)) {
+                $fileURI = $file->uri;
+                $file->status = "1";
+                $fileuploadsucess = file_save($file);
+                $buffet_image = $file->fid;
+            } else {
+                //form_set_error('', 'Could not upload file.');
+            }
+        }
+//        if ($fileuploadsucess) {
+//
+//            $fileURI = $file->uri;
+//            db_delete('file_managed')->condition('fid', $file->fid, '=')->execute();
+//            $filename = isset($file->filename) ? $file->filename : "";
+////            $commands[] = ajax_command_alert('file upload ');
+//        } else {
+//            $commands[] = ajax_command_alert('file upload failed');
+////            form_set_error('', 'Could not upload file.');
+//        }
+//        }
+//        $buffet_image = isset($form_state['values']['catering_selection_fieldset']['buffet_image']) ? $form_state['values']['catering_selection_fieldset']['buffet_image'] : '';
+//        $buffet_image = isset($form_state['values']['catering_selection_fieldset']['buffet_image']['fid']) ? $form_state['values']['catering_selection_fieldset']['buffet_image']['fid'] : '';
+//       var_dump($buffet_image);
+//        exit();
+
+
+        $cateringObject = new CruisePackages();
+        $cateringObject->buffet_title = $buffet_title;
+        $cateringObject->buffet_caption = $buffet_caption;
+        $cateringObject->buffet_content = serialize($buffetContentData);
+        $cateringObject->buffet_image = $buffet_image;
+        $cateringObject->tid = $_SESSION['taxonomy_temp_id'];
+        $cateringObject->status = 0;
+        $cateringObject->create_catering_selections();
+        $retdata = '';
+
+
+
+//        $commands[] = ajax_command_replace(NULL, drupal_render($form['catering_selection_fieldset']["buffet_image"]));
+    }
+    $form_state['rebuild'] = TRUE;
+}
+
+function updatecatering_submit_callback($form, $form_state) {
+//    return $form['catering_selection_fieldset'];
+    $data = CruisePackages::getTableFormattedMenuData($_SESSION['taxonomy_temp_id']);
+    $commands [] = ajax_command_invoke('#buffet_title', 'attr', array('value', ''));
+    $commands [] = ajax_command_invoke('#buffet_image', 'attr', array('value', ''));
+    $commands [] = ajax_command_invoke('#buffet_caption', 'attr', array('value', ''));
+    $commands [] = ajax_command_invoke('#buffet_id', 'attr', array('value', ''));
+
+    $commands [] = ajax_command_replace("#buffetcateringdiv", "<div id='buffetcateringdiv'>" . $data . "</div>");
+    $commands [] = ajax_command_replace("#buffimgpreview", "<div id='buffimgpreview'></div>");
+
+    $commands[] = array('command' => 'resetupdatebuffetcontent');
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+function update_buffet_content($form, &$form_state) {
+
+    $buffet_id = trim($form_state['values']['catering_selection_fieldset']['buffet_id']);
+    $buffimgremove = trim($form_state['values']['catering_selection_fieldset']['buffimgremove']);
+    $buffet_title = trim($form_state['values']['catering_selection_fieldset']['buffet_title']);
+    $buffet_caption = trim($form_state['values']['catering_selection_fieldset']['buffet_caption']);
+    $numOfBuffetContent = $form_state['num_of_catering_items'];
+    $buffetContentData = array();
+    $data = '';
+    for ($i = 0; $i < $numOfBuffetContent; $i++) {
+        $buffetContentData[$i] = $form_state['values']['catering_selection_fieldset']['buffet_content' . $i]['value'];
+    }
+
+    if (empty($buffet_title) || empty($buffet_title)) {
+        $commands[] = ajax_command_alert("Please fill all the fields ");
+    } else {
+        $dest_dir = file_default_scheme() . '://crusemenuimages/'; // Note: file_directory_path() was removed in Drupal 7.x. // $dest_dir contains the destination directory for the file.
+//        $buffet_image = isset($form_state['values']['catering_selection_fieldset']['buffet_image']) ? $form_state['values']['catering_selection_fieldset']['buffet_image'] : '';
+        $buffet_image = '';
+        if ($_FILES['files']['name']['buffet_image'] != '') {
+            $filename = '';
+            if ($file = file_save_upload('buffet_image', $validators, $dest_dir)) {
+                $fileURI = $file->uri;
+                $file->status = "1";
+                $fileuploadsucess = file_save($file);
+                $buffet_image = $file->fid;
+            } else {
+                //form_set_error('', 'Could not upload file.');
+            }
+        }
+
+        $cateringarray = array();
+        if ($buffimgremove != 0 || $buffimgremove != '') {
+//            $file = file_load($buffimgremove);
+//            file_delete($file);
+            $cateringarray['buffet_image'] = '';
+        }
+
+
+        $cateringarray['buffet_title'] = $buffet_title;
+        $cateringarray['buffet_caption'] = $buffet_caption;
+        $cateringarray['buffet_content'] = serialize($buffetContentData);
+        if ($buffet_image != '' && $buffet_image != 0) {
+            $cateringarray['buffet_image'] = $buffet_image;
+        }
+
+        $update_catering_results = CruisePackages::update_catering_selectionsByid($buffet_id, $cateringarray);
+    }
+    $form_state['values']['catering_selection_fieldset']['buffet_image'] = '';
+
+    $form_state['rebuild'] = TRUE;
+}
+
+//catering section buffet Menu Update
+
+function catering_update_submit_callback($form, $form_state) {
+    $buffet_title = trim($form_state['values']['catering_selection_fieldset']['buffet_title']);
+    $buffet_caption = trim($form_state['values']['catering_selection_fieldset']['buffet_caption']);
+    $numOfBuffetContent = $form_state['num_of_catering_items'];
+    $buffetContentData = array();
+    for ($i = 0; $i < $numOfBuffetContent; $i++) {
+        $buffetContentData[$i] = $form_state['values']['catering_selection_fieldset']['buffet_content' . $i]['value'];
+    }
+
+    if (empty($buffet_title) || empty($buffet_title)) {
+        $commands[] = ajax_command_alert("Please fill all the fields ");
+    } else {
+
+
+
+
+        $dest_dir = file_default_scheme() . '://crusemenuimages/'; // Note: file_directory_path() was removed in Drupal 7.x. // $dest_dir contains the destination directory for the file.
+        $validators = array('file_validate_extensions' => array('jpg png gif'));
+
+//        $commands[] = ajax_command_alert($form_state['values']['catering_selection_fieldset']['buffet_image']);
+//        if ($_FILES['files']['name']['buffet_image'] != '') {
+        $filename = '';
+        $fileURI = '';
+
+        $file = file_save_upload('buffet_image', $validators, $dest_dir);
+//        $commands[] = ajax_command_alert($file);
+
+        if ($file) {
+
+            $fileURI = $file->uri;
+            db_delete('file_managed')->condition('fid', $file->fid, '=')->execute();
+            $filename = isset($file->filename) ? $file->filename : "";
+            $commands[] = ajax_command_alert('file upload ');
+        } else {
+            $commands[] = ajax_command_alert('file upload failed');
+            form_set_error('', 'Could not upload file.');
+        }
+//        }
+
+
+        $buffet_image = $fileURI;
+
+        $cateringObject = new CruisePackages();
+        $cateringObject->buffet_title = $buffet_title;
+        $cateringObject->buffet_caption = $buffet_caption;
+        $cateringObject->buffet_content = serialize($buffetContentData);
+        $cateringObject->buffet_image = $buffet_image;
+        $cateringObject->tid = $_SESSION['taxonomy_temp_id'];
+        $cateringObject->status = 0;
+        $cateringObject->create_catering_selections();
+        $retdata = '';
+
+        $data = CruisePackages::getTableFormattedMenuData($_SESSION['taxonomy_temp_id']);
+        $commands [] = ajax_command_replace("#buffetcateringdiv", "<div id='buffetcateringdiv'>" . $data . "</div>");
+    }
+
+
+
+
+
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+function catering_submit($form, &$form_state) {
+
+    //    // rebuild the form after submitted successfully
+    $form_state['rebuild'] = TRUE;
+}
+
+function cruisepackages_form_submit($form, &$form_state) {
+
+	$taxonomy_alias_url=isset($form_state['values']['taxonomy_alias_url']) ? $form_state['values']['taxonomy_alias_url'] : "";
+
+
+	/*
+	 * satya
+	 * Wedding : 38
+	 * Corporate Cruises : 91
+	 * Speical Occasions : 99
+	 */
+	$parentcategoires=$form_state['values']['parent'];
+	$eventcategories=array(38,91,99);
+	$isprivatecategory=false;
+	foreach($eventcategories as $category){
+		if(in_array($category, $parentcategoires)){
+			$isprivatecategory=true;
+			break;
+		}
+	}
+	
+	
+	
+
+
+   //var_dump($form_state['input']["parent"]);
+
+
+    if ($form_state['values']['op'] == 'Save') {
+        //here get the taxonomy id
+
+
+
+        $tempid = $_SESSION['taxonomy_temp_id'];
+//        unset($_SESSION['taxonomy_temp_id']);
+        //*************** Prices Insertion  **************
+        $cnt = $form_state['num_pricing'];
+
+
+        $pricetable = 'cruise_package_ticket_prices';
+        //deleting the exiting records and get saving with the new records.
+        //@To Do instead of deleting entire table we need to delete the rows 
+        //which are matching the rows with tid.
+//        db_truncate($pricetable)->execute();
+
+        $totalinput = array();
+
+        for ($i = 0; $i < $cnt; $i++) {
+            $priceObject = new CruisePrices();
+            $priceObject->time = $form_state['values']['prices_fieldset']['time' . $i];
+            $priceObject->boarding = $form_state['values']['prices_fieldset']['boarding' . $i];
+            $priceObject->price_40_60 = $form_state['values']['prices_fieldset']['4060guests' . $i];
+            $priceObject->price_61_90 = $form_state['values']['prices_fieldset']['6190guests' . $i];
+            $priceObject->price_91_130 = $form_state['values']['prices_fieldset']['91130guests' . $i];
+            $priceObject->tid = $form_state['values']['tid'];
+            $priceObject->status = 1;
+            if ($form_state['input']['prices_fieldset']['priceid' . $i] != "") {
+                $priceObject->id = $form_state['values']['prices_fieldset']['priceid' . $i];
+            }
+            $priceObject->create_prices();
+//            var_dump($priceObject);echo'<br/><br/>';
+        }
+//exit();
+        //*************** Updating Catering Information  *******
+        $tempid = $_SESSION['taxonomy_temp_id'];
+        CruisePackages::update_catering_selections($form_state['values']['tid'], $tempid);
+        $aliasname = $form_state['term']->name;
+
+        $vocubname = $form['#term']['vocabulary_machine_name'];
+        if ($vocubname == 'food_and_bar') {
+            $modulename = 'foodandbar/category';
+            $urlsource = "foodandbar/category/" . $form_state['values']['tid'];
+            
+        }
+        if ($vocubname == 'private_events') {
+        	$modulename = 'eventscruise';
+        	if($isprivatecategory){
+        		$urlsource = "privateevents/category/" . $form_state['values']['tid'];
+        	}else{
+        		$urlsource = "eventscruise/" . $form_state['values']['tid'];
+        	}
+           
+           
+        }
+        if ($vocubname == 'fleet') {
+            $modulename = 'fleet';
+            $urlsource = "fleet/" . $form_state['values']['tid'];
+        }
+        if ($vocubname == 'departure_ports') {
+            $modulename = 'portsdetailview/portid';
+            $urlsource = "portsdetailview/portid/" . $form_state['values']['tid'];
+        }
+
+
+        //var_dump($form_state['values']['tid']);
+        //exit();
+
+        
+        //URL alias
+        $taxonomy_alias_url =strtolower(trim(str_replace(" ","",$form_state['values']["taxonomy_alias_url"])));
+        $urlaliaspid = isset($form_state['values']["urlaliaspid"]) ? $form_state['values']["urlaliaspid"] : '';
+        
+        if($urlaliaspid==""){
+        	//insert
+        	if($taxonomy_alias_url!=""){
+        		$urlAliasObject=new UrlAlias();
+        		$urlAliasObject->source=$urlsource;
+        		$urlAliasObject->alias=$taxonomy_alias_url;
+        		$id=$urlAliasObject->createUrlAlias();
+        	}
+        }else{
+        	//update
+        	$urlAliasObject=new UrlAlias();
+        	$urlAliasObject->alias=$taxonomy_alias_url;
+        	$urlAliasObject->pid=$urlaliaspid;
+        	$urlAliasObject->updateUrlAlias();
+        	 
+        }
+        
+      
+        
+        
+        
+        
+        // CruisePackages::generate_alias_name($form_state['values']['tid'], $aliasname, $modulename);
+
+
+//        unset($_SESSION['taxonomy_temp_id']);
+        //************** Delete ***********************
+    }
+
+
+    if ($form_state['values']['op'] == 'Delete') {
+
+        $tid = $form_state['values']['tid'];
+        if ($form_state['values'] ["confirm"] == 1) {
+            $buffettable_deleted = db_delete('cruise_package_catering_selections')
+                    ->condition('tid', $tid)
+                    ->execute();
+            $pricetable_deleted = db_delete('cruise_package_ticket_prices')
+                    ->condition('tid', $tid)
+                    ->execute();
+        }
+    }
+}
+
+function getbuffetdatabybuffetid_ajaxcallback() {
+    $buffetid = $_POST['buffetid'];
+    $data = array();
+    $data = db_select('cruise_package_catering_selections', 'c')
+            ->fields('c')
+            ->condition('id', $buffetid, '=')
+            ->execute()
+            ->fetchAll();
+    $buffetcontent = '';
+    $buffetdata = new stdClass();
+    if (count($data) > 0) {
+        if (isset($data[0]->buffet_content) && $data[0]->buffet_content != '') {
+            $buffetcontent = unserialize($data[0]->buffet_content);
+        }
+
+        $file = file_load($data[0]->buffet_image);
+
+        $buffetdata = $data[0];
+        $buffetdata->buffetimagesrc = file_create_url($file->uri);
+        $totalbuffetcontent = implode('', $buffetcontent);
+        $buffetdata->buffetcontent = $totalbuffetcontent;
+    }
+    drupal_json_output($buffetdata);
+}

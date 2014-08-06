@@ -1,0 +1,11 @@
+name = Cruise User Account Creation
+description = Cruise User Account Creation.
+core = 7.x
+package = WWC
+
+; Information added by drupal.org packaging script on 2013-02-01
+version = "7.x"
+core = "7.x"
+project = "WWC"
+datestamp = "1371686400"
+

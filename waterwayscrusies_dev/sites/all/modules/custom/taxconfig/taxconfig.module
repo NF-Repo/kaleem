@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * Implementing hook_menu()
+ */
+function taxconfig_menu() {
+
+	$items['taxconfig'] = array(
+			'title' => t('Tax Configuration'),
+			'description' => t(''),
+			'page callback' => 'tax_config_page',
+     		 'access arguments' => array('manage tax configuration'),
+	);
+	return $items;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function taxconfig_permission() {
+	return array(
+			'manage tax configuration' => array(
+					'title' => t('Manage Tax Configuration'),
+			),
+	);
+}
+
+
+function tax_config_page(){
+	return drupal_get_form('taxconfig_form');
+}
+
+
+/**
+ * Building the form 
+ */
+function taxconfig_form($form, &$form_state) {
+	
+	$taxvalue=variable_get('WWCTAXVALUE','');
+	
+	$form['taxvalue'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Tax Value'),
+			'#default_value' => $taxvalue,
+			'#required' => TRUE,
+	);
+	
+	$form['submit'] = array(
+			'#type' => 'submit',
+			'#value' => t('Save Tax'),
+			
+	);
+	return $form;
+}
+
+function taxconfig_form_validate($form, &$form_state) {
+	$taxValue=trim($form_state['values']['taxvalue']);
+	
+	if(!is_numeric($taxValue)){
+		form_set_error('taxvalue','Invalid Value');
+	}
+	
+}
+
+
+function taxconfig_form_submit($form, &$form_state){
+	$taxValue=trim($form_state['values']['taxvalue']);
+	variable_set("WWCTAXVALUE", $taxValue);
+	drupal_set_message("Tax Configured Successfully.");
+}
+

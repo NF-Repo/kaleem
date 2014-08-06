@@ -1,0 +1,1035 @@
+<?php
+
+class CruiseEnhancements {
+    /*
+     * Window Enhancement is a taxonomy term 
+     */
+
+    public static function is_window_inventory_item($id) {
+        //here 232 is the taxonomy id for Window Seats
+        $windowoptionsTid = 232;
+        try {
+            $query = db_select('cruiseenhancements', 'c');
+            $query->fields('c', array('categoryid'));
+            $query->condition('nid', $id, '=');
+            $categoryID = $query->execute()->fetchField();
+        } catch (Exception $e) {
+            
+        }
+
+        if ($categoryID == $windowoptionsTid) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static function get_product_category($id) {
+        $categoryID='';
+        try {
+            $query = db_select('cruiseenhancements', 'c');
+            $query->fields('c', array('categoryid'));
+            $query->condition('nid', $id, '=');
+            $categoryID = $query->execute()->fetchField();
+        } catch (Exception $e) {
+    
+        }
+        return $categoryID;
+    }
+    
+    
+    //Check checkbox field manadatory
+    public static function is_comment_required($id) {
+        try {
+            $query = db_select('cruiseenhancements', 'c');
+            $query->fields('c', array('is_comment_required'));
+            $query->condition('nid', $id, '=');
+            $is_comment_required = $query->execute()->fetchField();
+        } catch (Exception $e) {
+            
+        }
+       if ($is_comment_required == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
+    
+    //Hours off sale
+    public static function get_hours_off_sale($id) {
+        $hoursoffsale='';
+        try {
+            $query = db_select('cruiseenhancements', 'c');
+            $query->fields('c', array('hoursoffsale'));
+            $query->condition('nid', $id, '=');
+            $hoursoffsale = $query->execute()->fetchField();
+        } catch (Exception $e) {
+        }
+        return $hoursoffsale;
+    }
+    
+    
+    //Validating 
+    public static function getSelectedEnhancements($templateid,$eventId){
+    $query = db_select('cruise_template_enhancements', 'cen');
+    $query->fields('cen');
+    $query->condition('cen.cruisetemplateid', $templateid, '=');
+    $result = $query->execute();
+    $enhancmentresults = array();
+    
+    $enhancmentArr=array();
+    foreach ($result as $val) {
+        $enhancmentresults = unserialize($val->templateenhancements);
+    }
+    
+    //Validating Hoursoffsale
+    foreach($enhancmentresults->enhancedproducts as $enhancementid){
+        //Geeting hoursoffsale
+        $eventUnxTimeStamp=  Scheduledevents::getEventDateNTimeTimeStamp($eventId);
+        $hoursoffsale=CruiseEnhancements::get_hours_off_sale($enhancementid);
+        $eventDateRestricted=$eventUnxTimeStamp-($hoursoffsale*60*60);
+        $currentTime=time();
+        
+        if($currentTime>$eventDateRestricted){
+            
+        }else{
+            $enhancmentArr[]=$enhancementid;
+        }
+    }
+    return $enhancmentArr;
+    }
+    
+    
+    public static function getCruiseSelectedEnhancements($templateid,$eventId){
+    	$query = db_select('cruise_template_enhancements', 'cen');
+    	$query->fields('cen');
+    	$query->condition('cen.cruisetemplateid', $templateid, '=');
+    	$result = $query->execute();
+    	$enhancmentresults = array();
+    
+    	$enhancmentArr=array();
+    	foreach ($result as $val) {
+    		$enhancmentresults = unserialize($val->templateenhancements);
+    	}
+    
+    	//Validating Hoursoffsale
+    	foreach($enhancmentresults->enhancedproducts as $enhancementid){
+    		//Geeting hoursoffsale
+    		$eventUnxTimeStamp=  Scheduledevents::getEventDateNTimeTimeStamp($eventId);
+    		$hoursoffsale=CruiseEnhancements::get_hours_off_sale($enhancementid);
+    		$eventDateRestricted=$eventUnxTimeStamp-($hoursoffsale*60*60);
+    		$currentTime=time();
+    
+//     		if($currentTime>$eventDateRestricted){
+    
+//     		}else{
+    			$enhancmentArr[]=$enhancementid;
+    		//}
+    	}
+    	return $enhancmentArr;
+    }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function cruiseenhancements_menu() {
+    //Admin Management for Request Quote
+
+    $items['cruiseenhancements'] = array(
+        'title' => 'Enhancements',
+        'page callback' => 'cruiseenhancements_list_view',
+        'access arguments' => array('view cruiseenhancements entities'),
+    );
+
+    $items['admin/structure/cruiseenhancements/manage'] = array(
+        'title' => 'Cruise Enhancements',
+        'description' => 'Manage Cruise Enhancements System Structure',
+        'page callback' => 'cruiseenhancements_admin_page',
+        'access arguments' => array('administer cruiseenhancements entities'),
+    );
+
+    //Detailed View for Enhancements
+    $items['cruiseenhancements/%cruiseenhancements'] = array(
+        'title callback' => 'cruiseenhancements_page_title',
+        'title arguments' => array(1),
+        'page callback' => 'cruiseenhancements_page_view',
+        'page arguments' => array(1),
+        'access arguments' => array('view cruiseenhancements entities'),
+        'type' => MENU_CALLBACK,
+    );
+
+
+
+    $items['cruiseenhancements/%cruiseenhancements/view'] = array(
+        'title' => 'View',
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'weight' => -10,
+    );
+
+
+
+    $items['cruiseenhancements/%cruiseenhancements/edit'] = array(
+        'title' => 'Edit',
+        'load arguments' => array('cruiseenhancements'),
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => 'cruiseenhancements_item_edit',
+        'access arguments' => array('edit cruiseenhancements entities'),
+        'page arguments' => array(1),
+    );
+
+
+    $items['cruiseenhancements/add'] = array(
+        'title' => 'Add Cruise Enhancements',
+        'page callback' => 'cruiseenhancements_add',
+        'access arguments' => array('create cruiseenhancements entities'),
+    );
+
+
+    //Delete Cruiseenhancements
+    $items ['cruiseenhancements/%/delete'] = array(
+        'page callback' => 'cruiseenhancements_item_delete',
+        'access arguments' => array('delete cruiseenhancements entities'),
+        'page arguments' => array(1),
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function cruiseenhancements_permission() {
+    return array(
+        'administer cruiseenhancements entities' => array(
+            'title' => t('Administer Cruise Enhancements Entities'),
+            'restrict access' => TRUE,
+        ),
+        'view cruiseenhancements entities' => array(
+            'title' => t('View Cruise Enhancements Entities'),
+        ),
+        'edit cruiseenhancements entities' => array(
+            'title' => t('Edit Cruise Enhancements Entities'),
+        ),
+        'create cruiseenhancements entities' => array(
+            'title' => t('Create Cruise Enhancements Entities'),
+        ),
+        'delete cruiseenhancements entities' => array(
+            'title' => t('Delete Cruise Enhancements Entities'),
+        ),
+    );
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function cruiseenhancements_entity_info() {
+    $cruiseenhancements_info['cruiseenhancements'] = array(
+        'label' => t('Cruise Enhancements Entity'),
+        'controller class' => 'cruiseenhancementsController',
+        'base table' => 'cruiseenhancements',
+        'uri callback' => 'cruiseenhancements_uri',
+        'fieldable' => TRUE,
+        'entity keys' => array(
+            'id' => 'id',
+        ),
+        'static cache' => TRUE,
+        'bundles' => array(
+            'cruiseenhancements_bundle' => array(
+                'label' => 'cruiseenhancements',
+                'admin' => array(
+                    'path' => 'admin/structure/cruiseenhancements/manage',
+                    'access arguments' => array('administer cruiseenhancements entities'),
+                ),
+            ),
+        ),
+        'view modes' => array(
+            'full' => array(
+                'label' => t('Full'),
+                'custom settings' => FALSE,
+            ),
+        )
+    );
+    return $cruiseenhancements_info;
+}
+
+function cruiseenhancements_page_title($cruiseenhancements) {
+    return 'Enhancements';
+}
+
+function cruiseenhancements_load($id = NULL, $reset = FALSE) {
+    $ids = (isset($id) ? array($id) : array());
+    $cruiseenhancements = cruiseenhancements_load_multiple($ids, array(), $reset);
+    return $cruiseenhancements ? reset($cruiseenhancements) : FALSE;
+}
+
+function cruiseenhancements_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+    return entity_load('cruiseenhancements', $ids, $conditions, $reset);
+}
+
+function cruiseenhancements_uri($basic) {
+    return array(
+        'path' => 'cruiseenhancements/' . $cruiseenhancements->id,
+    );
+}
+
+function cruiseenhancements_admin_page() {
+//   $output = 'Admin page for cruiseenhancements entities.<br/>';
+    //There is no cruiseenhancements add system
+    $output = '';
+    $output .= '<a href=' . base_path() . 'cruiseenhancements/add>Add Enhancement</a>';
+    $output .= cruiseenhancements_list_view();
+    return $output;
+}
+
+//List View
+
+/**
+ * Returns a render array with all userdocuments entities.
+ *
+ * In this basic example we know that there won't be many entities,
+ * so we'll just load them all for display. See pager_example.module
+ * to implement a pager. Most implementations would probably do this
+ * with the contrib Entity API module, or a view using views module,
+ * but we avoid using non-core features in the Examples project.
+ *
+ * @see pager_example.module
+ */
+function cruiseenhancements_list_view() {
+    global $user;
+    global $base_url;
+    
+    $rows=array();
+
+//    drupal_add_css(drupal_get_path('module', 'cruiseenhancements') . '/userdocuments.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+//    drupal_add_js(drupal_get_path('module', 'userdocuments') . '/js/userdocuments.js');
+    // Initialising output
+    $output = '';
+    // Table header
+    $header = array(
+        array('data' => 'Id', 'field' => 'id'),
+        array('data' => 'Title', 'field' => 'title'),
+        array('data' => 'Actions'),
+    );
+    // Setting the sort conditions
+    if (isset($_GET ['sort']) && isset($_GET ['order'])) {
+        if ($_GET ['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET ['order']) {
+
+            case 'Id':
+                $order = 'id';
+                break;
+            case 'Title':
+                $order = 'title';
+                break;
+        }
+    } else {
+         $sort = 'ASC';
+         $order = 'id';
+    }
+
+
+
+    $query = db_select("cruiseenhancements", "n");
+
+    // Adding fields
+    $query->fields('n', array('id', 'title'));
+
+    // Set order by
+    $query->orderBy($order, $sort);
+    // Pagination
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(10);
+    // Executing query
+    $result = $query->execute();
+//    $pageurl = drupal_get_destination();
+    // Looping for filling the table rows
+
+    while ($data = $result->fetchObject()) {
+        // Adding the rows
+        $rows[] = array(
+            $data->id,
+            $data->title,
+            '<a href="' . $base_url . '/cruiseenhancements/' . $data->id . '/edit">Edit |</a>
+    		<a href="' . $base_url . '/cruiseenhancements/' . $data->id . '/delete">Delete </a>'
+        );
+    }
+    //Setting the output of the field
+    $output .= theme_table(
+                    array(
+                        'header' => $header,
+                        'rows' => $rows,
+                        'attributes' => array('class' => array('')),
+                        'sticky' => true,
+                        'caption' => '',
+                        'colgroups' => array(),
+                        'empty' => t("No Records!") //The message to be displayed if table is empty
+                    )
+            ) . theme('pager');
+
+
+
+    return $output;
+}
+
+//end of List_view
+//Entity page view
+
+/**
+ * Menu callback to display an entity.
+ *
+ * As we load the entity for display, we're responsible for invoking a number
+ * of hooks in their proper order.
+ *
+ * @see hook_entity_prepare_view()
+ * @see hook_entity_view()
+ * @see hook_entity_view_alter()
+ */
+function cruiseenhancements_page_view($entity, $view_mode = 'tweaky') {
+    // Our entity type, for convenience.
+    $entity_type = 'cruiseenhancements';
+    // Start setting up the content.
+    $entity->content = array(
+        '#view_mode' => $view_mode,
+    );
+
+    // Build fields content - this is where the Field API really comes in to play.
+    // The task has very little code here because it all gets taken care of by
+    // field module.
+    // field_attach_prepare_view() lets the fields load any data they need
+    // before viewing.
+    field_attach_prepare_view($entity_type, array($entity->id => $entity), $view_mode);
+    // We call entity_prepare_view() so it can invoke hook_entity_prepare_view()
+    // for us.
+    entity_prepare_view($entity_type, array($entity->id => $entity));
+    // Now field_attach_view() generates the content for the fields.
+    $entity->content += field_attach_view($entity_type, $entity, $view_mode);
+
+    // OK, Field API done, now we can set up some of our own data.
+    //RequestQuote Id
+    $entity->content['id'] = array(
+        '#type' => 'item',
+        '#title' => t('id'),
+        '#markup' => $entity->id,
+    );
+
+
+
+
+
+
+
+
+
+
+
+    $entity->content['title'] = array(
+        '#type' => 'item',
+        '#title' => t('Title'),
+        '#markup' => $entity->title,
+    );
+
+    $entity->content['price'] = array(
+        '#type' => 'item',
+        '#title' => t('Price'),
+        '#markup' => $entity->price,
+    );
+
+    $entity->content['description'] = array(
+        '#type' => 'item',
+        '#title' => t('Description'),
+        '#markup' => $entity->description,
+    );
+
+
+    $entity->content['caption'] = array(
+        '#type' => 'item',
+        '#title' => t('Caption'),
+        '#markup' => $entity->caption,
+    );
+
+    $entity->content['hoursoffsale'] = array(
+        '#type' => 'item',
+        '#title' => t('Hoursoffsale'),
+        '#markup' => $entity->hoursoffsale,
+    );
+
+    $entity->content['nid'] = array(
+        '#type' => 'item',
+        '#title' => t('nodeid'),
+        '#markup' => $entity->nid,
+    );
+
+
+    $entity->content['status'] = array(
+        '#type' => 'item',
+        '#title' => t('Status'),
+        '#markup' => $entity->status,
+    );
+
+    $entity->content['categoryid'] = array(
+        '#type' => 'item',
+        '#title' => t('Category'),
+        '#markup' => $entity->categoryid,
+    );
+    //EventType Values 
+    // Now to invoke some hooks. We need the language code for
+    // hook_entity_view(), so let's get that.
+    global $language;
+    $langcode = $language->language;
+    // And now invoke hook_entity_view().
+    module_invoke_all('entity_view', $entity, $entity_type, $view_mode, $langcode);
+
+
+    // And finally return the content.
+    return $entity->content;
+}
+
+//Entity Page view gets 
+
+function cruiseenhancements_item_edit($cruiseenhancements) {
+
+    drupal_set_title(t('Edit Cruise @title', array('@title' =>
+        'Enhancement')), PASS_THROUGH);
+    return drupal_get_form('cruiseenhancements_add_form', $cruiseenhancements);
+}
+
+function cruiseenhancements_add() {
+    $cruiseenhancements = (object) array(
+                'title' => '',
+                'price' => '',
+                'description' => '',
+                'caption' => '',
+                'hoursoffsale' => '',
+                'nid' => '',
+                'status' => '',
+                'categoryid' => '',
+                'created' => REQUEST_TIME
+    );
+
+    return drupal_get_form('cruiseenhancements_add_form', $cruiseenhancements);
+}
+
+function cruiseenhancements_add_form($form, &$form_state, $cruiseenhancements) {
+
+// 	var_dump($cruiseenhancements);
+// 	exit();
+
+    drupal_add_css(drupal_get_path('module', 'cruiseenhancements') . '/cruiseenhancements.css');
+
+    if (isset($cruiseenhancements->id) && ($cruiseenhancements->id != null)) {
+        $form['id'] = array(
+            '#type' => 'hidden',
+            '#title' => t('id'),
+            '#default_value' => $cruiseenhancements->id,
+            '#required' => TRUE,
+        );
+
+        $form['nodeid'] = array(
+            '#type' => 'hidden',
+            '#title' => t('nodeid'),
+            '#default_value' => $cruiseenhancements->nid,
+            '#required' => TRUE,
+        );
+    } else {
+        $form['created'] = array(
+            '#type' => 'hidden',
+            '#title' => t('created'),
+            '#default_value' => $cruiseenhancements->created,
+        );
+    }
+
+
+
+
+
+
+    $categories = getEnhancementcategories();
+
+
+    $form['categoryid'] = array(
+        '#type' => 'select',
+        '#title' => t('Category'),
+        '#options' => $categories,
+        '#default_value' => $cruiseenhancements->categoryid,
+    );
+
+
+    $form['title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Title'),
+        '#default_value' => $cruiseenhancements->title,
+        '#required' => TRUE,
+    );
+
+    $form['price'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Price'),
+        '#default_value' => $cruiseenhancements->price,
+        '#required' => TRUE,
+        '#element_validate' => array('price_field_validation'),
+    );
+
+    $form['description'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Description'),
+        '#default_value' => $cruiseenhancements->description,
+            // '#required' => TRUE,
+    );
+
+    $form['caption'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Caption'),
+        '#default_value' => $cruiseenhancements->caption,
+        '#required' => TRUE,
+    );
+
+    $form['hoursoffsale'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Hours Offsale'),
+        '#default_value' => $cruiseenhancements->hoursoffsale,
+//       '#required' => TRUE,
+        '#element_validate' => array('hoursoffsale_validation'),
+    );
+
+
+
+    // ********************* TILE IMAGE **********************************//
+    // If there is already an uploaded image display the image here.
+    if (isset($cruiseenhancements->enhancements_img_fid) && $cruiseenhancements->enhancements_img_fid != "") {
+        try {
+            $image = file_load($cruiseenhancements->enhancements_img_fid);
+            $url = file_create_url($image->uri);
+            $enhancementsimage = '<img src="' . $url . '" width="5%" height="5%">';
+            $form['image'] = array(
+                '#markup' => $enhancementsimage
+            );
+        } catch (Exception $e) {
+            watchdog('Cruise', "Error in loading Tile Image");
+        }
+    }
+
+    $form['enhancements_img'] = array(
+        '#name' => 'files[enhancements_img]',
+        '#type' => 'managed_file',
+        '#title' => t('Enhancements Image'),
+        '#upload_location' => 'public://cruiseenhancements/',
+        '#default_value' => isset($cruiseenhancements->enhancements_img_fid) ? $cruiseenhancements->enhancements_img_fid : ''
+    );
+
+
+
+
+//   $form['nid'] = array(
+//   		'#type' => 'hidden',
+//   		'#title' => t('Nodeid'),
+//   		'#default_value' => $cruiseenhancements->nid,
+//   		'#required' => TRUE,
+//   );
+
+    $form['status'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Active'),
+        '#default_value' => $cruiseenhancements->status,
+//   		'#required' => TRUE,
+    );
+    
+    
+    $form['is_comment_required'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Is Comment mandatory'),
+        '#default_value' => isset($cruiseenhancements->is_comment_required) ? $cruiseenhancements->is_comment_required  : '',
+        //'#default_value' => $cruiseenhancements->status,
+//   		'#required' => TRUE,
+    );
+
+
+
+
+
+
+
+
+    field_attach_form('cruiseenhancements', $cruiseenhancements, $form, $form_state);
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+        '#weight' => 100,
+    );
+    return $form;
+}
+
+// price field validation
+
+function price_field_validation($element, $form_state) {
+    if (!empty($element['#value']) && !is_numeric($element['#value'])) {
+        form_error($element, t('Please enter only Numeric values in Price field.', array('!name' => t($element['title']))));
+    }
+}
+
+//hours Office validation
+
+function hoursoffsale_validation($element, $form_state) {
+
+    if (!empty($element['#value']) && !is_numeric($element['#value'])) {
+        form_error($element, t('Please enter only Numeric values in Hours offsale field.', array('!name' => t($element['title']))));
+    }
+}
+
+function cruiseenhancements_field_extra_fields() {
+    $form_elements['id'] = array(
+        'label' => t('id'),
+        'description' => t('id (an extra form field)'),
+        'weight' => -5,
+    );
+
+
+
+
+
+    $form_elements['title'] = array(
+        'label' => t('Title'),
+        'description' => t('title (an extra form field)'),
+        'weight' => -5,
+    );
+    $form_elements['price'] = array(
+        'label' => t('Price'),
+        'description' => t('price (an extra form field)'),
+        'weight' => -5,
+    );
+
+    $form_elements['description'] = array(
+        'label' => t('Description'),
+        'description' => t('description (an extra form field)'),
+        'weight' => -5,
+    );
+    $form_elements['caption'] = array(
+        'label' => t('Caption'),
+        'description' => t('caption (an extra form field)'),
+        'weight' => -5,
+    );
+//   
+    $form_elements['hoursoffsale'] = array(
+        'label' => t('Hoursoffsale'),
+        'description' => t('hoursoffsale (an extra form field)'),
+        'weight' => -5,
+    );
+
+
+
+    $form_elements['nid'] = array(
+        'label' => t('Nodeid'),
+        'description' => t('nid (an extra form field)'),
+        'weight' => -5,
+    );
+
+
+    $form_elements['status'] = array(
+        'label' => t('Status'),
+        'description' => t('status (an extra form field)'),
+        'weight' => -5,
+    );
+
+    $form_elements['categoryid'] = array(
+        'label' => t('Category'),
+        'description' => t('categoryid (an extra form field)'),
+        'weight' => -5,
+    );
+
+    $display_elements['id'] = array(
+        'label' => t('id'),
+        'description' => t('id (an extra form field)'),
+        'weight' => -5,
+    );
+    //Booking Date
+
+
+    $display_elements['title'] = array(
+        'label' => t('Title'),
+        'description' => t('title (an extra form field)'),
+        'weight' => -5,
+    );
+    $display_elements['price'] = array(
+        'label' => t('Price'),
+        'description' => t('price (an extra form field)'),
+        'weight' => -5,
+    );
+
+    $display_elements['description'] = array(
+        'label' => t('Description'),
+        'description' => t('description (an extra form field)'),
+        'weight' => -5,
+    );
+    $display_elements['caption'] = array(
+        'label' => t('Caption'),
+        'description' => t('caption (an extra form field)'),
+        'weight' => -5,
+    );
+//   
+    $display_elements['hoursoffsale'] = array(
+        'label' => t('Hoursoffsale'),
+        'description' => t('hoursoffsale (an extra form field)'),
+        'weight' => -5,
+    );
+
+
+
+    $display_elements['nid'] = array(
+        'label' => t('Nodeid'),
+        'description' => t('nid (an extra form field)'),
+        'weight' => -5,
+    );
+
+
+    $display_elements['status'] = array(
+        'label' => t('Status'),
+        'description' => t('status (an extra form field)'),
+        'weight' => -5,
+    );
+
+    $display_elements['categoryid'] = array(
+        'label' => t('Category'),
+        'description' => t('categoryid (an extra form field)'),
+        'weight' => -5,
+    );
+
+
+    // Since we have only one bundle type, we'll just provide the extra_fields
+    // for it here.
+    $extra_fields['cruiseenhancements']['cruiseenhancements_bundle']['form'] = $form_elements;
+    $extra_fields['cruiseenhancements']['cruiseenhancements_bundle']['display'] = $display_elements;
+
+    return $extra_fields;
+}
+
+function cruiseenhancements_add_form_validate($form, &$form_state) {
+    drupal_add_css(drupal_get_path('module', 'cruiseenhancements') . '/cruiseenhancements.css');
+    $cruiseenhancements_submission = (object) $form_state['values'];
+    field_attach_form_validate('cruiseenhancements', $cruiseenhancements_submission, $form, $form_state);
+}
+
+function cruiseenhancements_add_form_submit($form, &$form_state) {
+    $cruiseenhancementsobj = (object) $form_state['values'];
+
+
+
+
+
+    //creating the product using ubercart api
+    require_once 'modules/node/node.pages.inc'; // Required for node_object_prepare();
+    //if node exists
+    if (isset($cruiseenhancementsobj->nodeid)) {
+        $node = node_load($cruiseenhancementsobj->nodeid);
+        $node->status = $cruiseenhancementsobj->status;
+        $node->title = $cruiseenhancementsobj->title;
+        node_save($node);
+    } else {
+        $node = new stdClass();
+        $node->type = 'product';
+        node_object_prepare($node); // This sets up all the default node fields so we don't accidentally leave something off.
+        // Copy over all the existing settings from Drupal 5.
+        $node->uid = 1;
+        $node->status = $cruiseenhancementsobj->status;
+        $node->title = $cruiseenhancementsobj->title;
+        $node->created = REQUEST_TIME;
+        $node->changed = REQUEST_TIME;
+        $node->language = 'und';
+        // Set Ubercart variables
+        // 	$node->model =E1001P; // the SKU is a required field, so I generated a SKU based on the node title
+        $node->list_price = $cruiseenhancementsobj->price;
+        $node->cost = $cruiseenhancementsobj->price;
+        $node->sell_price = $cruiseenhancementsobj->price;
+        $node->default_qty = 1;
+        $node->pkg_qty = 1;
+
+        // Set taxonomy + menu etc if you need to
+        $node->taxonomy_catalog['und'][0]['tid'] = $cruiseenhancementsobj->categoryid;
+        // 	$node->menu = array();
+//   $filepath='C:/Dev/xampp/htdocs/works/dev/waterways/trunk/web/sites/default/files/pictures/test.jpg';
+//   // Create managed File object and associate with Image field.
+//   $file = new StdClass();
+//   $file->uid = 1;
+//   $file->uri = $filepath;
+//   $file->filemime = file_get_mimetype($file->uri);
+//   $file->status = 1;
+//   $dest = file_default_scheme() . '://pictures'; // Subdirectory name within files directory. ($dest is optional.)
+//   $file = file_copy($file, $dest);
+//   $node->uc_product_image['und']['0']=(array)$file;
+        // Save the node
+        node_save($node);  // This will update the $node object with the $node->nid which is important for the next step.
+        //end product creating
+
+
+
+
+
+
+        $cruiseenhancementsobj->nid = $node->nid;
+
+        //end of creating the ubercart api
+    }
+
+
+
+
+
+
+
+    $enhancements_img_fid = '';
+    if ($form_state['values']['enhancements_img'] != "") {
+        $validators = array();
+        $dest = file_default_scheme() . '://cruiseenhancements/';
+        $file = file_save_upload('tile_image', $validators, $dest);
+        if (is_null($file)) {
+            $file = file_load($form_state['values']['enhancements_img']);
+            $file->status = "1";
+            $fileobject = file_save($file);
+            $enhancements_img_fid = $fileobject->fid;
+
+            // file usuage
+            $fileusuage = new stdClass();
+            $fileusuage->fid = $fileobject->fid;
+            file_usage_add($fileusuage, 'file', 'enhancements', $node->nid);
+        } else {
+            $file->status = "1";
+            $fileobject = file_save($file);
+            $enhancements_img_fid = $fileobject->fid;
+
+            // file usuage
+            $fileusuage = new stdClass();
+            $fileusuage->fid = $fileobject->fid;
+            file_usage_add($fileusuage, 'file', 'enhancements', $node->nid);
+        }
+    }
+    $cruiseenhancementsobj->enhancements_img_fid = $enhancements_img_fid;
+
+
+
+    field_attach_submit('cruiseenhancements', $cruiseenhancementsobj, $form, $form_state);
+    $cruiseenhancements = cruiseenhancements_save($cruiseenhancementsobj);
+//   $form_state['redirect'] = 'cruiseenhancements/' . $cruiseenhancements->id;
+    $form_state['redirect'] = 'admin/structure/cruiseenhancements/manage';
+}
+
+function cruiseenhancements_save(&$cruiseenhancements) {
+
+    return entity_get_controller('cruiseenhancements')->save($cruiseenhancements);
+}
+
+function cruiseenhancements_delete($id) {
+    return entity_get_controller('cruiseenhancements')->delete($id);
+}
+
+/**
+ *
+ *
+ *
+ *
+ * @author LSN37
+ *
+ */
+function getEnhancementcategories() {
+    $query = new EntityFieldQuery();
+    $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+    $query->entityCondition('bundle', 'catalog');
+    $query->propertyCondition('name', 'Enhancements'); //change This one as disabled for security in the catalog edit form
+    $query->execute();
+
+    $resultset = array();
+    if (count($catalogs->ordered_results) > 0) {
+        $totalcruiseitems = array();
+        foreach ($catalogs->ordered_results as $noderesults) {
+
+
+            $childs = taxonomy_get_children($noderesults->entity_id);
+
+            foreach ($childs as $childkey => $childvalue) {
+                $resultset[$childkey] = $childvalue->name;
+            }
+        }
+    }
+    return $resultset;
+}
+
+function getenhancementlistby($categoryid) {
+    $query = db_select("cruiseenhancements", "n");
+    // Adding fields
+    $query->fields('n');
+    $query->condition('categoryid', $categoryid, '=');
+
+    $result = $query->execute();
+
+
+
+    $enhancements = array();
+
+    foreach ($result as $cruiseenhancement) {
+// 		var_dump($cruiseenhancement);
+// 		$enhancements[]=
+        $cruiseenhancement->enhancements_img_fid = file_load($cruiseenhancement->enhancements_img_fid)->uri;
+        $enhancements[] = $cruiseenhancement;
+    }
+    return $enhancements;
+}
+
+/**
+ * 
+ * 
+ * 
+ * Getting the cruise template selected enhancments
+ * @author LSN37
+ *
+ */
+function cruiseselectedEnhancments($templateid) {
+    $query = db_select('cruise_template_enhancements', 'cen');
+    $query->fields('cen');
+    $query->condition('cen.cruisetemplateid', $templateid, '=');
+    $result = $query->execute();
+    $enhancmentresults = array();
+    foreach ($result as $val) {
+        $enhancmentresults = unserialize($val->templateenhancements);
+    }
+
+    return $enhancmentresults->enhancedproducts;
+    
+    
+    
+}
+
+class cruiseenhancementsController extends DrupalDefaultEntityController {
+
+    public function save($cruiseenhancements) {
+        if (isset($cruiseenhancements->id) && ($cruiseenhancements->id != null)) {
+            drupal_write_record('cruiseenhancements', $cruiseenhancements, array('id'));
+            field_attach_update('cruiseenhancements', $cruiseenhancements);
+        } else {
+            drupal_write_record('cruiseenhancements', $cruiseenhancements);
+            field_attach_insert('cruiseenhancements', $cruiseenhancements);
+        }
+        module_invoke_all('entity_insert', $cruiseenhancements, 'cruiseenhancements');
+        return $cruiseenhancements;
+    }
+
+    public function delete($id) {
+        db_delete('cruiseenhancements')
+                ->condition('id', $id, '=')
+                ->execute();
+    }
+
+}
+
+function cruiseenhancements_item_delete($id) {
+    $msg = '';
+    try {
+        cruiseenhancements_delete($id);
+        $msg = 'CruiseEnhancements Deleted Successfully.';
+    } catch (Exception $e) {
+        $msg = 'Operation Failed.';
+    }
+    drupal_set_message($msg);
+    drupal_goto('admin/structure/cruiseenhancements/manage');
+}

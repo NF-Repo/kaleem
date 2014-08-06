@@ -1,0 +1,24 @@
+
+
+#feedbackstart_date label, #feedbackstart_date .help-block{
+	display: none;
+}
+
+#feedbackend_date label, #feedbackend_date .help-block{
+	display: none;
+}
+
+.form-type-item .controls{
+    padding-left:13%;
+    padding-top: 5px;
+      padding-bottom: 1px;
+      
+}
+
+.form-type-item .control-label{
+    position:absolute;
+}
+
+.backlinkclass{
+    margin-left: -15%;
+}

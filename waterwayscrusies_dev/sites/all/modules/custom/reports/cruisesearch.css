@@ -1,0 +1,58 @@
+/*   naresh css   */
+#cruise-search-results-form{
+    margin: 38px auto 0px auto;
+    width: 1000px;
+}
+
+#cruise-search-results-form table th{
+    text-align: left;
+}
+
+.contentborder{
+    border:1px solid #DDDDDD;
+}
+.content{
+    margin: 0px;
+    padding: 0px;
+/*    width: 100%;*/
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.fullcontent{
+    margin: 0px;
+    padding: 0 0 0 2% !important;
+    width: 94%;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+
+#content{
+   min-height: 250px;
+}
+
+@media screen and (max-width: 1011px){
+    #cruise-search-results-form{
+     width: 100%;
+}
+
+.content{
+    padding-left:10px;
+    padding-right:10px;
+}
+}
+
+
+@media (min-width: 320px) and (max-width: 767px) {
+    #content{
+        position: relative;
+        top: -38px !important;
+    }
+}
+@media screen and (max-width: 1024px){
+    #menu{
+        top:84px !important;
+    }
+}

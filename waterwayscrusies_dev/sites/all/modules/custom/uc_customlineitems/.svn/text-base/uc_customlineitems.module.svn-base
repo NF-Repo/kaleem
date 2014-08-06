@@ -1,0 +1,450 @@
+<?php
+
+/**
+ * class
+ * 
+ */
+
+/**
+ * Defines an order object.
+ */
+class UcCustomlineitems {
+
+  public $id = 0;
+  public $name ='';
+  public $amount = '';
+  public $weight=0;
+  
+
+  /**
+   * Order object constructor.
+   *
+   * @param $uid
+   *   The user ID that owns the order, or a cart ID. Cart IDs are integer
+   *   user IDs for authenticated users, or are strings of 22 characters
+   *   or more for anonymous users.
+   * @param $state
+   *   The initial order state.
+   */
+  function __construct($id) {
+    
+    $this->id =$id;
+ 
+
+}
+}
+//laxmi class ends
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Implements hook_menu().
+ */
+function uc_customlineitems_menu() {
+  $items['admin/store/settings/lineitems'] = array(
+    'title' => 'Custom Extra Line Items',
+    'access arguments' => array('administer custom line items'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_customlineitems_admin_form')
+  );
+  
+  
+  
+  //Add Form for line items
+  
+  $items['admin/store/settings/lineitems/add'] = array(
+    'title' => 'Addlineitems',
+    'access arguments' => array('administer custom line items'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_customlineitems_form'),
+    'type' => MENU_LOCAL_ACTION,
+  );
+  
+  //Edit Line Item
+  $items['admin/store/settings/lineitems/%/edit'] = array(
+    'title' => 'Edit a Line Item',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_customlineitems_form', 4),
+    'access arguments' => array('configure lineitems'),
+
+  );
+ 
+  //Delet Line Item
+  $items['admin/store/settings/lineitems/%/delete'] = array(
+    'title' => 'Delete Line Item',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uccustomlineitems_delete_form', 4),
+    'access arguments' => array('configure lineitems'),
+    
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function uc_customlineitems_permission() {
+  return array(
+    'administer Custom Order line Items wrap' => array(
+      'title' => 'Administer Custom line item Settings'
+    )
+  );
+}
+
+
+//uclineitems delete start
+
+/**
+ * Deletes a tax rule.
+ *
+ * @see uc_taxes_delete_form_submit()
+ * @ingroup forms
+ */
+function uccustomlineitems_delete_form($form, &$form_state, $lineitemid) {
+  // Bail if we got a bad rate ID.
+  if (!$uclineitems = uccustomlineitems_load($lineitemid)) {
+    drupal_set_message(t('That tax rate does not exist.'), 'error');
+    drupal_goto('admin/store/settings/lineitems');
+  }
+
+  $form['lineitemid'] = array(
+    '#type' => 'value',
+    '#value' => $lineitemid,
+  );
+  $form['name'] = array(
+    '#type' => 'value',
+    '#value' => $uclineitems->name,
+  );
+
+  return confirm_form($form, t('Are you sure you want to delete @name?', array('@name' => $rate->name)), 'admin/store/settings/lineitems', t('This action cannot be undone. '), t('Delete'), t('Cancel'));
+}
+
+/**
+ * Form submission handler for uc_taxes_delete_form().
+ *
+ * @see uc_taxes_delete_form()
+ */
+function uccustomlineitems_delete_form_submit($form, &$form_state) {
+  // Delete the tax rate.
+  uccustomlineitems_delete($form_state['values']['lineitemid']);
+
+  // Display a message and redirect back to the overview.
+  drupal_set_message(t('Tax rate %name deleted.', array('%name' => $form_state['values']['name'])));
+
+  $form_state['redirect'] = 'admin/store/settings/lineitems';
+}
+//end of lineitems deletion
+
+
+/**
+ * Deletes a tax rate from the database.
+ *
+ * @param $rate_id
+ *   The ID of the tax rate to delete.
+ */
+function uccustomlineitems_delete($lineitemid) {
+  // Delete the tax rate record.
+  db_delete('uc_customlineitems')
+    ->condition('id', $lineitemid)
+    ->execute();
+}
+
+
+//Load uccustomer line items
+
+function uccustomlineitems_load($lineid=NULL)
+{
+   $result = db_query("SELECT * FROM {uc_customlineitems} ORDER BY weight");
+   $uclineitems=array();
+   foreach ($result as $uclineitem) {
+     
+     $uclineitems[$uclineitem->id]=$uclineitem;
+   }
+   if(isset($lineid)&&$lineid!=null)
+   {
+     return $uclineitems[$lineid];
+   }
+   else {
+     return $uclineitems; 
+   }
+   
+  
+}
+
+
+
+function uc_customlineitems_admin_form() {
+  
+  $header = array(t('Name'),
+      t('Amount'),
+      t('Weight'),
+      array('data' => t('Operations'), 'colspan' => 2));
+
+  $rows = array();
+  foreach (uccustomlineitems_load() as $key => $chargelineitem) {
+    
+   
+    $rows[] = array(
+      check_plain($chargelineitem->name),
+     $chargelineitem->amount,
+      $chargelineitem->weight,
+      l(t('edit'), 'admin/store/settings/lineitems/' . $chargelineitem->id . '/edit'),
+     l(t('delete'), 'admin/store/settings/lineitems/' . $chargelineitem->id . '/delete'),
+    );
+  }
+
+  $build['uccustomlineitems'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('No rates available.'),
+  );
+
+  return $build;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+  function uc_customlineitems_form($form, &$form_state,$lineitemid=NULL) {
+    
+    if(isset($lineitemid))
+    {
+      $uclineitems=uccustomlineitems_load($lineitemid);
+      
+      $form['id'] = array(
+  '#type' => 'hidden', 
+   '#value' =>$lineitemid, 
+
+
+);
+    }
+    
+  $form['name'] = array(
+  '#type' => 'textfield', 
+  '#title' => t('Name'), 
+  '#default_value' =>$lineitemid ? $uclineitems->name:'', 
+  '#size' =>20, 
+  '#maxlength' => 128, 
+  '#required' => TRUE,
+
+);
+ $form['amount'] = array(
+  '#type' => 'textfield', 
+  '#title' => t('Amount'), 
+  '#default_value' =>$lineitemid ? $uclineitems->amount:'', 
+  '#size' =>20, 
+  '#maxlength' => 128, 
+  '#required' => TRUE,
+
+);
+ 
+ $form['itemweight'] = array(
+       '#type' => 'select',
+       '#title' => t('Line Item Weight'),
+       '#options' => array(
+          0 =>0,1 =>1, 2=>2,3=>3,
+       ),
+       '#default_value' =>$lineitemid ? $uclineitems->weight:0, 
+       '#description' => t('Set the Line Item weight which are used for sorting purpose'),
+   );
+ 
+ 
+ 
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#suffix' => l(t('Cancel'), 'admin/store/settings/lineitems'),
+  );
+
+  return $form;
+}
+
+/**
+ * Ensures that tax rates are positive numbers.
+ *
+ * @see uc_taxes_form()
+ * @see uc_taxes_form_submit()
+ */
+function uc_customlineitems_form_validate($form, &$form_state) {
+ 
+}
+
+/**
+ * Form submission handler for uc_taxes_form().
+ *
+ * @see uc_taxes_form()
+ * @see uc_taxes_form_validate()
+ */
+function uc_customlineitems_form_submit($form, &$form_state) {
+ 
+  
+  //Building the Object using the constructor
+  $ucclineitems=new UcCustomlineitems();
+  if(isset($form_state['values']['id']))
+    $ucclineitems->id=$form_state['values']['id'];
+  $ucclineitems->name=$form_state['values']['name'];
+ $ucclineitems->amount=$form_state['values']['amount'];
+ $ucclineitems->weight=$form_state['values']['itemweight'];
+ 
+ $formsaveresult= uc_customlineitems_save($ucclineitems);
+ if($formsaveresult)
+ {
+   drupal_set_message('Record Inserted Sucessfully');
+   drupal_goto('admin/store/settings/lineitems');
+}
+}
+
+/***
+ * Save the custom line items
+ * in to uc_customlineitems
+ * @param Object/array $customlineitem
+ * 
+ */
+function uc_customlineitems_save($customlineitem)
+{
+   if (empty($customlineitem->id)) {
+    $saveobj=  drupal_write_record('uc_customlineitems', $customlineitem);
+  }
+  // Otherwise update the existing tax rate's data.
+  else {
+    $saveobj=  drupal_write_record('uc_customlineitems', $customlineitem, array('id'));
+  }
+  
+  return $saveobj;
+}
+
+
+
+
+
+
+
+
+/**
+ * Implements hook_uc_checkout_pane().
+ */
+function uc_customlineitems_uc_checkout_pane() {
+  //extra_lineitems to extar line items
+  $panes['extra_lineitems'] = array(
+    'callback' => 'uc_customlineitems_uc_checkout_pane_callback',
+    'title' => 'Extra Line Items',
+    'desc' => 'Provide Extra line adding  for the checkout.',
+    'weight' => 5
+  );
+
+  return $panes;
+}
+
+/**
+ * Callback for the checkout pane.
+ */
+function uc_customlineitems_uc_checkout_pane_callback($op, $order, $form = NULL, &$form_state = NULL) {
+  if ($op == 'view') {
+    $description = t('Please check this box if you wish your order to be gift wrapped.');
+
+    $contents['extra_lineitems'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Add Extra') . ' (' . uc_currency_format(variable_get('uc_customlineitems_cost', 0)) . ')',
+      '#default_value' => isset($_SESSION['uc_customlineitems_checkout']) ? 1 : 0,
+      '#ajax' => array(
+        'callback' => 'uc_customlineitems_update_line_items',
+        'effect' => 'slide'
+      )
+    );
+
+    return array('description' => $description, 'contents' => $contents);
+  }
+  else if ($op == 'process') {
+    if ($form_state['values']['panes']['extra_lineitems']['extra_lineitems'] == 1) {
+      if (!isset($_SESSION['uc_customlineitems_checkout'])) {
+        uc_order_line_item_add($order->order_id, 'extra_lineitems', 'Extra Charges', variable_get('uc_customlineitems_cost', 45));
+        $id = db_query('SELECT MAX(line_item_id) FROM {uc_order_line_items}')->fetchField();
+        $_SESSION['uc_customlineitems_checkout'] = $id;
+      }
+    }
+    else {
+      if (isset($_SESSION['uc_customlineitems_checkout'])) {
+        uc_order_delete_line_item($_SESSION['uc_customlineitems_checkout']);
+        unset($_SESSION['uc_customlineitems_checkout']);
+      }
+    }
+  }
+}
+
+/**
+ * AJAX callback for the checkout form (allows instant updating of total when gift wrap option is chosen).
+ */
+function uc_customlineitems_update_line_items($form, $form_state) {
+  $commands = array();
+  if (isset($form['panes']['payment']['line_items'])) {
+    $commands[] = ajax_command_replace('#line-items-div', drupal_render($form['panes']['payment']['line_items']));
+    $commands[] = ajax_command_prepend('#line-items-div', theme('status_messages'));
+  }
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Implements hook_uc_line_item().
+ * Getting the line items from 
+ * uccustomlineitems_load function
+ * 
+ * 
+ * 
+ */
+function uc_customlineitems_uc_line_item() {
+  foreach (uccustomlineitems_load() as $key => $chargelineitem) {
+    
+  $items[] = array(
+    'id' =>$chargelineitem->name,
+    'title' => t($chargelineitem->name),
+    'weight' =>$chargelineitem->weight,
+    'default' => FALSE,
+    'stored' => TRUE,
+    'add_list' => TRUE,
+    'calculated' => TRUE,
+    'callback' => 'uc_customlineitems_uc_line_item_extra_lineitems',
+    'display_only' => FALSE
+  );
+  }
+  return $items;
+}
+
+/**
+ * Callback for line item type.
+ */
+function uc_customlineitems_uc_line_item_extra_lineitems($op, $arg1) {
+  // Required callback for hook_uc_line_item()
+}
+
+/**
+ * Implements hook_uc_checkout_complete().
+ */
+function uc_customlineitems_uc_checkout_complete($order, $account) {
+  if (isset($_SESSION['uc_customlineitems_checkout'])) {
+    unset($_SESSION['uc_customlineitems_checkout']);
+  }
+}

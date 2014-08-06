@@ -1,0 +1,38 @@
+#cruiseenhancements-add-form label{
+	width: 200px;
+	height: auto;
+	float: left;
+	line-height: 30px;
+}
+
+/*.form-type-checkbox .checkbox input[type="checkbox"]{
+	margin-left: -20px;
+	margin-top: 8px;
+}
+
+.form-type-checkbox .checkbox{
+	margin-left: 200px;
+	width: 100% !important;
+}*/
+
+.radio input[type="radio"], .checkbox input[type="checkbox"]{
+	margin-left: 0px !important;
+}
+
+.form-item-entreeoption{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#cruiseenhancements-add-form #edit-submit{
+	margin-left: 200px;
+	margin-top: 20px;
+}
+
+.form-item-description .controls .resizable-textarea .grippie{
+	display: none;
+}
+
+.form-item-description .controls .resizable-textarea .form-textarea{
+	width: 19%;
+}

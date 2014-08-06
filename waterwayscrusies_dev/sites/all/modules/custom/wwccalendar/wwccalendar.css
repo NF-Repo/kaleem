@@ -1,0 +1,1769 @@
+/* 
+    Document   : wwccalendar
+    Created on : Jun 25, 2013, 6:54:59 PM
+    Author     : LSN37
+    Description:
+        Purpose of the stylesheet follows.
+*/
+.cellborderremove
+{
+    border: none !important;
+    height: auto !important;
+}
+table.calendar { 
+    background-color:white;
+    line-height: 35px;
+    border: 2px solid #bc9b6a;
+}
+.calendar{
+    margin:0px auto; 
+    font-size:14px; 
+    line-height: 25px;
+    margin-top: 1%;
+    margin-bottom: 10%;
+}
+table.calendar tr td{
+    line-height: 60px ;
+    border:#dfceb6 1px solid;
+    font-weight: bold;
+    font-size: 12px;
+    width: 118px;
+    height: 118px;
+    vertical-align: top;
+}
+
+.port-colors
+{
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+#menu
+{
+    position: static !important;
+}
+.mainCalendar
+{
+    width:100%;
+    position:relative;
+    /*overflow:hidden;*/ 
+}
+
+.mainCalendar #cruiseCalendarleft
+{
+    /*position:absolute;*/
+    left:-75%;
+    top:0px;
+    display: block !important;
+}
+#cruiseCalendarleft table
+{
+    opacity: 0.3;
+}
+#cruiseCalendarright table
+{
+    opacity: 0.3;
+}
+.mainCalendar #cruiseCalendar
+{
+    max-width:809px;
+    margin:auto;
+}
+.mainCalendar #cruiseCalendarright
+{
+    position:absolute;
+    /*right:-43%;*/
+    right:0% !important;
+    top:0px;
+    width:60%;
+    display:block !important
+}
+.calendarTitlemargin{
+    max-width: 809px;
+    margin: auto;
+}
+#CruisecalendarPrevious{
+    background:url("../wwccalendar/images/carousol-leftarrow.png") no-repeat !important;
+    position: absolute;
+    /*top:12%;*/
+    top:100px;
+    /*left:92%;*/
+    left:50%;
+    width: 74px;
+    height: 150px;
+    border: none !important;
+    z-index: 5;
+}
+#CruisecalendarNext
+{
+    background:url("../wwccalendar/images/carousol-rightarrow.png") no-repeat !important;
+    position: absolute;
+    /*top:12%;*/
+    top:100px;
+    right:90%;
+    z-index: 5;
+    width: 74px;
+    height: 150px;
+    border: none !important;
+}
+/* calender Header Css */
+.calendarHeader
+{
+    width:60%;
+    margin:0px auto;
+    padding-top: 5%;
+}
+.monthName
+{
+    text-align: center;
+    font-family: georgia;
+    font-size: 29px;
+    color:#454444;
+}
+.calendarTitle
+{
+    font-family: georgia;
+    font-size: 37px;
+    line-height: 50px;
+    color:#454444;
+
+}
+
+/* sravanthi css*/
+
+
+.portRadioCustom
+{
+    border: #05559c 1px solid;
+    background-color: rgba(255,255,255,1) !important;
+    width: 10px !important;
+    height: 10px !important;
+    margin-left: 30px;
+    margin-top: 5px;
+    position: absolute;
+    z-index: 5;
+    border-radius: 8PX;
+}
+.portRadioCustom:hover
+{
+    background: #ab323b !important;
+    border: #ab323b 1px solid;
+}
+.portRadioCustom.active{
+    background: #ab323b !important;
+    border: #ab323b 1px solid;
+}
+.calendarLine
+{
+    height: 1px;
+    width: 100%;
+    margin-top: 3%;
+    background: #bc9b6a;
+}
+.radioLine
+{
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    margin-top: 12px;
+    background: #bc9b6a;
+}
+.choose
+{
+    float: left;
+    width: 100%;
+    font-family:georgia;
+    font-size: 19px;
+    color: #818181;
+    margin-bottom:6px;
+}
+.choosePortRadio
+{
+    position: relative;
+    float: left;
+    width: 100%;
+    height:60px;
+}
+.portRadio{
+    border:none !important;
+}
+.calendarRadio
+{
+    width: 37%;
+    float: left;
+    margin-left: 0%;
+    text-align: center;
+}
+
+.calendarRadio .portRadio
+{ 
+    width: 11px;
+    height: 11px;
+    position: absolute;
+    top: 5px;
+    cursor: pointer;
+    border: 1px solid #000;
+}
+
+.calendarRadio label{
+    margin-bottom: 0px;
+    margin-top: 25px;
+    width: 69px;
+}
+
+/*
+All port styles
+*/
+.calendarRadioall
+{
+    width: 25%;
+    float: left;
+    text-align: center;
+}
+
+.calendarRadioall .portRadioCustom
+{
+    margin-left: 15px;
+}
+
+.calendarRadioall label{
+    margin-bottom: 0px;
+    margin-top: 25px;
+    width: 45px;
+}
+
+
+
+.calendarHeader .selectbodholder{
+    overflow: hidden;
+    width: 95%;
+    height: 30px;
+    border-right: 1px solid #BC9B6A;
+    margin: 0px;
+    padding: 0px;
+    height: 35px;
+    line-height: 35px;
+}
+
+
+.calendarHeader select{
+    background-image: url('images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    /*background-position: 238px center;*/
+    background-position: 87% center;
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    /*    -webkit-appearance: none;
+        -moz-appearance: none;*/
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+
+    /*width: 199px !important;*/
+    padding-left: 5px;
+    padding-right: 0px;
+    height: 34px;
+    line-height: 27px;
+    width: 112% !important;
+    /*    text-indent: 1px;
+        text-overflow: '';*/
+    text-indent: 0.01px;
+    text-overflow: "";
+}
+.calendarHeader select option{
+    padding: 2px;
+}
+/*sravaNTHI*/
+.event-port{
+    color: #8A8989;
+    font-size:11px;
+    margin-top:-5px;
+}
+.date_has_event{
+    clear:both;
+}
+.events{
+    float: left;
+    width: 83%;
+    color:#00529b;
+}
+
+
+
+/*SRAVANTHI ENDS*/
+/* calendar inner css */
+
+.calendar-row .calendar-day-head
+{
+    border: none;
+    background-color:#f2ebe1;  
+    font-family: georgia;
+    font-size: 13px ;
+    color: #818181;
+    height:20px;
+    font-weight:normal;
+    line-height: 20px;
+    padding-left: 2%;
+}
+table tbody
+{
+    border-top: none;
+}
+
+table tbody .day-number a
+{
+    font-family: georgia;
+    font-size: 25px;
+    color: #d6d5d4;
+    text-decoration: none;
+}
+table tbody .eventDay
+{
+    font-family: georgia;
+    font-size: 49px;
+    color: #d6d5d4;
+    text-decoration: none;
+}
+table tbody .currentDay
+{
+    background-color: #cad9e6;
+    height: 118px;
+
+}
+table tbody .currentDay a{
+    font-family: georgia;
+    font-size: 98px;
+    line-height: 100px;
+    color: #abb8c3;
+    text-decoration: none;
+}
+
+table tbody .day-number ul{
+    list-style: none;
+}
+table tbody .day-number ul li .events
+{
+    font-family: georgia;
+    font-size: 12.5px ;
+    color: #00529b;
+    font-weight: bold;
+    width: 80%;
+    line-height: 20px;
+    float: left;
+}
+.calendarpop
+{
+    position: relative;
+    width: 100px;
+    height: 100px;
+    background-color: #E7ECF2;
+    border: #40c9d2 10px solid;
+
+}
+
+.soldoutWrapper{
+    width: 100%;
+    background-color: #ccdceb;
+    height: 15px;
+    color: #848686;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.2em;
+    padding: 8px 0 0 0;
+    margin: 0px;
+    /*padding-top:16px;*/
+
+}
+
+table tbody .eventDay
+{
+    position: relative;
+}
+table tbody .day-number ul{
+    position: absolute;
+    top: 0px;
+    height: auto;
+    /*overflow: hidden;*/
+    margin-left: 10px;
+    width: 100%;
+}
+/*table tbody .day-number ul:hover{
+    overflow: visible;
+}*/
+.day-number ul li span
+{
+    font-family: georgia;
+    font-size: 12px ;
+    color: #818181;
+    margin-left: 12px;
+    line-height: 15px;
+    float: left;
+}
+
+.cruiseMobileKey{
+    column-count:2;
+    -moz-column-count:2; /* Firefox */
+    -webkit-column-count:2; /* Safari and Chrome */
+    list-style-type: none;
+    margin:0;
+}
+.cruiseKey
+{
+    background-color: #fff;
+    width: 125px;
+    height: 32px;
+    padding: 2px;
+    margin-right: 19%;
+    float: right;
+    color:#ab323b;
+    margin-bottom: 8%;
+}
+.cruiseKeyInner
+{
+    border: #ab323b 1px dotted;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+/* end calendar inner css */
+
+
+/* end Calender Header css */
+.homeKeyColor
+{
+    background-color: #4598bf;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.shilsholeKeyColor
+{
+    background-color: #d38a42;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+.southlakeKeyColor
+{
+    background-color: #199a46;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+.pierKeyColor
+{
+    background-color: #932c27;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.marinaKeyColor
+{
+    background-color: #40c9d2;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+} 
+.carillonKeyColor
+{
+    background-color: #a12e82;
+    width: 10px;
+    height: 10px;
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+    margin-left: 10px;
+}
+
+.popover ul{
+    list-style: none;
+    margin:0px;
+}
+#CruisecalendarPrevious,#CruisecalendarNext{
+    opacity: 1;
+    transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    -webkit-transition: opacity .25s ease-in-out;
+}
+#cruiseCalendarleft:hover #CruisecalendarPrevious,#cruiseCalendarright:hover #CruisecalendarNext{
+    opacity: 1;
+}
+
+
+
+.headerFilters{
+    padding-left: 5%;
+}
+.portsright{
+    width:25%;
+}
+
+/* responsive  css */
+@media (max-width: 480px) {
+    //changes done on 4/4 kalim //
+    .event-date, .event-cruise {
+        margin-right: 0%;
+    }
+    .popupbackgroundimge{
+        background: none !important;
+    }
+    #responsiveMobileviewEventslist .events ul{
+        display:none;
+    }
+    .events .close {
+        position:absolute;
+        right:10px;
+        top:10px;
+    }
+
+    .calendarRadio label{
+        font-size: 10px;
+    }
+    .events .popupbackgroundimge {
+        display:inline-block;
+        margin-top:0;
+    }
+    .events .event-cruise {
+        float:none;
+    }
+    #content
+    {
+        display: block !important;
+    }
+    #cruiseCalendarleft, #cruiseCalendarright, table tbody .day-number ul
+    {
+        display: none;
+    }
+    #CruisecalendarNext, #CruisecalendarPrevious
+    {
+        display: block !important;
+    }
+    .calendarTitle
+    {
+        padding-left:3%;
+    }
+
+    .day-number{
+        position: absolute;
+        margin-top: 0px;
+    }
+
+    .soldoutWrapper{
+        height: auto;
+    }
+
+    table tbody .day-number a
+    {
+        font-family: georgia;
+        font-size: 29px;
+        color: #d6d5d4;
+        text-decoration: none;
+    }
+    table tbody .currentDay a{
+        font-family: georgia;
+        font-size: 29px;
+        line-height: 55px;
+        color: #abb8c3;
+        text-decoration: none;
+        vertical-align: middle;
+    }
+    table tbody .currentDay
+    { 
+        background-color: #cad9e6;
+        height: 58px !important;
+    }
+    table.calendar tr td{
+        line-height: 35px ;
+        border:#dfceb6 1px solid;
+        font-weight: bold;
+        font-size:12px;
+        width: 58px !important;
+        height: 58px !important;
+        vertical-align:middle;
+    }
+    .radioLine
+    {
+        margin-top: 12px !important;
+    }
+    .choose
+    {
+        margin-top: 15%;
+        width: 80%;
+    }
+    .choose-cruise{
+        padding-top:5%;
+    }
+    .calendarHeader
+    {
+        width: 90%;
+    }
+    .calendarHeader .row-fluid .span5
+    {
+        float: left;
+        width: 40%;
+    }
+    .calendarHeader .row-fluid .span2
+    {
+        float: left;
+        width: 20%;
+    }
+
+    .calendarTitlemargin{
+        width:90% !important;
+        margin:20px auto !important;
+    }
+    .calendarLine
+    {
+        margin-top: 8% !important;
+    }
+    .day-number ul li span
+    {
+        float: none;
+    }
+    .day-number ul li
+    {
+        font-family: georgia;
+        font-size: 12px ;
+        color: #00529b;
+        font-weight: bold;
+        list-style: none;
+        width: 94%; 
+    }
+
+    .day-number{
+        margin-left:1% !important;
+        padding-top: 2%;
+    }
+    .eventDay ul{
+        margin-left: 0px;
+    }
+    .events{
+        width:100% !important;
+    }
+    .eventDay ul li
+    {
+        padding-left: 20px;
+    }
+    .date_has_event{
+        padding-left:5%;
+    }
+    .brunchpopup{
+        background-color: #fcfbf9;
+    }
+    .brunchpopup .brunchdate
+    {
+        font-family: georgia;
+        font-size: 19px;
+        line-height: 25px;
+        color: #454444;
+        margin-top: 2%;
+    }
+    .brunchpopup .brunchDeparture
+    {
+        font-family: georgia;
+        font-size: 14px;
+        color: #454444;
+        line-height: 25px;
+    }
+    .brunchpopup .seeDirections
+    {
+        margin-top: 5%;
+    }
+    .brunchpopup .seeDirections a
+    {
+        font-family: georgia;
+        font-size: 14px;
+        color: #00529b;
+        line-height: 25px;
+
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .brunchpopup .booknow
+    {
+        width: 35%;
+        float: none;
+    }
+    .cruiseKeyTitle
+    {
+        font-family: georgia;
+        font-size: 15px ;
+        color: #454444;
+        clear:both;
+        padding-left: 3%;
+    }
+    .cruiseKey
+    {
+        background-color: #fff;
+        width: 95%;
+        height: 140px;
+        padding: 2px;
+        margin: 0px auto;
+        float: none;
+        margin-bottom: 2%;
+    }
+    .cruiseKeyInner
+    {
+        border: #ab323b 1px dotted;
+        text-align: left;
+        line-height: 30px;
+        height: 89px;
+        font-family: georgia;
+        font-size: 15px;
+        color: #454444;
+
+    }
+    .cruiseMobileKey{
+        column-count:1;
+        -moz-column-count:1; /* Firefox */
+        -webkit-column-count:1; /* Safari and Chrome */
+    }
+    table.calendar tr:first-child td{
+        height:20px !important;
+    }
+    .cruiseKeyInner span{
+        /*    float: left;*/
+        line-height: 20px;
+    }
+
+    .homeKeyColor
+    {
+        background-color: #4598bf;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+
+    .shilsholeKeyColor
+    {
+        background-color: #d38a42;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+    .southlakeKeyColor
+    {
+        background-color: #199a46;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+    .pierKeyColor
+    {
+        background-color: #932c27;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+
+    .marinaKeyColor
+    {
+        background-color: #40c9d2;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    } 
+    .carillonKeyColor
+    {
+        background-color: #a12e82;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+
+    #CruisecalendarPrevious{
+        background:url("../wwccalendar/images/carousol-leftarrow-mobile.png") no-repeat;
+        position: static;
+        top:0%;
+        left:90%;
+        width: 18px;
+        height: 33px;
+        border: none;
+    }
+    #CruisecalendarNext
+    {
+        background:url("../wwccalendar/images/carousol-rightarrow-mobile.png") no-repeat;
+        position: static;
+        top:0%;
+        right:0%;
+        z-index: 5;
+        width: 18px;
+        height: 33px;
+        border: none;
+    }
+    .arrowButtonsMobile .row-fluid .span3
+    {
+        float: left;
+        width: 25%;
+    }
+    .arrowButtonsMobile .row-fluid .span6
+    {
+        float: left;
+        width: 50%;
+    }
+
+
+}
+.events.disabled,.cruise-color.disabled{
+    opacity:0.5;   
+}
+
+@media screen and (max-width: 767px) { 
+    //.events ul{
+    // display:none !important;
+    //}
+    #responsiveMobileviewEventslist .events ul{
+        display:none;
+    }
+    #cruiseCalendarleftdiv{
+        display:none !important;
+    }
+    #cruiseCalendarrightdiv{
+        display:none !important;
+    }
+
+    //starts changes by Mohammed kalimulla April 7 mon 2014
+    .event-date, .event-cruise {
+        margin-right: 0%;
+    }
+    .popupbackgroundimge{
+        background: none !important;
+    }
+    .events .close {
+        position:absolute;
+        right:10px;
+        top:10px;
+    }
+
+    .events .popupbackgroundimge {
+        display:inline-block;
+        margin-top:0;
+    }
+    .events .event-cruise {
+        float:none;
+    }
+    ///changes by Mohammed kalimulla April 7 mon 2014
+
+    /*  staffadmin calender view  */
+
+    .span2 .mainCalendar{
+        height: 0px;
+    }
+    .responsiveWeb{
+        display:none !important;
+    }
+    .responsiveMobile {
+        display: block !important;
+    }
+
+
+
+
+
+
+    .soldoutWrapper{
+        display:none;
+    }
+    #content
+    {
+        display: block !important;
+    }
+
+    #cruiseCalendarleft, #cruiseCalendarright, table tbody .day-number ul
+    {
+        display: none;
+    }
+
+    #CruisecalendarNext, #CruisecalendarPrevious
+    {
+        display: block !important;
+    }
+
+    .soldoutWrapper{
+        height: auto;
+    }
+
+    table tbody .day-number a
+    {
+        font-family: georgia;
+        font-size: 29px;
+        color: #d6d5d4;
+        text-decoration: none;
+    }
+    table tbody .currentDay a{
+        font-family: georgia;
+        font-size: 29px;
+        line-height: 55px;
+        color: #abb8c3;
+        text-decoration: none;
+        vertical-align: middle;
+    }
+    table tbody .currentDay
+    { 
+        background-color: #cad9e6;
+        height: 80px;
+    }
+    table.calendar tr td{
+        line-height: 35px ;
+        border:#dfceb6 1px solid;
+        font-weight: bold;
+        font-size: 12px;
+        width: 80px;
+        height: 80px;
+        vertical-align:middle;
+    }
+    .radioLine
+    {
+        margin-top: 12px !important;
+    }
+    .choose
+    {
+        margin-top: 15%;
+        width: 80%;
+    }
+    .calendarHeader
+    {
+        width: 90%;
+    }
+    .calendarHeader .row-fluid .span5
+    {
+        float: left;
+        width: 40%;
+    }
+    .calendarHeader .row-fluid .span2
+    {
+        float: left;
+        width: 20%;
+    }
+    .calendarLine
+    {
+        margin-top: 5%;
+    }
+    .day-number ul li span
+    {
+        float: none;
+    }
+    .day-number ul li
+    {
+        font-family: georgia;
+        font-size: 12px ;
+        color: #00529b;
+        font-weight: bold;
+        list-style: none;
+        width: 94%; 
+    }
+    .eventDay ul{
+        margin-left: 0px;
+    }
+    .eventDay ul li
+    {
+        padding-left: 20px;
+    }
+    .brunchpopup{
+        background-color: #fcfbf9;
+        padding-left: 25px;
+        padding-bottom: 5px;
+    }
+    .brunchpopup .brunchdate
+    {
+        font-family: georgia;
+        font-size: 19px;
+        line-height: 25px;
+        color: #454444;
+        margin-top: 2%;
+    }
+    .brunchpopup .brunchDeparture
+    {
+        font-family: georgia;
+        font-size: 14px;
+        color: #454444;
+        line-height: 25px;
+    }
+    .brunchpopup .seeDirections
+    {
+        margin-top: 5%;
+    }
+    .brunchpopup .seeDirections a
+    {
+        font-family: georgia;
+        font-size: 14px;
+        color: #00529b;
+        line-height: 25px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .brunchpopup .booknow
+    {
+        width: 35%;
+        float: none;
+    }
+    .cruiseKeyTitle
+    {
+        font-family: georgia;
+        font-size: 15px ;
+        color: #454444;
+        clear:both;
+        padding-left: 4%;
+    }
+    .cruiseKey
+    {
+        background-color: #fff;
+        width: 90%;
+        height: auto;
+        padding: 2px;
+        margin: 0px auto;
+        float: none;
+        margin-bottom: 10%;
+        /*margin-top: 3%;*/
+        margin-top: 12%;
+    }
+    .cruiseKeyInner
+    {
+        border: #ab323b 1px dotted;
+        text-align: left;
+        line-height: 30px;
+        height: 89px;
+        font-family: georgia;
+        font-size: 15px;
+        color: #454444;
+    }
+    .cruiseKeyInner span{
+        /*    float: left;*/
+        line-height: 20px;
+    }
+    .eventSeeDirections{
+        margin-bottom: 6%;
+    }
+    .eventPopupDeparture{
+        margin-top: 1%;
+    }
+    .homeKeyColor
+    {
+        background-color: #4598bf;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+
+    .shilsholeKeyColor
+    {
+        background-color: #d38a42;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+    .southlakeKeyColor
+    {
+        background-color: #199a46;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+    .pierKeyColor
+    {
+        background-color: #932c27;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+
+    .marinaKeyColor
+    {
+        background-color: #40c9d2;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    } 
+    .carillonKeyColor
+    {
+        background-color: #a12e82;
+        width: 10px;
+        height: 10px;
+        float: left;
+        margin-top: 5px;
+        margin-right: 3px;
+        margin-left: 10px;
+    }
+    table tbody .eventDay
+    {
+        height: 56px;
+        border: #00529b 1px solid;
+        font-size: 30px;
+    }
+
+
+
+    #responsiveMobileviewEventslist
+    {
+        margin-left: 0px;
+    }
+
+    #CruisecalendarPrevious{
+        background:url("../wwccalendar/images/carousol-leftarrow-mobile.png") no-repeat !important;
+        position: static;
+        top:0%;
+        left:0%;
+        width: 18px;
+        height: 33px;
+        border: none !important;
+        margin-right: 10%;
+
+    }
+    #CruisecalendarNext
+    {
+        background:url("../wwccalendar/images/carousol-rightarrow-mobile.png") no-repeat !important;
+        position: static;
+        top:0%;
+        right:0%;
+        z-index: 5;
+        width: 18px;
+        height: 33px;
+        margin-left:10%;
+        border: none !important;
+    }
+    .arrowButtonsMobile .row-fluid .span3
+    {
+        float: left;
+        width: 25%;
+    }
+    .arrowButtonsMobile .row-fluid .span6
+    {
+        float: left;
+        width: 50%;
+    }
+
+    .choosePortRadio
+    {
+        height:20px;
+    }
+
+}
+@media (max-width: 1024px) { 
+    .calendarTitle{
+        font-size:25px;
+    }
+    .headerFilters {
+        padding-left: 2%;
+    }
+    .calendarRadioall label{
+        font-size: 11px;
+    }
+    .portsmiddle{
+        width:34%;
+    }
+}
+@media (max-width: 979px) { 
+    ///  .events ul{
+    ///  display:none !important;
+    ///  }
+
+    .calendarTitlediv{
+        width:33%;
+        text-align: right;
+        padding-right: 2%;
+    }
+    .portsmiddle{
+        width:33%;
+    }
+    .portsright{
+        width:28%;
+    }
+
+
+    #content
+    {
+        display: block !important;
+    }
+    #cruiseCalendarleft, #cruiseCalendarright
+    {
+        /*display: none;*/
+    }
+    .calendarHeader
+    {
+        width: 98%;
+    }
+    .radioLine
+    {
+        margin-top: 11px;
+    }
+
+
+
+}
+
+@media (min-width: 767px) and (max-width: 979px) { 
+    ///.events ul{
+    /// display:none !important;
+    /// }
+    #CruisecalendarPrevious{
+        left:40%;
+    }
+    #CruisecalendarNext{
+        right:60%;
+    }
+    .calendarHeader .selectbodholder{
+        width: 177px;
+    }
+    .calendarHeader select{
+        background-position: 160px center;
+    }
+
+}
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+    ///.events ul{
+    ///  display:none !important;
+    ///}
+    .calendarHeader
+    {
+        width: 90%;
+
+    }
+    .radioLine
+    {
+        margin-top: 16px;
+    }
+
+    #cruiseCalendarleft, #cruiseCalendarright
+    {
+        display: none;
+    }
+
+    .portRadioCustom{
+        margin-top:10px;
+    }
+
+
+
+}
+
+
+
+
+/* end responsive  css */
+
+
+.events {
+    position: relative;
+}
+.events ul {
+    text-align: left;
+    position: absolute;
+    top:0%;
+    left:0%;
+    display: none;
+    z-index: 1000;
+    margin: 20px 0 10px 35px;
+
+    background: url(../wwccalendar/images/calendar-pop-bgimg.png) no-repeat;
+    color: white;
+    border: 10px solid #fcfbf9;
+    font-size: 15px;
+    width: 470px;
+    height:250px !important;
+    /*	-moz-border-radius: 3px;
+            -khtml-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -border-radius: 3px;*/
+    list-style: none;
+    color: #444444;
+    -moz-box-shadow: 0px 0px 25px rgba(119, 119, 119, 1);
+    -webkit-box-shadow: 0px 0px 25px rgba(119, 119, 119, 1);
+    box-shadow: 0px 0px 25px rgba(119, 119, 119, 1); 
+    border-collapse:separate;
+}
+
+
+
+@media screen and (max-width: 1345px){
+    .popupbackgroundimge{
+        background-size: 313px 246px !important;
+    }
+    .booknow{
+        padding: 2px 13px 2px 4px !important;
+        width: 75% !important;
+    }
+
+    .eventPopupdatetime {
+        font-size: 15px !important;
+    }
+
+    .booknow-inner
+    {
+        font-size: 11px !important;
+        width:118% !important;
+        line-height:27px;
+        width: 106% !important;
+    }
+    .eventSeeDirections a {
+        font-size: 12px !important;
+    }
+    .events {
+        position: relative;
+    }
+
+    .eventPopupTitle
+    {
+        font-size: 15px!important;
+
+    }
+    .events ul {
+        text-align: left;
+        position: absolute;
+        top:0%;
+        left:0%;
+        display: none;
+        z-index: 1000;
+        margin: 20px 0 10px 35px;
+
+
+        background: url(../wwccalendar/images/calendar-pop-bgimg.png) no-repeat;
+        color: white;
+        border: 10px solid #fcfbf9;
+        font-size: 15px;
+        width: 310px;
+        height:250px !important;
+        /*	-moz-border-radius: 3px;
+                -khtml-border-radius: 3px;
+                -webkit-border-radius: 3px;
+                -border-radius: 3px;*/
+        list-style: none;
+        color: #444444;
+        -moz-box-shadow: 0px 0px 25px rgba(119, 119, 119, 1);
+        -webkit-box-shadow: 0px 0px 25px rgba(119, 119, 119, 1);
+        box-shadow: 0px 0px 25px rgba(119, 119, 119, 1); 
+        border-collapse:separate;
+    }
+
+    .soldoutWrapper{
+        padding-top:16px !important;
+
+    }
+
+}
+.events ul button.close{
+    margin-right: 3px;
+}
+.events li {
+    padding: 20px 25px;
+    /*height: 100%;*/
+    height: 88%;
+    background: rgba(255,255,255,0.5);
+}
+.events li span {
+    display: block;
+    font-size: 16px;
+    text-align: justify;
+    color: #555;
+}
+.eventPopupdatetime sup{
+    top:0;
+}
+.events li span.title {
+    font-weight: bold;
+    color: #222;
+}
+.events .booknow
+{
+    margin-top: 30%;
+    width: 80% !important;
+}
+.eventPopupAddress{
+    font-size: 14px;
+}
+.eventPopupTitle
+{
+    font-family: georgia;
+    font-size: 20px;
+    line-height: 30px;
+    color: #454444;
+    text-align:center;
+}
+
+/*.main-eventList{
+    position: relative;
+    height: 118px;
+    overflow:hidden;
+}
+
+.main-eventList::-webkit-scrollbar
+{
+    width: 10px;
+    height: 10px;
+}
+
+.main-eventList::-webkit-scrollbar-track
+{
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+}
+
+.main-eventList::-webkit-scrollbar-thumb
+{
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+}*/
+
+.event-bottom{
+    /*position:absolute;
+    max-height: 100%;*/
+    width:100%;
+}
+
+
+.calendarpoptitleLine
+{
+    height: 1px;
+    width: 100%;
+    margin-top: 30%;
+    background: #bc9b6a;
+}
+.calendarpopbottomLine{
+    height: 1px;
+    width: 100%;
+    margin-top: 8%;
+    background: #bc9b6a;
+}
+.eventPopupdatetime
+{
+    font-family: georgia;
+    font-size: 19px;
+    line-height: 25px;
+}
+.eventPopupDeparture
+{
+    font-family: georgia;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 15px;
+
+}
+
+.eventSeeDirections a
+{
+    font-family: georgia !important;
+    font-size: 14px;
+    line-height: 20px !important;
+    color:#00529b !important;
+}
+
+/*.calendarTitlemargin
+{
+    margin-top: 20px;
+}*/
+
+.calendarTitlemargin .span5{
+    width: 47% !important;
+    margin-left: 0px !important;
+}
+
+.calendarTitlemargin .span2{
+    width: 6% !important;
+    margin-left: 0px !important;
+}
+
+.removeunderline a{
+    text-decoration: none;
+}
+
+.booknow a,.booknow a:hover, .booknow a:focus{
+    color:#fff;
+}
+.day-number{
+    /*position:absolute;*/
+    margin-left:6px;
+    margin-top: -15px;
+    height: 45px;
+}
+
+.event-date,.event-cruise{
+    width:auto;
+    margin-right:1%;
+}
+.event-cruise{
+    text-transform: uppercase;
+    font-size:11px;
+} 
+.event-date{
+    float:left;
+}
+.cruise-color{
+    width: 13px;
+    height: 13px;
+    float:left;
+    margin-right:5px;
+    margin-top:5px;
+    border-radius: 100%;
+    font-family: arial;
+    color: #fff;
+    position: relative;	
+}
+.cruise-color span{
+    position: absolute;
+    left: 3px;
+    top: -4px;
+    text-transform: lowercase;
+    font-size: 9px;
+}
+.event-list{
+    padding-left:18px;
+    list-style:none;
+    /*overflow: hidden;*/
+    height: auto;
+}
+
+
+
+
+@media screen and (max-width: 767px) { 
+    ///.events ul{
+    /// display:none !important;
+    /// }
+
+    .calendarTitlediv{
+        text-align:left;
+        width:70%;
+    }
+    #CruisecalendarPrevious, #CruisecalendarNext{
+        opacity: 1;
+    }
+
+    .calendarTitlemargin{
+        margin: 20px auto !important;
+    }
+
+    .day-number{
+        position: absolute;
+        margin-top: 0px;
+    }
+
+    .event-cruise{
+        float:left;
+        text-transform: uppercase;
+    } 
+    .event-list{
+        padding-left:0;
+
+    }
+    .event-bottom,.main-eventList{
+        height:80px;
+    }   
+    .day-number{
+        padding-top: 3%;
+    }
+    .event-bottom{
+        width:100%;
+    }
+    .cruise-color{
+        width: 14px;
+        height: 14px;
+        margin-right:5px;
+        margin-top: 3px;
+    }
+    .event-port{
+        color:#9C9A9A;
+        font-size: 15px !important;
+    }
+
+    .event-port,.event-cruise,.events li span,.event-date{
+        font-size:20px;
+    }
+    .eventPopupDeparture{
+        font-size:16px;
+    }
+    .eventPopupdatetime{
+        font-size:20px;
+        font-weight: bold;
+        margin-top: 4%;
+        disable:disable;
+        margin-bottom: 2%;
+    }
+    .calendar-day.active{
+        background-color:#DEEFF3;
+    }
+    .events{
+        float:none;
+        cursor:pointer;
+    }
+    .event-list{
+        border: 1px solid #00529b;
+        height:78px;
+    }
+
+    .cellborderremove{
+        border: none;
+    }
+    .date_has_event{
+        display:none;
+    }
+    #responsiveMobileviewEventslist .date_has_event{
+        display:block;
+    }
+    #responsiveMobileviewEventslist .day-number{
+        display:none;
+        position:static;
+    }
+    #responsiveMobileviewEventslist .event-list{
+        border: none;
+        margin-top:10px;
+    }
+    #responsiveMobileviewEventslist .events ul{
+        position:static;
+        background:none;
+        border:none;
+        margin-left: 0;
+        box-shadow: none;
+        width:100% !important;
+        height:auto !important;
+    }
+    #responsiveMobileviewEventslist .popup-header,#responsiveMobileviewEventslist .popup-footer{
+        display:none;
+    }
+    #responsiveMobileviewEventslist .events li{
+        padding:0;
+    }
+    #responsiveMobileviewEventslist .booknow{
+        margin-top:0;
+        float:none;
+        width:30% !important;
+    }
+    #responsiveMobileviewEventslist .event-bottom{
+        width:100%;
+        position: relative;
+        height:auto;
+    }
+    #responsiveMobileviewEventslist .main-eventList, #responsiveMobileviewEventslist .event-list{
+        height:auto;
+        width:100%;
+    }
+
+    #cruiseCalendar table.calendar tr td{
+        vertical-align: top;
+    }
+
+    #cruiseCalendar table.calendar tr:first-child td{
+        vertical-align: bottom;
+    }
+    .date_has_event{
+        padding-left: 5%;
+    }
+    #responsiveMobileviewEventslist .date_has_event.active{
+        background-color:#fff;
+        padding-top:2%;
+        padding-bottom:3%;
+    }
+    #responsiveMobileviewEventslist .event-port{
+        margin-top:0;
+    }
+    .headerFilters {
+        width: 60% !important;
+        margin: auto !important;
+        padding-left: 22%;
+    }
+    .calendarTitlediv{
+        padding-left: 20%;
+    }
+
+    .cruiseKeyInner{
+        height:auto; 
+        padding-bottom: 9px;
+        padding-top: 10px;
+    }
+    .cruiseMobileKey li{
+        text-transform: uppercase;
+    }
+
+}
+@media screen and (min-width: 767px) { 
+    /// .events ul{
+    /// display:none !important;
+    ///}
+
+    .calendar-day:hover .main-eventList{
+        /*overflow: auto;*/
+    }
+    .calendar-day:hover .event-bottom{
+        bottom:4%;
+    }
+    .event-bottom{
+        bottom:4%;
+    }
+    .event-list{
+        padding-top:4%;
+
+    }
+}
+
+@media screen and (max-width:1340){
+    .events ul{
+        width:310px;
+    }
+}
+
+
+.calendar {
+    width: 100%!important;
+}
+
+
+#CruisecalendarPrevious, #CruisecalendarNext{
+        display:block !important;
+    }

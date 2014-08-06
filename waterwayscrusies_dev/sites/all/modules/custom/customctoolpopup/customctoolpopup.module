@@ -1,0 +1,113 @@
+
+<?php
+
+/**
+ * This module will open the popup box.
+ * Author : Neeraj Kumar
+ * Date   : 10/02/2013
+ *  
+ */
+
+/*
+ * Implements hook_menu
+ * @ create menu
+ */
+
+function customctoolpopup_menu() {
+
+  $items['get_form'] = array(
+    'title' => 'Popup Demo',
+    'page callback' => 'get_popupdemo',
+    'menu_name' => 'main-menu',
+    'access arguments' => TRUE,
+    'access callback' => TRUE,
+    'weight' => 8,
+  );
+  $items['popup/open'] = array(
+    'title' => 'Add popup',
+    'page callback' => 'open_popup',
+    'access arguments' => TRUE,
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+
+  $items['modal_forms/%ctools_js/popup/open'] = array(
+    'title' => 'Add popup',
+    'page callback' => 'modal_forms_add_popup',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'file' => 'customctoolpopup.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+
+  return $items;
+}
+
+// This function calls the get_facilities form.
+
+function get_popupdemo() {
+
+  $output = drupal_get_form('get_popupdemo_form');
+  return $output;
+}
+
+function get_popupdemo_form($form, &$form_state) {
+
+//Right Now this is comment TO DO open on submission
+//  $form['#id'] = 'get_popupdemo_form';
+//  $form['#tree'] = TRUE;
+
+  $form['addlink'] = array(
+    '#markup' => '<a class="ctools-use-modal" href="modal_forms/nojs/popup/open">open popup</a>',
+  );
+
+  return $form;
+}
+
+
+function open_popup() {
+  $output = drupal_get_form('open_popup_form');
+  return $output;
+}
+
+/*
+ * this form will help to open form
+ */
+
+function open_popup_form($form, &$form_state) {
+
+  $form['#id'] = 'open_popup_form';
+  $form['#tree'] = TRUE;
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+    //  '#weight' => 0,
+    '#required' => true,
+
+    
+  );
+  $form['cont_no'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Contact number'),
+    //   '#weight' => 2,
+    '#required' => true,
+  );
+
+
+  $form['create'] = array(
+    '#type' => 'button',
+    '#value' => 'Submit',
+    '#executes_submit_callback' => TRUE,
+    '#submit' => array('form_submit'),
+    '#weight' => 5,
+  );
+
+  $form['cancel'] = array(
+    '#markup' => l(t(' Cancel'), 'get_form'),
+    '#weight' => 6,
+  );
+  return $form;
+}

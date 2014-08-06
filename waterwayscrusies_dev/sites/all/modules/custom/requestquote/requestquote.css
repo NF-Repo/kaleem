@@ -1,0 +1,35 @@
+
+#requestquotestart_date label, #requestquotestart_date .help-block{
+	display: none;
+}
+
+#requestquoteend_date label, #requestquoteend_date .help-block{
+	display: none;
+}
+.form-inline .control-label{
+/*    font-size:20px;*/
+}
+
+.form-inline .controls{
+    
+}
+
+/*.control-group{
+    position:absolute;
+}
+
+*/
+.form-type-item .controls{
+    padding-left:30%;
+    padding-top: 5px;
+      
+}
+
+.form-type-item .control-label{
+    position:absolute;
+}
+
+.backlinkclass{
+    margin-left:-42%;
+    
+}

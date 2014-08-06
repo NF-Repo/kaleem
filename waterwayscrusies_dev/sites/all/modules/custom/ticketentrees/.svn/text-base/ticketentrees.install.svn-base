@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * Implements hook_schema()
+ */
+function ticketentrees_schema() {
+    $schema = array();
+// 	id 	parent_id 	position 	left 	right 	level 	title 	type
+    $schema['ticketentrees'] = array(
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'aid' => array(
+              'description' => 'The Attributeid of the product selection',
+              'type' => 'int',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+          ),
+             'entreenode' => array(
+              'description' => 'The Entree nodeid of the Entree selection',
+              'type' => 'int',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+          ),
+       'dietaryrestriction' => array(
+       'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE
+      ),
+            
+            'cartsession' => array(
+                'type' => 'varchar',
+                'length' =>255,
+                'description' => 'created date',
+            ),
+            'selectedticket' => array(
+                'type' => 'varchar',
+                'length' =>255,
+                'description' => 'selected ticket',//used selected number like general1,general2
+            ),
+       
+        'createdtime' => array(
+                'type' => 'varchar',
+                'length' => 12,
+                'description' => 'created date',
+            ),
+            
+            
+     ),
+        'primary key' => array('id'),
+    );
+//tree_node Schema 
+    
+     	
+    return $schema;
+}

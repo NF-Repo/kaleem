@@ -1,0 +1,8 @@
+name = Email Templates Info
+core = 7.x
+description = Email Templates Info
+files[] = emailtemplates.controller.inc
+files[] = emailtemplates.module
+files[] = emailtemplates.form.inc
+files[] =emailtemplates.install
+

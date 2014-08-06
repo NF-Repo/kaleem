@@ -1,0 +1,222 @@
+<?php
+
+function customvalidations_menu() {
+    $items = array();
+    $items['customvalidations'] = array(
+        'title' => 'Custom Validation',
+        'page callback' => 'customvalidationspage',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function customvalidationspage() {
+
+    //credit card test
+    $cardnumber = '4444444444444444df';
+    $cardname = "VIsa";
+    $t = is_valid_credit_card($cardnumber, $cardname);
+    //var_dump($t);
+    //phone test
+    $phone = '234-234-2342';
+    $t = is_valid_us_phone($phone);
+    //var_dump($t);
+
+
+    $city = 'New York';
+    //$t = is_valid_city($city);
+    // var_dump($t);
+
+    $zip = '10001';
+    $t = is_valid_us_zipcode($zip);
+    var_dump($t);
+
+
+    //var_dump(is_valid_email("satya.gemail@gmail.coasdfm"));
+    exit();
+}
+
+/*
+ * Credit Card Validatoins
+ * Input Parameters
+ *  1. Card Number
+ *  2. Card Name
+ */
+
+
+
+function is_valid_credit_card($cardnumber, $cardname) {
+    $cardName = trim(strtoupper($cardname));
+   // drupal_json_output($cardName);
+    //exit();
+    $result = false;
+    switch ($cardName) {
+        case 'VISA':
+            $visaReg = '/^4[0-9]{12}(?:[0-9]{3})?$/';
+            $result = preg_match($visaReg, $cardnumber);
+            break;
+        case 'AMERICANEXPRESS':
+            $visaReg='/^3[47][0-9]{13}$/';
+                $result=preg_match($visaReg, $cardnumber);
+                break;
+        case 'MASTERCARD':
+            $visaReg='/^5[1-5][0-9]{14}$/';
+            $result = preg_match($visaReg, $cardnumber);
+            break;
+        case 'DISCOVER':
+            $visaReg='/^6011[0-9]{12}$/';
+            $result = preg_match($visaReg, $cardnumber);
+            break;
+       
+    }
+    return ($result == 1) ? true : false;
+}
+
+/*
+ * Credit Card Month Validation
+ */
+
+
+function is_valid_credit_card_month($selectedmonth,$cardyear){
+   //selected month is  1 and current month is 2
+   $currentyear=date('Y');
+   $currentmonth=date('n');
+   if(($selectedmonth<$currentmonth)&&($cardyear<=$currentyear)){
+        return false;
+         }
+     else{
+         return true;
+     }
+}
+
+
+/*
+ * Email Validation
+ */
+
+function is_valid_email($email) {
+    $expression = "/^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.([a-zA-Z]{2,4})$/";
+    if (preg_match($expression, $email)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/*
+ * Phone Validation
+ * $phone='(345) 234-2342';
+  $expression="/^\(\d{3}\) \d{3}-\d{4}\$/";
+ */
+
+function is_valid_us_phone($phone) {
+	//$expression="/^\(\d{3}\)-\d{3}-\d{4}\$/";
+    $expression = "/^\d{3}-\d{3}-\d{4}\$/";
+    if (preg_match($expression, $phone)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+function _is_valid_us_phone($phone) {
+	//$expression="/^\(\d{3}\)-\d{3}-\d{4}\$/";
+	$expression = "/^\d{3}-\d{3}-\d{4}\$/";
+	if (preg_match($expression, $phone)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+/*
+ * Name Validation
+ */
+
+function is_valid_name($name) {
+    $expression = "/^[a-zA-Z ]{3,50}\$/";
+    if (preg_match($expression, $name)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/*
+ * Comparing two values
+ */
+
+function is_both_are_same($val1, $val2) {
+    if ($val1 === $val2) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/*
+ * Zip Code
+ * ^\d{5}(-\d{4})?$
+  Matches all US format zip code formats (e.g., "94105-0011" or "94105")
+ */
+
+function is_valid_us_zipcode($zipcode) {
+    $expression = "/^\d{5}$/";
+    if (preg_match($expression, $zipcode)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+/*
+ * Comparing Crusie start date and End date
+ */
+function is_valid_crusiedates($crusieenddate, $crusiestartdate) {
+    $crusiestartdates = strtotime($crusiestartdate);
+    $crusieenddates = strtotime($crusieenddate);
+    if ($crusiestartdates <=$crusieenddates) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+/*
+ * Comparing promo start date and promo End date
+ */
+function is_valid_promodates($promoenddate, $promostartdate) {
+    $promostartdates = strtotime($promostartdate);
+    $promoenddates = strtotime($promoenddate);
+    if ($promostartdates <= $promoenddates) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//coupon rate based on coupon type
+function is_couponrate($coupontype, $couponrate) {
+    if ($couponrate != '') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
+/* events selected or not*/
+function is_event($evntname) {
+    $result = FALSE;
+    foreach ($evntname as $row) {
+        if ($row != '0') {
+            $result = TRUE;
+        }
+    }
+    return $result;
+}

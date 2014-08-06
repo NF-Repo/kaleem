@@ -1,0 +1,163 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+function vendorslist_menu() {
+    //Admin Management for Request Quote
+
+    $items['vendorlist'] = array(
+        'title' => 'Vendorlist',
+        'page callback' => 'vendorslist_list_form',
+        'access arguments' => array('view vendor list'),
+    );
+
+
+
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function vendorslist_permission() {
+    return array(
+       
+        'view vendor list' => array(
+            'title' => t('View vendor list'),
+        ),
+       
+       
+    );
+}
+
+
+function vendorslist_list_form() {
+    global $base_url;
+   
+
+  // Check if there is sorting request
+  if(isset($_GET['sort']) && isset($_GET['order'])){
+    // Sort it Ascending or Descending?
+    if($_GET['sort'] == 'asc')
+      $sort = 'ASC';
+    else
+      $sort = 'DESC';
+    
+
+// Which column will be sorted
+    switch($_GET['order']){
+      case 'Name':
+        $order = 'name';
+        break;
+      case 'Type':
+        $order = 'type';
+        break;
+     case 'Category':
+        $order = 'categoryname';
+        break;
+   
+      default:
+        $order = 'name';
+    }
+  }
+  else{
+    // Default sort
+    $sort = 'ASC';
+    $order = 'name';
+  }
+  
+
+  
+$output = "";
+ 
+// Select table
+  $query = db_select("node", "r");
+  $query->join('field_data_field_vendor_webpage_link', 'fi', 'r.nid = fi.entity_id');
+//   $query->join('field_data_field_vendor_category"', 'fc', 'r.nid = fc.entity_id');
+//   $query->join('taxonomy_term_data"', 'tc', 'tc.tid = fc.field_vendor_category_tid')
+//            
+             $query->join('field_data_field_category"', 'fc', 'r.nid = fc.entity_id');
+   $query->join('taxonomy_term_data"', 'tc', 'tc.tid = fc.field_category_tid');
+  // Selected fields
+//  $query->fields("r");
+    $query->fields('r',array('title','nid'));
+     $query->fields('fi',array('field_vendor_webpage_link_value'));
+     $query->fields('tc',array('name'));
+   $query->condition('type', 'vendors','=');
+  // Set order by
+  $query->orderBy($order, $sort);
+  // Pagination
+  $query = $query->extend('TableSort')->extend('PagerDefault')->limit(10);
+  
+// Execute query
+  $result = $query->execute();
+  
+
+// Prepare table header
+  $header = array(
+    array(
+      "data" => t('Name'),
+      "field" => "name"
+    ),
+    array(
+      "data" => t('Type'),
+      "field" => "type"
+    ),
+    array(
+      "data" => t('Category'),
+     // "field" => "categoryname"
+    ),
+    array(
+      "data" => t('Actions'),
+      "field" => "actions"
+    ),
+//    array(
+//      "data" => t('Weight'),
+//      "field" => "weight"
+//    )
+  );
+  
+
+$rows = array();
+  
+
+// Looping for filling the table rows
+  while($data = $result->fetchObject()){
+    // Fill the table rows
+    $rows[] = array(
+      $data->title,
+      $data->field_vendor_webpage_link_value,
+      $data->name,
+        '<a href="' . $base_url . '/node/'.$data->nid.'/edit">Edit </a> | <a href="' . $base_url . '/node/'.$data->nid.'/delete">Delete </a>',
+     
+//      $data->module,
+//      $data->weight
+    );
+  }
+  
+
+// Output of table with the paging
+  $output = theme_table(
+    array(
+      "header" => $header,
+      "rows" => $rows,
+      "attributes" => array("width"=>"100%"),
+      "sticky" => true, // Table header will be sticky
+      "caption" => "",
+      "colgroups" => array(),
+      "empty" => t("No records Found") // The message to be displayed if table is empty
+    )
+  ).theme("pager");
+  
+  
+  $vendorhtml='<a href="'.$base_url.'/node/add/vendors">Add vendor</a>';
+  $vendorhtml.=$output;
+  return $vendorhtml;
+}
+
+
+

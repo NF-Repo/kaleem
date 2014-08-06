@@ -1,0 +1,32 @@
+.breadcrumb {display: none;}
+
+
+#cruise-enhancements-assign-form fieldset.collapsed{
+	/*padding-top: 0.5em !important;*/
+}
+
+#cruise-enhancements-assign-form fieldset.collapsible fieldset{
+	/* padding: 0.5em 0.625em 0.75em; */
+}
+
+#cruise-enhancements-assign-form fieldset .fieldset-wrapper .form-wrapper{
+	/* border: none; */
+}
+
+#cruise-tickets-assign-form .form-type-checkbox{
+	/* width: 200px;
+	float: left; */
+}
+
+#cruise-tickets-assign-form #edit-save{
+	/* margin-left: 200px; */
+}
+
+.form-item, .form-actions{
+	/* margin-top: 0px !important;
+	margin-bottom: 0px !important; */
+}
+
+#cruise-list-form{
+/* 	margin-top: 10px; */
+}

@@ -1,0 +1,10 @@
+name = Enhancement Categories
+core = 7.x
+description = Enhancment Categories 
+files[] = enhancementcategories.controller.inc
+files[] = enhancementcategories.module
+files[] = enhancementcategories.form.inc
+files[] = enhancementcategories.install
+;Date 28Oct2013
+package=WWC
+

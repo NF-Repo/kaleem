@@ -1,0 +1,544 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function reports_menu() {
+    $items = array();
+
+    /*   Viewing the list view of community stores   */
+    $items['customer/reports'] = array(
+        'title' => 'Customer Reports',
+        'page callback' => 'store_reports_products',
+        'access arguments' => array('view Customer reports list'),
+        'file' => 'reports.pages.inc',
+    );
+    /*   Viewing the list view of community stores   */
+    $items['customer/orders/list'] = array(
+        'title' => 'Customer Orders',
+        'page callback' => 'store_orders_list',
+        'access arguments' => array('view Customer orders list'),
+        'file' => 'reports.pages.inc',
+    );
+
+    /*   Viewing the list view of sales Agent Reports   */
+    $items['salesagent/reports'] = array(
+        'title' => 'Sales By Agent',
+        'page callback' => 'salesagent_order_reports',
+        'access arguments' => array('view Sales Agent reports list'),
+        'file' => 'salesagentreports.pages.inc',
+    );
+
+    /*   Viewing the list view of sales by Cruise Reports   */
+    $items['salesbycruise/reports'] = array(
+        'title' => 'Sales By Cruise',
+        'page callback' => 'salesbycruise_order_reports',
+        'access arguments' => array('view Sales by cruise reports list'),
+        'file' => 'salesbycruisereports.pages.inc',
+    );
+    /*   Viewing the list view of sales by Cruise Reports   */
+    $items['ordersbycruise'] = array(
+        'title' => 'Orders By Cruise',
+        'page callback' => 'orders_by_cruise',
+        'access arguments' => array('view orders by cruise list'),
+        'file' => 'salesbycruisereports.pages.inc',
+    );
+    /*   Viewing the list view of sales by Cruise Reports   */
+    $items['cruise/%/manifest'] = array(
+        'title' => 'Cruise Manifest',
+        'page callback' => 'cruise_manifest',
+        'page arguments' => array(1),
+        'access arguments' => array('view cruise manifest details'),
+        'file' => 'salesbycruisereports.pages.inc',
+    );
+
+    /*   Viewing the list view of sales by day of week Reports   */
+    $items['salesbydayofweek/reports'] = array(
+        'title' => 'Sales By Week',
+        'page callback' => 'salesbydayofweek_order_reports',
+        'access arguments' => array('view Sales by day of week reports list'),
+        'file' => 'salesbydayofweek.pages.inc',
+    );
+
+    /*   Viewing the list view of sales by day of week Reports   */
+    $items['salesbymonth/reports'] = array(
+        'title' => 'Sales By Month',
+        'page callback' => 'salesbymonth_order_reports',
+        'access arguments' => array('view Sales by month reports list'),
+        'file' => 'salesbymonth.pages.inc',
+    );
+    /*   Viewing the list view of sales by commission Reports   */
+    $items['salescommission/reports'] = array(
+        'title' => 'Sales By Agent Commission',
+        'page callback' => 'salescommission_order_reports',
+        'access arguments' => array('view Sales by agent commission reports list'),
+        'file' => 'salescommission.pages.inc',
+    );
+    /*   Viewing the list view of sales by ticket type Reports   */
+    $items['salesbytickets/reports'] = array(
+        'title' => 'Sales By Ticket Type',
+        'page callback' => 'salesbytickets_order_reports',
+        'access arguments' => array('view Sales by tickets reports list'),
+        'file' => 'salesbytickets.pages.inc',
+    );
+
+
+    /*   Viewing the list view of sales by Enhancement Reports   */
+    $items['salesbyenhancements/reports'] = array(
+        'title' => 'Sales By Enhancements',
+        'page callback' => 'salesbyenhancements_order_reports',
+        'access arguments' => array('view Sales by enhancements reports list'),
+        'file' => 'salesbyenhancements.pages.inc',
+    );
+
+
+
+    /*   Viewing the list view of sales by day of week Reports   */
+    $items['salesbypier/reports'] = array(
+        'title' => 'Sales By Pier',
+        'page callback' => 'salesbypier_order_reports',
+        'access arguments' => array('view Sales by pier reports list'),
+        'file' => 'salesbypier.pages.inc',
+    );
+
+    /* Viewing the list view of Customer  
+     * @params : uid (customer uid) 
+     */
+    $items['customer/%/orders'] = array(
+        'title' => 'Customer Orders list view',
+        'page callback' => 'store_customer_orders',
+        'page arguments' => array(1),
+        'access arguments' => array('view Customer orders list'),
+        'file' => 'customerorders.pages.inc',
+    );
+
+    /* Viewing the list view of sales agent orders  
+     * @params : uid (salesagent uid) 
+     */
+    $items['salesagent/%/orders'] = array(
+        'title' => 'Sales Agent Orders',
+        'page callback' => 'store_salesagent_orders',
+        'page arguments' => array(1),
+        'access arguments' => array('view salesagent orders list'),
+        'file' => 'salesagentreports.pages.inc',
+    );
+    /* Viewing the Order detail view of Customer  
+     * @params : order_id (customer order id) 
+     */
+    $items['customer/%/detailview'] = array(
+        'title' => 'Customer Order Detail view',
+        'page callback' => 'store_customer_order_detailview',
+        'page arguments' => array(1),
+        'access arguments' => array('view Customer order details'),
+        'file' => 'customerorders.pages.inc',
+    );
+
+    /* Viewing the list view of Customer  
+     * @params : uid (customer uid) 
+     */
+    $items['store/couponreports'] = array(
+        'title' => 'Discount Orders list view',
+        'page callback' => 'store_coupon_reports',
+        'access arguments' => array('view Coupon orders list'),
+        'file' => 'couponreports.pages.inc',
+    );
+
+    /* Viewing the list view of Customer activity logs    */
+    $items['useractivitylogs'] = array(
+        'title' => 'User Activity Log',
+        'page callback' => 'user_activitylog_reports',
+        'access arguments' => array('view user activity logs'),
+        'file' => 'useractivitylogs.pages.inc',
+    );
+
+    /* Viewing the User activity log detail view of Customer  
+     * @params : log Id (user log id) 
+     */
+    $items['useractivitylog/%/detailview'] = array(
+        'title' => 'Activity log',
+        'page callback' => 'user_activitylog_detailview',
+        'page arguments' => array(1),
+        'access arguments' => array('user activity log detailview'),
+        'file' => 'useractivitylogs.pages.inc',
+    );
+
+    
+    
+    
+    /* Viewing the list view of Customer activity logs    */
+    $items['cruisesearch'] = array(
+        'title' => 'SEARCH RESULTS',
+        'page callback' => 'cruise_search_results',
+        'access arguments' => array('view search results on cruises'),
+        'file' => 'cruisesearch.pages.inc',
+    );
+    
+    
+    $items['booking-order/%'] = array(
+    		'title' => 'Booking Order',
+    		'page callback' => 'bookingorder_view_page',
+    		'page arguments' => array(1),
+    		'access arguments' => array('view booking order'),
+    		'file' => 'bookingorder.pages.inc',
+    );
+    
+    
+    return $items;
+}
+
+function reports_theme() {
+    return array(
+//        'test_form' => array(
+//            'render element' => 'form',
+//            // In this one the rendering will be done by a template file
+//            // (theming-example-text-form.tpl.php) instead of being rendered by a
+//            // function. Note the use of dashes to separate words in place of
+//            // underscores. The template file's extension is also left out so that
+//            // it may be determined automatically depending on the template engine
+//            // the site is using.
+//            'template' => 'test',
+//        ),
+    );
+}
+
+function reports_permission() {
+    return array(
+        'view Customer reports list' => array(
+            'title' => t('view Customer reports list'),
+        ),
+        'view Customer orders list' => array(
+            'title' => t('view Customer orders list'),
+        ),
+        'view Coupon orders list' => array(
+            'title' => t('view Coupon orders list'),
+        ),
+        'view Sales Agent reports list' => array(
+            'title' => t('view Sales Agent reports list'),
+        ),
+        'view Sales by cruise reports list' => array(
+            'title' => t('view Sales by cruise reports list'),
+        ),
+        'view Sales by day of week reports list' => array(
+            'title' => t('view Sales by day of week reports list'),
+        ),
+        'view Sales by month reports list' => array(
+            'title' => t('view Sales by month reports list'),
+        ),
+        'view Sales by agent commission reports list' => array(
+            'title' => t('view Sales by agent commission reports list'),
+        ),
+        'view Customer order details' => array(
+            'title' => t('view Customer order details'),
+        ),
+        'view Sales by tickets reports list' => array(
+            'title' => t('view Sales by tickets reports list'),
+        ),
+        'view Sales by pier reports list' => array(
+            'title' => t('view Sales by pier reports list'),
+        ),
+        'view orders by cruise list' => array(
+            'title' => t('view orders by cruise list'),
+        ),
+        'view cruise manifest details' => array(
+            'title' => t('view cruise manifest details'),
+        ),
+        'view salesagent orders list' => array(
+            'title' => t('view salesagent orders list'),
+        ),
+        'view user activity logs' => array(
+            'title' => t('view user activity logs'),
+        ),
+        'user activity log detailview' => array(
+            'title' => t('user activity log detailview'),
+        ),
+        'view Sales by enhancements reports list' => array(
+            'title' => t('view Sales by enhancements reports list'),
+        ),
+        'view search results on cruises' => array(
+            'title' => t('view search results on cruises'),
+        ),
+        'view Customer orders list' => array(
+            'title' => t('view Customer orders list'),
+        ),
+    		
+    		'view booking order' => array(
+    				'title' => t('View Booking Order'),
+    		),
+            //permission for promocodes starts here
+    );
+}
+
+function template_preprocess_reports(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'reports') . '/reports.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+/**
+ * Gets the SKUs on a product, including adjustments and past orders.
+ *
+ * @param $nid
+ *   The product's node ID.
+ *
+ * @return
+ *   A unique sorted array of all skus.
+ */
+//function store_reports_product_get_skus($nid) {
+//    // Product SKU.
+//    $models = array(db_query("SELECT model FROM {uc_products} WHERE nid = :nid", array(':nid' => $nid))->fetchField());
+//    // Adjustment SKUs.
+//    $models = array_merge($models, db_query("SELECT model FROM {uc_product_adjustments} WHERE nid = :nid", array(':nid' => $nid))->fetchCol());
+//
+//    // SKUs from orders.
+//    $models = array_merge($models, db_query("SELECT DISTINCT model FROM {uc_order_products} WHERE nid = :nid", array(':nid' => $nid))->fetchCol());
+//
+//    // Unique, sorted.
+//    $models = array_unique($models);
+//    asort($models);
+//
+//    return $models;
+//}
+
+/**
+ * Stores a CSV file for a report in Drupal's cache to be retrieved later.
+ *
+ * @param $report_id
+ *   A unique string that identifies the report of the CSV file.
+ * @param $rows
+ *   The rows (table header included) that make CSV file.
+ *
+ * @return
+ *   An array containing the values need to build URL that return the CSV file
+ *   of the report and the CSV data itself.
+ */
+//function store_reports_store_csv($report_id, $rows) {
+//    global $user;
+//    $csv_output = '';
+//    $user_id = empty($user->uid) ? session_id() : $user->uid;
+//    foreach ($rows as $row) {
+//        foreach ($row as $index => $column) {
+//            $row[$index] = '"' . str_replace('"', '""', $column) . '"';
+//        }
+//        $csv_output .= implode(',', $row) . "\n";
+//    }
+//    cache_set('uc_reports_' . $report_id . '_' . $user_id, $csv_output, 'cache', REQUEST_TIME + 86400);
+//    return array('user' => $user_id, 'report' => $report_id, 'csv' => $csv_output);
+//}
+
+/*    function for coupon based order reports      */
+
+function _store_coupon_date_range($form_element) {
+    $form_element['year']['#options'] = drupal_map_assoc(range(2008, 2020));
+    return $form_element;
+}
+
+/*    Get  the order subtotal     */
+
+function getordersubtotal($orderId) {
+    $order = uc_order_load($orderId);
+    $ordersubtotal = '';
+    foreach ($order->line_items as $lineitem) {
+        if ($lineitem['type'] == 'subtotal') {
+            $ordersubtotal = $lineitem['amount'];
+        }
+    }
+    return $ordersubtotal;
+}
+
+/*     Function for user logs1     */
+
+function insertuserlog($logObject) {
+    global $user;
+    $userip = $_SERVER['REMOTE_ADDR'];
+    $record = array(
+        'uid' => $user->uid,
+        'location' => $logObject->location,
+        'message' => $logObject->message,
+        'referer' => $logObject->referer,
+        'type' => $logObject->type,
+        'ipaddress' => $userip,
+        'timestamp' => REQUEST_TIME,
+        'data' => $logObject->data,
+        'status' => $logObject->status,
+    );
+    $result = db_insert('user_logs') // Table name no longer needs {}
+            ->fields($record)
+            ->execute();
+    return $result;
+}
+
+/*      funcions we are used for Mnifestt View by cruise starts here        */
+/* Get the Cruise Event Data
+ * @params : Cruis event Id
+ */
+
+function getcruiseeventdata($cruise_eventid) {
+    $query = db_select("scheduledevents", "s");
+    $query->Join('scheduledevent_dates', 'sd', 's.id = sd.scheduledevent_id');
+    $query->Join('reservation', 'r', 's.id = r.eventid');
+    $query->Join('uc_orders', 'o', 'r.orderid = o.order_id');
+    $query->Join('cruise', 'c', 'c.id = s.cruisetemplate_id ');
+    $query->Join('cruisetypes', 'ct', 'ct.id = c.cruise_type');
+    $query->condition('s.id', $cruise_eventid, '=');
+    $query->fields('s', array(
+        'id', 'name', 'vessel_id', 'port_id', 'departuretime', 'returntime',
+        'boardingtime', 'windowseatinventory', 'availablewindowseats', 'windowseatssold',
+        'ticketinventory', 'availabletickets', 'soldtickets', 'boardingtime'
+    ));
+    $query->fields('sd', array('scheduleddate'));
+//    $query->fields('r', array('data'));
+    $query->fields('o', array(
+        'order_id', 'order_total', 'uid', 'primary_email', 'delivery_first_name',
+        'delivery_phone', 'delivery_street1', 'delivery_city', 'delivery_zone',
+        'delivery_postal_code', 'delivery_country','delivery_last_name'
+    ));
+    $result = array();
+    $result = $query->execute()->fetchAll();
+    $cruisedata = array();
+    foreach ($result as $row) {
+        $orderId = $row->order_id;
+        $ticketdata = getcruiseticketsdata($orderId);
+        $enhancementsdata = getcruiseenhancementsdata($orderId);
+        $userchoicedata = getcruiseuserchoicedata($orderId);
+        $grouponsdata = getcruisegrouponsdata($orderId);
+        
+        $row->tickets = $ticketdata;
+        $row->enhancements = $enhancementsdata;
+        $row->userchoices = $userchoicedata;
+        $row->groupons = $grouponsdata;
+        $cruisedata[] = $row;
+    }
+    return $cruisedata;
+}
+
+/* get the user order choices data
+ * @params : $orderId
+ */
+
+function getcruiseuserchoicedata($orderId) {
+    $query = db_select("bookinglog_userchoices", "b");
+    $query->condition('b.order_id', $orderId, '=');
+    $query->fields('b', array('id', 'celebration_comments', 'receive_email_notification_flag',
+        'customer_email', 'limited_mobility_flag', 'food_allergy_flag','another_party_flag',
+        'another_party_comments','celebration_flag','what_they_brought','order_total','event_id'));
+    $result = array();
+    $result = $query->execute()->fetchAll();
+    return $result;
+}
+
+/* get the user order groupons(coupon discounts) data
+ * @params : $orderId
+ */
+
+// function getcruisegrouponsdata($orderId) {
+//     $query = db_select("uc_order_line_items", "b");
+//     $query->condition('b.order_id', $orderId, '=');
+//     $query->condition('b.type', 'generic', '=');
+//     $query->condition('b.title', '%'.db_like('Promo Code') . '%', 'LIKE');
+//     $query->fields('b', array('title', 'amount'));
+//     $result = array();
+//     $result = $query->execute()->fetchAll();
+//     return $result;
+// }
+
+
+function getcruisegrouponsdata($orderId) {
+	$query = db_select("uc_order_line_items", "b");
+	$query->condition('b.order_id', $orderId, '=');
+	$query->condition('b.type', 'generic', '=');
+	$query->condition('b.title', '%'.db_like('Voucher') . '%', 'LIKE');
+	$query->fields('b', array('title', 'amount'));
+	$result = array();
+	$result = $query->execute()->fetchAll();
+	return $result;
+}
+
+
+/* get the user order Tax data
+ * @params : $orderId
+ */
+
+function getcruiseordertax($orderId) {
+    $query = db_select("uc_order_line_items", "b");
+    $query->condition('b.order_id', $orderId, '=');
+    $query->condition('b.type', 'generic', '=');
+    $query->condition('b.title', '%'.db_like('Tax') . '%', 'LIKE');
+    $query->fields('b', array('title', 'amount'));
+    $result = array();
+    $result = $query->execute()->fetchAll();
+    return $result;
+}
+
+/* get the enhancements data
+ * @params : $orderId
+ */
+
+function getcruiseenhancementsdata($orderId) {
+    $query = db_select("bookinglog_enhancements", "b");
+    $query->condition('b.order_id', $orderId, '=');
+    $query->fields('b', array('id', 'enhancement_id', 'enhancement_qty', 'enhancement_price', 'comments', 'event_id'));
+    $result = array();
+    $result = $query->execute()->fetchAll();
+    return $result;
+}
+
+/* get the tickets data
+ * @params : $orderId
+ */
+
+function getcruiseticketsdata($orderId) {
+    $query = db_select("bookinglog_tickets", "b");
+    $query->condition('b.order_id', $orderId, '=');
+    $query->fields('b', array('id', 'ticket_id', 'ticket_qty', 'ticket_price', 'event_id'));
+    $result = array();
+    $result = $query->execute()->fetchAll();
+    $ticketsdata = array();
+    foreach ($result as $row) {
+        $bookingticketId = $row->id;
+        $ticketentrees = getticketentrees($bookingticketId);
+        $row->entrees = $ticketentrees;
+        $ticketsdata[] = $row;
+    }
+    return $ticketsdata;
+}
+
+/* Get the Ticket Entees      
+ * @params : bookingticketId
+ */
+
+function getticketentrees($bookingticketId) {
+    $query = db_select("bookinglog_ticketentrees", "b");
+    $query->condition('b.ref_id', $bookingticketId, '=');
+//    $query->condition('b.entree_id', 0, '!=');
+    $query->fields('b', array('entree_id', 'comments'));
+    $result = array();
+    $result = $query->execute()->fetchAll();
+    return $result;
+}
+
+/*   Get all Cruise Based Enhancements List   */
+
+function getenhancementslist() {
+    $query = db_select("cruiseenhancements", "b");
+    $query->fields('b');
+    $result = array();
+    $result = $query->execute()->fetchAll();
+    return $result;
+}
+
+/* funcions we are used for Mnifestt View by cruise ends here    */
+
+
+
+function getticketsbyorders($orderslist){
+    $query = db_select("bookinglog_tickets", "b");
+    $query->fields('b');
+    $query->where('order_id in('.$orderslist.')');
+    $result = array();
+    $result = $query->execute()->fetchAll();
+    $rows=array();
+    $ticketqty=0;
+    foreach ($result as $row) {
+        $rows[]=$row;
+        $ticketqty=$ticketqty+($row->ticket_qty);
+    }   
+    return $ticketqty;
+}

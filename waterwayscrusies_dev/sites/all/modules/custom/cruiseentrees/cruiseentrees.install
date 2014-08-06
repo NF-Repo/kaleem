@@ -1,0 +1,125 @@
+<?php
+
+/**
+ * @file
+ * Install for a basic Request Quote Form entity - need to create 
+ * the base table for RequestQuote entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * 
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function cruiseentrees_schema() {
+    $schema = array();
+
+    // The name of the table can be any name we choose. However, namespacing the
+    // table with the module name is best practice.
+
+
+    /**
+      Table fields ::
+      id,
+      title,
+      price
+      orderding
+
+      //note for enhancment image we will use the default ubercart prouct image
+
+     */
+    $schema['cruiseentrees'] = array(
+        'description' => 'The base table for cruiseentrees Entity.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the cruiseentrees Entity.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'title' => array(
+                'description' => 'The Enhancement title',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'ordering' => array(
+                'description' => 'Determines the list position of Tickets.',
+                'type' => 'int',
+                'size' => 'tiny',
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'entree_status' => array(
+                'description' => 'Entree Status',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0
+            ),
+            'created' => array(
+                'description' => 'The Object created date and time',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+    //cruise template enhancments
+    $schema['ticket_entrees'] = array(
+        'description' => 'The base table for Ticket entrees Entity.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the ticket entrees.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'ticketid' => array(
+                'description' => 'The cruise template id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'entreeid' => array(
+                'description' => 'The entree id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'created' => array(
+                'description' => 'The Object created date and time',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+
+    return $schema;
+}
+
+/*
+ * Implements hook_uninstall().
+ *
+ * At uninstall time we'll notify field.module that the entity was deleted
+ * so that attached fields can be cleaned up.
+ */
+
+function cruiseentrees_uninstall() {
+//field_attach_delete_bundle('userdocuments_basic', 'first_example_bundle');
+}

@@ -1,0 +1,21 @@
+#map_addresses img {
+    max-width: none;
+}
+
+.map{
+    height: 600px;
+    /*border: 1px solid #000;*/
+    /*margin-bottom: 20px;*/
+}
+
+.map p{
+	margin: 10px;
+	color: #333;
+}
+
+.gmap_marker .addrStyle{
+    color: #333;
+}
+
+
+

@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * @file
+ * Install for a basic Request Quote Form entity - need to create 
+ * the base table for RequestQuote entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * 
+ * test
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function feedback_schema() {
+    $schema = array();
+
+    // The name of the table can be any name we choose. However, namespacing the
+    // table with the module name is best practice.
+    $schema['feedback'] = array(
+        'description' => 'The base table for feedback.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the Feedback.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'commentstype' => array(
+                'description' => 'The type of  comments',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            
+            'feedbackdescription' => array(
+                'description' => 'The user feedback descripiton',
+                'type' => 'text',
+                'size' => 'big',
+            ),
+            
+            'firstName' => array(
+                'description' => 'The user firstname in the feedback application form',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'lastName' => array(
+                'description' => 'The user lastname in the feedback application form',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'email' => array(
+                'description' => 'The user email in the feedback application form',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'created' => array(
+                'description' => 'The User Feedback  Created Date and time',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    return $schema;
+}
+
+/*
+ * Implements hook_uninstall().
+ *
+ * At uninstall time we'll notify field.module that the entity was deleted
+ * so that attached fields can be cleaned up.
+ */
+
+function feedback_uninstall() {
+//field_attach_delete_bundle('userdocuments_basic', 'first_example_bundle');
+}

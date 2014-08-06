@@ -1,0 +1,2247 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function commonajaxservice_menu() {
+
+    $items = array();
+    $items['requestquoteservice'] = array(
+        'title' => 'RequestQuote Ajax Submission WWC',
+        'page callback' => 'wwc_requestquote',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    $items['getUserdetails'] = array(
+        'title' => 'user details',
+        'page callback' => 'getUserdetails_byemail',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    $items['savecorporate'] = array(
+        'title' => 'Corporate Giving Form Ajax Submission',
+        'page callback' => 'wwc_savecorporate',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    $items['feedbackservice'] = array(
+        'title' => 'Feedback Ajax Submission WWC',
+        'page callback' => 'wwc_feedback',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+
+    $items['eventsbymonth'] = array(
+        'title' => 'Event by date',
+        'page callback' => 'wwc_eventsbymonth',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+
+    //Getting Calendar Json Object code
+
+    $items['cruisecalendar'] = array(
+        'title' => 'Cruise Calendar',
+        'page callback' => 'wwc_cruisecalendar',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    //Getting departure Ports List
+    $items['portservice'] = array(
+        'title' => 'Departure Ports',
+        'page callback' => 'wwc_departureports',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+
+    //Getting Ports List
+    $items['ports'] = array(
+        'title' => 'Cruise Ports',
+        'page callback' => 'wwc_cruiseports',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    //Get Cruise Details By Date timestamp
+
+
+    $items['cruisebydate'] = array(
+        'title' => 'Cruise Events',
+        'page callback' => 'wwc_cruisebydate',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    //Getting cruise template details data
+    $items['cruisedetaildata'] = array(
+        'title' => 'Cruise Template Details',
+        'page callback' => 'wwc_cruisedetailview',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+// Get Date Event 
+    $items['calendardateevents'] = array(
+        'title' => 'Get Event By Month And Year',
+        'page callback' => 'cruiseevents_dates',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    //Getting Cruise template details 
+    $items['cruiselistitems'] = array(
+        'title' => 'Cruise List',
+        'page callback' => 'wwc_cruisedeitemslist',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+    $items['cruiseservice'] = array(
+        'title' => 'Feedback Ajax Submission WWC',
+        'page callback' => 'wwc_cruiselist',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    $items['cruiseservicelisttypes'] = array(
+        'title' => 'Cruise List Types',
+        'page callback' => 'wwc_cruiselistTypes',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+    $items['cruisedetialsdataview'] = array(
+        'title' => 'Feedback Ajax Submission WWC',
+        'page callback' => 'wwc_cruisedetialsdataview',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+    //getting the list of product attribute entrees service
+    $items['attributeentrees'] = array(
+        'title' => 'Product Attribute Entrees',
+        'page callback' => 'getProductAttributeEntrees',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+
+    //getting the event time slots by month
+    //getting the list of product attribute entrees service
+    $items['timeslots'] = array(
+        'title' => 'Event Time slots',
+        'page callback' => 'wwc_eventtimeslotbydate',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    //Service for Getting the Port details by Port ID
+    $items['getportdetails'] = array(
+        'title' => 'Port Details',
+        'page callback' => 'load_port_details_by_portid',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    //Creating the menu for Private Events session management
+     $items['privateeventview'] = array(
+        'title' => 'Private Events',
+        'page callback' => 'load_private_pages',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+       $items['privateeventview/type/wedding/%'] = array(
+        'title' => 'Private Events',
+        'page callback' => 'wedding_load_private_pages',
+//        'access callback' => 'user_access',
+        'page arguments' => array(3),
+        'access arguments' => array('access content'),
+    );
+      $items['privateeventview/type/package/%'] = array(
+        'title' => 'Private Events',
+        'page callback' => 'package_load_private_pages',
+//        'access callback' => 'user_access',
+        'page arguments' => array(3),
+        'access arguments' => array('access content'),
+    );
+    
+    //End of Creating the Private Event session Management
+    
+    
+    //
+    return $items;
+}
+
+function package_load_private_pages($type)
+{
+     $_SESSION['templatetype']='packagetemplate';
+     if($type=='new')
+    {
+   
+
+    $path=  'admin/structure/taxonomy/private_events/add';
+    drupal_goto($path);
+    }
+    
+     if($type=='edit')
+    {
+    
+
+    $path=  'admin/structure/taxonomy/private_events';
+    drupal_goto($path);
+    }
+}
+function wedding_load_private_pages($type)
+{
+    //
+     $_SESSION['templatetype']='wedding';
+    if($type=='new')
+    {
+   
+
+    $path=  'admin/structure/taxonomy/private_events/add';
+    drupal_goto($path);
+    }
+    
+     if($type=='edit')
+    {
+  
+    $path=  'admin/structure/taxonomy/private_events';
+    drupal_goto($path);
+    }
+}
+
+
+function getUserdetails_byemail() {
+    $email = $_POST['email'];
+    $userexistance = user_load_by_mail($email);
+    if ($userexistance) {
+
+        drupal_json_output($userexistance);
+    } else {
+        drupal_json_output('fails');
+    }
+}
+
+function cruiseevents_dates() {
+    global $user;
+    $userId = $user->uid;
+    $currentmonth = $_GET['mon'];
+    $currentyear = $_GET['year'];
+    $cruisefilter = $_GET['cruisefilter'];
+    $cruisecalendar = getAllEvents($currentmonth, $currentyear, "", $cruisefilter, "dates");
+    drupal_json_output($cruisecalendar);
+}
+
+function wwc_cruisedetialsdataview() {
+    $name = $_GET['name'];
+    $waterwaystree = taxonomy_get_tree(4);
+    $categories = array();
+    $ports = array();
+    $cuiseitems = array();
+    foreach ($waterwaystree as $waterwaystree) {
+
+        if ($waterwaystree->parents[0] == 0) {
+            $categories[] = $waterwaystree;
+            $children = taxonomy_get_children($waterwaystree->tid);
+            $ports[] = $children;
+            foreach ($children as $value) {
+                $cruiseitemsdata = taxonomy_get_children($value->tid);
+                //looping the cruise items
+
+
+                foreach ($cruiseitemsdata as $cruisevalue) {
+                    if ($cruisevalue->name == $name) {
+                        $cuiseitems['tid'] = $cruisevalue->tid;
+                        $cuiseitems['name'] = $cruisevalue->name;
+                        $cuiseitems['description'] = $cruisevalue->description;
+
+                        foreach ($cruisevalue->field_title as $tittle) {
+                            $cuiseitems['title'] = $tittle[0]['value'];
+                        }
+
+
+                        foreach ($cruisevalue->field_type as $fieldtype) {
+                            $cuiseitems['cruisetype'] = $fieldtype[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_color as $fieldcolor) {
+                            $cuiseitems['cruisecolor'] = $fieldcolor[0]['jquery_colorpicker'];
+                        }
+
+                        foreach ($cruisevalue->field_cruiseimage as $fieldimage) {
+                            $cuiseitems['image'] = $fieldimage[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_itemsku as $fieldsku) {
+                            $cuiseitems['sku'] = $fieldimage[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_categoryid as $fieldcategory) {
+                            $cuiseitems['categoryid'] = $fieldcategory[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_cruise_departure_time as $fielddeparturetime) {
+                            $cuiseitems['departturetime'] = $fielddeparturetime[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_cruise_return_time as $fieldreturntime) {
+                            $cuiseitems['returntime'] = $fieldreturntime[0]['value'];
+                        }
+                        foreach ($cruisevalue->field_cruise_days as $fieldcruisedays) {
+                            $cuiseitems['cruisedays'] = $fieldcruisedays[0]['value'];
+                        }
+
+
+
+                        foreach ($cruisevalue->field_cruise_pricing_general as $fieldcruiseprice) {
+                            $cuiseitems['generalprice'] = $fieldcruiseprice[0]['value'];
+                        }
+                        foreach ($cruisevalue->field_cruise_pricing_senior as $fieldcruisepricesenior) {
+                            $cuiseitems['seniorprice'] = $fieldcruisepricesenior[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_date as $fielddate) {
+                            $cuiseitems['date'] = $fielddate[0]['value'];
+                        }
+                        foreach ($cruisevalue->field_cruisenodeid as $cruisenodeid) {
+                            $cuiseitems['cruisenodeid'] = $cruisenodeid[0]['value'];
+                        }
+
+
+                        $results[] = $cuiseitems;
+                    }
+                }
+            }
+        }
+    }
+    drupal_json_output($results[0]);
+}
+
+//dining cruise details
+function wwc_cruiselistTypes() {
+
+// getCruiseTypes('tplbased');
+    $cruisetypes = getcruisetypelist();
+}
+
+function file_uri_path($fid) {
+    $fileobject = file_load($fid);
+    return $fileobject->filename;
+}
+
+function wwc_cruiselist() {
+
+
+    $arr = array();
+    $catgories = taxonomy_get_tree('4');
+    foreach ($catgories as $category) {
+
+        //$arr[$category->tid.'-'.$category->name]=array();
+        $arr[$category->tid] = array();
+        $cruiseObjects = cruise_load_multiple($ids = array(), $conditions = array('template_category' => $category->tid, 'cruise_status' => 1));
+
+
+        foreach ($cruiseObjects as $key => $values) {
+            $obj = new stdClass();
+            $obj->id = $values->id;
+            $obj->cruise_title = $values->cruise_title;
+            $obj->calendar_tag = $values->calendar_tag;
+            $obj->cruise_type = $values->cruise_type;
+            $obj->tile_title = $values->tile_title;
+            $obj->tile_img_fid = $values->tile_img_fid;
+            $obj->tile_img_path = file_uri_path($values->tile_img_fid);
+
+            $obj->title_hover_description = $values->title_hover_description;
+
+            //Rightslider images
+            $rightSliderImgArray = explode(',', $values->rightslider_img_fids);
+            $right_slider_img_count = count($rightSliderImgArray);
+            $obj->right_slider_img_count = $right_slider_img_count;
+            $right_slider_image_paths_array = array();
+            $right_slider_img_paths_array = array();
+            for ($j = 0; $j < $right_slider_img_count; $j++) {
+                $right_slider_image_paths_array[] = file_uri_path($rightSliderImgArray[$j]);
+            }
+            $obj->right_slider_image_paths_array = $right_slider_image_paths_array;
+
+
+
+
+            //Middleslider images
+            $middleSliderImgArray = explode(',', $values->middleslider_img_fids);
+            $middle_slider_img_count = count($middleSliderImgArray);
+            $obj->middle_slider_img_count = $middle_slider_img_count;
+            $middle_slider_image_paths_array = array();
+            $middle_slider_img_paths_array = array();
+            for ($j = 0; $j < $middle_slider_img_count; $j++) {
+                $middle_slider_img_paths_array[] = file_uri_path($middleSliderImgArray[$j]);
+            }
+            $obj->middle_slider_image_paths_array = $middle_slider_img_paths_array;
+
+
+
+            //Gallery images
+            $cruiseGalleryImgArray = explode(',', $values->cruise_gallery_img_fids);
+            $cruise_gallery_img_count = count($cruiseGalleryImgArray);
+            $obj->cruise_gallery_img_count = $cruise_gallery_img_count;
+            $cruise_gallery_image_paths_array = array();
+
+            for ($j = 0; $j < $cruise_gallery_img_count; $j++) {
+                $cruise_gallery_image_paths_array[] = file_uri_path($cruiseGalleryImgArray[$j]);
+            }
+            $obj->cruise_gallery_image_paths_array = $cruise_gallery_image_paths_array;
+
+
+
+            $obj->middle_content = $values->middle_content;
+            $obj->menu_content = $values->menu_content;
+
+            $obj->cruise_pdf_fid = $values->cruise_pdf_fid;
+            $obj->cruise_pdf_path = file_uri_path($values->cruise_pdf_fid);
+
+
+            //Cruise Videourls
+            $cruiseVideoUrlsArray = unserialize(unserialize($values->cruise_video_urls));
+            $numofurls = count($cruiseVideoUrlsArray);
+            $obj->num_cruise_video_url_count = $numofurls;
+            $obj->cruise_video_urls = $cruiseVideoUrlsArray;
+            $obj->search_keywords = $values->search_keywords;
+            $obj->cruise_status = $values->cruise_status;
+
+            //$arr[$category->tid.'-'.$category->name][]=$obj;
+            $arr[$category->tid][] = $obj;
+        }
+    }
+
+    drupal_json_output($arr);
+    exit();
+
+
+// 	$t = cruise_load_multiple ( $conditions = array (
+// 			'template_category' => '8' 
+// 	) );
+// 	// here 4 is waterways (taxonomytree)
+// 	$waterwaystree = taxonomy_get_tree ( 4 );
+// 	$categoryOptions = array ();
+// 	foreach ( $catgories as $category ) {
+// 		$arr = array ();
+// 		$categoryOptions [$category->tid] = $category->name;
+//   }
+    //return $waterwaystree;
+//    $cruiseArray = array();
+//    $cruiseList = array();
+//    $categoryArray = array();
+//    foreach ($waterwaystree as $waterwaystree) {
+//        $cruiseArray = array();
+//    $cruiseArray = array();
+//    $cruiseList = array();
+//    $categoryArray = array();
+//    foreach ($waterwaystree as $waterwaystree) {
+//        $cruiseArray = array();
+//
+//        if ($waterwaystree->parents[0] == 0) {
+//            $categories[] = $waterwaystree;
+//            $children = taxonomy_get_children($waterwaystree->tid);
+//
+//            foreach ($children as $value) {
+//
+//
+//                $portsList['name'] = $value->name;
+//
+//
+//                $cruiseitemsdata = taxonomy_get_children($value->tid);
+//
+//                foreach ($cruiseitemsdata as $cruisedatavalues) {
+//
+//                    foreach ($cruisedatavalues->field_short_description as $cruiseShortDesc) {
+//                        $cruiseList['shortDesc'] = $cruiseShortDesc[0]['value'];
+//                    }
+//
+//                    $cruiseList['id'] = $cruisedatavalues->tid;
+//                    foreach ($cruisedatavalues->field_title as $cruiseTitle) {
+//                        $cruiseList['title'] = $cruiseTitle[0]['value'];
+//                    }
+//                    $cruiseImges = $cruisedatavalues->field_cruiseimage;
+//                    foreach ($cruisedatavalues->field_cruisenodeid as $cruisenodevalues) {
+//
+//                        foreach ($cruisenodevalues as $nodevalues) {
+//                            $cruiseList['nid'] = $nodevalues['value'];
+//                        }
+//                    }
+//                    foreach ($cruiseImges as $cruiseImage) {
+//                        $cruiseList['image'] = $cruiseImage[0]["filename"];
+//                    }
+//
+//                    $cruiseList['name'] = $cruisedatavalues->name;
+//                    $cruiseArray[] = $cruiseList;
+//                }
+//            }
+//            $categoryArray[$waterwaystree->name] = $cruiseArray;
+//        }
+//    }
+//    $cruiseTypesArray=getCruiseTypes('modulebased');
+//     //$cruiseTypesArray outcome ->array(3) { [7]=> string(14) "DINING CRUISES" [9]=> string(23) "DISCOVERY LUNCH CRUISES" [8]=> string(16) "FEATURED CRUISES" } 
+//     $cruiseidarray=array();
+//     foreach($cruiseTypesArray as $cid=>$cname){
+//         $cruiseidarray[]=$cid;
+//                     }
+    //$cruiseidarray outcome { [0]=> int(7) [1]=> int(9) [2]=> int(8) } 
+    //Entity Field Query
+//                      $query = new EntityFieldQuery();
+//   $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+//   $query->entityCondition('bundle', 'catalog');
+//   $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+//   $query->execute();
+//   if (count($catalogs->ordered_results) > 0) {
+//     $totalcruiseitems=array();
+//     foreach ($catalogs->ordered_results as $noderesults) {
+//     $catalogid=$noderesults->entity_id;
+//     }
+//   }
+//     $query = new EntityFieldQuery();
+//     $query->entityCondition('entity_type', 'node', '=');
+//     //$query->fieldCondition('field_cruisetype', 'value', array('7', '9', '14'));
+//     $query->fieldCondition('field_cruisetype', 'value', $cruiseidarray)
+//     ->fieldCondition('taxonomy_catalog', 'tid', $catalogid);
+//     $productslist = $query->execute();
+//     $productsArray = array();
+//     foreach ($productslist as $products) {
+//         foreach ($products as $key => $val) {
+//             $productsArray[] = $key;
+//                         }
+//                     }
+//     $productnodes=node_load_multiple($nids=$productsArray);
+// //    drupal_json_output($productnodes);
+// //    exit();
+//     $newarray=array();
+//     foreach($productnodes as $productnode){
+//         if(in_array($productnode->field_cruisetype[und][0][value],$cruiseidarray)){
+//             $newarray[$productnode->field_cruisetype[und][0][value]][]=$productnode;
+//         }else{
+//             //$newarray[]=$productnode;
+//                 }
+//         //var_dump($productnode->field_cruisetype[und][0][value]);
+//             }
+//     drupal_json_output($newarray);
+//     exit();
+    //drupal_json_output($categoryArray);
+}
+
+function wwc_cruisedeitemslist() {
+    //Getting all the cruise list
+    $waterwaystree = taxonomy_get_tree(4);
+
+    $cruiseArray = array();
+    $cruiseList = array();
+    $categoryArray = array();
+    foreach ($waterwaystree as $waterwaystree) {
+        $cruiseArray = array();
+
+        if ($waterwaystree->parents[0] == 0) {
+            $categories[] = $waterwaystree;
+            $children = taxonomy_get_children($waterwaystree->tid);
+
+            foreach ($children as $value) {
+
+
+                $portsList['name'] = $value->name;
+
+
+                $cruiseitemsdata = taxonomy_get_children($value->tid);
+
+                foreach ($cruiseitemsdata as $cruisedatavalues) {
+
+                    foreach ($cruisedatavalues->field_short_description as $cruiseShortDesc) {
+                        $cruiseList['shortDesc'] = $cruiseShortDesc[0]['value'];
+                    }
+
+                    $cruiseList['id'] = $cruisedatavalues->tid;
+                    foreach ($cruisedatavalues->field_title as $cruiseTitle) {
+                        $cruiseList['title'] = $cruiseTitle[0]['value'];
+                    }
+                    $cruiseImges = $cruisedatavalues->field_cruiseimage;
+                    foreach ($cruisedatavalues->field_cruisenodeid as $cruisenodevalues) {
+
+                        foreach ($cruisenodevalues as $nodevalues) {
+                            $cruiseList['nid'] = $nodevalues['value'];
+                        }
+                    }
+                    foreach ($cruiseImges as $cruiseImage) {
+                        $cruiseList['image'] = $cruiseImage[0]["filename"];
+                    }
+
+                    $cruiseList['name'] = $cruisedatavalues->name;
+                    $cruiseArray[] = $cruiseList;
+                }
+            }
+            $categoryArray[$waterwaystree->name] = $cruiseArray;
+        }
+    }
+
+
+    return $categoryArray;
+}
+
+/* * *
+ * Get the Cruise Details by given Dates whihc are displaying for mobile view
+ * later we will add more coment @TO DO
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+function wwc_cruisebydate() {
+    $timestamp = $_POST['timestamp'];
+    $resultArray = array();
+//    $timestamp=1370836800;
+
+    $datatree = taxonomy_get_tree(4);
+
+    foreach ($datatree as $ddvalue) {
+        $termlist = taxonomy_get_children($ddvalue->tid);
+        $itemslist = array();
+        foreach ($termlist as $termvalue) {
+//     var_dump($termvalue);
+            foreach ($termvalue->field_date as $cruisedate) {
+
+                if (strtotime($cruisedate[0]['value']) == $timestamp) {
+
+                    $itemslist['tid'] = $termvalue->tid;
+                    $itemslist['vid'] = $termvalue->vid;
+                    $itemslist['name'] = $termvalue->name;
+                    $itemslist['description'] = $termvalue->description;
+                    $itemslist['format'] = $termvalue->format;
+                    $itemslist['weight'] = $termvalue->weight;
+                    $itemslist['vocabulary_machine_name'] = $termvalue->vocabulary_machine_name;
+
+                    foreach ($termvalue->field_color as $cruisecolor) {
+                        $itemslist['colorpicker'] = $cruisecolor[0]['jquery_colorpicker'];
+                    }
+
+                    foreach ($termvalue->field_cruise_image as $cruiseimage) {
+                        $itemslist['imageuri'] = $cruiseimage[0]['uri'];
+                    }
+
+
+                    foreach ($termvalue->field_date as $cruisedate) {
+                        $itemslist['date'] = $cruisedate[0]['value'];
+                        $itemslist['timestamp'] = strtotime($cruisedate[0]['value']);
+                    }
+
+
+//    foreach ($termvalue->field_itemsku as $cruisesku) {
+//     $itemslist['sku']=$cruisesku[0]['value'];
+//    }
+//    
+
+                    foreach ($termvalue->field_category_id as $cruisecategoryId) {
+                        $itemslist['parentcategory'] = $cruisecategoryId[0]['value'];
+                    }
+                    $resultArray[] = $itemslist;
+
+//      var_dump($itemslist);
+                }
+            }
+        }
+    }
+    $results = array('items' => $resultArray, 'timestamp' => $timestamp);
+    drupal_json_output($results);
+}
+
+function wwc_savecorporate() {
+    
+    $entity = new stdClass();
+    $entity->organising_requsting_donation = $_POST['organising_requsting_donation'];
+    $entity->date_event = $_POST['date_event'];
+    $entity->description_event = $_POST['description_event'];
+    $entity->goal_event = $_POST['goal_event'];
+    $entity->first_name = $_POST['first_name'];
+    $entity->last_name = $_POST['last_name'];
+    $entity->address1 = $_POST['address1'];
+    $entity->address2 = $_POST['address2'];
+    $entity->city = $_POST['city'];
+    $entity->state = $_POST['state'];
+    $entity->zipcode = $_POST['zipcode'];
+    $entity->phone_number = $_POST['phone_number'];
+    $entity->mail = $_POST['mail'];
+    $entity->confirmmail = $_POST['confirmmail'];
+//    $entity->captcha = $_POST['quoteUserComments'];
+//    $entity->captcha_confirm = $_POST['quotepreferredtocontact'];
+    $entity->created = time();
+
+    if (corporategiving_save($entity)) {
+        drupal_json_output('success');
+    } else {
+        drupal_json_output('Fails');
+    }
+}
+
+/**
+ * Service which is using for checking the provided username existence
+ * checking the provided username with in the user entity
+ * @param type $username username column filed in the drupal core user table
+ * @return json Object true /false
+ * @see user_existence 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+function wwc_requestquote() {
+
+    $entity = new stdClass();
+
+
+    if ($_POST['quoteEventEnabled'] == 'Yes') {
+        $specialemailrequired = 1;
+    } else if ($_POST['quoteEventEnabled'] == 'No') {
+        $specialemailrequired = 0;
+    }
+
+
+    $entity->eventType = $_POST['eventTypes'];
+    $entity->eventTypeOther = $_POST['otherEvenTypetext'];
+    $entity->firstName = $_POST['firstName'];
+    $entity->lastName = $_POST['lastName'];
+    $entity->email = $_POST['email'];
+    $entity->phoneNumber = $_POST['phoneNumber'];
+    $entity->company = $_POST['quoteCompany'];
+    $entity->bestTimetoCall = $_POST['timetocall'];
+    $entity->preferredDateofEvent = $_POST['eventDate'];
+    $entity->preferredTimeofEvent = $_POST['eventTime'];
+    $entity->noOfGuests = $_POST['guestnumbers'];
+    $entity->findusby = $_POST['findBy'];
+    $entity->preferedvenue = $_POST['preferedVenue'];
+    $entity->specialEmailRequired = $specialemailrequired;
+    $entity->usercomment = $_POST['quoteUserComments'];
+    $entity->preferedtocontact = $_POST['quotepreferredtocontact'];
+    $entity->preferedtochareter = $_POST['myEventchoice'];
+    $entity->estimatedbudget = $_POST['quoteEstimatedbudget'];
+
+    $entity->created = time();
+
+    if (requestquote_save($entity)) {
+        drupal_json_output('success');
+    } else {
+        drupal_json_output('Fails');
+    }
+}
+
+function wwc_feedback() {
+    $entity = new stdClass();
+    $entity->commentstype = $_POST['commentstype'];
+    $entity->feedbackdescription = $_POST['feedbackdescription'];
+    $entity->firstName = $_POST['firstName'];
+    $entity->lastName = $_POST['lastName'];
+    $entity->email = $_POST['email'];
+    $entity->created = time();
+
+    if (feedback_save($entity)) {
+        drupal_json_output('success');
+    } else {
+        drupal_json_output('Fails');
+    }
+}
+
+function wwc_cruiseportsList() {
+    $portstree = taxonomy_get_tree(5);
+    $categories = array();
+    $portsList = array();
+    $portsArray = array();
+    $portsByIdList = array();
+    $itemIdArray = array();
+    foreach ($portstree as $portstree) {
+        if ($portstree->parents[0] == 0) {
+            $category = $portstree->name;
+            $categoryId = $portstree->tid;
+            $children = taxonomy_get_children($portstree->tid);
+            $portsList = array();
+            $portsArray = array();
+            foreach ($children as $value) {
+
+                $portsList['id'] = $value->tid;
+                $portsList['name'] = $value->name;
+                $portsColorList = $value->field_port_color;
+
+                foreach ($value->field_categoryid as $category) {
+                    $portsList['cid'] = $category[0]['value'];
+                }
+                foreach ($portsColorList as $portsColor) {
+
+                    foreach ($portsColor as $portColor) {
+                        foreach ($portColor as $portColors) {
+                            $portsList['color'] = $portColors;
+                        }
+                    }
+                }
+                foreach ($value->field_port_short_description as $portShortDesc) {
+                    $portsList['shortDesc'] = $portShortDesc[0]['value'];
+                }
+                foreach ($value->field_port_title as $tittle) {
+                    $portsList['title'] = $tittle[0]['value'];
+                }
+                foreach ($value->field_city as $city) {
+                    $portsList['city'] = $city[0]['value'];
+                }
+                foreach ($value->field_state as $state) {
+                    $portsList['state'] = $state[0]['value'];
+                }
+                foreach ($value->field_street as $street) {
+                    $portsList['street'] = $street[0]['value'];
+                }
+
+                foreach ($value->field_location as $location) {
+                    $portsList['location'] = $location[0]['value'];
+                }
+
+                foreach ($value->field_postal_code as $pincode) {
+                    $portsList['postalCode'] = $pincode[0]['value'];
+                }
+                foreach ($value->field_port_image as $portimage) {
+                    $portsList['image'] = $portimage[0]['filename'];
+                }
+                foreach ($value->field_port_image as $direction) {
+                    $portsList['portImage'] = $direction[0]['filename'];
+                }
+                foreach ($value->field_itemid as $itemid) {
+
+                    if ($itemid[0]['value']) {
+                        $array = split('[,]', $itemid[0]['value']);
+                        foreach ($array as $key => $value) {
+                            $itemIdArray[$value] = $portsList;
+                        }
+                    }
+                }
+                $portsByIdList[$portsList['id']] = $portsList;
+                $portsArray[] = $portsList;
+            }
+            $portsByIdList[$categoryId] = $portstree;
+            $portresults[$category] = $portsArray;
+            $results = array('byId' => $portsByIdList, 'ports' => $portresults, 'byItemId' => $itemIdArray);
+        }
+    }
+
+    return $itemIdArray;
+}
+
+/* * *
+ * 
+ * Get Portslist
+ * 
+ * 
+ * 
+ * 
+ */
+
+function wwc_departureports($details) {
+    $portstree = taxonomy_get_tree(5);
+    $categories = array();
+    $portsList = array();
+    $portsArray = array();
+    $portsByIdList = array();
+    $itemIdArray = array();
+    foreach ($portstree as $portstree) {
+        if ($portstree->parents[0] == 0) {
+            $category = $portstree->name;
+            $categoryId = $portstree->tid;
+            foreach (taxonomy_term_load($portstree->tid) as $portKey => $portValue) {
+                if (is_array($portValue)) {
+
+                    $majorPorts[$portKey] = getArrayloop($portValue);
+                } else {
+                    $majorPorts[$portKey] = $portValue;
+                }
+            }
+            $majorPortsArray[] = $majorPorts;
+            $children = taxonomy_get_children($portstree->tid);
+            $portsList = array();
+            $portsArray = array();
+            foreach ($children as $value) {
+
+                $portsList['id'] = $value->tid;
+                $portsList['name'] = $value->name;
+                $portsColorList = $value->field_port_color;
+
+
+                foreach ($portsColorList as $portsColor) {
+
+                    foreach ($portsColor as $portColor) {
+                        foreach ($portColor as $portColors) {
+                            $portsList['color'] = $portColors;
+                        }
+                    }
+                }
+                
+                if(isset($value->field_parking_pdf)){
+                	foreach ($value->field_parking_pdf as $dd) {
+                		$portsList['pdf'] = $dd[0];
+                	}
+                }
+                
+               
+                if(isset($value->field_parking)){
+                	foreach ($value->field_parking as $portShortDesc) {
+                		$portsList['shortDesc'] = $portShortDesc[0]['value'];
+                	}
+                }
+              
+                if(isset($value->field_port_title)){
+                	foreach ($value->field_port_title as $tittle) {
+                		$portsList['title'] = $tittle[0]['value'];
+                	}
+                }
+                
+               
+                
+                if(isset($value->field_city)){
+                	foreach ($value->field_city as $city) {
+                		$portsList['city'] = $city[0]['value'];
+                	}
+                }
+                
+                
+                if(isset($value->field_state)){
+                	foreach ($value->field_state as $state) {
+                		$portsList['state'] = $state[0]['value'];
+                	}
+                }
+                
+                
+                if(isset($value->field_street)){
+                	foreach ($value->field_street as $street) {
+                		$portsList['street'] = $street[0]['value'];
+                	}
+                }
+               
+
+                if(isset($value->field_location)){
+                	foreach ($value->field_location as $location) {
+                		$portsList['location'] = $location[0]['value'];
+                	}
+                	 
+                }
+               
+                if(isset($value->field_postal_code)){
+                	foreach ($value->field_postal_code as $pincode) {
+                		$portsList['postalCode'] = $pincode[0]['value'];
+                	}
+                }
+                
+                
+                if(isset($value->field_port_image)){
+                	foreach ($value->field_port_image as $portimage) {
+                		$portsList['image'] = $portimage[0]['filename'];
+                	}
+                }
+                
+                
+                if(isset($value->field_port_image)){
+                	foreach ($value->field_port_image as $direction) {
+                		$portsList['portImage'] = $direction[0]['filename'];
+                	}
+                }
+               
+                
+                if(isset($value->field_itemid )){
+                	foreach ($value->field_itemid as $itemid) {
+                	
+                		if ($itemid[0]['value']) {
+                			$array = @split('[,]', $itemid[0]['value']);
+                	
+                			foreach ($array as $key => $value) {
+                				$itemIdArray[$value] = $portsList;
+                				$portsList['itemid'][] = $value;
+                			}
+                		}
+                	}
+                }
+               
+                $portsByIdList[$portsList['id']] = $portsList;
+                $portsArray[] = $portsList;
+            }
+            $portsByIdList[$categoryId] = $portstree;
+            $portresults[$category] = $portsArray;
+            $results = array('byId' => $portsByIdList, 'ports' => $portresults, 'byItemId' => $itemIdArray, 'majorPorts' => $majorPortsArray);
+        }
+    }
+    if (isset($details)) {
+        return $results;
+    } else {
+        drupal_json_output($results);
+    }
+}
+
+/* * *
+ * 
+ * Get Portslist
+ * 
+ * 
+ * 
+ * 
+ */
+
+function wwc_cruiseports() {
+    //get portslist by cruise name
+    //Load waterways Cruise tree
+    $waterwaystree = taxonomy_get_tree(4);
+
+    $ports = array();
+    $portslist = array();
+    $portsArray = array();
+    $portsList = array();
+    $cruiseArray = array();
+    $cruiseList = array();
+    $itemIdList = array();
+    foreach ($waterwaystree as $waterwaystree) {
+
+        if ($waterwaystree->parents[0] == 0) {
+            $categories[] = $waterwaystree;
+            $children = taxonomy_get_children($waterwaystree->tid);
+
+            foreach ($children as $value) {
+
+                $portsList['id'] = $value->tid;
+                $portsList['name'] = $value->name;
+                $portsColorList = $value->field_color;
+                foreach ($portsColorList as $portsColor) {
+
+                    foreach ($portsColor as $portColor) {
+                        foreach ($portColor as $portColors) {
+                            $portsList['color'] = $portColors;
+                        }
+                    }
+                }
+                $portdesc = $value->description;
+                foreach ($value->field_direction_image as $direction) {
+                    $portDirections = $direction[0]['filename'];
+                }
+                foreach ($value->field_categoryid as $cid) {
+                    $portsList['cid'] = $cid[0]['value'];
+                }
+                $portsList['directionImage'] = $portDirections;
+                $portsList['desc'] = $portdesc;
+
+                $portsArray[] = $portsList;
+                $portsname = $value->name;
+                $portid = $value->tid;
+
+                $cruiseitemsdata = taxonomy_get_children($value->tid);
+                foreach ($cruiseitemsdata as $cruisedatavalues) {
+                    $cruiseList['id'] = $cruisedatavalues->tid;
+                    $cruiseList['name'] = $cruisedatavalues->name;
+                    $cruiseList['category'] = $portsList['cid'];
+                    foreach ($cruisedatavalues->field_cruisenodeid as $key => $nodeid) {
+                        $cruiseList['nid'] = $nodeid["0"]["value"];
+                    }
+                    foreach ($cruisedatavalues->field_cruise_departure_time as $key => $time) {
+                        $cruiseList['departure_time'] = $time["0"]["value"];
+                    }
+                    foreach ($cruisedatavalues->field_cruiseitemid as $key => $cruiseitemid) {
+                        $cruiseList['itemId'] = $cruiseitemid["0"]["value"];
+                    }
+                    $itemIdList[$cruiseList['itemId']] = $cruiseList['nid'];
+
+                    $cruiseArray[] = $cruiseList;
+                    if ($cruisedatavalues->name == 'Sunset Dinner Cruise') {
+
+                        $ports['name'] = $portsname;
+                        $ports['tid'] = $portid;
+
+
+
+                        $portslist[] = $ports;
+                    }
+                }
+            }
+        }
+    }
+    $results = array('byName' => $portslist, 'ports' => $portsArray,
+        'Cruises' => $cruiseArray, 'byItemId' => $itemIdList);
+    drupal_json_output($portslist);
+
+    exit();
+}
+
+function wwc_cruiseInCalendar() {
+    //get portslist by cruise name
+    //Load waterways Cruise tree
+    $waterwaystree = taxonomy_get_tree(4);
+
+    $ports = array();
+    $portslist = array();
+    $portsArray = array();
+    $portsList = array();
+    $cruiseArray = array();
+    $cruiseList = array();
+    $itemIdList = array();
+    foreach ($waterwaystree as $waterwaystree) {
+
+        if ($waterwaystree->parents[0] == 0) {
+            $categories[] = $waterwaystree;
+            $children = taxonomy_get_children($waterwaystree->tid);
+
+            foreach ($children as $value) {
+
+                $portsList['id'] = $value->tid;
+                $portsList['name'] = $value->name;
+                $portsColorList = $value->field_color;
+                foreach ($portsColorList as $portsColor) {
+
+                    foreach ($portsColor as $portColor) {
+                        foreach ($portColor as $portColors) {
+                            $portsList['color'] = $portColors;
+                        }
+                    }
+                }
+                $portdesc = $value->description;
+                foreach ($value->field_direction_image as $direction) {
+                    $portDirections = $direction[0]['filename'];
+                }
+                foreach ($value->field_categoryid as $cid) {
+                    $portsList['cid'] = $cid[0]['value'];
+                }
+                $portsList['directionImage'] = $portDirections;
+                $portsList['desc'] = $portdesc;
+
+                $portsArray[] = $portsList;
+                $portsname = $value->name;
+                $portid = $value->tid;
+
+                $cruiseitemsdata = taxonomy_get_children($value->tid);
+                foreach ($cruiseitemsdata as $cruisedatavalues) {
+                    $cruiseList['id'] = $cruisedatavalues->tid;
+                    $cruiseList['name'] = $cruisedatavalues->name;
+                    $cruiseList['category'] = $portsList['cid'];
+
+                    foreach ($cruisedatavalues->field_cruisenodeid as $key => $nodeid) {
+                        $cruiseList['nid'] = $nodeid["0"]["value"];
+                    }
+                    foreach ($cruisedatavalues->field_cruise_departure_time as $key => $time) {
+                        $cruiseList['departure_time'] = $time["0"]["value"];
+                    }
+                    foreach ($cruisedatavalues->field_itemsku as $key => $nodeid) {
+                        $cruiseList['itemId'] = $nodeid["0"]["value"];
+                    }
+                    $itemIdList[$cruiseList['itemId']] = $cruiseList;
+
+                    $cruiseArray[] = $cruiseList;
+                    if ($cruisedatavalues->name == 'Sunset Dinner Cruise') {
+
+                        $ports['name'] = $portsname;
+                        $ports['tid'] = $portid;
+                        $portslist[] = $ports;
+                    }
+                }
+            }
+        }
+    }
+    $results = array('byName' => $portslist, 'ports' => $portsArray, 'Cruises' => $cruiseArray, 'byItemId' => $itemIdList);
+// drupal_json_output($portslist);
+    return $itemIdList;
+}
+
+function wwc_eventsbymonth() {
+    $currentmonth = $_GET['mon'];
+    $currentyear = $_GET['year'];
+    $templateid = $_GET['templateid'];
+    $portid = $_GET['portid'];
+//     
+    $datesarrays = array();
+//    $cruiseevents = getSingleCruiseEventsByMonth($currentmonth, $currentyear, $templateid, $portid);
+    $cruiseevents = getSingleCruiseEventsByport($templateid, $portid);
+    $eventdates = (array_keys($cruiseevents));
+    foreach ($eventdates as $datavalue) {
+        $datavalue = strtotime($datavalue);
+        $datesarrays[] = (int) (date('Ymd', $datavalue));
+    }
+    drupal_json_output($datesarrays);
+}
+
+function wwc_eventtimeslotbydate() {
+
+
+
+    $selecteddate = $_GET['selecteddate'];
+
+    $templateid = $_GET['templateid'];
+    $portid = $_GET['portid'];
+    //     getEventTimeslotsbyDate($selecteddate,$portid,$templateid){
+    $datesarrays = array();
+    $cruiseevents = getEventTimeslotsbyDate($selecteddate, $portid, $templateid);
+
+    drupal_json_output($cruiseevents);
+    exit();
+}
+
+function wwc_cruisecalendar() {
+    global $user;
+    $userId = $user->uid;
+    $currentmonth = $_GET['mon'];
+    $currentyear = $_GET['year'];
+
+    $cruisefilter = $_GET['cruisefilter'];
+    $portfilter = $_GET['portfilter'];
+
+    $cruisecalendar = draw_checkpointcalendar($currentmonth, $currentyear, $cruisefilter, $portfilter);
+    drupal_json_output($cruisecalendar);
+}
+
+function draw_checkpointcalendar($month, $year, $cruisefilter, $portfilter) {
+    global $user;
+    $userId = $user->uid;
+    if ($portfilter != "all" && $cruisefilter != 'all') {
+        //Getting the Eventdates with port and item filteration option
+        //cruisefilter=44&portfilter=4
+        $loadcheckapieventdates = getEventsByItemIdandCategory($month, $year, $portfilter, $cruisefilter);
+    } else if ($portfilter != "all" || $cruisefilter == 'all') {
+        //getting loading the Events with Portfilter like kirkland and seattle
+        //condition ::cruisefilter=all&portfilter=portid
+        $loadcheckapieventdates = getCategoryItemsEventscalendar($month, $year, $portfilter);
+    } else if ($cruisefilter != 'undefined' && $cruisefilter != 'all') {
+        $loadcheckapieventdates = getEventsByItemId($month, $year, $cruisefilter);
+    } else {
+        $loadcheckapieventdates = getDateEvents($month, $year);
+    }
+
+
+
+    /*   this session variable is set at builder ajax services module    */
+    $calendar = '<script type="text/javascript">
+      
+$(document).ready(function(){
+
+$(".calendar-day").click(function(){
+ if($(".responsiveMobile").css("display") == "block"){
+$(".calendar-day").removeClass("active");
+$(this).addClass("active");
+if($(this).find(".event-list")){
+$("#responsiveMobileviewEventslist").html($(this).html());
+$(".event-list").click(function(){
+$(".date_has_event").removeClass("active");
+
+
+var popup=$(this).find("ul");
+if(popup.css("display")=="none"){
+$(".events ul").css({"opacity":0,"bottom":0,"display": "none"});
+$(this).find("ul").css({"opacity":1,"display": "block"});
+$(this).find(".date_has_event").addClass("active");
+}else{
+$(this).find("ul").css({"opacity":0,"bottom":0,"display": "none"});
+}
+});
+
+}
+}
+});
+
+$(".date_has_event").each(function () {
+		// options
+		var distance = 10;
+		var time = 250;
+		var hideDelay = 500;
+
+		var hideDelayTimer = null;
+
+		// tracker
+		var beingShown = false;
+		var shown = false;
+
+		var trigger = $(this);
+		var popup = $(".events ul", this).css("opacity", 0);
+
+		// set the mouseover and mouseout on both element
+		$([trigger.get(0), popup.get(0)]).click(function () {
+                 $(".events ul").css({"opacity":0,"bottom":0,"display": "none"});
+			// stops the hide event if we move from the trigger to the popup element
+			if (hideDelayTimer) clearTimeout(hideDelayTimer);
+
+			// dont trigger the animation again if were being shown, or already visible
+
+
+				// reset position of popup box
+				popup.css({
+//					bottom: 20,
+//					left: -76,
+					display: "block" // brings the popup back in to view
+				})
+
+				// (were using chaining on the popup) now animate its opacity and position
+				.animate({
+//					bottom: "+=" + distance + "px",
+					opacity: 1
+				}, time, "swing", function() {
+					// once the animation is complete, set the tracker variables
+					beingShown = false;
+					shown = true;
+				});
+
+		});
+	});
+        
+
+});
+
+       
+
+
+</script>';
+//    $portDetails = wwc_cruiseportsList();
+    $portDetails = getPortsWithcruises();
+
+    /* draw table */
+    $calendar .= '<table cellpadding="0" cellspacing="1" class="calendar" >';
+
+    /* table headings */
+    $headings = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
+    $calendar.= '<tr class="calendar-row"><td class="calendar-day-head">' . implode('</td><td class="calendar-day-head">', $headings) . '</td></tr>';
+
+    /* days and weeks vars now ... */
+    $running_day = date('w', mktime(0, 0, 0, $month, 1, $year));
+    $days_in_month = date('t', mktime(0, 0, 0, $month, 1, $year));
+    $days_in_this_week = 1;
+    $day_counter = 0;
+    $dates_array = array();
+
+    /* row for week one */
+    $calendar.= '<tr class="calendar-row">';
+
+    /* print "blank" days until the first of the current week */
+    for ($x = 0; $x < $running_day; $x++):
+        $calendar.= '<td class="calendar-day-np"> </td>';
+        $days_in_this_week++;
+    endfor;
+
+    /* keep going with days.... */
+    for ($list_day = 1; $list_day <= $days_in_month; $list_day++):
+        $calendar.= '<td class="calendar-day">';
+        $calendar.= '<div class="day-number dateholder"><a id="' . $timestamp . '" href="javascript:void(0)" >' . $list_day . '</a></div><div class="main-eventList"><div class="event-bottom">';
+
+        /**
+         * Assign a unique id to the day number. This unique id will be
+         * used by jQuery to locate events from the database that are
+         * on this day. The unique id is the timestamp for the first minute
+         * of $list_day of $month of $year.
+         *
+         * 
+         */
+        $timestamp = mktime(0, 0, 0, $month, $list_day, $year);
+        $nextday = mktime(0, 0, 0, $month, ($list_day + 1), $year);
+
+
+
+
+        //Events building starts
+        $dateeventkey = (date('Ymd', $timestamp));
+        global $base_url;
+        if (count($loadcheckapieventdates) > 0) {
+
+            $i = 0;
+            $innerday = 0;
+            $dayassigned = 0;
+            foreach ($loadcheckapieventdates as $availadate) {
+                $curise_html = '';
+
+                //unset the varaibles befor start
+                unset($cruiseportname);
+                unset($cruiseportdeparturetime);
+                unset($cruiseitemtid);
+                unset($cruiseportid);
+                //end of unset varaibles before start
+                //getting cruise details using Item Id
+                $itemid = $availadate[$dateeventkey]['item_id'];
+
+
+                if (isset($availadate[$dateeventkey]) && $availadate[$dateeventkey]['status'] == 'A') {
+                    $booknowurl = $base_url . "/checkfront/date/$dateeventkey/item/" . $availadate[$dateeventkey]['item_id'];
+//                    $cruises=getCruseItemDetailsById($itemid);
+                    if ($portDetails[$availadate[$dateeventkey]['item_id']]['itemdetails'] != 'notfound') {
+                        //need to unset varaibles later
+                        $cruiseportname = $portDetails[$availadate[$dateeventkey]['item_id']]['itemdetails']['portname'];
+                        $cruiseportdeparturetime = $portDetails[$availadate[$dateeventkey]['item_id']]['itemdetails']['departuretime'];
+                        $cruiseitemtid = $portDetails[$availadate[$dateeventkey]['item_id']]['itemdetails']['tid'];
+                        $cruiseportid = $portDetails[$availadate[$dateeventkey]['item_id']]['id'];
+                    }
+
+
+                    $eventdate = date("F d, Y", $timestamp);
+                    $curise_html.='<li class="date_has_event">
+	<div class="cruise-color" style="background-color: #' . $portDetails[$availadate[$dateeventkey]['item_id']]['color'] . ';
+  "></div>
+    <div class="events">
+       <div class="event-cruise">' . $availadate[$dateeventkey]['name'] . '</div>
+  <div class="event-port">' . $cruiseportname . '</div>
+	<ul>
+        <li>
+
+<div class="row-fluid popup-header">
+<div class="span2">
+<div class="calendarpoptitleLine"></div>
+</div>
+<div class="span8">
+<div class="eventPopupTitle">' . $availadate[$dateeventkey]['name'] . '</div>
+</div>
+<div class="span2">
+<div class="calendarpoptitleLine"></div>
+</div>
+</div>
+<div class="row-fluid">
+<div class="span7">
+<div class="eventPopupdatetime"><div class="event-date">' . $eventdate . '&nbsp;&nbsp; </div> ' . $cruiseportdeparturetime . '</div>
+                        <div class="eventPopupDeparture">Departure Port: ' . $cruiseportname . '</div>
+                        <div class="eventSeeDirections">
+                <a href="portsdetailview/portid/' . $cruiseportid . '"> SEE DIRECTIONS </a>
+                                
+                                <div data="' . $cruiseitemtid . '" class="view-details"><a href="cruisesdetailview/category/' . $cruiseitemtid . '">VIEW CRUISE DETAILS</a></div>
+                        </div>
+</div>
+<div class="span5">
+<div class="booknow">
+               <a href="' . $booknowurl . '">
+               <div class="booknow-inner"><a href="checkfront/date/' . $dateeventkey . '/item/' . $itemid . '">Book Now!</a></div>
+           </a> 
+                        </div>
+</div>
+</div>
+                  
+        
+<div class="row-fluid popup-footer">
+<div class="span5">
+<div class="calendarpopbottomLine"></div>
+</div>
+<div class="span2" align="center">
+<img src="' . drupal_get_path('module', 'wwccalendar') . '/images/banner-icon-img.png"/>
+</div>
+<div class="span5">
+<div class="calendarpopbottomLine"></div>
+</div>
+</div>
+       </li>
+        </ul>
+        </div>
+	</li>';
+                    if ($dayassigned == 0) {
+                        $dayassigned = 1;
+                        $calendar.='<div class="event-list">' . $curise_html . '</div>';
+                    } else {
+                        $calendar.='<div class="event-list cellborderremove">' . $curise_html . '</div>';
+                    }
+                }
+
+//                if ($i == 0 && $dayassigned == 0) {
+//                    $calendar.='<div style="list-style:none;margin-top:10px;padding-left:4px;">' . $curise_html . '</div>';
+//                  
+//                }
+                $i++;
+            }
+        } else {
+            
+        }
+
+        $calendar.= '</div></div></td>';
+        if ($running_day == 6):
+            $calendar.= '</tr>';
+            if (($day_counter + 1) != $days_in_month):
+                $calendar.= '<tr class="calendar-row">';
+            endif;
+            $running_day = -1;
+            $days_in_this_week = 0;
+        endif;
+        $days_in_this_week++;
+        $running_day++;
+        $day_counter++;
+    endfor;
+
+    /* finish the rest of the days in the week */
+    if ($days_in_this_week < 8):
+        for ($x = 1; $x <= (8 - $days_in_this_week); $x++):
+            $calendar.= '<td class="calendar-day-np"> </td>';
+        endfor;
+    endif;
+
+    /* final row */
+    $calendar.= '</tr>';
+
+    /* end the table */
+    $calendar.= '</table>';
+
+    /* all done, return result */
+    return $calendar;
+}
+
+/**
+ * 
+ * Backup Code
+ * 
+ * 
+ * 
+ * 
+ */
+/* * *
+ * Terms list
+ * 
+ * 
+ */
+
+function getCruiseItems($tid, $type, $key) {
+    //local 5 server 3
+
+    if ($type == 'all') {
+        $waterwaystree = taxonomy_get_tree(4);
+        $categories = array();
+        $ports = array();
+        $cuiseitems = array();
+        foreach ($waterwaystree as $waterwaystree) {
+
+            if ($waterwaystree->parents[0] == 0) {
+                $categories[] = $waterwaystree;
+                $children = taxonomy_get_children($waterwaystree->tid);
+                $ports[] = $children;
+                foreach ($children as $value) {
+                    $cruiseitemsdata = taxonomy_get_children($value->tid);
+                    //looping the cruise items
+
+
+                    foreach ($cruiseitemsdata as $cruisevalue) {
+                        $cuiseitems['tid'] = $cruisevalue->tid;
+                        $cuiseitems['name'] = $cruisevalue->name;
+                        $cuiseitems['description'] = $cruisevalue->description;
+
+                        foreach ($cruisevalue->field_title as $tittle) {
+                            $cuiseitems['title'] = $tittle[0]['value'];
+                        }
+
+
+                        foreach ($cruisevalue->field_type as $fieldtype) {
+                            $cuiseitems['cruisetype'] = $fieldtype[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_color as $fieldcolor) {
+                            $cuiseitems['cruisecolor'] = $fieldcolor[0]['jquery_colorpicker'];
+                        }
+
+                        foreach ($cruisevalue->field_cruiseimage as $fieldimage) {
+                            $cuiseitems['image'] = $fieldimage[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_itemsku as $fieldsku) {
+                            $cuiseitems['sku'] = $fieldimage[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_categoryid as $fieldcategory) {
+                            $cuiseitems['categoryid'] = $fieldcategory[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_cruise_departure_time as $fielddeparturetime) {
+                            $cuiseitems['departturetime'] = $fielddeparturetime[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_cruise_return_time as $fieldreturntime) {
+                            $cuiseitems['returntime'] = $fieldreturntime[0]['value'];
+                        }
+                        foreach ($cruisevalue->field_cruise_days as $fieldcruisedays) {
+                            $cuiseitems['cruisedays'] = $fieldcruisedays[0]['value'];
+                        }
+
+
+
+                        foreach ($cruisevalue->field_cruise_pricing_general as $fieldcruiseprice) {
+                            $cuiseitems['generalprice'] = $fieldcruisedays[0]['value'];
+                        }
+                        foreach ($cruisevalue->field_cruise_pricing_senior as $fieldcruisepricesenior) {
+                            $cuiseitems['seniorprice'] = $fieldcruisepricesenior[0]['value'];
+                        }
+
+                        foreach ($cruisevalue->field_date as $fielddate) {
+                            $cuiseitems['date'] = $fielddate[0]['value'];
+                        }
+                        foreach ($cruisevalue->field_cruisenodeid as $cruisenodeid) {
+                            $cuiseitems['cruisenodeid'] = $cruisenodeid[0]['value'];
+                        }
+
+
+                        $results[] = $cuiseitems;
+                    }
+                }
+            }
+        }
+    }
+    if ($type == "single") {
+
+        $waterwaystree = taxonomy_get_tree(4);
+
+        $cuiseitems = array();
+        $ports = array();
+        $portslist = array();
+        foreach ($waterwaystree as $waterwaystree) {
+
+            if ($waterwaystree->parents[0] == 0) {
+                $categories[] = $waterwaystree;
+                $children = taxonomy_get_children($waterwaystree->tid);
+
+                foreach ($children as $value) {
+
+                    $portsname = $value->name;
+                    $portid = $value->tid;
+                    if ($portsname == $tid) {
+                        $ports[] = $value->tid;
+                        //list
+                        $termlist = taxonomy_get_children($value->tid);
+
+                        $itemslist = array();
+                        foreach ($termlist as $termvalue) {
+//            
+                            $itemslist['tid'] = $termvalue->tid;
+                            $itemslist['vid'] = $termvalue->vid;
+                            $itemslist['name'] = $termvalue->name;
+                            $itemslist['description'] = $termvalue->description;
+                            $itemslist['format'] = $termvalue->format;
+                            $itemslist['weight'] = $termvalue->weight;
+                            $itemslist['vocabulary_machine_name'] = $termvalue->vocabulary_machine_name;
+
+                            foreach ($termvalue->field_color as $cruisecolor) {
+                                $itemslist['colorpicker'] = $cruisecolor[0]['jquery_colorpicker'];
+                            }
+
+                            foreach ($termvalue->field_cruiseimage as $cruiseimage) {
+                                $itemslist['imageuri'] = $cruiseimage[0]['uri'];
+                            }
+
+
+                            foreach ($termvalue->field_date as $cruisedate) {
+                                $itemslist['date'] = $cruisedate[0]['value'];
+                                $itemslist['timestamp'] = strtotime($cruisedate[0]['value']);
+                            }
+
+
+                            foreach ($termvalue->field_itemsku as $cruisesku) {
+                                $itemslist['sku'] = $cruisesku[0]['value'];
+                            }
+
+
+                            foreach ($termvalue->field_categoryid as $cruisecategoryId) {
+                                $itemslist['parentcategory'] = $cruisecategoryId[0]['value'];
+                            }
+
+                            foreach ($termvalue->field_cruise_departure_time as $cruiseDepartureTime) {
+                                $itemslist['fielddeparturetime'] = $cruiseDepartureTime[0]['value'];
+                            }
+
+                            foreach ($termvalue->field_cruise_return_time as $cruiseReturnTime) {
+                                $itemslist['fieldReturnTime'] = $cruiseReturnTime[0]['value'];
+                            }
+
+                            foreach ($termvalue->field_cruise_days as $cruiseDays) {
+                                $itemslist['cruiseDays'] = $cruiseDays[0]['value'];
+                            }
+
+                            foreach ($termvalue->field_cruise_pricing_general as $cruiseTicketPricingGeneral) {
+                                $itemslist['cruiseTicketPricingGeneral'] = $cruiseTicketPricingGeneral[0]['value'];
+                            }
+
+                            foreach ($termvalue->field_cruise_pricing_senior as $cruiseTicketPricingSenior) {
+                                $itemslist['cruiseTicketPricingSenior'] = $cruiseTicketPricingSenior[0]['value'];
+                            }
+
+
+                            $results[] = $itemslist;
+//            }
+                        }
+
+                        //list ends
+                    }
+                }
+            }
+        }
+//  $results=array('categories'=>$categories,'ports'=>$ports,'cruiseitems'=>$cuiseitems);
+    }
+
+    if ($type == 'cruisename') {
+
+        $key = '%' . $key . '%';
+        $query = db_select('taxonomy_term_data', 't');
+        $query->fields('t', array('tid', 'vid', 'name', 'description', 'format'));
+        $query->condition('name', $key, 'like');
+        $result = $query->execute();
+        $itemslist = array();
+        foreach ($result as $record) {
+            $termvalue = taxonomy_term_load($record->tid);
+            //tsrat
+            $itemslist['tid'] = $termvalue->tid;
+            $itemslist['vid'] = $termvalue->vid;
+            $itemslist['name'] = $termvalue->name;
+            $itemslist['description'] = $termvalue->description;
+            $itemslist['format'] = $termvalue->format;
+            $itemslist['weight'] = $termvalue->weight;
+            $itemslist['vocabulary_machine_name'] = $termvalue->vocabulary_machine_name;
+
+            foreach ($termvalue->field_color as $cruisecolor) {
+                $itemslist['colorpicker'] = $cruisecolor[0]['jquery_colorpicker'];
+            }
+
+            foreach ($termvalue->field_cruiseimage as $cruiseimage) {
+                $itemslist['imageuri'] = $cruiseimage[0]['uri'];
+            }
+
+
+            foreach ($termvalue->field_date as $cruisedate) {
+                $itemslist['date'] = $cruisedate[0]['value'];
+                $itemslist['timestamp'] = strtotime($cruisedate[0]['value']);
+            }
+
+
+            foreach ($termvalue->field_itemsku as $cruisesku) {
+                $itemslist['sku'] = $cruisesku[0]['value'];
+            }
+
+
+            foreach ($termvalue->field_categoryid as $cruisecategoryId) {
+                $itemslist['parentcategory'] = $cruisecategoryId[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_departure_time as $cruiseDepartureTime) {
+                $itemslist['fielddeparturetime'] = $cruiseDepartureTime[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_return_time as $cruiseReturnTime) {
+                $itemslist['fieldReturnTime'] = $cruiseReturnTime[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_days as $cruiseDays) {
+                $itemslist['cruiseDays'] = $cruiseDays[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_pricing_general as $cruiseTicketPricingGeneral) {
+                $itemslist['cruiseTicketPricingGeneral'] = $cruiseTicketPricingGeneral[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_pricing_senior as $cruiseTicketPricingSenior) {
+                $itemslist['cruiseTicketPricingSenior'] = $cruiseTicketPricingSenior[0]['value'];
+            }
+
+            $results[] = $itemslist;
+        }
+    }
+    return $results;
+}
+
+function wwc_cruisedetailview() {
+    drupal_json_out('test');
+    exit();
+    $name = $_GET['name'];
+
+    $datatree = taxonomy_get_tree(4);
+
+    foreach ($datatree as $ddvalue) {
+        $termlist = taxonomy_get_children($ddvalue->tid);
+
+        $itemslist = array();
+
+        foreach ($termlist as $termvalue) {
+//            foreach ($termvalue->field_cruise_date as $cruisedate) {
+//                if($termvalue->name == $name ){
+
+            $itemslist['tid'] = $termvalue->tid;
+            $itemslist['vid'] = $termvalue->vid;
+            $itemslist['name'] = $termvalue->name;
+            $itemslist['description'] = $termvalue->description;
+            $itemslist['format'] = $termvalue->format;
+            $itemslist['weight'] = $termvalue->weight;
+
+
+            foreach ($termvalue->field_color as $cruisecolor) {
+                $itemslist['colorpicker'] = $cruisecolor[0]['jquery_colorpicker'];
+            }
+//
+            foreach ($termvalue->field_cruiseimage as $cruiseimage) {
+                $itemslist['imageuri'] = $cruiseimage[0]['uri'];
+            }
+//
+//
+            foreach ($termvalue->field_date as $cruisedate) {
+                $itemslist['date'] = $cruisedate[0]['value'];
+            }
+
+
+            foreach ($termvalue->field_itemsku as $cruisesku) {
+                $itemslist['sku'] = $cruisesku[0]['value'];
+            }
+
+
+            foreach ($termvalue->field_categoryid as $cruisecategoryId) {
+                $itemslist['parentcategory'] = $cruisecategoryId[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_departure_time as $cruiseDepartureTime) {
+                $itemslist['fielddeparturetime'] = $cruiseDepartureTime[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_return_time as $cruiseReturnTime) {
+                $itemslist['fieldReturnTime'] = $cruiseReturnTime[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_days as $cruiseDays) {
+                $itemslist['cruiseDays'] = $cruiseDays[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_pricing_general as $cruiseTicketPricingGeneral) {
+                $itemslist['cruiseTicketPricingGeneral'] = $cruiseTicketPricingGeneral[0]['value'];
+            }
+
+            foreach ($termvalue->field_cruise_pricing_senior as $cruiseTicketPricingSenior) {
+                $itemslist['cruiseTicketPricingSenior'] = $cruiseTicketPricingSenior[0]['value'];
+            }
+
+
+            $results[] = $itemslist;
+
+//                }
+//            }
+        }
+    }
+    drupal_json_out($results);
+}
+
+//Function by Hareesh
+
+function getCruiseProductList($taxanomay) {
+
+    $resultsarray = array();
+    $query = new EntityFieldQuery();
+    $entities = $query->entityCondition('entity_type', 'taxonomy_term');
+    $query->entityCondition('bundle', 'catalog');
+    $query->propertyCondition('name', $taxanomay); //change 2 to any vocabulary ID
+//    $query->fieldCondition('field_cruiseitemid', 'value', $cruiseitemId, '=');
+    $query->execute();
+
+    if (count($entities->ordered_results) > 0) {
+        foreach ($entities->ordered_results as $termresults) {
+            $children = taxonomy_get_children($termresults->entity_id);
+            foreach ($children as $childvalue) {
+                //loading the Products
+                $resultsarray[] = catalogEnhancementCategoryProducts($childvalue->tid);
+            }
+        }
+    }
+
+    return $resultsarray;
+}
+
+// To get first and last date of the month
+// flag represents first or last as per requirement
+function getFistAndEndDateOfMonth($month, $year, $flag) {
+    if ($flag == 'first') {
+        $first = strtotime(date('Y-m-d', mktime(0, 0, 0, $month, 1, $year)));
+        return $first;
+    }
+    if ($flag == 'last') {
+        $last = strtotime(date('Y-m-t', mktime(0, 0, 0, $month, 1, $year)));
+        return $last;
+    }
+}
+
+/**
+ * Loading the Node of content Type Entree
+ * 
+ * 
+ * 
+ */
+function getEntreenodes() {
+    $entreenodes = node_load_multiple(array(), array('type' => 'entrees'));
+    $nodeentreeresults = array();
+    foreach ($entreenodes as $key => $nodeentrees) {
+        $nodeentreeresults[] = array($nodeentrees->nid => $nodeentrees->title);
+    }
+    return $nodeentreeresults;
+}
+
+/**
+ * 
+ * Getting the Product attribute entries based on nodeid
+ * 
+ */
+function getProductAttributesbynodeid($nodeid) {
+    $resultsset = array();
+    $entreesresults = array();
+    $result = db_select('uc_attribute_entrees', 'c')
+            ->fields('c')
+            ->condition('productnode', $nodeid, '=')
+            ->execute();
+    foreach ($result as $productvalue) {
+        $entreeresults = unserialize($productvalue->attributeentrees);
+        foreach ($entreeresults as $entrees) {
+            $entreesresults[$entrees['attribid']] = $entrees['entreenodes'];
+        }
+    }
+    return $entreesresults;
+}
+
+/**
+ * Loading the Product Attributte Entrees using 
+ * AttributeId
+ * 
+ * 
+ * 
+ */
+function getProductAttributeEntrees() {
+    $results = array();
+    $aid = $_POST['aid'];
+    $productnode = $_POST['productnode'];
+
+    $entreelist = getProductAttributesbynodeid($productnode);
+
+    foreach ($entreelist as $key => $nids) {
+        if ($aid == $key) {
+
+            $nodes = node_load_multiple($nids);
+            foreach ($nodes as $nodekey => $nodevalues) {
+                $noderesults['nid'] = $nodevalues->nid;
+                $noderesults['title'] = $nodevalues->title;
+                $results[] = $noderesults;
+            }
+        }
+    }
+    drupal_json_output($results);
+    exit();
+}
+
+//Load port details by port id
+function load_port_details_by_portid() {
+    $portid = $_GET['portid'];
+    $portsresults = array();
+    $protdetails = taxonomy_term_load($portid);
+
+    if ($protdetails) {
+        $portsresults['portname'] = $protdetails->name;
+        $portsresults['portdescription'] = $protdetails->description;
+        $portsresults['portColor'] = isset($protdetails->field_port_color['und'][0]['jquery_colorpicker']) ? $protdetails->field_port_color['und'][0]['jquery_colorpicker'] : "";
+        $portsresults['portAddress'] = isset($protdetails->field_address['und'][0]['value']) ? $protdetails->field_address['und'][0]['value'] : "";
+        $portsresults['portState'] = isset($protdetails->field_state['und'][0]['value']) ? $protdetails->field_state['und'][0]['value'] : "";
+        $portsresults['portCity'] = isset($protdetails->field_city['und'][0]['value']) ? $protdetails->field_city['und'][0]['value'] : "";
+        $portsresults['portPostalCode'] = isset($protdetails->field_postal_code['und'][0]['value']) ? $protdetails->field_postal_code['und'][0]['value'] : "";
+        $portsresults['field_directions'] = isset($protdetails->field_directions['und'][0]['value']) ? $protdetails->field_directions['und'][0]['value'] : "";
+
+        $parkingpdffid = $protdetails->field_parking_download_pdf['und'][0]['fid'];
+        $parkingpdffileload = file_load($parkingpdffid);
+
+        $parkingpdffileurl = "";
+//		if($parkingpdffileload == TRUE){
+        $parkingpdffilepath = $parkingpdffileload->uri;
+        $parkingpdffileurl = file_create_url($parkingpdffilepath);
+//		}else{
+//			$parkingpdffileurl = "javascript:viod(0)";
+//		}
+
+        $parkingimgfid = $protdetails->field_parking_image['und'][0]['fid'];
+        $parkingimgfileload = file_load($parkingimgfid);
+        $parkingimgfileurl = "";
+//		if($parkingpdffileload == TRUE){
+        $parkingimgfilepath = $parkingimgfileload->uri;
+        $parkingimgfileurl = file_create_url($parkingimgfilepath);
+//		}else{
+//			$parkingimgfileurl = "javascript:viod(0)";
+//		}
+
+
+
+
+        $portsresults['parkingdownloadpdf'] = $parkingpdffileurl;
+        $portsresults['parkingimg'] = $parkingimgfileurl;
+    } else {
+        $portsresults = 'no data found';
+    }
+
+
+    drupal_json_output($portsresults);
+}
+
+function getinvoicetemplatefororder($orderId) {
+    global $base_url;
+    $html = '';
+    $order = uc_order_load($orderId);
+    $ordercreated = date('m-d-Y', $order->created);
+    $reservationicketdata = Reservation::getReservationTicketData($orderId);
+
+//     drupal_json_output($reservationicketdata); exit();
+    $reservationenhancedata = Reservation::getReservationEnhancementsData($orderId);
+   // $reservationcommentdata = Reservation::getCompleteReservationData($orderId);
+    $userChoiceObject = BookingLog::getUserChoices($orderId);
+    $specialconcerns = isset($userChoiceObject->another_party_comments) ? $userChoiceObject->another_party_comments : '';
+    $comments = isset($userChoiceObject->celebration_comments) ? $userChoiceObject->celebration_comments : '';
+    
+    $ordertotal=$order->order_total;
+    //$ordertotal = isset($userChoiceObject->order_total) ? $userChoiceObject->order_total : 0;
+    $ticketshtml = '';
+    foreach ($reservationicketdata as $reservationicketrow) {
+
+        $enteydata = array();
+
+        for ($i = 0; $i < $reservationicketrow['qty']; $i++) {
+            $entryname = '';
+            if ($reservationicketrow['ticketentreeids'][$i] != '') {
+                $entryname = CruiseEntrees::getCruiseEntreeNamebyId($reservationicketrow['ticketentreeids'][$i]);
+            }
+
+            $ticketshtml.='<tr>
+                        <td width="20%">1</td>
+                        <td width="25%">' . $reservationicketrow['ticketname'] . '</td>
+                        <td width="35%">' . $entryname . '</td>
+                        <td width="20%">' . uc_currency_format($reservationicketrow['price']) . '</td>
+                       </tr>';
+        }
+    }
+    $enhancementhtml = '';
+
+    foreach ($reservationenhancedata as $reservationenhancerow) {
+
+        $enhancementhtml.='<tr>
+                             <td width="10%">' . $reservationenhancerow['qty'] . '</td>
+                             <td width="30%">' . $reservationenhancerow['name'] . '</td>
+                             <td width="30%">' . $reservationenhancerow['comments'] . '</td>
+                             <td width="15%">' . uc_currency_format($reservationenhancerow['price']) . '</td>
+                             <td width="15%">' . uc_currency_format($reservationenhancerow['qty'] * $reservationenhancerow['price']) . '</td>
+                          </tr>';
+    }
+
+    $orderlineitems = isset($order->line_items) ? $order->line_items : array();
+
+    $orderlineitemhtml = '';
+    foreach ($orderlineitems as $orderlineitem) {
+        if ($orderlineitem['type'] == 'generic') {
+            $title = '';
+            $title = $orderlineitem['title'];
+            $lineitemtitle = $orderlineitem['title'];
+            if (strpos($title, 'Promo Code') !== false) {
+                $lineitemtitle = 'Promo Code';
+            }
+            $orderlineitemhtml.='<tr>
+                                 <td width="30%">
+                                    <div style="">' . $lineitemtitle . ' </div>
+                                    <div style="float:right;border-bottom: 1px dotted #000;min-width:70%;"></div>
+                                 </td>
+                                 <td width="70%"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . uc_currency_format($orderlineitem['amount']) . '</b></td>
+                              </tr>';
+        }
+    }
+
+
+    $html = '';
+    $html.='<table width="95%" border="0" cellspacing="0" cellpadding="1" align="center" bgcolor="#006699" style="font-family:verdana,arial,helvetica;font-size:small;border: 1px solid #333333">
+    <tbody>
+        <tr>
+            <td>
+                <table width="100%" border="0" cellspacing="0" cellpadding="5" align="center" bgcolor="#FFFFFF" style="font-family:verdana,arial,helvetica;font-size:small">
+                    <tbody>
+                        <tr valign="top">
+                            <td>
+                                <table width="100%" style="font-family:verdana,arial,helvetica;font-size:small">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <img src="' . $base_url . '/sites/all/themes/bootstrap/logo.png" style="background:none!important">
+                                            </td>
+                                            <td width="98%">
+                                                <div style="padding-left:1em">
+                                                    <span style="font-size:large;color:#000080">Welcome to Waterways! </span><br>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <td>
+                                <p><b>Thank you for your order</b></p>                              
+                                <table cellpadding="4" cellspacing="0" border="0" width="100%" style="font-family:verdana,arial,helvetica;font-size:small">
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="2" bgcolor="#006699" style="color:white">
+                                                <b>Purchasing Information:</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td nowrap="">
+                                                <b>E-mail Address:</b>
+                                            </td>
+                                            <td width="98%">
+                                                <a href="mailto:jhoncarter523@gmail.com" target="_blank">' . $order->primary_email . '</a>   
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <table width="100%" cellspacing="0" cellpadding="0" style="font-family:verdana,arial,helvetica;font-size:small">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td valign="top" width="50%">
+                                                                <b>Billing Address:</b><br>
+                                                                ' . $order->billing_first_name . ' ' . $order->billing_last_name . '<br>
+                                                                ' . $order->billing_street1 . '<br>
+                                                                ' . $order->billing_city . ', ' . uc_zone_get_by_id($order->billing_zone) . ' ' . $order->billing_postal_code . '<br>
+                                                                <br>
+                                                                <b>Billing Phone:</b><br>
+                                                                ' . $order->billing_phone . '
+                                                            </td>
+                                                            <td valign="top" width="50%">
+                                                                <b>Guest Address:</b><br>
+                                                                ' . $order->delivery_first_name . ' ' . $order->delivery_last_name . '<br>
+                                                                ' . $order->delivery_street1 . '<br>
+                                                                ' . $order->delivery_city . ', ' . uc_zone_get_by_id($order->delivery_zone) . ' ' . $order->delivery_postal_code . '<br>
+                                                                <br>
+                                                                <b>Billing Phone:</b><br>
+                                                                ' . $order->delivery_phone . '
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td nowrap="">
+                                                <b>Order Grand Total:</b>
+                                            </td>
+                                            <td width="98%">
+                                                <b>' . uc_currency_format($ordertotal) . '</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td nowrap="">
+                                                &nbsp;
+                                            </td>                                            
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" bgcolor="#006699" style="color:white">
+                                                <b>Order Summary:</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" bgcolor="#EEEEEE">
+                                                <font color="#CC6600"><b>Shipping Details:</b></font>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <table border="0" cellpadding="1" cellspacing="0" width="100%" style="font-family:verdana,arial,helvetica;font-size:small">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td nowrap="">
+                                                                <b>Order #:</b>
+                                                            </td>
+                                                            <td width="98%">
+                                                                ' . $orderId . '           
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td nowrap="">
+                                                                <b>Order Date: </b>
+                                                            </td>
+                                                            <td width="98%">
+                                                                ' . $ordercreated . '                   
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <br/><b>Ticket Details:&nbsp;</b>
+                                                                <table width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td width="10%"></td>
+                                                                            <td valign="bottom">
+                                                                                <table width="100%" style="font-family:verdana,arial,helvetica;font-size:small;background:none!important" border="0" cellspacing="0" cellpadding="0" bgcolor="#ccc" align="center">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td width="15%"><b>Quantity</b></td>
+                                                                                            <td width="25%"><b>Ticket</b></td>
+                                                                                            <td width="35%"><b>Entree</b></td>
+                                                                                            <td width="25%"><b>Price</b></td>
+                                                                                        </tr>
+                                                                                        ' . $ticketshtml . '
+                                                                                        <tr>
+                                                                                            <td width="50%" colspan="2"><div style="background-color:#eeeeee;border-radius:5px;margin:6px;min-height:80px;padding:10px;">' . $specialconcerns . '</div></td>
+                                                                                            <td width="50%" colspan="2"><div style="background-color:#eeeeee;border-radius:5px;margin:6px;min-height:80px;padding:10px;">' . $comments . '</div></td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <b>Enhancements:&nbsp;</b>
+                                                                <table width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td width="10%"></td>
+                                                                            <td valign="bottom">
+                                                                                <table width="100%" style="font-family:verdana,arial,helvetica;font-size:small;background:none!important" border="0" cellspacing="0" cellpadding="0" bgcolor="#ccc" align="center">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td width="10%"><b>Quantity</b></td>
+                                                                                            <td width="30%"><b>Enhancement Name</b></td>
+                                                                                            <td width="30%"><b>Comments</b></td>
+                                                                                            <td width="15%"><b>Unit price</b></td>
+                                                                                            <td width="15%"><b>Price</b></td>
+                                                                                        </tr>
+                                                                                        ' . $enhancementhtml . '                                                                                     
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>                                                                       
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2"><table width="100%"> ' . $orderlineitemhtml . '</table></td>
+                                                        </tr>
+                                                       
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <hr noshade="" size="1"><br>                                                
+                                                <p>Thanks again for shopping with us.</p>
+                                                <p>                                                    
+                                                    <span style="color:#000080;font-weight:bold">Waterways Cruises and Events</span>
+                                                    2441 N. Northlake Way<br>
+                                                    Seattle, WA 98103<br>
+                                                    206-223-2060<br>
+                                                    206-223-2066<br>
+                                                    <span style="color:#000080;font-weight:bold">contact@waterwayscruises.com</span>
+                                                </p>
+                                                <p><b></b><br><b></b></p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>';
+    return $html;
+}

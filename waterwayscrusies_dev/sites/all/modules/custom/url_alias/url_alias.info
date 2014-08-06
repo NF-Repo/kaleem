@@ -1,0 +1,4 @@
+name = Url Alias
+description = Extended Module for Urls
+core=7.x
+version=VERSION

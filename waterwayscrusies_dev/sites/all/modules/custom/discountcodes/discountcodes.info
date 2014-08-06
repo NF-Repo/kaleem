@@ -1,0 +1,6 @@
+; $Id$
+name = Discount Codes
+description = "Discount Codes"
+core = 7.x
+version = VERSION
+package = WWC

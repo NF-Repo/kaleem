@@ -1,0 +1,169 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function connectreview_menu() {
+  $items = array();
+  $items['connectreview'] = array(
+      'title' => 'Connect Review',
+      'page callback' => 'connect_review',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+function connectreview_theme() {
+    $items['connectreview'] = array(
+        'template' => 'connectreview',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function connect_review() {
+    
+  try {
+    
+    global $user;
+    
+  
+    
+    
+    
+    
+    //get the product load 
+        $connectreviewload = taxonomy_term_load(139);
+        $menulist = getConnectMenu('REVIEWS');
+             $ownertid = $menulist['tid'];
+        $tripadvisordescription=$connectreviewload->field_tripadvisor_hover_descript['und'][0]['value'];
+        $yelpdescription=$connectreviewload->field_yelp_hover_description['und'][0]['value'];
+        $connectresources = array(
+            'menu' => $menulist['connectmenu'],
+            'mobilemenu' => $menulist['mobilemenu'],
+            'reviewContent' => getReviewContent(),
+            'tripadvisordescription'=>$tripadvisordescription,
+             'yelpdescription'=>$yelpdescription
+            );
+        return theme('connectreview', $connectresources);
+  } catch (Exception $ex) {
+      
+    drupal_json_output('The exception ' . $ex);
+    
+  }
+  
+}
+
+function template_preprocess_connectreview(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'connectreview') . '/css/connectreview.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function getReviewContent() {
+    $html = '';
+//    $ports = taxonomy_term_load($tid);
+//    $ports = taxonomy_get_children($ports->tid);
+    $i=0;
+    $shares=0;
+    
+    //connect review links
+    
+      //Content Reviews gets loads here
+    //Loading the Content Reviews
+  $query = db_select("node", "r");
+  $query->join('field_data_field_personname', 'fp', 'r.nid = fp.entity_id');
+  $query->join('field_data_field_reviewlink', 'fr', 'r.nid = fr.entity_id');
+  $query->fields('r',array('title','nid'));
+  $query->fields('fp',array('field_personname_value'));
+  $query->fields('fr',array('field_reviewlink_value'));
+  $query->condition('type', 'reviews','=');
+  $result = $query->execute();
+  
+   while($data = $result->fetchObject()){
+       
+//       var_dump($data->title);
+//       var_dump($data->field_reviewlink_value);
+//       var_dump($data->field_personname_value);
+//       var_dump($data->nid);
+       $nodedata=  node_load($data->nid);
+       $desc=getArrayloop($nodedata->body);
+          
+   
+   $title=$data->title;
+   
+    //connect review links
+    
+    
+    
+//    foreach ($ports as $treevalues) {
+       
+        
+//        foreach ($treevalues->field_connectpagedescription as $key => $titletree) {
+//            $desc = $titletree[0]['value'];
+//        }
+   
+//        foreach ($treevalues->field_title as $key => $titletree) {
+//            $title = $titletree[0]['value'];
+//        }
+//        foreach ($treevalues->field_review_url as $key => $urltree) {
+//            $reviewurl = $urltree[0]['value'];
+//        }
+//        
+//        var_dump($treevalues->field_review_link);
+        $linkarr = $data->field_reviewlink_value;
+        
+//        foreach ($treevalues->field_review_link as $key => $linktree) {
+//            $reviewlink = $linktree[0]['value'];
+//        }
+//        
+//        $countarr = count($linkarr);
+//        var_dump($countarr);
+//        if($countarr == 0){
+//            $reviewurllink = '<h2><a href="javascript:viod(0)">' . $data->title . '</a></h2>';
+//        }else{
+//            $reviewurllink = '<h2><a href="'.$reviewlink.'" target="_blank">' . $title . '</a></h2>';
+//        }
+//        
+        $reviewurllink = '<h2><a href="'. $data->field_reviewlink_value.'" target="_blank">' . $title . '</a></h2>';
+        
+        $class='';
+        if($i>=4){
+           $class="more-reviews-list";
+        }
+        $html.='<li class="'.$class.'"><div class="review-title">'.$reviewurllink.'<span>' . $data->field_personname_value . '</span></div>';
+        $html.='<div class="span3 review-share responsiveWeb">';
+//        $html.='<div class="booknow shareBtn" id="sharethis'.$i.'">';
+        $html.='<div id="sharethis'.$i.'" class="sharethisbtdiv">';
+        $html.='<input type="hidden" id="sharethis'.$i.'url" value="'.$reviewlink.'">';
+        $html.='<input type="hidden" id="sharethis'.$i.'title" value="'.$title.'">';
+//        $html.='<span class="st_sharethis_custom booknow-inner" id="sharethis'.$i.'btn" st_url="' . $reviewurl . '"  displayText="Share" >Share</span>';
+        $html.='<span id="sharethis'.$i.'bt" class="sharethisbt">share</span><span id="sharethis'.$i.'btn" class="sharethisbtn"></span>';
+        $html.='</div>';
+        $html.='</div>';
+        $html.='<div class="review-desc" id="sharethis'.$i.'desc">' .$desc;
+        $html.='</div>';
+        $html.='<div class="span3 review-share responsiveMobile">';
+//        $html.='<div class="booknow shareBtn"><span class="st_sharethis_custom booknow-inner" st_url="' . $reviewurl . '" id="sharethis'.$i.'btn" displayText="Share" >Share</span></div>';
+        $html.='<br>';
+        $html.=' </div>';
+        $html.='<input type="hidden" name="url" value="' . $reviewlink . '">';
+        $html.='</li>';
+        $shares++;
+         $i++;
+    }
+    
+    
+    
+    
+    
+    
+    drupal_add_js('jQuery(document).ready(function () { '
+                        . 'addentryforshare('.$shares.'); '
+                        . '});', array('type' => 'inline', 'scope' => 'footer', 'weight' => 5));
+    return $html;
+}

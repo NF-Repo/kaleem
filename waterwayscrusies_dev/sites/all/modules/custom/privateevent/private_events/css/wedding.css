@@ -1,0 +1,1450 @@
+/* 
+    Document   : cruisesdetailview
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content{
+    display: block  !important;
+}
+
+#menu
+{
+    position: absolute !important;
+}
+.sunsetDownslider {
+margin-top: 2%;
+}
+.detailBackLink{
+    margin-top: 7%;
+     margin-left: -17% !important;
+}
+/*.sunsetDownslider .weddingDownsliderbox{
+   top: 39%;
+}*/
+.sunset-slider-buttons ol.carousel-indicators{
+    display: none;
+}
+
+.mfp-zoom-out-cur, .mfp-zoom-out-cur .mfp-image-holder .mfp-close{
+    cursor: default !important;
+}
+.deparText span sup{
+    font-size: 13px !important;
+    top: -0.8em !important;
+}
+
+.priceText span{
+    font-size: 16px !important;
+}
+.weddingcategory{
+    margin-top:10px;
+}
+.priceText sup{
+    font-size: 13px !important;
+    top: -0.5em !important;
+}
+.eventsDownslidermargin{
+    margin-top:8%;
+}
+.eventsDownslidermargin img{
+    height: 250px;
+}
+.sunset-slider-buttons #downArrow
+{
+    position:absolute;
+    left:-7%;
+    bottom:5%;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.sunsetMapView #upArrow
+{
+    position:absolute;
+    left: 52%;
+    bottom: 3%;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.sunsetDownslider ol.carousel-indicators .active{
+    background-color:  inherit !important;
+    background-image:url("../images/Indicators-active.png") !important;
+    background-repeat: no-repeat !important;
+    width: 12px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.sunsetDownslider ol.carousel-indicators li{
+    background-color: inherit !important;
+    border-radius:0px !important;
+    background-image: url("../images/Indicators-inactive.png") !important;
+    background-repeat: no-repeat !important;
+    width: 11px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+/*
+.bx-viewport{
+    height:290px !important;
+}*/
+.sunsetDownslider a.carousel-control{
+    background: inherit !important;
+    border: solid 0px !important;
+}
+
+.sunsetDownslider .carousel-control{
+    width: auto !important;
+    height: auto !important;
+}
+
+.sunsetDownslider .carousel-indicators {
+    bottom: 20%;
+    left: 50%;
+    top: inherit;
+}
+.eventsDownslidermargin .bx-wrapper .bx-controls-direction a {
+    top: 106% !important;
+    opacity:1;
+}
+.eventsDownslidermargin .bx-wrapper .bx-next {
+    background: url(../images/gallery-leftarrow.png) no-repeat !important;
+    left: 55% !important;
+}
+.eventsDownslidermargin .bx-wrapper .bx-prev {
+    background: url(../images/gallery-rightarrow.png) no-repeat !important;
+    left: 44% !important;
+}
+/* gallery pop up css start*/
+.mfp-img{
+    padding:0 !important;
+}
+.mfp-close{
+    width: 65px !important;
+    font-size: 16px !important;
+    right:0px !important;
+    padding:2px !important;
+    background:#ab323b !important;
+    text-align: center !important;
+    opacity: 1 !important;
+    height: 32px !important;
+    color:#fff !important;
+    line-height: 21px !important;
+}
+.mfp-bottom-bar{
+    margin-top: -22px !important;   
+}
+.mfp-counter{
+    background: #fff;
+    font-weight: bold;
+    color:#ab323b !important;  
+    padding:2px 12px;
+}
+.mfp-content{
+    border:10px solid #bc9b6a;
+}
+.mfp-arrow-right{
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    right: 10% !important;
+
+}
+.mfp-close.close-text{
+    border: 1px dotted #fff;
+    margin: 3% !IMPORTANT;
+    height: 21PX !important;
+    width: 53px !Important;
+}
+.mfp-arrow-left{
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    left: 10% !important;
+}
+.mfp-figure:after{
+    box-shadow: none !important;
+    background:none !important;
+}
+.mfp-iframe-holder .mfp-close{
+    top:0 !important;
+}
+.mfp-arrow{
+    margin-top: 0 !important;
+    top:35% !important;
+    width:75px !important;
+    height:150px !Important;
+    opacity:1 !important;
+}
+.mfp-arrow:before, .mfp-arrow:after, .mfp-arrow .mfp-b, .mfp-arrow .mfp-a{
+    border:none !important;
+}
+.mfp-arrow-right:after, .mfp-arrow-right .mfp-a{
+    border:none !important;
+}
+/* gallery pop up css end*/
+
+/* Map Overlay css Styles */
+
+.mapOverlay{
+    width: 100%;
+    margin: 0; 
+    padding: 50px 0; 
+    position: absolute;
+    z-index: 1;
+    top: 0%;
+
+    /* "transparent" only works here because == rgba(0,0,0,0) */ 
+    background: -moz-linear-gradient(top, rgba(242,235,225,1) 0%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(242,235,225,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2ebe1', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+}
+
+/* Route Map Directions Pop Up styles */
+
+.mapDownsliderbox{
+    display:none;
+}
+#parkingDirectionsModal{
+    width: 80%;
+    margin-left: -40%;
+    position: fixed;
+}
+
+.reoutemapDirectionsbox
+{
+    background:#fff;
+    min-width:100%;
+    min-height:500px;
+    border:10px #bc9b6a solid;
+}
+
+.reoutemapDirectionsboxInner
+{
+    width:100%;
+    min-height:500px;
+}
+
+.reoutemapDirectionsboxInnerleft{
+    background: #fff;
+    min-height:500px;
+    padding: 2%;
+}
+
+.reoutemapDirectionsboxInnerright{
+    background: #bebebe;
+    min-height:500px !important;
+    /*    margin-left: 0% !important;
+        width: 100% !important;*/
+}
+
+.routemapContent{
+    color: #000;
+    height: 500px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 30px 0 0 30px;
+}
+
+
+.routemapContent .item{
+    margin-bottom: 10px;
+}
+
+.reoutemapDirectionsboxInnerleft .sliderCaption
+{
+    font-family:georgia;
+    font-weight:600;
+    font-size: 19px;
+    text-align:center;
+}
+.reoutemapDirectionsboxInnerleft ul
+{
+    list-style: none;
+    margin-top: 12px;
+}
+
+.reoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 9px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+.reoutemapDirectionsclosebutton a{
+    text-decoration:none;
+}
+.reoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:"CrimsonRoman";
+    font-size:16px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+
+.radioLine
+{
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    margin-top: 12px;
+    background: #bc9b6a;
+}
+.choose
+{
+    float: left;
+    width: 100%;
+    font-family:georgia;
+    font-size: 19px;
+    color: #818181;
+    margin-bottom:6px;
+}
+.choosePortRadio
+{
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 65px;
+}
+.calendarRadio
+{
+    width: 40%;
+    float: left;
+    margin-left: 3%;
+    text-align: center;
+    line-height: 20px;
+}
+.calendarPortRadio{
+    position: absolute;
+    left: 25%;
+}
+.calendarRadio .portRadio
+{ 
+    width: 100%;
+
+}
+
+#parkingDirectionsPorts li a{
+    cursor: pointer;
+    line-height: 28px;
+}
+/* Route Map Directions Pop Up styles */
+
+
+.detailport {
+    font-family: "CrimsonRoman";
+    font-size: 20px;
+    color: #818181;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.contentDetail .carousel
+{
+    margin-bottom: 0px;
+}
+#cruiseBookNowDate.input-append{
+    margin-bottom:6px;
+}
+
+
+/*.sliderInnercontent img{
+    float: left;
+    margin-top: 10px;  
+}*/
+.sliderInnercontent .seeFleet
+{
+    float: left;
+    width: 100%;
+    text-transform: uppercase;
+    font-family:georgia;
+    font-size: 15px;
+    color: #00529b;
+}
+.sliderInnercontent a
+{
+    text-transform: uppercase;
+    font-family:georgia;
+    font-size: 15px;
+    color:#00529b;
+    float: left;
+    width: auto;
+    text-transform: uppercase;
+    padding-left:0%;
+}
+.request a
+{
+    /*padding-left:4%;*/
+}
+ .seeFleet a{
+    padding-left: 15%;
+}
+.request {
+    background-color: #AB323B;
+    float: left;
+    height: 27px;
+    margin-left: 30%;
+    padding: 1px;
+   /* min-width: 152px;
+    max-width: 175px;*/
+    padding: 2px 4px 3px 2px;
+   /* width: 50%;*/
+}
+ .request a {
+    background-color: #AB323B;
+    border: 1px dotted #F1DDDF;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: block;
+    font-family: georgia;
+    font-size: 13px;
+    line-height: 26px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
+        
+.request a,.request a:hover,.request a:focus{
+    color:#fff;
+}
+.request :hover {
+border-color: #fcfbf9;
+background-color: #772328;
+}
+
+.departurePortsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.departurePortsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:"CrimsonRoman";
+    font-size:16px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+#cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+    display: none;
+}
+
+/* wedding css start here */
+
+.weddingTitle
+{
+    font-size: 46px;
+    font-family:georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 3px;
+    margin-top: 30px;
+}
+
+.contentbox-inner h1.weddingTitle{
+    margin-top: 0%;
+    margin-bottom: 0%;
+    font-weight: normal;
+    font-size: 36px !important;
+    font-family: georgia;
+    line-height: 32px !important;
+    text-transform: uppercase;
+    padding-left: 10px;
+}
+
+.eventTitle{
+    padding-left: 10px;
+}
+
+ul.eventsbxslider li .sliderBox{
+    margin: 5%;
+}
+
+ul.eventsbxslider li .sliderBox .sliderBoxout{
+    margin: 0%;
+}
+
+ul.eventsbxslider li .sliderBox .sliderBoxout:hover{
+    -moz-box-shadow: 0 0 20px 1px #888;
+    -webkit-box-shadow: 0 0 20px 1px#888;
+    box-shadow: 0 0 20px 1px #888;
+}
+
+.mfp-bg
+{
+    background: #fff !important;
+}
+
+/* submenu css start here */
+
+.subMenu
+{
+    width:auto;
+    position: absolute;
+    border: #bc9b6a 1px solid;
+    z-index: 10;
+
+
+}
+.subMenu ul
+{
+    list-style:none;
+    margin:0px;
+}
+.subMenu ul li
+{
+    float: left;
+}
+.subMenu ul li a
+{
+    background:rgba(252,251,249,0.8);
+    color:#454444;
+    font-family:georgia;
+    font-size: 15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+    transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+}
+
+.subMenu ul li a:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+}
+
+.subMenu ul li a.active
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+}
+
+.cruiseDetailinfo
+{
+    position: absolute;
+    z-index: 1;
+    padding-left: 9%;
+    width: 90%;
+}
+.weddingDownsliderbox
+{
+    position: absolute;
+    background: #fff;
+    top: 230px;
+    left: 45%;
+    max-width: 500px;
+   max-height:350px;
+   //overflow-y: auto;
+    /*border: 10px #bc9b6a solid;*/
+}
+
+.privateEventsGallery{
+    position: absolute;
+    left: 0px;
+    top: 20%;
+}
+
+.weddingDownsliderbox .sliderInnercontent
+{
+    float: left;
+    width: 100%;
+}
+
+
+.contentDetail #rightsliderImages .item img{
+    height: 560px;
+    width: 100%;
+}
+
+.reoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.reoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:"CrimsonRoman";
+    font-size:16px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+#seeparkingDirectionsModal
+{
+    width: 700px;
+    left:46%;
+}
+.seereoutemapDirectionsclosebutton
+{
+
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.seereoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:"CrimsonRoman";
+    font-size:16px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+.sunsetDownsliderInner
+{
+    margin: 8%;
+}
+
+.sunsetLinePadding
+{
+    padding-top:3% !important;
+}
+
+
+@media (max-width: 979px) {
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .request a{
+        font-size:10px;
+    }
+    .weddingDownsliderbox
+    {
+        position: static;
+        min-width: 100%;
+        border-left:0px; 
+        border-right:0px;
+        padding-bottom:3%;
+       
+    }
+    .tiles .bx-wrapper .bx-prev{
+        width: 22% !important;
+        left: -24% !important;
+    }
+    .tiles .bx-wrapper{
+        width:84% !important;
+    }
+    .sunsetDownsliderInner .sunsetLinePadding .line{
+
+        margin-top: -6%;
+    }
+    .cruiseDetailinfo{
+        padding-left: 2%;
+        width: 98%;
+    }
+    #routeMaplinesholder .line{
+        margin-top: 5%;
+    }
+    .weddingshortdescription{
+        margin-bottom: 3%;
+        margin-top: 1%;
+    }
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+   /* .sliderInnercontent .seeFleet{
+        width:17%;
+    }*/
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 30% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 22% !important;
+        float: left !important;
+        padding-top: 0px;
+    }
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 50% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 24px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 36%;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 28%;
+        float: left;
+    }
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+        max-width: 100% !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: block;
+    }
+    .map{
+        height: 360px !important;
+    }
+    .contentDetail .span6{
+        float: none !important;
+        width: 100% !important;
+        margin-left: 0px !important;
+    }
+    .sunsetBannerBooknow .row-fluid .span6{
+        margin-left: 0px !important;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span2{
+        display: none;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span10{
+        width: 100%;
+        margin-left: 0px;
+    }
+    .contentDetail #rightsliderImages .item img{
+        width: 100%;
+
+    }
+
+
+    .weddingDownsliderbox {
+
+        top: 180px;
+        left: 12%;
+        max-width: 644px;
+       /* max-height: 200px;*/
+
+    }
+    .sunsetDownsliderInner {
+        margin: 3% !important;
+    }
+    .sliderInnercontent
+    {
+        padding-bottom: 5px !important;
+    }
+
+}
+
+@media (min-width: 979px) and (max-width: 1200px) { 
+
+    .deparText{
+        font-size: 22px !important;
+    }
+
+    .sunsetBannerBooknow{
+        padding-bottom: 10px !important;
+        padding-top: 10px !important;
+    }
+
+    .sunsetBannerBooknow .row-fluid .span6{
+        float: none;
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    .carousel{
+        margin-bottom: 0px !important;
+    }
+
+    .sunsetDownsliderbox{
+        top: 4% !important;
+    }
+
+    .groupResNote{
+        margin-top: 12px;
+        margin-bottom: 10px;
+    }
+
+    .sunsetDownslider .carousel-indicators{
+        bottom: 6%;
+    }
+
+    .sliderCaption{
+        font-size: 26px !important;;
+    }
+
+    .contentDetail{
+        padding-left: 0% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 32% !important;
+    }
+
+    .detailTitle {
+        font-size: 35px !important;
+    }
+    .contentDetail #rightsliderImages .item img{
+        height: 530px;
+
+    }
+
+    .weddingDownsliderbox {
+
+        top: 180px;
+        left: 45%;
+        max-width: 500px;
+        max-height: 320px;
+        margin-top: 1%;
+
+    }
+    .sunsetDownsliderInner {
+        /*margin: 7% !important;*/
+    }
+
+    .bx-wrapper .bx-next {
+        top: 9% !important;
+        right: -12% !important;
+        background: url(../images/carousol-rightarrow.png) no-repeat 37px 49px !important;
+        width: 14% !important;
+        height: 270px !important;
+    }
+    .bx-wrapper .bx-prev {
+        top: 9% !important;
+        left: -23% !important;
+        background: url(../images/carousol-leftarrow.png) no-repeat 87px 50px !important;
+        width: 20% !important;
+        height: 270px !important;
+    }
+}
+
+@media (min-width: 1160px) and (max-width: 1200px) {
+
+    .contentDetail #rightsliderImages .item img{
+        height: 560px;
+    }
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+
+}
+
+
+
+@media screen and (max-width: 767px) { 
+
+
+    /* wedding css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+        margin-bottom: 30px;
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;     
+        border:0px; 
+    }
+    .weddingDownsliderbox
+    {
+        position: static;
+        min-width: 100%;
+        border-left:0px; 
+        border-right:0px;
+    }
+    .weddingDownsliderbox .seeFleet, .weddingDownsliderbox .request, .detailBackLink
+    {
+        display: none;
+    }
+    
+    
+    /* .weddingDownsliderbox .sliderInnercontent img{
+        display:block;
+    }*/
+    .cruiseDetailinfo
+    {
+        position: static;
+        padding:0;
+    }
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 33% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 25% !important;
+        float: left !important;
+        padding-top: 0px;
+    }
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 50% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 36%;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 28%;
+        float: left;
+    }
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+        max-width: 100% !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: block;
+    }
+    .map{
+        height: 360px !important;
+    }
+   /* .sliderInnercontent img{
+        margin-top: 6px;
+        float: left;
+        margin-right: 6px;
+    }*/
+    .sliderInnercontent .clickMapLink
+    {
+        font-size: 14px !important;
+    }
+    .contentDetail #rightsliderImages .item img{
+        height: auto !important;
+        width: 100%;
+    }
+
+    #parkingDirectionsModal
+    {
+        margin-left:0px;
+        position: absolute;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* wedding css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+        margin-bottom: 30px;
+    }
+    .sunsetDownsliderInner{
+        position: static !important;
+        max-height: auto !important;
+        border-left: none !important;
+        border-right: none !important;
+        margin: 0% !important;
+    }
+    .weddingDownsliderbox{
+        background: none;
+        overflow-y: auto;
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;     
+        border:0px; 
+    }
+    .weddingDownsliderbox
+    {
+        position: static;
+        margin-top: 8%;
+        max-height: 100%;
+        height:100%;
+    }
+    .sunsetDownsliderInner{
+        padding-top: 6%;
+    }
+    .weddingDownsliderbox .seeFleet, .weddingDownsliderbox .request, .detailBackLink
+    {
+        display: none;
+    }
+    
+    /*.weddingDownsliderbox .sliderInnercontent img{
+        display:block;
+    }*/
+
+    .cruiseDetailinfo
+    {
+        position: static;
+    }
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 33% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 10% !important;
+        float: left !important;
+    }
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 80% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 40% !important;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 10%;
+        float: left;
+    }
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: none;
+    }
+    .map{
+        height: 360px !important;
+    }
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+
+}
+
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+   /* .request {
+    background-color: #AB323B;
+    float: inherit;
+    height: 27px;
+    margin-left: -129px;
+    margin-top: 30px;
+    padding: 1px 3px 3px;
+    width: 25%;
+    font-size:13px;
+    
+}*/
+.detailBackLink{
+    margin-top: 7%;
+     margin-left: -28% !important;
+}
+
+
+   /* .request {
+    background-color: #AB323B;
+    float: inherit;
+    height: 27px;
+    margin-left: -129px;
+    margin-top: 30px;
+    padding: 1px 3px 3px;
+    width: 37%;
+    font-size:13px;
+}*/
+  /*#line2routemap{
+    margin-left:5px;
+}*/
+
+.sliderInnercontent .seeFleet{
+    width:106%;
+}
+
+.request a {
+    font-size: 13px;
+}
+.weddingDownsliderbox {
+    /*padding-bottom: 5%;*/
+}
+/*#line2routemap{
+    margin-left:-104px;
+}*/
+
+.detailBackLink a
+{
+    color:#454444;
+    text-decoration:none;
+    padding-left:42px;
+}
+
+}
+
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px){
+    
+ /* #line2routemap{
+    margin-left:5px;
+}*/
+
+}
+
+
+
+@media only screen 
+and (max-device-width : 768px) 
+{
+    .detailBackLink{
+    margin-top: 7%;
+     margin-left: -15% !important;
+}
+}
+
+
+/*@media only screen 
+and (min-device-width : 1024px) 
+{
+    .request {
+    background-color: #AB323B;
+    float: inherit;
+    height: 27px;
+    margin-left: -129px;
+    margin-top: 30px;
+    padding: 1px 3px 3px;
+    width: 37%;
+    font-size:13px;
+}
+  #line2routemap{
+    margin-left:5px;
+}
+
+
+}*/
+
+/*@media only screen 
+and (min-device-width : 640px) 
+{
+   
+   .weddingDownsliderbox .sliderInnercontent img{
+        display:block;
+    }
+}*/
+.cruiseDetailinfo .detailBackLink{
+	margin-top: 3%;
+        margin-left: -8% !important;
+}
+@media (min-width: 767px) and (max-width: 979px) {
+    .cruiseDetailinfo .detailBackLink{
+    margin-top: 4%;
+    margin-left: -2% !important;
+}
+.request{
+    margin-left:40%;
+}
+.subMenu ul li a{
+    font-size: 14px;
+}
+}
+
+
+@media (min-width: 979px) and (max-width: 1110px){
+    .weddingDownsliderbox {
+    /*max-height: 250px;*/
+ }
+}
+@media (min-width: 768px) and (max-width: 1200px){
+    
+    .weddingDownsliderbox{
+        background: none;
+        overflow-y: auto;
+    }
+    .weddingDownsliderbox > .sunsetDownsliderInner{
+        max-height: 225px;
+    }
+}
+
+.weddingDownsliderbox .sunsetDownsliderInner{
+    max-height: 300px;
+}

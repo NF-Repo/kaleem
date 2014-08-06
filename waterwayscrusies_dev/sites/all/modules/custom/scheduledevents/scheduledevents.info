@@ -1,0 +1,10 @@
+name = Scheduled events entity
+core = 7.x
+description = Creating Scheduled functionality for cruise events
+files[] = scheduledevents.controller.inc
+files[] = scheduledevents.module
+files[] = scheduledevents.form.inc
+files[] = scheduledevents.install
+package = "WWC"
+;Date 24Oct2013
+

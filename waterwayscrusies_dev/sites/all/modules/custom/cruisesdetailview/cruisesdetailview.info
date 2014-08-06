@@ -1,0 +1,6 @@
+; $Id$
+name = Cruise Details View
+description = "Waterways Cruise Detaile View Page"
+core = 7.x
+version = VERSION
+package = WWC

@@ -1,0 +1,11 @@
+name = Cruise
+description = Waterwasy Cruises
+core = 7.x
+version = VERSION
+files[] = cruise.controller.inc
+files[] = cruise.module
+files[] = cruise.form.inc
+files[] = cruise.install
+package = WWC_CRUISES
+;Date 29Oct2013
+

@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function wwchome_menu() {
+  $items = array();
+  $items['home'] = array(
+      'title' => 'Waterways Cruises Home Page',
+      'page callback' => 'wwc_callback',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+function wwchome_theme() {
+    $items['wwchome'] = array(
+        'template' => 'wwchome',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function wwc_callback() {
+    
+  try {
+    
+    global $user;
+    //get the product load 
+    return theme('wwchome');
+    
+  } catch (Exception $ex) {
+      
+    drupal_json_output('The exception ' . $ex);
+    
+  }
+  
+}
+
+function template_preprocess_wwchome(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'wwchome') . '/wwchome.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+

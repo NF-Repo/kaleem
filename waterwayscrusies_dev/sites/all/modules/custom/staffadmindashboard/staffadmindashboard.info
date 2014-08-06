@@ -1,0 +1,5 @@
+name = Staffadmin Dashboard
+description = Staffadmin Dashboard
+core = 7.x
+version = VERSION
+package = Dashboard

@@ -1,0 +1,6 @@
+; $Id$
+name = Common DB Schema
+description = "Common DB Schema Db Tables installation"
+core = 7.x
+version = VERSION
+package = WWC

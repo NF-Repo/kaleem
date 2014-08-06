@@ -1,0 +1,421 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+
+
+function privateeventmanagement_schema() {
+    $schema = array();
+    
+    //Table 1  : private_event_menu
+       $schema['private_event_menu'] = array(
+        'description' => 'The base table for Private Events menu',
+        'fields' => array(
+            'menuId' => array(
+                'description' => 'Primary key of the menuid.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'length'=>10
+            ),
+            'menuName' => array(
+                'description' => 'menu Name',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => ''
+            ),
+           ),
+        'primary key' => array('menuId'),
+    );
+       
+    //Table 2: private_event_menu_list
+    $schema['private_event_menu_list'] = array(
+        'description' => 'The base table for Private Events menu list',
+        'fields' => array(
+            'privateEventMenuId' => array(
+                'description' => 'Primary key of the privateEventMenuId.',
+                'type' => 'serial',
+                'not null' => TRUE
+            ),
+            'eventId' => array(
+                'description' => 'Event id',
+                'type' => 'int',
+                'length' => 11,
+                'default' => 0
+            ),
+			'menuId' => array(
+                'description' => 'Menu id',
+                'type' => 'int',
+                'length' => 11,
+                'default' => 0
+            ),
+            'data'=>array(
+                'description'=>'Data',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+           ),
+        'primary key' => array('privateEventMenuId'),
+    );
+    
+    //4
+     $schema['private_event_packages'] = array(
+        'description' => 'The base table for Private Event Packages',
+        'fields' => array(
+            'packageId' => array(
+                'description' => 'Primary key of the packageId.',
+                'type' => 'serial',
+                'not null' => TRUE,
+            ),
+            'packageTitle' => array(
+                'description' => 'packageTitle',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+            'packageDescription'=>array(
+                'description'=>'packageDescription',
+                 'type' => 'text',
+                 'size' => 'big',
+            ),
+            'eventId' => array(
+                'description' => 'Event id',
+                'type' => 'int',
+                'length' => 11,
+                'default' => 0
+            ),
+             'cateringLayoutStyle' => array(
+                'description' => 'cateringLayoutStyle',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+	  'cateringEditorData'=>array(
+                'description'=>'cateringEditorData',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+            'status' => array(
+                'description' => 'The Private status',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'default' => 0
+            ),
+            
+            'packageStatus' => array(
+            		'description' => 'Package Status',
+            		'type' => 'int',
+            		'unsigned' => TRUE,
+            		'default' => 0
+            ),
+             'downloadPdfFid' => array(
+                'description' => 'Event id',
+                'type' => 'int',
+                'length' => 11,
+                'default' => 0
+            ),
+            'packageInclusions'=>array(
+                'description'=>'packageInclusions',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+            'packageOptions'=>array(
+                'description'=>'packageInclusions',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+	       'widgetImagePath'=>array(
+                'description'=>'widgetImagePath',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+	      'widgetHoverText' => array(
+                'description' => 'widgetHoverText',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+	        'widgetSpecialText' => array(
+                'description' => 'widgetSpecialText',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+	        'cateringPdfFid' => array(
+                'description' => 'cateringPdfFid',
+                'type' => 'int',
+                'length' => 11,
+                'default' => 0
+            ),
+        		
+        	'packageCategoryId' => array(
+        		'description' => 'packageCategoryId',
+        		'type' => 'int',
+        		'length' => 11,
+        		'default' => 0
+        	),
+         ),
+        'primary key' => array('packageId'),
+    );
+     
+     
+    $schema['private_events'] = array(
+        'description' => 'The base table for Private Events ',
+        'fields' => array(
+            'eventId' => array(
+                'description' => 'Primary key of the eventId.',
+                'type' => 'serial',
+                'not null' => TRUE,
+            ),
+            'eventName' => array(
+                'description' => 'Event Name',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+            'menusIds'=>array(
+                'description'=>'menusIds',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+	     'status' => array(
+                'description' => 'The Private status',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0
+            ),
+		 'widgetImagePath' => array(
+                'description' => 'widgetImagePath',
+                'type' => 'text',
+                 'size' => 'big'
+            ),
+	        'eventNameSpecialText' => array(
+                'description' => 'eventNameSpecialText',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+		'widgetHoverText' => array(
+                'description' => 'widgetHoverText',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+			
+           ),
+        'primary key' => array('eventId'),
+    );
+     $schema['private_events_gallery'] = array(
+        'description' => 'The base table for Private Events gallery ',
+        'fields' => array(
+            'galleryId' => array(
+                'description' => 'Primary key of the galleryId',
+                'type' => 'serial',
+                'not null' => TRUE
+            ),
+            'galleryType' => array(
+                'description' => 'Gallery Type',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+		 'galleryData' => array(
+                'description' => 'Gallery Data',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+		'position' => array(
+                'description' => 'position',
+                'type' => 'int',
+                'length' => 11,
+                'default' => 0
+            ),
+		'eventId' => array(
+                'description' => 'eventId',
+                'type' => 'int',
+                'length' => 11,
+                'default' => 0
+            ),
+           ),
+        'primary key' => array('galleryId'),
+    );
+    
+	
+	
+	
+    $schema['private_events_packages_catering_selections'] = array(
+        'description' => 'The base table for private events packages catering selections ',
+        'fields' => array(
+            'cateringId' => array(
+                'description' => 'Primary key of the id.',
+                'type' => 'serial',
+                'not null' => TRUE,
+                'length'=>11
+            ),
+            'packageId'=>array(
+                'description'=>'packageId',
+                  'type' => 'int',
+                 'length'=>11,
+                 'default' => 0
+            ),
+            'buffeTitle' => array(
+                'description' => 'buffeTitle',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => ''
+            ),
+            'buffetImageFid'=>array(
+                'description'=>'buffet imagefid',
+                  'type' => 'int',
+                 'length'=>11,
+                 'default' => 0
+            ),
+             'buffetContent'=>array(
+                'description'=>'buffet content',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+             'status' => array(
+                'description' => 'The Private status',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'length'=>11,
+                'default' => 0
+            ),
+           ),
+        'primary key' => array('cateringId'),
+    );
+    
+     $schema['private_events_packages_pricetable'] = array(
+        'description' => 'The base table for private events packages pricetable ',
+        'fields' => array(
+            'priceTableId' => array(
+                'description' => 'Primary key of the id.',
+                'type' => 'serial',
+                'not null' => TRUE,
+                'length'=>11
+            ),
+            'layoutStyle' => array(
+               'description' => 'layout style',
+                'type' => 'varchar',
+                'length'=>255,
+                'default' => ''
+            ),
+             'packageId' => array(
+               'description' => 'package of the id.',
+                'type' => 'int',
+                'length'=>11,
+                'default' => 0
+            ),
+        		'priceTableDesciption'=>array(
+        				'description'=>'price Table Description',
+        				'type' => 'text',
+        				'size' => 'big'
+        		),
+            
+             'fixedLayoutData'=>array(
+                'description'=>'fixed layout data',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+             'editorData'=>array(
+                'description'=>'editor  data',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+           ),
+        'primary key' => array('priceTableId'),
+    );
+     
+     
+     $schema['private_events_packages_sliders'] = array(
+        'description' => 'The base table for private events packages sliders ',
+        'fields' => array(
+            'sliderId' => array(
+                'description' => 'Primary key of the sliderId.',
+                'type' => 'serial',
+                'not null' => TRUE,
+                'length'=>11
+            ),
+            'sliderType' => array(
+               'description' => 'slider  type',
+                'type' => 'varchar',
+                'length'=>255,
+                'default' => ''
+            ),
+             'imagePath' => array(
+               'description' => 'category of the id.',
+                'type' => 'text'
+            ),
+             'position' => array(
+               'description' => 'position  of the id.',
+                'type' => 'int',
+                'length'=>11,
+                'default' => 0
+            ),
+            'packageId' => array(
+               'description' => 'packageId  of the id.',
+                'type' => 'int',
+                'length'=>11,
+                'default' => 0
+            ),
+            
+           ),
+        'primary key' => array('sliderId'),
+    );
+     
+     
+     //3 private_event_package_categories
+     $schema['private_event_package_categories'] = array(
+     		'description' => 'The base table for private events packages categories ',
+     		'fields' => array(
+     				'packageCategoryId' => array(
+     						'description' => 'Primary key of the CategoryId.',
+     						'type' => 'serial',
+     						'not null' => TRUE,
+     						'length'=>11
+     				),
+     				'packageCategoryTitle' => array(
+     						'description' => 'Package Category Title',
+     						'type' => 'varchar',
+     						'length'=>255,
+     						'default' => ''
+     				),
+     				'packageCategorySpecialText' => array(
+     						'description' => 'Package Special Text',
+     						'type' => 'varchar',
+     						'length'=>255,
+     						'default' => ''
+     				),
+     
+     				'packageHoverDescription' => array(
+     						'description' => 'Package Hover Description',
+     						'type' => 'varchar',
+     						'length'=>255,
+     						'default' => ''
+     				),
+     				'packageWidgetImage' => array(
+     						'description' => 'Package Widget Images',
+     						'type' => 'text'
+     				),
+     				'status' => array(
+     						'description' => 'Status of Categoires',
+     						'type' => 'int',
+     						'length'=>11,
+     						'default' => 0
+     				),
+     				 
+     		),
+     		'primary key' => array('packageCategoryId'),
+     );
+    
+    
+    return $schema;
+}
+
+
+ 

@@ -1,0 +1,4035 @@
+<?php
+
+
+
+//class OrderEditHistory
+class OrderEditHistory {
+
+    public $order_id;
+    public $created;
+    public $orderData;
+
+    public function setOrderId($order_id) {
+        $this->order_id = $order_id;
+    }
+
+    public function setOrderData($orderData) {
+        $this->orderData = $orderData;
+    }
+
+    public function setCreated($created) {
+        $this->created = $created;
+    }
+
+    public function storeData() {
+        try {
+            $insertresults = db_insert('orderedit_history')
+                    ->fields(array(
+                        'data' => $this->orderData,
+                        'order_id' => $this->order_id,
+                        'created' => $this->created,
+                    ))
+                    ->execute();
+        } catch (Exception $e) {
+            watchdog("orderedit", "insertion failed in orderedithistory");
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+//class OrderEdit
+class OrderEdit {
+    public $order_id;
+    public $tickets;
+    public $enhancements;
+    public $lineitems;
+    public $subtotal;
+    public $ordertotal;
+    public $couponcode;
+    public $taxlineitem;
+    public $discountlineitem;
+    public $orderProductIds;
+    public $lineItemIds;
+
+    //initialize order
+    public function __construct($order_id) {
+        $this->order_id = $order_id;
+    }
+    
+    //Deleting Booking log
+    public function deleteOrderData() {
+        $order_id = $this->order_id;
+
+        //Logging
+        $oldOrder = new OrderEditHistory();
+        $oldOrder->setCreated(time());
+        $oldOrder->setOrderId($order_id);
+        $oldOrderData = uc_order_load($order_id);
+        $oldOrder->setOrderData(serialize($oldOrderData));
+        $oldOrder->storeData();
+
+
+        //Delete Products
+        $products = $oldOrderData->products;
+        $productIds = array();
+        foreach ($products as $key => $values) {
+            $productIds[] = $key;
+        }
+        uc_order_product_delete_multiple($productIds);
+        //$this->orderProductIds = $productIds;
+        //$this->deleteOrderProducts($productIds);
+
+
+        //Delete Line Item Ids
+        $lineItems = $oldOrderData->line_items;
+        
+       // var_dump($lineItems); exit();
+        foreach ($lineItems as $key => $values) {
+        	
+        	if(isset($values['data']['name'])){
+        		//stop deleting the following line items
+        		if($values['data']['name']!="PROMO_CODE" &&  $values['data']['name']!="VOUCHER_CODE" && $values['data']['name']!="GIFT_CARD" ){
+        			//echo $values['data']['name'];
+        			$lineItemId = (int) $values['line_item_id'];
+        			$lineItemIds[] = $lineItemId;
+        			uc_order_delete_line_item($lineItemId);
+        		}
+        		
+        	}
+        	
+        //echo $values['data']['name'];
+            //if (!empty($values['line_item_id'])) {
+              
+//                 $this->deleteOrderLineItems($lineItemId);
+               
+            //}
+        }
+      
+        uc_order_save($order);
+
+        //Delete Booking Logs
+        BookingLog::deleteLogTickets($order_id);
+        BookingLog::deleteLogEnhancements($order_id);
+    }
+
+    public function setOrderID($order_id) {
+        $this->order_id = $order_id;
+    }
+
+    public function getOrderId() {
+        return $this->order_id;
+    }
+
+    //Tickets
+    public function setTickets($tickets) {
+        $this->tickets = $tickets;
+    }
+
+    public function getTickets() {
+        return $this->tickets;
+    }
+
+    //Enhancements
+    public function setEnhancements($enhancements) {
+        $this->enhancements = $enhancements;
+    }
+
+    public function getEnhancements() {
+        return $this->enhancements;
+    }
+
+    //Delete Order Products
+    public function deleteOrderProducts($order_product_ids) {
+        uc_order_product_delete_multiple($order_product_ids);
+    }
+
+    //Delete Order LineItems
+    public function deleteOrderLineItems($id) {
+        uc_order_delete_line_item($id);
+    }
+
+    public function getAllOrderProductIDS() {
+        $res = uc_order_load($this->order_id);
+        $products = $res->products;
+        $productIds = array();
+        foreach ($products as $key => $values) {
+            $productIds[] = $key;
+        }
+        return $productIds;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Implementing hook_menu()
+ */
+function orderedit_menu() {
+
+    $items['bookingorder/%/edit'] = array(
+        'title' => t('Order Edit'),
+        'description' => t('Change the content of the edit form'),
+        'page callback' => 'bookingorderpageaction',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+    );
+
+    $items['bookingorder/%/%/%/changecruise'] = array(
+        'title' => t('Change Cruise'),
+        'description' => t('Change the content of the edit form'),
+        'page callback' => 'bookingorderchangecruise',
+        'page arguments' => array(1, 2, 3),
+        'access arguments' => array('access content'),
+        'file' => 'changecruise.page.inc'
+    );
+
+
+    $items['eventdatebased/ajax'] = array(
+        'title' => t('Ajax callback for loading events on dates'),
+        'description' => t('Ajax callback for loading events on dates'),
+        'page callback' => 'loadevents_by_date',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    $items['getcruiseeventoptions'] = array(
+        'title' => 'Test Module WWC',
+        'page callback' => 'getcruiseeventoptions',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    
+    $items['geteventhtmldata'] = array(
+        'title' => 'ajax call for Event html',
+        'page callback' => 'selected_eventdata_replace',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    return $items;
+}
+
+
+
+
+function bookingorderpageaction($order_id) {
+    $orderObject = uc_order_load($order_id);
+    if ($orderObject) {
+        return drupal_get_form("orderedit_edit_form", $orderObject);
+    }
+    return "invalid operation";
+}
+
+
+
+
+
+
+function orderedit_edit_form_validate($form, &$form_state) {
+    if ($form_state['triggering_element']['#value'] == 'Calculate Amount') {
+        return;
+    }
+
+    if ($form_state['triggering_element']['#value'] == 'Save Cart for Processing') {
+
+        return;
+    }
+    if ($form_state['triggering_element']['#value'] == 'Change Cruise') {
+        return;
+    }
+}
+
+
+
+
+function orderedit_edit_form_submit($form, &$form_state) {
+    if ($form_state['triggering_element']['#value'] == 'Calculate Amount') {
+        return;
+    }
+
+    if ($form_state['triggering_element']['#value'] == 'Save Cart for Processing') {
+        return;
+    }
+    
+    
+    if ($form_state['triggering_element']['#value'] == 'Change Cruise') {
+        return;
+    }
+}
+
+
+
+
+
+
+/**
+ * Building the form for the edit setting page.
+ */
+function orderedit_edit_form($form, &$form_state, $orderObject) {
+    /*
+     * Including Js and CSS Files
+     */
+    drupal_add_js(drupal_get_path('module', 'orderedit') . '/orderedit.js');
+    drupal_add_css(drupal_get_path('module', 'orderedit') . '/orderedit.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+    drupal_add_css(drupal_get_path('module', 'orderedit') . '/datepicker.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+    drupal_add_css(drupal_get_path('module', 'orderedit') . '/mdp.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+
+    $order_id = $orderObject->order_id;
+    
+    //$lineItems = $orderObject->line_items;
+
+
+    //Step 1: 
+    try {
+        $num_deleted = db_delete('cartsession')
+                ->condition('sessionid', $order_id)
+                ->execute();
+    } catch (Exception $e) {
+        
+    }
+
+
+    
+    //Step 2:
+    $cart_reservation_data = Reservation::getCompleteReservationData($order_id);
+    $itemsobj = unserialize($cart_reservation_data->data);
+    $oldCartSessionid = $itemsobj->userchoice['cartsessionid'][0];
+
+    
+//step 3:
+    try {
+        $existingCartObject = db_select('cartsession', 'c')
+                        ->fields('c')
+                        ->condition('sessionid', $oldCartSessionid, '=')
+                        ->execute()->fetchObject();
+    } catch (Exception $e) {
+        
+    }
+
+
+    //step 4:
+    try {
+        $insertresults = db_insert('cartsession')
+                ->fields(array(
+                    'cartid' => $existingCartObject->cartid,
+                    'sessionid' => $order_id,
+                    'bookitems' => $existingCartObject->bookitems,
+                    'createdtime' => time(),
+                    'feeitems' => $existingCartObject->feeitems,
+                    'promocode' => $existingCartObject->promocode,
+                    'giftcard' => $existingCartObject->giftcard,
+                    'vouchercodes' => $existingCartObject->vouchercodes,
+                    'tickets' => $existingCartObject->tickets,
+                    'enhancements' => $existingCartObject->enhancements,
+                    'ticketstotalprice' => $existingCartObject->ticketstotalprice,
+                    'enhancementstotalprice' => $existingCartObject->enhancementstotalprice,
+                    'subtotal' => $existingCartObject->subtotal,
+                    'tax' => $existingCartObject->tax,
+                    'total' => $existingCartObject->total,
+                    'tax_lineitem' => $existingCartObject->tax_lineitem,
+                    'discount_lineitem' => $existingCartObject->discount_lineitem,
+                        //'feeitems'=>$existingCartObject->discount_lineitem,
+                ))
+                ->execute();
+    } catch (Exception $ex) {
+        
+    }
+
+
+
+    //hidden values for tickets and enhancements
+    $oldorderTickets = unserialize($existingCartObject->tickets);
+    $oldOrderTicketQty = 0;
+    foreach ($oldorderTickets as $ticket) {
+        $oldOrderTicketQty+=$ticket["qty"];
+    }
+
+    $oldorderEnhancements = unserialize($existingCartObject->enhancements);
+    $oldOrderEnhancementQty = 0;
+    foreach ($oldorderEnhancements as $enhancement) {
+        if (CruiseEnhancements::is_window_inventory_item($enhancement['enhancedproductnodeid'])) {
+            $oldOrderEnhancementQty+=$enhancement['qty'];
+        }
+    }
+
+    
+
+    
+    
+    
+
+    
+
+    //Step 5: Getting The Order Data
+    $reservationData = Reservation :: getReservationData($order_id)->fetchObject();
+    $r_id = $reservationData->id;
+    $r_eventid = $reservationData->eventid;
+    //$r_bookingdate = $reservationData->bookingdate;
+    //$r_orderid = $reservationData->orderid;
+    //$r_uid = $reservationData->uid;
+    //$r_bookedby = $reservationData->bookedby;
+    //$r_data = unserialize($reservationData->data);
+    // $bookingdate = getBookingdatebyorderId($order_id);
+    //$bookingdate = date('Y-m-d', $eventsacheduleddate);
+
+    
+    
+    
+    
+    
+    
+
+    
+    
+    $cruiseeventid = $r_eventid;
+    $eventdetails = scheduledevents_load($cruiseeventid);
+    $eventsacheduleddate = getScheduleddatebyeventId($cruiseeventid);
+
+    $portId = $eventdetails->port_id;
+    $cruisedeparturetime = $eventdetails->departuretime;
+    $cruisereturntime = $eventdetails->returntime;
+    $cruiseborading = $eventdetails->boardingtime;
+    $availablestock = $eventdetails->availabletickets;
+    $availablewindowstock = $eventdetails->availablewindowseats;
+    $portData = loadportById($portId);
+
+
+    //Getting Template id by Event id
+    $cruise_template_id='';
+    try {
+        $scheduledeventsObject = db_select('scheduledevents', 's')
+                        ->fields('s', array('cruisetemplate_id'))
+                        ->condition('id', $r_eventid)
+                        ->execute()->fetchObject();
+        $cruise_template_id = $scheduledeventsObject->cruisetemplate_id;
+    } catch (Exception $e) {
+        watchdog("scheduleevents", $e);
+    }
+    
+    
+    
+    //Session for Change Cruise functionality
+    $oldOrderObject = (object) array(
+        'oldOrderTicketQty' => $oldOrderTicketQty,
+        'oldOrderEnhancementQty' => $oldOrderEnhancementQty,
+        'oldOrderEventId'=>$r_eventid,
+        'oldOrderCruiseTemplateId'=>$cruise_template_id,
+    );
+
+    $currentorderid="currentorderid".$orderObject->order_id;
+    $_SESSION[$currentorderid] = $oldOrderObject;
+    
+    
+    
+    
+    
+
+    //Get the cruise Data
+    $cruiseObject = cruise_load($scheduledeventsObject->cruisetemplate_id);
+    $cruisetitle = isset($cruiseObject->cruise_title) ? $cruiseObject->cruise_title : '';
+    $form['oldOrderTicketQty'] = array(
+        '#id' => 'oldOrderTicketQty',
+        '#type' => 'textfield',
+        '#prefix' => '<div style="display:none;">',
+        '#suffix' => '</div>',
+        '#default_value' => $oldOrderTicketQty,
+    );
+
+
+    $form['oldOrderEnhancementQty'] = array(
+        '#id' => 'oldOrderEnhancementQty',
+        '#type' => 'textfield',
+        '#prefix' => '<div style="display:none;">',
+        '#suffix' => '</div>',
+        '#default_value' => $oldOrderEnhancementQty,
+    );
+
+    $form['hiddenreservationid'] = array(
+        '#id' => 'hiddenreservationid',
+        '#type' => 'textfield',
+        '#prefix' => '<div style="display:none;">',
+        '#suffix' => '</div>',
+        '#default_value' => $r_id,
+    );
+
+
+    $form['hiddenorderid'] = array(
+        '#id' => 'hiddenorderid',
+        '#type' => 'textfield',
+        '#prefix' => '<div style="display:none;">',
+        '#suffix' => '</div>',
+        '#default_value' => $order_id,
+    );
+
+
+    $form['hiddencruisetemplateid'] = array(
+        '#id' => 'hiddencruisetemplateid',
+        '#type' => 'textfield',
+        '#prefix' => '<div style="display:none;">',
+        '#suffix' => '</div>',
+        '#default_value' => $cruise_template_id,
+    );
+
+
+    $form['hiddeneventid'] = array(
+        '#id' => 'hiddeneventid',
+        '#type' => 'textfield',
+        '#prefix' => '<div style="display:none;">',
+        '#suffix' => '</div>',
+        '#default_value' => $r_eventid,
+    );
+
+
+
+    $form['hiddenselectedcruisedate'] = array(
+        '#id' => 'hiddenselectedcruisedate',
+        '#type' => 'textfield',
+        '#prefix' => '<div style="display:none;">',
+        '#suffix' => '</div>',
+    );
+
+
+
+    $form ['orderedit'] = array(
+        '#type' => 'vertical_tabs',
+        '#default_tab' => isset($_SESSION['default_tab']) ? $_SESSION['default_tab'] : 'edit-orderinfo',
+        '#id' => 'orderedit_tabs'
+    );
+    unset($_SESSION['default_tab']);
+
+    
+    
+    $form ['orderinfo'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Order Info'),
+        '#collapsible' => TRUE,
+        '#group' => 'orderedit',
+    );
+
+
+    $form['orderinfo']['markuprow1start'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="row-fluid"><div class="span12">',
+    );
+
+    $form['orderinfo']['orderdetails'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Order Information'),
+        '#prefix' => '<div class="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div>',
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+    );
+    $emptyrowfluid = '<div class="row-fluid"><div class="span12"></div></div>';
+
+
+
+    $form['orderinfo']['orderdetails']['ordernumber'] = array(
+        '#type' => 'markup',
+        '#markup' => $orderObject->order_id,
+        '#prefix' => $emptyrowfluid . '<div class="row-fluid"><div class="span6">'
+        . '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Order Number'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+    $form['orderinfo']['orderdetails']['orderdate'] = array(
+        '#type' => 'markup',
+        '#markup' => date('m/d/Y', $orderObject->created),
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Order Date'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+    $form['orderinfo']['orderdetails']['eventtitle'] = array(
+        '#type' => 'markup',
+        '#markup' => $cruisetitle,
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Cruise Title'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+    $form['orderinfo']['orderdetails']['eventdate'] = array(
+        '#type' => 'markup',
+        '#markup' => date('m/d/Y', $eventsacheduleddate),
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Cruise Date'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+
+    $form['orderinfo']['orderdetails']['eventport'] = array(
+        '#type' => 'markup',
+        '#markup' => $portData['portname'],
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Port'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+    $form['orderinfo']['orderdetails']['eventboarding'] = array(
+        '#type' => 'markup',
+        '#markup' => $cruiseborading,
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Boarding'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+    $form['orderinfo']['orderdetails']['eventdeparture'] = array(
+        '#type' => 'markup',
+        '#markup' => $cruisedeparturetime,
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Departure'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+    $form['orderinfo']['orderdetails']['eventreturn'] = array(
+        '#type' => 'markup',
+        '#markup' => $cruisereturntime,
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Return'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+
+    //Tickets
+    $selectedTickets = unserialize(CartSession::getTickets($order_id));
+    $ticketQty = 0;
+    foreach ($selectedTickets as $ticket) {
+        if ($ticket['qty'] > 0) {
+            $ticketQty+=$ticket['qty'];
+        }
+    }
+
+    //Enhancements
+    $selectedEnhancements = unserialize(CartSession::getEnhancements($order_id));
+    $enhancementsQty = 0;
+    foreach ($selectedEnhancements as $enhancement) {
+        if ($enhancement['qty'] > 0) {
+            $enhancementsQty+=$enhancement['qty'];
+        }
+    }
+
+
+
+    $form['orderinfo']['orderdetails']['ticketdetails'] = array(
+        '#type' => 'markup',
+        '#markup' => $ticketQty,
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Total Tickets'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+    $form['orderinfo']['orderdetails']['enhancementdetails'] = array(
+        '#type' => 'markup',
+        '#markup' => $enhancementsQty,
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left orderinfotitle input-medium">Total Enhancements'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+    $userChoiceObject = BookingLog::getUserChoices($order_id);
+    $form['orderinfo']['orderdetails']['specialconcerns'] = array(
+        '#type' => 'markup',
+        '#prefix' => '</div><div class="span6"><div class="row-fluid"><div class="span6"><b>Special Concerns</b></div><div class="span6">',
+        '#suffix' => '</div></div>',
+    );
+
+    $l_flag = ($userChoiceObject->limited_mobility_flag == 1) ? array('checked' => 'checked') : array();
+    $form['orderinfo']['orderdetails']['limitedmobility'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Limited Mobility (wheelchair, cane, etc.)'),
+        '#prefix' => '<div class="row-fluid"><div class="span12 chkformitem">',
+        '#suffix' => '</div></div>',
+        '#attributes' => $l_flag
+    );
+
+    $f_flag = ($userChoiceObject->food_allergy_flag == 1) ? array('checked' => 'checked') : array();
+    $form['orderinfo']['orderdetails']['foodallergy'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Food Allergy (seafood, peanuts, etc)'),
+        '#prefix' => '<div class="row-fluid"><div class="span12 chkformitem">',
+        '#suffix' => '</div></div>',
+        '#attributes' => $f_flag
+    );
+
+    $a_flag = ($userChoiceObject->another_party_flag == 1) ? array('checked' => 'checked') : array();
+    $form['orderinfo']['orderdetails']['anotherparty'] = array(
+        '#type' => 'checkbox',
+        '#prefix' => '<div class="row-fluid"><div class="span12 chkformitem">',
+        '#suffix' => '</div></div>',
+        '#title' => t('Would like to be seated with another party (specify below)'),
+        '#attributes' => $a_flag
+    );
+
+
+
+    $form['orderinfo']['orderdetails']['specialinstructionscomments'] = array(
+        '#type' => 'textarea',
+        '#rows' => 3,
+        '#default_value' => $userChoiceObject->another_party_comments,
+        '#prefix' => '<div class="row-fluid"><div class="span12 chkformitem">',
+        '#suffix' => '</div></div>',
+        '#title' => 'Special Instruction Comments'
+    );
+
+
+
+
+
+    $c_flag = ($userChoiceObject->celebration_flag == 1) ? array('checked' => 'checked') : array();
+    $form['orderinfo']['orderdetails']['ocassiontypeenabled'] = array(
+        '#type' => 'checkbox',
+        '#prefix' => '<div class="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div>',
+        '#title' => t('Celebration (Birthday, Anniversary, Special Occasion, etc.)'),
+        '#attributes' => $c_flag
+    );
+
+
+
+    $form['orderinfo']['orderdetails']['celebrationscomments'] = array(
+        '#type' => 'textarea',
+        '#rows' => 3,
+        '#prefix' => '<div class="row-fluid"><div class="span12 chkformitem">',
+        '#suffix' => '</div></div></div></div>',
+        '#default_value' => $userChoiceObject->celebration_comments,
+        '#title' => 'Celebration Comments'
+    );
+
+
+//     $form['orderinfo']['orderdetails']['loggedinuser'] = array(
+//         '#type' => 'textarea',
+//         '#default_value' => '',
+//         '#rows' => 3,
+//         '#prefix' => '<div class="row-fluid"><div class="span12">',
+//         '#suffix' => '</div></div>',
+//         '#title' => 'Logged Inuser',
+//     );
+
+
+    $form['orderinfo']['markuprow1end'] = array(
+        '#type' => 'markup',
+        '#markup' => '</div></div>',
+    );
+
+
+    $form['orderinfo']['markuprow2start'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="row-fluid"><div class="span6">',
+    );
+
+    $form['orderinfo']['guest'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Guest Information'),
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
+    );
+    $form['orderinfo']['guest']['guest_firstname'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium guestinfotitle">First Name</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+        '#default_value' => $orderObject->delivery_first_name,
+    );
+
+    $form['orderinfo']['guest']['guest_lastname'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">Last Name'
+        . '</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+        '#default_value' => $orderObject->delivery_last_name,
+    );
+
+    $form['orderinfo']['guest']['guest_address'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">'
+        . 'Address</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+        '#default_value' => $orderObject->delivery_street1,
+    );
+
+    $form['orderinfo']['guest']['guest_city'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">'
+        . 'City</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+        '#default_value' => $orderObject->delivery_city,
+    );
+
+
+
+    $usStatesObject = uc_zone_select();
+    $usStatesList = $usStatesObject['#options'];
+    $form['orderinfo']['guest']['guest_state'] = array(
+        '#type' => 'select',
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">'
+        . 'State</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+        '#options' => $usStatesList,
+        '#default_value' => $orderObject->delivery_zone,
+    );
+
+
+
+    $form['orderinfo']['guest']['guest_phone'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">'
+        . 'Phone</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+        '#default_value' => $orderObject->delivery_phone,
+    );
+
+
+    $form['orderinfo']['guest']['guest_zipcode'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">'
+        . 'Zip Code</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+        '#default_value' => $orderObject->delivery_postal_code,
+    );
+    
+    
+    $guestmail='';
+    $account=user_load($orderObject->uid);
+    $guestmail=isset($account->mail) ? $account->mail : '';
+
+    $form['orderinfo']['guest']['guest_email'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">'
+        . 'Email</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+        '#default_value' => $guestmail,
+    );
+
+    $referal = array(
+    	'empty'=>'',
+    	'Internet Search' => 'Internet Search',
+        'Newspaper' => 'Newspaper',
+        'Magazine' => 'Magazine',
+        'Email' => 'Email',
+        'Brochure' => 'Brochure',
+        'Radio or TV' => 'Radio or TV',
+        'Concierge' => 'Concierge',
+        'Word of Mouth' => 'Word of Mouth',
+        'Return Customer' => 'Return Customer',
+        'Online Ads' => 'Online Ads',
+        'Daily Deal' => 'Daily Deal',
+        'Seattle Times' => 'Seattle Times',
+        'Pandora' => 'Pandora',
+        'Gift Certificate' => 'Gift Certificate'
+    );
+
+
+    $defaultReferalValue = !empty($userChoiceObject->referal) ? $userChoiceObject->referal : 'empty';
+    $form['orderinfo']['guest']['referal'] = array(
+        '#type' => 'select',
+        '#options' => $referal,
+        '#group' => 'orderedit',
+        '#default_value' => $defaultReferalValue,
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">'
+        . 'Referral</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+
+    $e_flag = ($userChoiceObject->receive_email_notification_flag == 1) ? array('checked' => 'checked') : array();
+    $form['orderinfo']['guest']['emailpromotions'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Yes <i>-if checked</i>'),
+        '#attributes' => $e_flag,
+        '#group' => 'orderedit',
+        '#prefix' => '<div class="row-fluid"><div class="span12">'
+        . '<div class="pull-left input-medium guestinfotitle">'
+        . 'Email Promotions</div><div class="pull-left" style="margin-top:8px;">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+    $form['orderinfo']['markuprow2middle'] = array(
+        '#type' => 'markup',
+        '#markup' => '</div><div class="span6">',
+    );
+
+    $form['orderinfo']['purchase'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Purchase On - ') . date('m/d/Y', $orderObject->created),
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
+    );
+
+
+
+    $ticketData = unserialize(CartSession::getTickets($order_id));
+    for ($i = 0; $i < count($ticketData); $i++) {
+        for ($j = 0; $j < $ticketData[$i]['qty']; $j++) {
+            $form['orderinfo']['purchase']['ticketinfo' . $i . $j] = array(
+                '#type' => 'markup',
+                '#markup' => '$' . sprintf("%.2f", $ticketData[$i]['price']),
+                '#prefix' => '<div class="row-fluid "><div class="span12">'
+                . '<div class="pull-left purchaseinfotitle">'
+                . ' 1- ' . $ticketData[$i]['ticketname'] . ':</div><div class="pull-left">',
+                '#suffix' => '</div></div></div>',
+            );
+
+
+            $entreeid = $ticketData[$i]['ticketentreeids'][$j];
+            $entreeName = CruiseEntrees::getCruiseEntreeNamebyId($entreeid);
+
+            if ($entreeName == "") {
+                $entreeName = "no options";
+            }
+
+            $form['orderinfo']['purchase']['ticketentreeinfo' . $i . $j] = array(
+                '#type' => 'markup',
+                '#markup' => $entreeName,
+                '#prefix' => '<div class="row-fluid"><div class="span12">'
+                . '<div class="pull-left purchaseinfotitle"><i>'
+                . 'Entree : </div><div class="pull-left">',
+                '#suffix' => '</i></div></div> ',
+            );
+        }
+    }
+    
+    
+    
+
+    
+    
+    
+
+    $enhancementserializeddata = unserialize(CartSession::getEnhancements($order_id));
+    $enhancementhtml='';
+    if ($enhancementserializeddata) {
+        $enhancmentsitems = unserialize(CartSession::getEnhancements($order_id));
+        foreach ($enhancmentsitems as $enhancement) {
+            $amount = $enhancement['qty'] * $enhancement['price'];
+            $enhancementhtml.='';
+            $enhancementhtml.='<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">' . $enhancement['qty'] . '-' . $enhancement['name'] . ':</div><div class="pull-left">$' . wwcFormatPrice($amount) . '</div></div></div>';
+        }
+
+        $form['orderinfo']['purchase']['enhancementsinfo' . $enhancement['enhancedproductnodeid']] = array(
+            '#type' => 'markup',
+            '#markup' => '<div style="margin-top:45px;' . $enhancementhtml . '</div>',
+        );
+    }
+
+    //tax line item
+    $taxLineItemSerialized = CartSession::getTaxLineItem($order_id);
+    $taxLineItemArray = reset(unserialize($taxLineItemSerialized));
+    if($taxLineItemArray['amt']!=0){
+    	$taxlinetitemhtml = '<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">'.$taxLineItemArray['taxname'].':</div><div class="pull-left">$' . wwcFormatPrice($taxLineItemArray['amt']) . '</div></div></div>';
+    	$form['orderinfo']['purchase']['additionaltaxlineitem'] = array(
+    			'#type' => 'markup',
+    			'#markup' => $taxlinetitemhtml,
+    	);
+    }
+   
+    
+    //discount line item
+    $discountLineItemSerialized = CartSession::getDiscountLineItem($order_id);
+    $discountLineItemArray = reset(unserialize($discountLineItemSerialized));
+    if($discountLineItemArray['amt']!=0){
+    	$discountlinetitemhtml = '<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">'.$discountLineItemArray['discountname'].':</div><div class="pull-left"> -$' . wwcFormatPrice($discountLineItemArray['amt']) . '</div></div></div>';
+    	$form['orderinfo']['purchase']['discountlineitem'] = array(
+    			'#type' => 'markup',
+    			'#markup' => $discountlinetitemhtml,
+    	);
+    }
+   
+    //fee items
+    $cruiseFeeItems = CartSession::getCruiseFeeItems($order_id);
+    $feeitemcount = 0;
+    $cruisefeehtml='';
+    foreach ($cruiseFeeItems as $item) {
+
+
+        $chargeamt = $item['totalamt'];
+        if ($feeitemcount == 0) {
+            $cruisefeehtml.='<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">' . $item['title'] . ':</div><div class="pull-left">$' . wwcFormatPrice($chargeamt) . '</div></div></div>';
+        } else {
+            $cruisefeehtml.='<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">' . $item['title'] . ':</div><div class="pull-left">$' . wwcFormatPrice($chargeamt) . '</div></div></div>';
+        }
+
+        $form['orderinfo']['purchase']['cruisefees' . $enhancement['enhancedproductnodeid']] = array(
+            '#type' => 'markup',
+            '#markup' => '<div style="margin-top:30px;">' . $cruisefeehtml . '</div>',
+        );
+        $feeitemcount++;
+    }
+		
+	// promocodes
+	$cpnarray = unserialize ( CartSession::getPromocode ( $order_id ) );
+	$cpncode = false;
+	$cpndiscount = false;
+	foreach ( $cpnarray as $key => $value ) {
+		$cpncode = $key;
+		$cpndiscount = $value;
+	}
+	
+	if ($cpndiscount) {
+		$cpndiscounthtml = '<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">Promocode ' . $cpncode . ':</div><div class="pull-left">-$' . wwcFormatPrice ( $cpndiscount ) . '</div></div></div>';
+		$form ['orderinfo'] ['purchase'] ['coupondiscount'] = array (
+				'#type' => 'markup',
+				'#markup' => $cpndiscounthtml 
+		);
+	}
+    
+	
+	//gift card
+	$giftCardSerialized = CartSession::getGiftCard($order_id);
+	if ($giftCardSerialized) {
+		$giftCardArray = reset(unserialize($giftCardSerialized));
+		$giftcardhtml = '<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle"> Gift Card :</div><div class="pull-left">-$' . wwcFormatPrice ( $giftCardArray['deductedamount'] ) . '</div></div></div>';
+		$form ['orderinfo'] ['purchase'] ['giftcard'] = array (
+				'#type' => 'markup',
+				'#markup' => $giftcardhtml
+		);
+	}
+	
+	
+	//voucher codes
+	$vouchercodesserialized=CartSession::getVoucherCodes($order_id);
+	if($vouchercodesserialized){
+		$vouchers=unserialize($vouchercodesserialized);
+		
+		foreach($vouchers as $key=>$value){
+			$vouchershtml = '<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">Voucher - '.$key.' :</div><div class="pull-left">-$' . wwcFormatPrice ( $value ) . '</div></div></div>';
+			
+			$form ['orderinfo'] ['purchase'] ['voucher'.$key] = array (
+					'#type' => 'markup',
+					'#markup' => $vouchershtml
+			);
+			
+		}
+		
+	}
+	
+	
+    	
+    	
+    	
+    
+
+    
+    
+
+
+
+
+
+    $orderSubTotal = CartSession::getOrderSubTotal($order_id);
+    $subtotalhtml = '<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">Subtotal:</div><div class="pull-left">$' . wwcFormatPrice($orderSubTotal) . '</div></div></div>';
+    $form['orderinfo']['purchase']['subtotal'] = array(
+        '#type' => 'markup',
+        '#markup' => $subtotalhtml,
+    );
+
+
+    $taxAmt = CartSession::getTaxAmt($order_id);
+    $taxhtml = '<div class="row-fluid"><div class="span12"><div class="pull-left purchaseinfotitle">Tax:</div><div class="pull-left">$' . wwcFormatPrice($taxAmt) . '</div></div></div>';
+    $form['orderinfo']['purchase']['tax'] = array(
+        '#type' => 'markup',
+        '#markup' => $taxhtml,
+    );
+
+
+
+
+    $orderTotal = CartSession::getOrderTotal($order_id);
+    $ordertotalhtml = '<div class="row-fluid"><div class="span12"><div class="pull-left  purchaseinfotitle"><b>Total</b>:</div><div class="pull-left"><b>$' . wwcFormatPrice($orderTotal) . '</b></div></div></div>';
+    $form['orderinfo']['purchase']['ordertotal'] = array(
+        '#type' => 'markup',
+        '#markup' => $ordertotalhtml,
+    );
+
+
+
+    $form['orderinfo']['updateuserdetails'] = array(
+        '#type' => 'submit',
+        '#value' => 'Update',
+        '#prefix' => '<div class="pull-right">',
+        '#suffix' => '</div>',
+        '#ajax' => array(
+            'callback' => 'updateuserDetails',
+            'effect' => 'fade'
+        )
+    );
+
+
+    $form ['orderinfo']['resendemail'] = array(
+        '#type' => 'submit',
+        '#value' => 'Resend Email',
+        '#prefix' => '<div class="pull-right">',
+        '#suffix' => '</div>',
+        '#ajax' => array(
+            'callback' => 'resendemailtouser',
+            'effect' => 'fade'
+        ),
+    );
+
+
+
+
+
+
+
+    $form['orderinfo']['purchase']['end'] = array(
+        '#type' => 'markup',
+        '#markup' => '</div>',
+    );
+
+
+
+
+
+
+
+    $form['cartinfo'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Cart'),
+        '#collapsible' => TRUE,
+        '#group' => 'orderedit'
+    );
+
+
+    if (CartSession::getTickets($order_id)) {
+        $tickets = unserialize(CartSession::getTickets($order_id));
+        $ticketHtml = '<div id="TICKETKTDIV">';
+        $ticketHtml .= '<div class="row-fluid"><div class="span12" style="padding-left:3%;"><h5>Tickets <br/></h5></div></div>';
+        foreach ($tickets as $ticket) {
+            if ($ticket ['qty'] > 0) {
+                $amount = $ticket['qty'] * $ticket['price'];
+                $ticketHtml .= '<div class="row-fluid"><div class="span12" style="padding-left:3%;"><div class="pull-left ordersummarywidgettitle">'
+                        . $ticket['qty'] . '- ' . $ticket ['ticketname'] . '</div><div class="pull-left">$'
+                        . wwcFormatPrice($amount) . '</div></div></div>';
+            }
+        }
+        $ticketHtml .= "</div>";
+    }
+
+
+
+    //Enhancements
+    $enhancementhtml = '<div id="ENHANCEMENTDIV">';
+    $enhancementhtml .= '<div class="row-fluid"><div class="span12" style="padding-left:3%;"><h5>Enhancements <br/></h5></div></div>';
+    $enhancmentsitems = unserialize(CartSession::getEnhancements($order_id));
+    foreach ($enhancmentsitems as $enhancmentwidget) {
+        $amount = $enhancmentwidget['qty'] * $enhancmentwidget['price'];
+        $enhancementhtml.='<div class="row-fluid"><div class="span12" style="padding-left:3%;"><div class="pull-left ordersummarywidgettitle">'
+                . $enhancmentwidget['qty'] . '-' . $enhancmentwidget['name']
+                . '</div><div class="pull-left">$' . wwcFormatPrice($amount) . '</div></div></div>';
+    }
+    $enhancementhtml.='</div>';
+
+
+
+
+    //Cruise Fee Line Items
+    $cruiseFeeItems = CartSession::getCruiseFeeItems($order_id);
+    $cruisefeehtml = '<div id="CRUISEFEEDIV">';
+    $cruisefeehtml .= '<div class="row-fluid"><div class="span12" style="padding-left:3%;"><h5>Cruise Fee<br/></h5></div></div>';
+    foreach ($cruiseFeeItems as $item) {
+        $chargeamt = $item['totalamt'];
+        if ($chargeamt > 0) {
+            $cruisefeehtml.='<div class="row-fluid"><div class="span12" style="padding-left:3%;"><div class="pull-left ordersummarywidgettitle">'
+                    . $item['title'] . '</div><div class="pull-left"> $'
+                    . wwcFormatPrice($chargeamt) . '</div></div></div>';
+        }
+    }
+    $cruisefeehtml.='</div>';
+
+
+
+    //Sub Total
+    $orderSubTotal = CartSession::getOrderSubTotal($order_id);
+    $subtotalhtml = '<div id="SUBTOTALDIV">';
+    if ($orderSubTotal != "") {
+        $subtotalhtml.='<div class="row-fluid"><div class="span12" style="padding-left:3%;"><div class="pull-left ordersummarywidgettitle">'
+                . 'Subtotal </div><div class="pull-left"> $'
+                . wwcFormatPrice($orderSubTotal) . '</div></div></div>';
+    }
+    $subtotalhtml.='</div>';
+
+
+    //Tax
+    $taxamthtml = '<div id="TAXDIV">';
+    $taxAmt = CartSession::getTaxAmt($order_id);
+    if ($taxAmt != "") {
+        $taxamthtml.='<div class="row-fluid"><div class="span12" style="padding-left:3%;"><div class="pull-left ordersummarywidgettitle">'
+                . ' Tax </div><div class="pull-left">$' . wwcFormatPrice($taxAmt) . '</div></div></div>';
+    }
+
+    $taxamthtml.='</div>';
+
+
+    //Order Total
+    $totalhtml = '<div id="ORDERTOTALDIV">';
+    $orderTotal = CartSession::getOrderTotal($order_id);
+    if ($orderTotal != "") {
+        $totalhtml.='<div class="row-fluid"><div class="span12" style="padding-left:3%;"><div class="pull-left ordersummarywidgettitle">'
+                . ' <b>Total</b></div><div class="pull-left"><b> $' . wwcFormatPrice($orderTotal) . '</b></div></div></div>';
+    }
+
+    $totalhtml.='</div>';
+
+
+
+    //tax Line Item
+    $taxlineitemsHtml='';
+    $taxLineItemSerialized = CartSession::getTaxLineItem($order_id);
+    if ($taxLineItemSerialized) {
+        $taxlineitemsHtml = '<div id="TAXLINTEITEMDIV">';
+        $taxLineItemArray = unserialize($taxLineItemSerialized);
+        foreach ($taxLineItemArray as $key => $values) {
+            if ($values['amt'] > 0) {
+                $taxlineitemsHtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">' . $values['taxname'] . '</div><div class="span6">$' . wwcFormatPrice($values['amt']) . '</div></div>';
+            }
+        }
+        $taxlineitemsHtml.='</div>';
+    }
+
+    //discount line item
+    $discountLineItemSerialized = CartSession::getDiscountLineItem($order_id);
+
+
+    $discountlineitemHtml='';
+    if ($discountLineItemSerialized) {
+        $discountlineitemHtml = '<div id="DISCOUNTLINEITEMMDIV">';
+        $discountLineItemArray = unserialize($discountLineItemSerialized);
+        foreach ($discountLineItemArray as $key => $values) {
+            if ($values['amt'] > 0) {
+                $discountlineitemHtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">' . $values['discountname'] . '</div><div class="span6">-$' . wwcFormatPrice($values['amt']) . '</div></div>';
+            }
+        }
+        $discountlineitemHtml.='</div>';
+    }
+
+
+
+
+
+
+    $cruis_event_edate = time();
+    if ($eventsacheduleddate != '') {
+        $cruis_event_edate = $eventsacheduleddate;
+        $hiddencruis_event_edate = date('m/d/Y', ($eventsacheduleddate));
+    }
+    
+  
+    
+    //Span 6 : Col1 Starts here
+    $form['cartinfo']['eventdetails'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Event Details'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#prefix' => '<div class="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div>',
+    );
+
+
+
+    $eventdetailshtml = '<div class="row-fluid">
+                           <div class="span12" style="margin:4%;">
+                                <div align="" class="input-medium"><b>Selected</b></div>
+                           </div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Cruise Title</div>
+                           <div class="pull-left">' . $cruisetitle . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Cruise Date </div>
+                           <div class="pull-left">' . date('m/d/Y', $eventsacheduleddate) . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Port</div>
+                           <div class="pull-left">' . $portData['portname'] . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Boarding</div>
+                           <div class="pull-left">' . $cruiseborading . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Departure</div>
+                           <div class="pull-left">' . $cruisedeparturetime . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Return</div>
+                           <div class="pull-left">' . $cruisereturntime . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12 carteventinfotitle input-medium">
+                           <div align="right" class="input-medium" style="margin-top:4%;"><b>Available</b></div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Tickets</div>
+                           <div class="pull-left">' . $availablestock . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Windows</div>
+                           <div class="pull-left">' . $availablewindowstock . '</div></div>
+                       </div>';
+
+
+
+    $form ['cartinfo']['eventdetails']['span41end'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="pull-left span4"><div id="eventdetailsdiv">' . $eventdetailshtml . '</div></div>',
+    );
+
+
+
+    $cruiseoptions = array();
+    $eventsacheduleddatestr = date('Y-m-d', $eventsacheduleddate);
+    $result = array();
+    $result = getcruiseeventoptionsbydate($eventsacheduleddatestr);
+    foreach ($result as $row) {
+        $cruiseoptions[$row->id] = $row->name;
+    }
+
+
+    //Getting the Event ID Based on OrderID
+    $eventId = Reservation::reservation_get_eventid($order_id);
+    
+    $form['cartinfo']['eventdetails']['crusiestartenddate'] = array(
+        '#type' => 'markup',
+        '#markup' => '',
+        '#prefix' => '<div class="pull-left span8" >',
+    );
+
+    $form['cartinfo']['eventdetails']["cruisetype"] = array(
+        '#type' => 'select',
+        '#options' => $cruiseoptions,
+        '#default_value' => $eventId,
+        '#attributes' => array('multiple' => array('multiple'), 'onclick' => 'geteventhtmldata()'),
+        '#prefix' => '<div class="row-fluid">
+                        <div class="span12">
+                            <div class="pull-left input-large" style="margin:0px 4%;">    
+                                <div class="row-fluid">
+                                    <div class="span12" style="margin:4% 0px;"><b>Cruise</b></div>
+                                </div>
+                                <div class="row-fluid">
+                                   <div class="span12">',
+        '#suffix' => '             </div>
+                                </div>
+                            </div>
+                            <div class="pull-left">
+                                <div class="row-fluid"  style="margin:0px 4%;">
+                                    <div class="span12" style="margin:4% 0px;"><b>Date</b></div>
+                                </div>
+                                <div class="row-fluid" style="margin:0px 4%;">
+                                    <div class="span12">    
+                                        <div id="datePick">
+                                        <script type="text/javascript">
+                                        var eventday = new Date(' . $eventsacheduleddate . '* 1000);
+                                        $("#hiddenselectedcruisedate").val("' . $hiddencruis_event_edate . '");
+                                        $(function() {
+                                            $("#datePick").multiDatesPicker({
+                                                            addDates :[eventday],
+                                                            defaultDate:eventday,
+                                                mode: "daysRange",
+                                                autoselectRange: [0,1],
+                                                onSelect : function(dateText, inst){
+                                                            getcruiseevents(dateText);
+                                                            }
+                                                    });
+                                                });
+                                        </script>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>',
+    );
+
+
+
+    //Redirection to Cruise Change Page
+    $form['cartinfo']['eventdetails']['changecruise'] = array(
+        '#id' => 'changecruisebtn',
+        '#type' => 'button',
+        '#value' => t('Change Cruise'),
+        '#attributes' => array('onclick' => 'changecruise()'),
+        '#prefix' => '<div class="row-fluid" style="margin:4% 0;"><div class="span12">'
+        . '<div class="pull-left eventdetails input-large" style="margin:0px 3%;"><i>'
+        . 'Will empty cart if cruise type is different from original.</i></div>'
+        . '<div class="pull-left eventdetails" style="margin:0px 3%;">',
+        '#suffix' => '</div></div></div>',
+    );
+    $form['cartinfo']['eventdetails']['undochanges'] = array(
+        '#id' => 'undochangecruisebtn',
+        '#type' => 'submit',
+        '#value' => t('Undo Changes'),
+        '#prefix' => '<div class="row-fluid" style="margin-top:10px;margin-bottom:10px; display:none;">'
+        . '<div class="span12"><div class="pull-left eventdetails input-large" style="margin:0px 3%;"><i>'
+        . 'Will discard all changes and reload original order.</i></div>'
+        . '<div class="pull-left eventdetails" style="margin:0px 3%;">',
+        '#suffix' => '</div></div></div></div>',
+    );
+
+
+
+
+
+
+
+
+
+    /*     * ****************  TICKET FUNC   ************** */
+
+
+
+
+//
+//    try {
+//        $templateid = db_select('scheduledevents', 's')
+//                        ->fields('s', array('cruisetemplate_id'))
+//                        ->condition('id', $eventId)
+//                        ->execute()->fetchField();
+//    } catch (Exception $e) {
+//        //_drupal_log_error($e);
+//    }
+    
+    $templateid=$cruise_template_id;
+
+    //Loading all the Tickets by Cruise Template ID
+    //WIDGETS Starts here
+    $form ['cartinfo']['widgetsrowfluidstart'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="row-fluid">',
+    );
+
+
+    //WIDGETS Column One here
+    $form ['cartinfo']['widgetscolumnonestart'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="span6">',
+    );
+
+    $availableTickets = getCruiseTicketByWeight($templateid);
+    $form['cartinfo']['TICKETS'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Tickets'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#prefix' => '<div class="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div>',
+    );
+
+
+
+    //WIDGETS Ends here
+    //Ticketentrees
+    $ticketEntrees = array();
+    foreach ($availableTickets as $ticket) {
+        $data = Cruise::getTicketEntrees($ticket->id, $templateid);
+        $arr = array('' => '--Select--');
+        foreach ($data as $key => $val) {
+            $arr[$key] = $val;
+            $ticketEntrees[$ticket->id] = $arr;
+        }
+    }
+
+
+
+    foreach ($availableTickets as $ticket) {
+        $defaultvalue = Reservation::reservation_get_ticket_qty($ticket->id, $order_id);
+        $ticketlabel = $ticket->title . " $" . wwcFormatPrice($ticket->price);
+        $form ['cartinfo'] ['TICKETS'] ['ticketentrees' . $ticket->id] = array(
+            '#type' => 'select',
+            '#prefix' => '<div class="row-fluid"><div class="span12">'
+            . '<div class="pull-left input-medium" style="padding:3% 0 0 3%;">'
+            . $ticket->title . '</div><div class="pull-left">',
+            '#suffix' => '</div>',
+            '#options' => array(
+                0 => 0,
+                1 => 1,
+                2 => 2,
+                3 => 3,
+                4 => 4,
+                5 => 5,
+                6 => 6,
+                7 => 7,
+                8 => 8,
+                9 => 9,
+            ),
+            '#default_value' => $defaultvalue,
+            '#attributes' => array(
+                'class' => array(
+                    'input-mini'
+                )
+            ),
+            '#ajax' => array(
+                'callback' => 'ticketentrees_callback_orderedit',
+                'wrapper' => 'ticketentreesDiv',
+                'method' => 'html',
+                'effect' => 'fade'
+            ),
+        );
+
+
+
+        $form ['cartinfo'] ['TICKETS'] ['ticketentrees' . $ticket->id . "ticketname"] = array(
+            '#type' => 'textfield',
+            '#default_value' => $ticket->title,
+            '#prefix' => '<div style="display:none;">',
+            '#suffix' => '</div>'
+        );
+
+
+
+        //Getting the Ticket Price
+        $customprice = Reservation::reservation_get_ticket_custom_price($ticket->id, $order_id);
+        if (!is_null($customprice)) {
+            $price = $customprice;
+            if ($price > 0) {
+                
+            } else {
+                $price = $ticket->price;
+            }
+        } else {
+            // $price = Reservation::reservation_get_ticket_actual_price($ticket->id, $order_id);
+            $price = $ticket->price;
+        }
+
+        $form ['cartinfo'] ['TICKETS'] ['ticketentrees' . $ticket->id . "price"] = array(
+            '#type' => 'textfield',
+            '#default_value' => sprintf("%.2f", $price),
+            '#prefix' => '<div class="pull-left" style="padding-left:10px;">',
+            '#suffix' => '</div></div></div>',
+            '#attributes' => array('style' => 'width:75% !important;'),
+        );
+
+
+
+        //attribute options
+        $form['cartinfo']['TICKETS']['ticketentreesoption' . $ticket->id] = array(
+            '#type' => 'hidden',
+            '#value' => $ticket->id,
+        );
+    }//foreach
+
+    $form['cartinfo']['TICKETS']['ticketentrees_fieldset'] = array(
+        '#type' => 'markup',
+        '#prefix' => '<div id="ticketentreesDiv">',
+        '#suffix' => '</div>',
+    );
+
+
+
+
+    $displayoption = "none;";
+    foreach ($availableTickets as $ticket) {
+        $numoftickets = 0;
+        $numoftickets = Reservation::reservation_get_ticket_qty($ticket->id, $order_id);
+        if (isset($form_state['values']['ticketentrees' . $ticket->id])) {
+            $numoftickets = $form_state['values']['ticketentrees' . $ticket->id];
+        } else
+        if (isset($values['ticketentrees' . $ticket->id])) {
+            $numoftickets = $values['ticketentrees' . $ticket->id];
+        }
+        // Showing the div if number of tickets > 0
+        if ($numoftickets > 0) {
+            $displayoption = "block;";
+            break;
+        }
+    }
+
+    $form['cartinfo']['TICKETS']['ticketentrees_fieldset']['entrystart'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="row-fluid" id="entreestartdiv" style="float:left;display:' . $displayoption . '"><div class="span12 purchaseTicketDetails">'
+    );
+
+    $entrhtml='';
+    $entrhtml .= '<table><tr>';
+    $entrhtml .= '<th class="bookingheader2">Quantity</th>';
+    $entrhtml .= '<th class="bookingheader2">Ticket</th>';
+    $entrhtml .= '<th class="bookingheader2">Entree</th>';
+    $entrhtml .= '</tr>';
+
+    $form['cartinfo']['TICKETS']['ticketentrees_fieldset']['header'] = array(
+        '#type' => 'markup',
+        '#markup' => $entrhtml,
+    );
+
+
+    $form['cartinfo']['TICKETS']['entry'] = array(
+        '#type' => 'fieldset',
+        '#prefix' => '<div class="entrywidget" id="entrywidget" style="display:none;"><div id="entryContent" class="divTable">',
+        '#suffix' => '</div></div>',
+    );
+
+    //drupal_json_output(Reservation::getReservationTicketData($order_id)); exit();
+
+
+    foreach ($availableTickets as $ticket) {
+        $numoftickets = '';
+        if (isset($form_state['values']['ticketentrees' . $ticket->id])) {
+            $numoftickets = $form_state['values']['ticketentrees' . $ticket->id];
+        } else if (isset($values['ticketentrees' . $ticket->id])) {
+            $numoftickets = $values['ticketentrees' . $ticket->id];
+        } else {
+            $numoftickets = Reservation::reservation_get_ticket_qty($ticket->id, $order_id);
+            $selectedEntrees = Reservation::reservation_get_ticket_entrees($ticket->id, $order_id);
+            $selectedEntreeComments=Reservation::reservation_get_ticket_entree_comments($ticket->id, $order_id);
+            
+            //var_dump($selectedEntreeComments);
+           
+        }
+        
+        
+
+        for ($i = 0; $i < $numoftickets; $i++) {
+            $selectdefaultvalue = $selectedEntrees[0][$i];
+            $enteredcomment=$selectedEntreeComments[0][$i];
+            
+            $expstr=$selectdefaultvalue."-".$i."-";
+            $commentstrarr=explode($expstr, $enteredcomment);
+            if($commentstrarr){
+            	$commentvalue=$commentstrarr[1];
+            }
+           
+            $form['cartinfo']['TICKETS']['ticketentrees_fieldset']['entry' . $ticket->id]["qty" . $ticket->id . $i] = array(
+                '#type' => 'markup',
+                '#markup' => '<tr><td>1</td>',
+            );
+
+            $form['cartinfo']['TICKETS']['ticketentrees_fieldset']['entry' . $ticket->id]["name" . $ticket->id . $i] = array(
+                '#type' => 'markup',
+                '#markup' => "<td>" . $ticket->title . "</td>"
+            );
+
+            $form ['cartinfo'] ['TICKETS'] ['ticketentrees_fieldset'] ['entry' . $ticket->id] ["select" . $ticket->id . $i] = array(
+                '#id' => 'option-entree-' . $ticket->id . '-' . $i,
+                '#type' => 'select',
+                '#options' => isset($ticketEntrees[$ticket->id]) ? $ticketEntrees[$ticket->id] : '',
+                '#default_value' => $selectdefaultvalue,
+                '#prefix' => "<td>",
+                '#suffix' => "</td>",
+//                '#attributes' => array(
+//                    "onchange" => "saveTicketEntree('option-entree-" . $ticket->id . "-" . $i . "','" . $ticket->id . "','" . $ticket->id . "-" . $i . "','" . $eventid . "')"
+//                )
+            );
+        
+
+       			
+
+
+
+//            $commentvalue = ($chkdefaultvalue == 1) ? $values["dietarycomments" . $ticket->id . $i] : "";
+           $form['cartinfo']['TICKETS']['ticketentrees_fieldset']['entry' . $ticket->id]["dietarycomments" . $ticket->id . $i] = array(
+               '#id' => 'dietarycomments-' . $ticket->id . '-' . $i,
+               '#type' => 'textarea',
+//                '#prefix' => '<div style="display:block;">',
+//                '#suffix' => '</div>',
+              '#default_value' => $commentvalue,
+           		'#prefix' => "<tr><td colspan=2 style='text-align:right;'><i>Dietary Restrictions</i></td><td>",
+           		'#suffix' => "</td></tr>",
+           		'#attributes'=>array('class'=>array('textareafield')),
+           );
+        }
+    }
+
+
+
+
+
+    $form['cartinfo']['TICKETS']['ticketentrees_fieldset']['entryend'] = array(
+        '#type' => 'markup',
+        '#markup' => '</table></div></div>',
+    );
+
+
+    /*
+     * Enhancements
+     */
+
+
+    $form['cartinfo']['enhancements'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Enhancement Information'),
+        //'#weight' =>3,
+        '#prefix' => '<div class="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div></div>',
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+    );
+
+
+    $cruiseTemplateSelectedEnhancments = CruiseEnhancements::getSelectedEnhancements($templateid, $eventId);
+    $orderedenhancements = Reservation::getReservationEnhancementsDataByGroup($order_id);
+    
+//    if ($orderedenhancementsserialized) {
+//        $orderedenhancements = unserialize($orderedenhancementsserialized);
+//    }
+
+    $totalproducts = loadCatalogProducts();
+
+    foreach ($totalproducts as $productkey => $productvalue) {
+        foreach ($productvalue as $optionkey => $optionval) {
+
+            $form['cartinfo']['enhancements'][$optionkey] = array(
+                '#type' => 'fieldset',
+                '#title' => $optionkey,
+                '#collapsible' => FALSE,
+                '#collapsed' => FALSE,
+            );
+
+            foreach ($optionval as $enhancementvalue) {
+
+                if (in_array($enhancementvalue ['nid'], $cruiseTemplateSelectedEnhancments)) {
+                    $form ['cartinfo'] ['enhancements'] [$optionkey]['enhancementtitle' . $enhancementvalue ['nid']] = array(
+                        '#type' => 'markup',
+                        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:3% 0 0 3%;">',
+                        '#suffix' => '</div>',
+                        '#markup' => $enhancementvalue ['title']
+                    );
+
+
+                    $form ['cartinfo'] ['enhancements'] [$optionkey]['_enhancementtitle' . $enhancementvalue ['nid']] = array(
+                        '#type' => 'textfield',
+                        '#default_value' => $enhancementvalue ['title'],
+                        '#prefix' => '<div style="display:none;">',
+                        '#suffix' => '</div>'
+                    );
+
+
+
+                    $form ['cartinfo'] ['enhancements'] [$optionkey]['enhancement' . $enhancementvalue ['nid']] = array(
+                        '#type' => 'textfield',
+                        '#default_value' => $enhancementvalue ['nid'],
+                        '#prefix' => '<div style="display:none;">',
+                        '#suffix' => '</div>',
+                    );
+
+                    $enhancementPrice = '';
+                    $customPrice = isset($orderedenhancements[$enhancementvalue['nid']]["price"]) ? $orderedenhancements[$enhancementvalue['nid']]["price"] : 0;
+                    if ($customPrice) {
+                        $enhancementPrice = $customPrice;
+                    } else {
+                        $enhancementPrice = $enhancementvalue['price'];
+                    }
+
+
+                    $form ['cartinfo'] ['enhancements'] [$optionkey] ['price' . $enhancementvalue ['nid']] = array(
+                        '#type' => 'textfield',
+                        '#default_value' => sprintf("%.2f", $enhancementPrice),
+                        '#prefix' => '<div class="pull-left">',
+                        '#suffix' => '</div>',
+                        '#attributes' => array('style' => 'width:75% !important;'),
+                    );
+                    $form ['cartinfo'] ['enhancements'] [$optionkey] ['qty' . $enhancementvalue ['nid']] = array(
+                        '#type' => 'textfield',
+                        '#default_value' => isset($orderedenhancements[$enhancementvalue['nid']]['qty']) ? $orderedenhancements[$enhancementvalue['nid']]['qty'] : 0,
+                        '#prefix' => '<div class="pull-left">',
+                        '#suffix' => '</div></div></div>',
+                        '#attributes' => array('style' => 'width:75% !important;'),
+                    );
+// 				
+                }
+            }
+        }
+    }
+
+    
+    
+    $form['cartinfo']['cruisefees'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Cruise Fees'),
+        '#prefix' => '<div class="span6"><div class="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div>',
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+    );
+
+
+
+    /*     * *********************************
+     * 
+     * FUNC : FEE LINE ITEMS
+     *   Load all cruise fee items
+     *   Note : Get only Fee items if it is included in the order 
+     * 
+     * ********************************* */
+    $feeItems = CartSession::getCruiseFeeItems($order_id);
+    foreach ($feeItems as $feeitem) {
+        $feeid = $feeitem['feeid'];
+        $title = $feeitem['title'];
+        $actualrate = $feeitem['actualrate'];
+        $feeValue = $feeitem['updatedrate'];
+        $totalamt = $feeitem['totalamt'];
+        $form['cartinfo']['cruisefees']['cruisefee' . $feeid] = array(
+            '#type' => 'textfield',
+            '#default_value' => $feeValue,
+            '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:3% 0 0 3%;">' . $title . '</div><div class="pull-left">',
+            '#suffix' => '</div></div></div>',
+            '#attributes' => array('style' => 'width:75% !important;'),
+        );
+    }
+
+
+
+    /*     * *********************************
+     *
+     * FUNC : PROMO CODE
+     *  
+     *
+     * **********************************
+      $promoserialized=CartSession::getPromocode($order_id);
+      $promocode='';
+      $promoprice='';
+
+      if($promoserialized){
+      $promoArr=unserialize($promoserialized);
+      foreach($promoArr as $key=>$val){
+      $promocode=$key;
+      $promoprice=$val;
+      }
+      }
+
+      $form['cartinfo']['promocode'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Promocode'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+
+      );
+
+      $form['cartinfo']['promocode']['_promocode'] = array(
+      '#type' => 'textfield',
+      '#default_value'=>$promocode,
+      '#title'=>'Promo Code',
+      );
+     */
+
+
+
+
+
+
+
+
+
+
+    /*     * *********************************
+     *
+     * FUNC : Gift Card
+     *
+     * Need Clarification 
+     * ********************************* */
+    /*
+      $gift=CartSession::getGiftCard($order_id);
+      //drupal_json_output($gift); exit();
+
+      $form['cartinfo']['giftcard'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Gift Card'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+
+      ); */
+
+
+
+
+
+
+
+
+
+
+    /*     * *********************************
+     *
+     * FUNC : Voucher Codes
+     *
+     * 
+     * ********************************* */
+
+//     $vouchercodeserialized = CartSession::getVoucherCodes($order_id);
+//     if ($vouchercodeserialized) {
+//         $form['cartinfo']['vouchercodes'] = array(
+//             '#type' => 'fieldset',
+//             '#title' => t('Voucher Codes'),
+//             '#collapsible' => TRUE,
+//             '#collapsed' => FALSE,
+//         );
+
+//         $voucherCodes = unserialize($vouchercodeserialized);
+//         $i = 1;
+//         foreach ($voucherCodes as $key => $val) {
+//             $form['cartinfo']['vouchercodes']['vouchercode' . $key] = array(
+//                 '#type' => 'textfield',
+//                 '#default_value' => $key,
+//                 '#title' => 'Voucher Code ' . $i,
+//             );
+//             $i++;
+//         }
+//     }
+
+
+
+    $form['cartinfo']['lineitemcharges'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Line Item Charge / Discount'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#prefix' => '<div class="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div>',
+    );
+
+
+    //Getting Additional Line Items
+    $taxLineItemsSerialized = CartSession::getTaxLineItem($order_id);
+    $taxLineItemName = '';
+    $taxChargeType = '';
+    $taxCheckBoxValue = '';
+    $taxLineItemAmt = '';
+    if ($taxLineItemsSerialized) {
+        $taxLineItemsArray = unserialize($taxLineItemsSerialized);
+        foreach ($taxLineItemsArray as $taxname => $values) {
+            $taxLineItemName = $values['taxname'];
+            $taxChargeType = $values['chargetype'];
+            $taxCheckBoxValue = $values['checkbox'];
+            $taxLineItemAmt = $values['amt'];
+        }
+    }
+
+
+
+
+
+
+    $form['cartinfo']['lineitemcharges']['lineitemchargehwSWE'] = array(
+        '#type' => 'markup',
+    );
+
+
+    $form['cartinfo']['lineitemcharges']['charge'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Taxed'),
+        '#prefix' => '<div class="row-fluid"><div class="span2">',
+        '#suffix' => '</div>',
+        '#default_value' => $taxCheckBoxValue,
+    );
+
+    $form['cartinfo']['lineitemcharges']['chargedescription'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Charge (Description)'),
+        '#attributes' => array('style' => 'width:75% !important;'),
+        '#prefix' => '<div class="span3">',
+        '#suffix' => '</div>',
+        '#default_value' => $taxLineItemName,
+    );
+
+    $form['cartinfo']['lineitemcharges']['chargetype'] = array(
+        '#type' => 'select',
+        '#title' => t('Type'),
+        '#options' => array(
+            'dollaramount' => t('Dollar Amount'),
+            'percentage' => t('Percentage')),
+        '#prefix' => '<div class="span3">',
+        '#suffix' => '</div>',
+        '#attributes' => array('style' => 'width:75% !important;'),
+        '#default_value' => $taxCheckBoxValue,
+    );
+
+    $form['cartinfo']['lineitemcharges']['chargevalue'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Value'),
+        '#prefix' => '<div class="span4">',
+        '#suffix' => '</div></div>',
+        '#attributes' => array('style' => 'width:75% !important;'),
+        '#default_value' => $taxLineItemAmt,
+    );
+
+
+    //Getting Additional Line Items
+    $discountLineItemsSerialized = CartSession::getDiscountLineItem($order_id);
+
+    $discountName = '';
+    $discountType = '';
+    $discountCheckBoxValue = '';
+    $discountLineItemAmt = '';
+    if ($discountLineItemsSerialized) {
+        $discountLineItemsArray = unserialize($discountLineItemsSerialized);
+        foreach ($discountLineItemsArray as $discountname => $values) {
+            $discountName = $values['discountname'];
+            $discountType = $values['discounttype'];
+            $discountCheckBoxValue = $values['checkbox'];
+            $discountLineItemAmt = $values['amt'];
+        }
+    }
+
+
+
+    $form['cartinfo']['lineitemcharges']['discount'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Pre-Tax'),
+        '#prefix' => '<div class="row-fluid"><div class="span2">',
+        '#suffix' => '</div>',
+        '#default_value' => $discountCheckBoxValue,
+    );
+
+
+    $form['cartinfo']['lineitemcharges']['discountdescription'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Discount (Description)'),
+        '#prefix' => '<div class="span3">',
+        '#suffix' => '</div>',
+        '#default_value' => $discountName,
+        '#attributes' => array('style' => 'width:75% !important;'),
+    );
+
+    $form['cartinfo']['lineitemcharges']['discounttype'] = array(
+        '#type' => 'select',
+        '#title' => t('Type'),
+        '#options' => array(
+            'dollaramount' => t('Dollar Amount'),
+            'percentage' => t('Percentage')),
+        '#prefix' => '<div class="span3">',
+        '#suffix' => '</div>',
+        '#default_value' => $discountType,
+        '#attributes' => array('style' => 'width:75% !important;'),
+    );
+
+    $form['cartinfo']['lineitemcharges']['discountvalue'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Value'),
+        '#prefix' => '<div class="span4">',
+        '#suffix' => '</div></div>',
+        '#attributes' => array('style' => 'width:75% !important;'),
+        '#default_value' => $discountLineItemAmt,
+    );
+
+
+    
+    //Tax
+    $taxItems = unserialize(CartSession::getTaxAmtItems($order_id));
+    
+    if (isset($taxItems['taxvalue'])) {
+        $taxValue = $taxItems['taxvalue'];
+    } else {
+        $taxValue = variable_get('WWCTAXVALUE', '');
+    }
+
+    $form['cartinfo']['tax'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Tax'),
+        '#prefix' => '<div class="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div>',
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+    );
+
+
+    $form['cartinfo']['tax']['taxvalue'] = array(
+        '#type' => 'textfield',
+        '#default_value' => $taxValue,
+        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:3% 0 0 3%;">Tax</div><div class="pull-left">',
+        '#suffix' => '</div></div></div>',
+    );
+
+
+
+
+    $form['cartinfo']['orderwidgetdivsummary'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Order Widget Summary'),
+        '#collapsed' => FALSE,
+        '#prefix' => '<div clss="row-fluid"><div class="span12">',
+        '#suffix' => '</div></div>',
+    );
+
+    $form['cartinfo']['orderwidgetdivsummary']['markup'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div>' . $ticketHtml . '' . $taxlineitemsHtml . '' . $discountlineitemHtml . '' . $enhancementhtml . '' . $cruisefeehtml . '' . $subtotalhtml . '' . $taxamthtml . '' . $totalhtml . '</div>'
+    );
+
+    $form ['cartinfo'] ['finishorder'] ['calculateAmount'] = array(
+        '#type' => 'button',
+        '#value' => 'Calculate Amount',
+        '#prefix' => '<div clss="row-fluid"><div class="span12" style="padding:5% 0px;"><div  class="pull-left">',
+        '#suffix' => '</div>',
+        '#ajax' => array(
+            'callback' => 'calclateorderamount',
+            'effect' => 'fade'
+        )
+    );
+
+
+
+
+    $form ['cartinfo'] ['finishorder'] ['savecartforprocessing'] = array(
+        '#type' => 'submit',
+        '#value' => 'Save Cart for Processing',
+        '#prefix' => '<div id="savecartbtn" class="pull-left" style="display:none;" ><span>',
+        '#suffix' => '</span></div></div></div>',
+        '#submit' => array('savecartforprocessing'),
+    );
+
+    //payment field set
+    $form['payment'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Payment'),
+        '#collapsible' => TRUE,
+        '#group' => 'orderedit'
+    );
+
+
+    $order = uc_order_load($order_id);
+
+    $newOrderTotalAmt = $order->order_total;
+    $balance = round(uc_payment_balance($order), 2);
+
+    if ($balance == -0) {
+        $balance = 0;
+    }
+
+    $originalOrderAmt = $newOrderTotalAmt - $balance;
+    
+    
+    
+    $form ['payment'] ['rowfluidstart'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="row-fluid" style="border-style:solid;border-width:1px; margin-top:12px;">',
+      
+    );
+  
+    
+    
+    $form ['payment'] ['span6col1start'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="span6">',
+      
+    );
+    
+    
+    $form ['payment'] ['span6col1contentdstart'] = array(
+        '#type' => 'markup',
+        '#markup' => '<table><tr><td colspan="2"><b>Billing Information </b> </td></tr>',
+      
+    );
+    
+    $form ['payment'] ['billingfirstname'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<tr><td class="tdrightalign">First Name </td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $order->billing_first_name,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+
+
+    $form ['payment'] ['billinglastname'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<tr><td class="tdrightalign"> Last Name </td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $order->billing_last_name,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+    
+    
+    
+    $form ['payment'] ['billingaddress'] = array(
+        '#type' => 'textfield',
+       '#prefix' => '<tr><td class="tdrightalign">Address </td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $order->billing_street1,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+
+    $form ['payment'] ['billingcity'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<tr><td class="tdrightalign">City</td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $order->billing_city,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+
+
+    $usStatesObject = uc_zone_select();
+    $usStatesList = $usStatesObject['#options'];
+    $form['payment']['billing_state'] = array(
+        '#type' => 'select',
+        '#options' => $usStatesList,
+        '#default_value' => 1,
+        '#prefix' => '<tr><td class="tdrightalign">State </td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $order->billing_zone,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+
+    $form ['payment'] ['billingzipcode'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<tr><td class="tdrightalign">Zip Code </td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $order->billing_postal_code,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+
+
+    $form ['payment'] ['billingreceiptemail'] = array(
+        '#type' => 'textfield',
+       '#prefix' => '<tr><td class="tdrightalign">Receipt Email  </td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $order->primary_email,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+    
+    
+    $form ['payment'] ['span6col1contentdend'] = array(
+        '#type' => 'markup',
+        '#markup' => '</table>',
+      
+    );
+    
+    
+    $form ['payment'] ['span6col1end'] = array(
+        '#type' => 'markup',
+        '#markup' => '</div>',
+      
+    );
+    
+   
+    
+     $form ['payment'] ['span6col2start'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div class="span6">',
+      
+    );
+    
+    
+    $form ['payment'] ['span6col2contentdstart'] = array(
+        '#type' => 'markup',
+        '#markup' => '<table><tr><td colspan="2" ><b>Credit Card 	  </b> </td></tr>',
+      
+    );
+    
+    
+     $form['payment']['creditCardType'] = array(
+        '#type' => 'select',
+        '#prefix' => '<tr><td class="tdrightalign">Card Type  </td><td>',
+        '#suffix' => '</td></tr>',
+        '#options' => array(
+            'visa' => 'Visa',
+            'mastercard' => 'Master Card',
+            'discover' => 'Discover',
+            'americanexpress' => 'American Express',
+        ),
+        '#empty_option' => t('*Card Type'),
+    );
+     
+     
+      $form['payment']['creditCardNumber'] = array(
+        '#type' => 'textfield',
+         '#prefix' => '<tr><td class="tdrightalign">Cart Number	</td><td>',
+        '#suffix' => '</td></tr>',
+    );
+
+
+
+    $form['payment']['creditExpMonth'] = array(
+        '#type' => 'select',
+       '#prefix' => '<tr><td class="tdrightalign">Exp. Month 	</td><td>',
+        '#suffix' => '</td></tr>',
+        '#options' => array(1 => t('01 - January'), 2 => t('02 - February'),
+            3 => t('03 - March'), 4 => t('04 - April'),
+            5 => t('05 - May'), 6 => t('06 - June'),
+            7 => t('07 - July'), 8 => t('08 - August'),
+            9 => t('09 - September'), 10 => t('10 - October'),
+            11 => t('11 - November'), 12 => t('12 - December')
+        ),
+        '#empty_option' => t('*Month'),
+    );
+
+
+
+
+    $min = intval(date('Y'));
+    $max = intval(date('Y')) + 20;
+    $form['payment']['creditExpYear'] = array(
+        '#type' => 'select',
+        '#prefix' => '<tr><td class="tdrightalign">Exp. Year 	</td><td>',
+        '#suffix' => '</td></tr>',
+        '#options' => drupal_map_assoc(range($min, $max)),
+        '#empty_option' => t('*Year'),
+    );
+
+    $form['payment']['creditcid'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<tr><td class="tdrightalign">CVV Code 	 	</td><td>',
+        '#suffix' => '</td></tr>',
+        '#maxlength' => 3,
+        
+    );
+    
+    
+    
+     $form['payment']['financialsummary'] = array(
+        '#type' => 'markup',
+        '#markup' => '<tr><td colspan="2"><b>Financial Summary</b></td></tr>',
+    );
+     
+     
+      $form ['payment'] ['originalordertotal'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<tr><td class="tdrightalign">Original Order Total:</td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $originalOrderAmt,
+        '#attributes' => array('readonly' => array('readonly')),
+        
+    );
+
+    $form ['payment'] ['newordertotal'] = array(
+        '#type' => 'textfield',
+         '#prefix' => '<tr><td class="tdrightalign">New Order Total:</td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $newOrderTotalAmt,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+
+    $form ['payment'] ['balance'] = array(
+        '#type' => 'textfield',
+         '#prefix' => '<tr><td class="tdrightalign">Balance:</td><td>',
+        '#suffix' => '</td></tr>',
+        '#default_value' => $balance,
+        '#attributes' => array('readonly' => array('readonly')),
+    );
+//
+    
+    
+    $form ['payment'] ['processorder'] = array(
+        '#type' => 'submit',
+        '#value' => 'Process Order',
+        '#prefix' => '<tr><td></td><td>',
+        '#suffix' => '</td></tr>',
+         '#ajax' => array(
+            'callback' => 'processorder',
+            'effect' => 'fade'
+        )
+    );
+    
+    $form ['payment'] ['refund'] = array(
+    		'#type' => 'submit',
+    		'#value' => 'Refund Transaction',
+    		'#prefix' => '<tr><td></td><td>',
+    		'#suffix' => '</td></tr>',
+    		'#submit'=>array('proceedtorefundpage'),
+    );
+    
+    
+    
+    
+    
+    
+    $form ['payment'] ['span6col2contentdend'] = array(
+        '#type' => 'markup',
+        '#markup' => '</table>',
+      
+    );
+    
+    
+    $form ['payment'] ['span6col2end'] = array(
+        '#type' => 'markup',
+        '#markup' => '</div>',
+      
+    );
+    
+     
+    
+    $form ['payment'] ['rowfluidend'] = array(
+        '#type' => 'markup',
+        '#markup' => '
+	</div>',
+      
+    );
+    
+    
+    
+    
+//    $form ['payment'] ['billingfirstname'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12>',
+//        '#suffix' => '</div></div>',
+//        '#default_value' => $order->billing_first_name,
+//        '#title'=>'First Name',
+//    );
+
+
+    
+    
+    
+//    $form ['payment'] ['billingfirstname'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">First Name</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $order->billing_first_name,
+//    );
+//
+//    $form ['payment'] ['billinglastname'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Last Name</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $order->billing_last_name,
+//    );
+//
+//
+//    $form ['payment'] ['billingaddress'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Address</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $order->billing_street1,
+//    );
+//
+//    $form ['payment'] ['billingcity'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">City</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $order->billing_city,
+//    );
+//
+//
+//    $usStatesObject = uc_zone_select();
+//    $usStatesList = $usStatesObject['#options'];
+//    $form['payment']['billing_state'] = array(
+//        '#type' => 'select',
+//        '#options' => $usStatesList,
+//        '#default_value' => 1,
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">State / Province</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $order->billing_zone,
+//    );
+//
+//    $form ['payment'] ['billingzipcode'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Zip Code</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $order->billing_postal_code,
+//    );
+//
+//
+//    $form ['payment'] ['billingreceiptemail'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Receipt Email</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $order->primary_email,
+//    );
+//
+//
+//
+//    $form ['payment'] ['originalordertotal'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Original Order Total</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $originalOrderAmt,
+//        '#attributes' => array('readonly' => array('readonly')),
+//        
+//    );
+//
+//    $form ['payment'] ['newordertotal'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">New Order Total</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $newOrderTotalAmt,
+//        '#attributes' => array('readonly' => array('readonly')),
+//    );
+//
+//    $form ['payment'] ['balance'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Balance</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#default_value' => $balance,
+//        '#attributes' => array('readonly' => array('readonly')),
+//    );
+//
+//
+//
+//    $form['payment']['creditCardType'] = array(
+//        '#type' => 'select',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Card Type</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#options' => array(
+//            'visa' => 'Visa',
+//            'mastercard' => 'Master Card',
+//            'discover' => 'Discover',
+//            'americanexpress' => 'American Express',
+//        ),
+//        '#empty_option' => t('*Card Type'),
+//    );
+//
+//
+//    $form['payment']['creditCardNumber'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Card Number</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//    );
+//
+//
+//
+//    $form['payment']['creditExpMonth'] = array(
+//        '#type' => 'select',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Exp Month</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#options' => array(1 => t('01 - January'), 2 => t('02 - February'),
+//            3 => t('03 - March'), 4 => t('04 - April'),
+//            5 => t('05 - May'), 6 => t('06 - June'),
+//            7 => t('07 - July'), 8 => t('08 - August'),
+//            9 => t('09 - September'), 10 => t('10 - October'),
+//            11 => t('11 - November'), 12 => t('12 - December')
+//        ),
+//        '#empty_option' => t('*Month'),
+//    );
+//
+//
+//
+//
+//    $min = intval(date('Y'));
+//    $max = intval(date('Y')) + 20;
+//    $form['payment']['creditExpYear'] = array(
+//        '#type' => 'select',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">Exp Year</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#options' => drupal_map_assoc(range($min, $max)),
+//        '#empty_option' => t('*Year'),
+//    );
+//
+//    $form['payment']['creditcid'] = array(
+//        '#type' => 'textfield',
+//        '#prefix' => '<div class="row-fluid"><div class="span12"><div class="pull-left input-medium" style="padding:2%;">CVV Code</div><div class="pull-left">',
+//        '#suffix' => '</div></div></div>',
+//        '#maxlength' => 3,
+//    );
+//
+//    $form ['payment'] ['processorder'] = array(
+//        '#type' => 'submit',
+//        '#value' => 'Process Order',
+//        '#prefix' => '<div class="row-fluid"><div class="span12" style="padding-bottom:15px;" align="center">',
+//        '#suffix' => '</div></div>',
+//        '#ajax' => array(
+//            'callback' => 'processorder',
+//            'effect' => 'fade'
+//        )
+//    );
+
+
+
+
+    //Order History
+
+    $form['orderhistory'] = array(
+        '#type' => 'fieldset',
+        '#id' => 'historytab',
+        '#title' => t('History'),
+        '#collapsible' => TRUE,
+        '#group' => 'orderedit'
+    );
+
+
+    $query = db_select('uc_order_admin_comments', 'u');
+    $query->fields('u');
+    $query->condition('message', '%stock%', 'NOT LIKE');
+    $query->condition('order_id', $order_id);
+    $query->orderBy('u.created');
+    $query->orderBy('u.comment_id');
+    $comments = $query->execute()->fetchAll();
+
+
+    // $comments = uc_order_comments_load($order_id, TRUE);
+    $commenttabledata = tapir_get_table('uc_op_admin_comments_view_table', $comments);
+
+    $form['orderhistory']['logmessage'] = array(
+        '#type' => 'markup',
+        '#markup' => drupal_render($commenttabledata),
+    );
+
+    $form['#submit'][] = 'orderedit_edit_form_submit'; //Submit button call back.
+    return $form;
+}
+
+
+function proceedtorefundpage($form, &$form_state){
+	 $order_id = $form_state ['values'] ['hiddenorderid'];
+	$path="refund/".$order_id;
+	drupal_goto($path);
+}
+
+
+
+
+function change_cruise_action($form, $form_state) {
+
+    //$event_id=$form_state ['values'] ['hiddeneventid'];
+    $event_id = $form_state ['values'] ['cruisetype'];
+    $order_id = $form_state ['values'] ['hiddenorderid'];
+    $event_date = $form_state ['values'] ['hiddenselectedcruisedate'];
+    $event_date_arr = explode('/', $event_date);
+
+    $event_date_format = $event_date_arr[2] . "" . $event_date_arr[0] . "" . $event_date_arr[1];
+    //var_dump($event_date_format);
+    //bookingorder/'+eventid+'/'+orderid+'/'+eventdate+'changecruise';
+    $path = "bookingorder/" . $event_id . "/" . $order_id . "/" . $event_date_format . "/changecruise";
+    drupal_goto($path);
+
+    //Date Format in
+    //Current Format : 03/13/2014
+    //Required Format 20140313 ( YMD)
+    //var_dump($path);
+    exit();
+}
+
+
+
+function processorder($form, $form_state) {
+
+    //$result=false;
+    if ($form_state ['values']['creditCardNumber'] != '' && $form_state ['values']['creditExpMonth'] != '' && $form_state ['values']['creditCardType'] != '' && $form_state ['values']['creditcid'] != '') {
+        $order_id = $form_state ['values'] ['hiddenorderid'];
+        $order = uc_order_load($order_id);
+        $transactionamt = $form_state ['values'] ['balance'];
+
+        $order->payment_method = 'credit';
+        $order->payment_details['cc_number'] = $form_state ['values']['creditCardNumber']; // '4007000000027';
+        $order->payment_details['cc_exp_month'] = $form_state ['values']['creditExpMonth']; //'02';
+        $order->payment_details['cc_exp_year'] = $form_state ['values']['creditExpYear']; //'15';
+        $order->payment_details['cc_cvv'] = $form_state ['values']['creditcid']; //'521';
+        $order->payment_details['cc_type'] = $form_state ['values']['creditCardType']; //'visa';//$_SESSION['payment
+
+        
+        $oldccdata=reset(CreditCardFreezer::getorderccdata($order_id));
+        $e_orderobj=new stdClass();
+        $e_orderobj->ccnum=$oldccdata->ccnum;
+        $e_orderobj->cvv="";
+        $e_orderobj->cctype=$oldccdata->cctype;
+        $e_orderobj->ccexpirationdate=$oldccdata->ccexpirationdate;
+        $e_orderobj->order_id=$order_id;
+        
+        
+     try{
+        	
+        	$orderobj=new stdClass();
+        	$orderobj->ccnum=$form_state ['values']['creditCardNumber'];
+        	$orderobj->cvv="";
+        	$orderobj->cctype=$form_state ['values']['creditCardType'];
+        	$orderobj->ccexpirationdate=$form_state ['values']['creditExpMonth']."".$form_state ['values']['creditExpYear'];
+        	$orderobj->order_id=$order->order_id;
+        	CreditCardFreezer::updateorder_ccdata_create($orderobj);
+        	//CreditCardFreezer::order_ccdata_create($orderobj);
+        
+        }catch(Exception $e){
+        
+        }
+        
+        
+        
+        
+        $result = uc_payment_process_payment('credit', $order->order_id, $transactionamt, $data, TRUE, NULL, FALSE);
+        _uc_credit_save_cc_data_to_order($order->payment_details, $order->order_id);
+
+        
+        if ($result) {
+            uc_cart_complete_sale($order, $login = FALSE);
+            //$commands[] = ajax_command_alert("Payment Successful");
+            
+
+        try {
+                db_update('uc_orders')
+                        ->fields(
+                                array('order_status' => 'payment_received'))
+                        ->condition('order_id', $order->order_id)
+                        ->execute();
+            } catch (Exception $e) {
+                
+            }
+
+
+
+            drupal_set_message("Payment Successful");
+            $commands[] = array('command' => 'reloadafterpayment');
+        } else {
+        	//var_dump($e_orderobj); exit();
+        	CreditCardFreezer::updateorder_ccdata_create($e_orderobj);
+            //drupal_set_message("Payment failed");
+            $commands[] = ajax_command_alert("Payment failed");
+            //$commands[] = array('command' => 'reloadafterdeleteevent');
+        }
+    } else {
+        $commands[] = ajax_command_alert("Please Enter Valid Credit Card Details");
+    }
+
+
+
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+function savecartforprocessing($form, $form_state) {
+
+
+    //Hidden Values
+    $order_id = $form_state ['values'] ['hiddenorderid'];
+    $cruise_id = $form_state ['values'] ['hiddencruisetemplateid'];
+    $event_id = $form_state ['values'] ['hiddeneventid'];
+    $r_id = $form_state ['values'] ['hiddenreservationid'];
+    //$total_tickets_price = CartSession::getTotalTicketsPrice($order_id);
+    //old order data
+    $oldOrderTicketQty = $form_state ['values'] ['oldOrderTicketQty'];
+    $oldOrderWindowsEnhancementQty = $form_state ['values'] ['oldOrderEnhancementQty'];
+
+    
+    try {
+        
+        //->1Deleting Old Order Data
+        $order = uc_order_load($order_id);
+        $oldOrderObject = new OrderEdit($order->order_id);
+        $oldOrderObject->deleteOrderData();
+        
+        
+       
+        
+        //->2
+        $currentOrderTicketQty = 0;
+        $selectedtickets = array();
+        $tickets = unserialize(CartSession::getTickets($order_id));
+        $total_tickets_price = CartSession::getTotalTicketsPrice($order_id);
+
+        foreach ($tickets as $ticket) {
+            if ($ticket['qty'] > 0) {
+                $selectedtickets[] = $ticket;
+                $currentOrderTicketQty+=$ticket['qty'];
+            }
+        }
+        
+    
+        //->3 Getting the Product ID of Event ID ( Event ID treated as a Product node)
+        $scheduleEventObject = scheduledevents_load($event_id);
+        $event_product_node = $scheduleEventObject->nid;
+        $eventproductnodedata = node_load($event_product_node);
+
+        $eventProduct = new stdClass();
+        $eventProduct->nid = $event_product_node;
+        $eventProduct->qty = 1; //By Default Cruise Item qty is treating as single
+        $eventProduct->price = $total_tickets_price;
+        $eventProduct->title = $eventproductnodedata->title;
+        $eventProduct->model = $eventproductnodedata->model;
+        $order->products[] = $eventProduct;
+        
+        
+        //->4
+        $selectedenhancements = array();
+        $enhancements = unserialize(CartSession::getEnhancements($order_id));
+        $totalenhancementQty = 0;
+        $currentOrderWindowsEnhancementQty = 0;
+        foreach ($enhancements as $enhancement) {
+            $totalenhancementQty+=$enhancement['qty'];
+            $selectedenhancements[] = $enhancement;
+            $cartenhancednode = node_load($enhancement['enhancedproductnodeid']);
+            $cartenhancedproduct = uc_product_load($cartenhancednode);
+            $cartenhancedproduct->nid = $cartenhancednode->nid;
+            $cartenhancedproduct->qty = $enhancement['qty']; //By Default Cruise Item qty is treating as single
+            //$cartenhancedproduct->price=$enhancement['qty']* $enhancement['customprice'];
+            $cartenhancedproduct->price = $enhancement['price'];
+            $cartenhancedproduct->title = $cartenhancednode->title;
+            $cartenhancedproduct->model = $cartenhancednode->model;
+            $order->products[] = $cartenhancedproduct;
+
+            if (CruiseEnhancements::is_window_inventory_item($enhancement['enhancedproductnodeid'])) {
+                $currentOrderWindowsEnhancementQty+=$enhancement['qty'];
+            }
+        }
+        
+        
+        
+        
+        
+      
+        
+        //->5 Fee Items
+        $feeItems = CartSession::getCruiseFeeItems($order_id);
+        
+        
+        foreach ($feeItems as $feeitem) {
+            $feeitemname = $feeitem['title'];
+            $totalAmount = $feeitem['totalamt'];
+            if ($totalAmount != "") {
+//                 $order->line_items[] = uc_order_line_item_add(
+//                         $order->order_id, 'generic', $feeitemname, $totalAmount, _uc_line_item_data('cruise_fee_item', 'weight'), array('name' => $feeitemname)
+//                 );
+                $order->line_items[] = uc_order_line_item_add(
+                		$order->order_id, 'generic', $feeitemname, $totalAmount, _uc_line_item_data('cruise_fee_item', 'weight'), array('name' => 'FEE_ITEMS')
+                );
+            }
+        }
+        
+        $order_id = $order->order_id;
+       
+        
+       
+
+       
+        //->6 Tax
+        $taxamt = CartSession::getTaxAmt($order_id);
+        if ($taxamt != "") {
+//             $order->line_items[] = uc_order_line_item_add($order->order_id, 'generic', 'Tax ', ($taxamt), _uc_line_item_data('Tax', 'weight'), array('name' => 'Tax')
+//             );
+            $order->line_items[] = uc_order_line_item_add($order->order_id, 'generic', 'Tax ', ($taxamt), _uc_line_item_data('Tax', 'weight'), array('name' => 'TAX')
+            );
+        }
+        
+        
+        $taxLineItemSerialized = CartSession::getTaxLineItem($order_id);
+        if ($taxLineItemSerialized) {
+        	$taxLineItemArray = reset(unserialize($taxLineItemSerialized));
+        	if ($taxLineItemArray['amt'] != "") {
+        		$order->line_items[] = uc_order_line_item_add($order->order_id, 'generic', 'Additional Tax Line Item - ' . $taxLineItemArray['taxname'], ($taxLineItemArray['amt']), _uc_line_item_data('coupon', 'weight'), array('name' => 'ADDITIONAL_CHARGE_TAX')
+        		);
+        	}
+        }
+        
+        
+        //Line Item Discount
+        $discountLineItemSerialized = CartSession::getDiscountLineItem($order_id);
+        if ($discountLineItemSerialized) {
+        	$discountLineItemArray = reset(unserialize($discountLineItemSerialized));
+        	if ($taxLineItemArray['amt'] != "") {
+        		$order->line_items[] = uc_order_line_item_add($order->order_id, 'generic', 'Additional Discount Line Item - ' . $discountLineItemArray['discountname'], -($discountLineItemArray['amt']), _uc_line_item_data('coupon', 'weight'), array('name' => 'ADDITIONAL_DISCOUNT')
+        		);
+        	}
+        }
+        
+        $order->payment_method = 'credit';
+        $order->payment_details['cc_number'] = "";
+        $order->payment_details['cc_exp_month'] = ""; //'02';
+        $order->payment_details['cc_exp_year'] = ""; //'15';
+        $order->payment_details['cc_cvv'] =""; //'521';
+        $order->payment_details['cc_type'] = ""; //'visa';//$_SESSION['payments']['cc_type'];
+        
+        
+        
+       
+           uc_order_save($order);
+    
+        	try {
+        		db_update('uc_orders')
+        		->fields(
+        		array('order_status' => 'pending'))
+        		->condition('order_id', $order->order_id)
+        		->execute();
+        	} catch (Exception $e) {
+        		 
+        	}
+        
+       
+        
+        
+        //$orderTotal=CartSession::getOrderTotal($order_id);
+        
+        
+      
+        //Userchoices Log
+         $userChoicesObj = new UserChoices();
+         $userChoicesObj->order_total = $order->order_total;
+         
+         
+         
+         
+        $reservationData = Reservation::getReservationData($order->order_id)->fetchAll();
+        $id = $reservationData[0]->id;
+        $bookingdate = $reservationData[0]->bookingdate;
+        $eventid = $reservationData[0]->eventid;
+        $orderid = $reservationData[0]->orderid;
+        $uid = $reservationData[0]->uid;
+        $bookedby = $reservationData[0]->bookedby;
+        $created = $reservationData[0]->created;
+
+
+
+        //-> Tickets Log
+        foreach ($selectedtickets as $ticket) {
+            $ticketObj = new Tickets();
+            $ticketObj->ticket_id = $ticket['ticketid'];
+            $ticketObj->order_id = $order->order_id;
+            $ticketObj->ticket_qty = $ticket['qty'];
+            $ticketObj->ticket_price = $ticket['price'];
+            $ticketObj->event_id = $reservationData[0]->eventid;
+            $ticketObj->bookingtype = "";
+            $id = BookingLog::logTickets($ticketObj);
+            for ($i = 0; $i < count($ticket['ticketentreeids']); $i++) {
+                $ticketEntreesObj = new TicketEntrees();
+                $ticketEntreesObj->entree_id = (int) $ticket['ticketentreeids'][$i];
+                $ticketEntreesObj->ref_id = (int) $id;
+                $commentArray = explode('-', $ticket['ticketentreescomments'][$i]);
+                $ticketEntreesObj->comments = isset($commentArray[2]) ? $commentArray[2] : '';
+                BookingLog::logTicketEntrees($ticketEntreesObj);
+            }
+        }
+
+
+        //-> Enhancements Log
+        foreach ($selectedenhancements as $enhancement) {
+            $enhancementObj = new Enhancements();
+            $enhancementObj->comments = "";
+            $enhancementObj->enhancement_id = $enhancement['enhancedproductnodeid'];
+            $enhancementObj->enhancement_price = $enhancement['price'];
+            $enhancementObj->enhancement_qty = $enhancement['qty'];
+            $enhancementObj->event_id = $reservationData[0]->eventid;
+            $enhancementObj->order_id = $order->order_id;
+            BookingLog::logEnhancements($enhancementObj);
+        }
+
+        $data = unserialize($reservationData[0]->data);
+        //$cartsessionid = $data->userchoice['cartsessionid'];
+        //$producttickets = $data->userchoice['cruiseproduct']['producttickets'];
+        //$cruiseitem = $data->userchoice['cruiseproduct']['cruiseitem'];
+        //$enhacementproducts = $data->userchoice['enhacementproducts'];
+        $specialinstructions = $data->userchoice['specialinstructions'];
+        $celebrationtext = $data->userchoice['celebrationtext'];
+        $usersdata = $data->userchoice['usersdata'];
+        
+          //-> Updating the cart session
+        $cartsesison = user_password(8) . REQUEST_TIME . user_password(8);
+        $cart_updated = db_update('cartsession')
+                ->fields(array(
+                    'sessionid' => $cartsesison,
+                ))
+                ->condition('sessionid', $order->order_id, '=')
+                ->execute();
+        
+        $usercruiseinputs = array(
+            'cartsessionid' => array($cartsesison),
+            'cruiseproduct' => array(
+            'producttickets' => $selectedtickets,
+            'cruiseitem' => $cruise_id),
+            'enhacementproducts' => $selectedenhancements,
+            'specialinstructions' => $specialinstructions,
+            'celebrationtext' => $celebrationtext,
+            'usersdata' => $usersdata,
+        );
+
+        $userchioce = (object) array(
+                    'userchoice' => $usercruiseinputs
+        );
+
+        $reservationObj = new stdClass();
+        //$reservationObj->bookingdate = REQUEST_TIME;
+        //$reservationObj->bookingdate = strtotime($_SESSION['bookingInput']->date);
+        $reservationObj->orderid = $order->order_id;
+        $reservationObj->id = $r_id;
+        $reservationObj->data = $userchioce;
+        $savereservation = reservation_save($reservationObj);
+         
+         
+        
+        
+        
+        
+         //inventory updation
+        //Tickets
+
+        if ($currentOrderTicketQty > $oldOrderTicketQty) {
+            $totalTickets = $currentOrderTicketQty - $oldOrderTicketQty;
+
+            $res = db_update('scheduledevents')
+                    ->expression('soldtickets', 'soldtickets + :ticketssold', array(':ticketssold' => $totalTickets))
+                    ->expression('availabletickets', 'ticketinventory - soldtickets', array())
+                    ->condition('cruisetemplate_id', $cruise_id, '=')
+                    ->condition('id', $event_id, '=')
+                    ->execute();
+
+            //var_dump('>');
+        } else if ($currentOrderTicketQty < $oldOrderTicketQty) {
+            $totalTickets = $oldOrderTicketQty - $currentOrderTicketQty;
+            $res = db_update('scheduledevents')
+                    ->expression('soldtickets', 'soldtickets - :ticketssold', array(':ticketssold' => ($totalTickets)))
+                    ->expression('availabletickets', 'availabletickets + :tickets', array(':tickets' => ($totalTickets)))
+                    ->condition('cruisetemplate_id', $cruise_id, '=')
+                    ->condition('id', $event_id, '=')
+                    ->execute();
+
+            //var_dump('<');
+        } else {
+            
+        }
+
+        //Enhancements
+        if ($currentOrderWindowsEnhancementQty > $oldOrderWindowsEnhancementQty) {
+            $totalwindowEnhancements = $currentOrderWindowsEnhancementQty - $oldOrderWindowsEnhancementQty;
+
+            //var_dump($totalwindowEnhancements); exit();
+
+            $res = db_update('scheduledevents')
+                    ->expression('windowseatssold', 'windowseatssold + :windowssold', array(':windowssold' => $totalwindowEnhancements))
+                    ->expression('availablewindowseats', 'windowseatinventory - windowseatssold', array())
+                    ->condition('cruisetemplate_id', $cruise_id, '=')
+                    ->condition('id', $event_id, '=')
+                    ->execute();
+            //var_dump('en >');
+        } else if ($currentOrderWindowsEnhancementQty < $oldOrderWindowsEnhancementQty) {
+            $totalwindowEnhancements = $oldOrderWindowsEnhancementQty - $currentOrderWindowsEnhancementQty;
+
+            // var_dump($totalwindowEnhancements); exit();
+            $res = db_update('scheduledevents')
+                    ->expression('windowseatssold', 'windowseatssold - :windowssold', array(':windowssold' => $totalwindowEnhancements))
+                    ->expression('availablewindowseats', 'availablewindowseats + :enhancements', array(':enhancements' => $totalwindowEnhancements))
+                    ->condition('cruisetemplate_id', $cruise_id, '=')
+                    ->condition('id', $event_id, '=')
+                    ->execute();
+
+            //var_dump('en <');
+        } else {
+            
+        }
+    }catch(Exception $e){
+        watchdog("Error in Deleting the order", $e);
+        
+    }
+
+    
+   
+    $_SESSION['default_tab'] = 'edit-payment';
+    $path = 'bookingorder/' . $order_id . '/edit';
+    drupal_goto($path);
+    $commands = array();
+
+    $commands [] = ajax_command_invoke('#savecartbtn', 'hide');
+
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+
+function calclateorderamount($form, $form_state) {
+
+
+
+    $taxamt = 0;
+    $enhancementtotalprice = 0;
+    $cruiseFeeItemPrice = 0;
+
+
+
+    $order_id = $form_state ['values'] ['hiddenorderid'];
+    $cruise_id = $form_state ['values'] ['hiddencruisetemplateid'];
+    $event_id = $form_state ['values'] ['hiddeneventid'];
+
+
+
+
+
+    $availabletickets = Scheduledevents::getAvailableTicketsCount($cruise_id, $event_id);
+    $availablewindows = Scheduledevents::getAvailableWindowsCount($cruise_id, $event_id);
+
+
+
+    /*     * ******
+     * 1.Tickets Calculation
+     *   1.1. Ticket Price Calculation
+     *   1.2. Tax Calculation for Tickets iff Ticket is Taxable
+     *   1.3. Store Tickets
+     * ************** */
+    $result = array();
+    $totalresults = array();
+    $arr = array();
+    $totalticketsprice = 0;
+    $tickets_tax = 0;
+    $feeitems_tax = 0;
+
+    $currentselectticketcnt = 0;
+    foreach ($form_state['values'] as $key => $value) {
+        $reg1 = "/^(ticketentrees)?\d+$/";
+        if (preg_match($reg1, $key)) {
+            if ($form_state['values'][$key] > 0) {
+
+                //1.1 
+                $ticketenteeeid = explode('ticketentrees', $key);
+                $result = array();
+                $ticketID = $ticketenteeeid[1];
+                $result['ticketid'] = $ticketenteeeid[1];
+                $result['qty'] = $form_state['values'][$key];
+                $result['ticketname'] = $form_state['values'][$key . "ticketname"];
+                $result['price'] = $form_state['values'][$key . "price"];
+
+
+                $currentselectticketcnt += (int) $form_state['values'][$key];
+
+                //---------------Ticket Entrees----------------
+                $entrees = array();
+                for ($i = 0; $i < $result['qty']; $i++) {
+                    $entrees[] = $form_state['values']['select' . $result['ticketid'] . $i];
+                }
+                $result['ticketentreeids'] = $entrees;
+
+                //------------Ticket Entrees Comments (Dietary Restrictions)--------------
+                $entreesComments = array();
+                for ($i = 0; $i < $result['qty']; $i++) {
+                    $entreesComments[] = $form_state['values']['select' . $result['ticketid'] . $i] . '-' . $i . '-' . $form_state['values']['dietarycomments' . $result['ticketid'] . $i];
+                }
+
+                //-------- Ticket Entree Comments ends here--------------------
+                $result['ticketentreescomments'] = $entreesComments;
+
+                //1.2
+                $taxableStatus = CruiseTickets::isTaxableTicket($ticketID);
+                if ($taxableStatus) {
+                    $tickets_tax+=$form_state['values'][$key] * $form_state['values'][$key . "price"];
+                }
+                $totalresults[] = $result;
+                $totalticketsprice+= $form_state['values'][$key] * $form_state['values'][$key . "price"];
+            }
+        }
+    }//foreach
+    //1.3       
+    //ENHANCEMENT PROCESS
+    $selectedwindowcnt = 0;
+    $enhancementtotalprice = 0;
+    
+  
+
+    $enhancementsresult = array();
+    foreach ($form_state['values'] as $key => $value) {
+        //Key -> ticketentrees2
+        $reg1 = "/^(enhancement)?\d+$/";
+        if (preg_match($reg1, $key)) {
+            $enhancementid = explode('enhancement', $key);
+            $eid = $enhancementid[1];
+            if ($form_state['values']['qty' . $eid] > 0) {
+
+                if (CruiseEnhancements::is_window_inventory_item($eid)) {
+                    $selectedwindowcnt+=$form_state['values']['qty' . $eid];
+                }
+
+
+                $result = array();
+                $result['enhancedproductnodeid'] = $eid;
+                $result['qty'] = $form_state['values']['qty' . $eid];
+                $result['price'] = $form_state['values']['price' . $eid];
+                $result['name'] = $form_state['values']['_enhancementtitle' . $eid];
+                $productprice = $result['qty'] * (float) $result['price'];
+                $enhancementtotalprice+=$productprice;
+                $enhancementsresult[] = $result;
+            }
+        }
+    }//foreach
+    //validating tickets
+    if ($currentselectticketcnt > $availabletickets) {
+        $commands[] = ajax_command_alert($availabletickets . " tickets are only available!");
+    } else if ($selectedwindowcnt > $availablewindows) {
+        $commands[] = ajax_command_alert($availablewindows . " windows are only available!");
+    } else {
+
+        CartSession::insertTickets($order_id, $totalresults);
+        CartSession::insertTotalTicketsPrice($order_id, $totalticketsprice);
+
+        CartSession::insertEnhancements($order_id, $enhancementsresult);
+        CartSession::insertTotalEnhancementsPrice($order_id, $enhancementtotalprice);
+
+        /*         * ******
+         * Cruise Fee Calculation
+         *   1.1. Cruise Fee calc for Tickets
+         *   1.2. Tax Calculation for Tickets iff Fee is Taxable
+         *   1.3. Store Fee Items
+         * ************** */
+        $feeItems = CartSession::getCruiseFeeItems($order_id);
+
+
+        //var_dump($feeItems); exit();
+
+        foreach ($feeItems as $feeitem) {
+
+            $chargeamt = 0;
+            $feeid = $feeitem['feeid'];
+            $title = $feeitem['title'];
+            $actualrate = $feeitem['actualrate'];
+            $feeValue = $feeitem['updatedrate'];
+            $totalamt = $feeitem['totalamt'];
+            $feeType = $feeitem['type'];
+            $new_value = $form_state['values']['cruisefee' . $feeid];
+            //var_dump($new_value);
+            //$totalresults nothing but total tickets
+            foreach ($totalresults as $ticket) {
+
+
+                if ($ticket ['qty'] > 0) {
+
+
+                    $ticket_id = $ticket ['ticketid'];
+                    $ticket_qty = $ticket ['qty'];
+                    $ticket_price = $ticket ['price'];
+
+
+                    $ticket_feeids = Fees::get_ticket_feeids($ticket_id);
+
+                    //var_dump($ticket_feeids); exit();
+
+                    if ($ticket_feeids != "") {
+                        if (in_array($feeid, $ticket_feeids)) {
+                            $ticketfeeids[] = $feeid;
+                            if ($feeType == "flatfee") {
+                                $totalcharge = $ticket_qty * $new_value;
+                                $chargeamt += $totalcharge;
+                            }
+
+                            if ($feeType == "percentage") {
+                                $totalticketpriceamt = $ticket_qty * $ticket_price;
+                                $chargeamt += ($totalticketpriceamt * $new_value) / 100;
+                            }
+                        }
+                    }
+
+
+                    // 				$istaxableTicket = CruiseTickets::isTaxableTicket($ticket_id);
+                    // 				if ($istaxableTicket) {
+                    // 					$tickets_tax+=$ticket_qty * $ticket_price;
+                    // 				}
+                }
+            }//tickets loop ends here
+
+            $cruiseFeeItemPrice+=$chargeamt;
+            $cruisefeeitems[$feeid] = array('feeid' => $feeid, 'title' => $title, 'type' => $feeType, 'actualrate' => $actualrate, 'updatedrate' => $new_value, 'totalamt' => $chargeamt);
+        }
+
+
+        //1.3
+        CartSession::insertCruiseFeeItems($order_id, $cruisefeeitems);
+
+        //var_dump($totalresults); exit();
+        //1.2
+        $feeitems_tax = 0;
+        foreach ($cruisefeeitems as $key => $values) {
+            $feeid = $values['feeid'];
+            if (in_array($feeid, $ticketfeeids)) {
+                $feeTaxableStatus = Fees::is_taxable_cruisefee_item($feeid);
+                if ($feeTaxableStatus) {
+                    $feeitems_tax+=$values['totalamt'];
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //Tax and Discount Line Items
+        $totalTicketsamt = $totalticketsprice;
+        //$enhancementtotalprice=$enhancementtotalprice;
+
+        $chargeTax = 0;
+        $chargeAmt = 0;
+        $chargetype = $form_state ['values']['chargetype'];
+        $charge = $form_state ['values']['charge'];
+        $chargedescription = $form_state ['values']['chargedescription'];
+        $chargevalue = is_numeric($form_state ['values']['chargevalue']) ? $form_state ['values']['chargevalue'] : 0;
+        //$_SESSION['chargeTaxName']=$chargedescription;
+
+        $chargeTaxName = '';
+        $chargeTaxName = $chargedescription;
+
+        // $chargeTaxValue='';
+        //Type is Dollar Amount
+
+        /*
+         * Case 1: (Charge) Checkbox checked and Type is Dollar Amount, Add Charge Tax to Tax calculations
+         *
+         */
+        if ($chargetype == "dollaramount") {
+            //checkbox is checked and type is dollar amount
+            if ($charge == 1) {
+                //done
+                $chargeTax = $chargevalue;
+                $chargeTaxValue = $chargeTax;
+                //$_SESSION['chargeTaxValue']=$chargeTax;
+            }
+            //checkbox unchecked and type is dollar amount
+            else {
+                $chargeAmt = $chargevalue;
+                $chargeTaxValue = $chargeAmt;
+                //$_SESSION['chargeTaxValue']=$chargeAmt;
+            }
+        } else {
+            //PERCENTAGE
+            //checkbox checked and type is percentage
+            if ($charge == 1) {
+
+                $percentagefee = ($totalTicketsamt + $enhancementtotalprice) * $chargevalue / 100;
+                $chargeTax = $percentagefee;
+                // $_SESSION['chargeTaxValue']=$chargeTax;
+                $chargeTaxValue = $chargeTax;
+                //done
+            }
+            //checkbox unchecked and type is percentage
+            else {
+                //$totalTicketsamt=  CartSession::getTotalTicketsPrice($sessionid);
+                $percentagefee = ($totalTicketsamt + $enhancementtotalprice) * $chargevalue / 100;
+                $chargeAmt = $percentagefee;
+                $chargeTaxValue = $chargeAmt;
+                //$_SESSION['chargeTaxValue']=$chargeAmt;
+                //done
+            }
+        }
+
+
+        //insertion
+        $tax_lineitem = array();
+        $tax_lineitem[$chargeTaxName] = array('taxname' => $chargeTaxName, 'chargetype' => $chargetype, 'checkbox' => $charge, 'amt' => $chargeTaxValue);
+        CartSession::insertTaxLineItem($order_id, $tax_lineitem);
+
+
+        //Discounts
+        $discounttype = $form_state ['values']['discounttype'];
+        $discount = $form_state ['values']['discount'];
+        $discountdescription = $form_state ['values']['discountdescription'];
+        $discountvalue = is_numeric($form_state ['values']['discountvalue']) ? $form_state ['values']['discountvalue'] : 0;
+        //$_SESSION['descriptionDiscountName']=$discountdescription;
+
+        $descriptionDiscountName = $discountdescription;
+
+
+        $discountTax = 0;
+        $discountAmt = 0;
+        //checkbox checked and type is dollaramount
+        if ($discounttype == "dollaramount") {
+            if ($discount == 1) {
+                $discountTax = $discountvalue;
+                //$_SESSION['descriptionDiscountValue']=$discountTax;
+                $descriptionDiscountValue = $discountTax;
+                //done
+            }
+
+            //checkbox unchecked and type is dollar amount
+            else {
+                $discountAmt = $discountvalue;
+                //$_SESSION['descriptionDiscountValue']=$discountAmt;
+                $descriptionDiscountValue = $discountAmt;
+            }
+        } else {
+            //percentage
+            //checkbox checked and type is percentage
+            if ($discount == 1) {
+                $percentagefee = ($totalTicketsamt + $enhancementtotalprice) * $discountvalue / 100;
+                $discountTax = $percentagefee;
+                //$_SESSION['descriptionDiscountValue']=$discountTax;
+                $descriptionDiscountValue = $discountTax;
+            } else {
+                //checkbox unchecked adn type is percentage
+                $percentagefee = ($totalTicketsamt + $enhancementtotalprice) * $discountvalue / 100;
+                $discountAmt = $percentagefee;
+                //$_SESSION['descriptionDiscountValue']=$discountAmt;
+                $descriptionDiscountValue = $discountAmt;
+            }
+        }
+
+        //insertion
+        $discount_lineitem = array();
+        $discount_lineitem[$descriptionDiscountName] = array('discountname' => $descriptionDiscountName, 'discounttype' => $discounttype, 'checkbox' => $discount, 'amt' => $descriptionDiscountValue);
+        CartSession::insertDiscountLineItem($order_id, $discount_lineitem);
+
+        //var_dump($discount_lineitem); exit();
+        //var_dump($cruiseFeeItemPrice); exit();
+
+        $orderSubTotal = $totalticketsprice + $enhancementtotalprice + $cruiseFeeItemPrice + $chargeTax + $chargeAmt - $discountTax - $discountAmt;
+
+        
+        
+        CartSession::insertOrderSubTotal($order_id, $orderSubTotal);
+
+        //a:3:{i:1;a:6:{s:5:"feeid";s:1:"1";s:5:"title";s:11:"Port Charge";s:4:"type";s:7:"flatfee";s:10:"actualrate";s:5:"10.00";s:11:"updatedrate";s:5:"10.00";s:8:"totalamt";d:20;}i:2;a:6:{s:5:"feeid";s:1:"2";s:5:"title";s:11:"Fuel Charge";s:4:"type";s:7:"flatfee";s:10:"actualrate";s:4:"5.00";s:11:"updatedrate";s:4:"5.00";s:8:"totalamt";d:10;}i:3;a:6:{s:5:"feeid";s:1:"3";s:5:"title";s:9:"Test fees";s:4:"type";s:7:"flatfee";s:10:"actualrate";s:5:"10.00";s:11:"updatedrate";s:5:"10.00";s:8:"totalamt";d:20;}}
+        //a:3:{i:1;a:6:{s:5:"feeid";s:1:"1";s:5:"title";s:11:"Port Charge";s:4:"type";s:7:"flatfee";s:10:"actualrate";s:5:"10.00";s:11:"updatedrate";s:5:"10.00";s:8:"totalamt";d:30;}i:2;a:6:{s:5:"feeid";s:1:"2";s:5:"title";s:11:"Fuel Charge";s:4:"type";s:7:"flatfee";s:10:"actualrate";s:4:"5.00";s:11:"updatedrate";s:4:"5.00";s:8:"totalamt";d:45;}i:3;a:6:{s:5:"feeid";s:1:"3";s:5:"title";s:9:"Test fees";s:4:"type";s:7:"flatfee";s:10:"actualrate";s:5:"10.00";s:11:"updatedrate";s:5:"10.00";s:8:"totalamt";d:75;}}
+        //a:4:{s:11:"tickets_tax";d:380;s:12:"feeitems_tax";i:0;s:16:"enhancements_tax";d:40;s:9:"total_tax";s:5:"39.90";}
+        //a:4:{s:11:"tickets_tax";d:1140;s:12:"feeitems_tax";i:0;s:16:"enhancements_tax";d:40;s:9:"total_tax";s:6:"112.10";}
+        //a:4:{s:11:"tickets_tax";d:380;s:12:"feeitems_tax";i:0;s:16:"enhancements_tax";d:40;s:9:"total_tax";s:5:"39.90";}
+        //a:4:{s:11:"tickets_tax";d:380;s:12:"feeitems_tax";i:0;s:16:"enhancements_tax";d:40;s:9:"total_tax";s:5:"39.90";}
+
+
+
+        $taxvalue = $form_state ['values']['taxvalue'];
+        $taxarr = array();
+        $taxamt = (($tickets_tax + $feeitems_tax + $enhancementtotalprice + $chargeTax) - $discountTax) * $taxvalue / 100;
+
+        $taxarr['taxvalue'] = $taxvalue;
+        $taxarr['tickets_tax'] = $tickets_tax;
+        $taxarr['feeitems_tax'] = $feeitems_tax;
+        $taxarr['enhancements_tax'] = $enhancementtotalprice;
+        $taxarr['total_tax'] = sprintf("%.2f", $taxamt);
+        CartSession::insertTaxItems($order_id, serialize($taxarr));
+        
+        
+        //giftcard
+        $promocodediscount=0;
+        $promocodeData = unserialize(CartSession::getPromocode($order_id));
+        if($promocodeData){
+        	foreach ($promocodeData as $key => $value) {
+        		$promocodekey = $key;
+        		$promocodediscount = $value;
+        	}
+        }
+        
+        //voucher codes
+        $voucheramt=0;
+        $vouchercodesserialized = CartSession::getVoucherCodes($order_id);
+        if ($vouchercodesserialized) {
+        	$vouchercodes = unserialize($vouchercodesserialized);
+        	foreach ($vouchercodes as $code => $amt) {
+        		$voucheramt+=$amt;
+        	}
+        }
+        
+        //giftcard
+        $giftCardSerialized = CartSession::getGiftCard($order_id);
+        $giftCardArray = reset(unserialize($giftCardSerialized));
+        $giftcardAmt=0;
+        if($giftCardArray){
+        	$giftcardAmt=$giftCardArray['deductedamount'];
+        }
+        
+        
+        //promocode
+       $discountlineitemstotal=$promocodediscount+$voucheramt+$giftcardAmt;
+
+
+
+
+
+        $orderTotalPrice = $orderSubTotal + $taxamt -$discountlineitemstotal;
+        
+       
+        CartSession::insertOrderTotal($order_id, $orderTotalPrice);
+
+
+
+
+
+        if (CartSession::getTickets($order_id)) {
+            $tickets = unserialize(CartSession::getTickets($order_id));
+            $ticketHtml = '<div id="TICKETKTDIV">';
+            $ticketHtml .= '<div class="row-fluid"><div class="span12" style="padding-left:3%;"><h3>Tickets <br/></h3></div></div>';
+            foreach ($tickets as $ticket) {
+                if ($ticket ['qty'] > 0) {
+                    $amount = $ticket['qty'] * $ticket['price'];
+                    $ticketHtml .= '<div class="row-fluid"><div class="span6" style="padding-left:6%;">' . $ticket['qty'] . '- ' . $ticket ['ticketname'] . '</div><div class="span6">$' . wwcFormatPrice($amount) . '</div></div>';
+                }
+            }
+            $ticketHtml .= "</div>";
+            $commands [] = ajax_command_replace("#TICKETKTDIV", "<div id='TICKETKTDIV'>" . $ticketHtml . "</div>");
+        }
+
+
+
+
+
+
+
+        //tax Line Item
+        $taxLineItemSerialized = CartSession::getTaxLineItem($order_id);
+        if ($taxLineItemSerialized) {
+            $taxlineitemsHtml = '<div id="TAXLINTEITEMDIV">';
+            $taxLineItemArray = unserialize($taxLineItemSerialized);
+            foreach ($taxLineItemArray as $key => $values) {
+                if ($values['amt'] > 0) {
+                    $taxlineitemsHtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">'
+                            . $values['taxname'] . '</div><div class="span6">$' . wwcFormatPrice($values['amt'])
+                            . '</div></div>';
+                }
+            }
+            $taxlineitemsHtml.='</div>';
+            $commands [] = ajax_command_replace("#TAXLINTEITEMDIV", "<div id='TAXLINTEITEMDIV'>" . $taxlineitemsHtml . "</div>");
+        }
+
+
+        //discount line item
+        $discountLineItemSerialized = CartSession::getDiscountLineItem($order_id);
+        if ($discountLineItemSerialized) {
+            $discountlineitemHtml = '<div id="DISCOUNTLINEITEMMDIV">';
+            $discountLineItemArray = unserialize($discountLineItemSerialized);
+            foreach ($discountLineItemArray as $key => $values) {
+                if ($values['amt'] > 0) {
+                    $discountlineitemHtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">'
+                            . $values['discountname'] . '</div><div class="span6">-$'
+                            . wwcFormatPrice($values['amt']) . '</div></div>';
+                }
+            }
+            $discountlineitemHtml.='</div>';
+            $commands [] = ajax_command_replace("#DISCOUNTLINEITEMMDIV", "<div id='DISCOUNTLINEITEMMDIV'>" . $discountlineitemHtml . "</div>");
+        }
+
+
+        //Enhancements
+        $enhancementhtml = '<div id="ENHANCEMENTDIV">';
+        $enhancementhtml .= '<div class="row-fluid"><div class="span12" style="padding-left:3%;"><h3>Enhancements <br/></h3></div>';
+        $enhancementserialized = CartSession::getEnhancements($order_id);
+        if ($enhancementserialized) {
+            $enhancmentsitems = unserialize(CartSession::getEnhancements($order_id));
+            foreach ($enhancmentsitems as $enhancmentwidget) {
+                $amount = $enhancmentwidget['qty'] * $enhancmentwidget['price'];
+                $enhancementhtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">'
+                        . $enhancmentwidget['qty'] . '-' . $enhancmentwidget['name'] . '</div><div class="span6">$'
+                        . wwcFormatPrice($amount) . '</div></div>';
+            }
+            $enhancementhtml.='</div>';
+            $commands [] = ajax_command_replace("#ENHANCEMENTDIV", "<div id='ENHANCEMENTDIV'>" . $enhancementhtml . "</div>");
+        }
+
+
+
+        //Cruise Fee Line Items
+        $cruiseFeeItems = CartSession::getCruiseFeeItems($order_id);
+        $cruisefeehtml = '<div id="CRUISEFEEDIV">';
+        //    $cruisefeehtml .= '<h3>Cruise Fee <br/></h3>';
+        $cruisefeehtml .= '<div class="row-fluid"><div class="span12" style="padding-left:3%;"><h3>Cruise Fee<br/></h3></div>';
+        foreach ($cruiseFeeItems as $item) {
+            $chargeamt = $item['totalamt'];
+            if ($chargeamt > 0) {
+                $cruisefeehtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">'
+                        . $item['title'] . '</div><div class="span6"> $'
+                        . wwcFormatPrice($chargeamt) . '</div></div>';
+            }
+        }
+        $cruisefeehtml.='</div>';
+        $commands [] = ajax_command_replace("#CRUISEFEEDIV", "<div id='CRUISEFEEDIV'>" . $cruisefeehtml . "</div>");
+
+
+        //Sub Total
+        $orderSubTotal = CartSession::getOrderSubTotal($order_id);
+        $subtotalhtml = '<div id="SUBTOTALDIV">';
+        if ($orderSubTotal != "") {
+            $subtotalhtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;"> '
+                    . '<h4>Subtotal</h4> </div><div class="span6"> $'
+                    . wwcFormatPrice($orderSubTotal) . '</div></div>';
+        }
+        $subtotalhtml.='</div>';
+        $commands [] = ajax_command_replace("#SUBTOTALDIV", "<div id='SUBTOTALDIV'>" . $subtotalhtml . "</div>");
+
+
+        //tax total
+        $taxamthtml = '<div id="TAXDIV">';
+        $taxAmt = CartSession::getTaxAmt($order_id);
+        if ($taxAmt != "") {
+            $taxamthtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">'
+                    . ' Tax </div><div class="span6">$'
+                    . wwcFormatPrice($taxAmt) . '</div></div>';
+        }
+        $taxamthtml.='</div>';
+        $commands [] = ajax_command_replace("#TAXDIV", "<div id='TAXDIV'>" . $taxamthtml . "</div>");
+
+        //Order Total
+        $totalhtml = '<div id="ORDERTOTALDIV">';
+        $orderTotal = CartSession::getOrderTotal($order_id);
+        if ($orderTotal != "") {
+            $totalhtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">'
+                    . ' <h4>Total </h4> </div><div class="span6"> $'
+                    . wwcFormatPrice($orderTotal) . '</div></div>';
+        }
+
+        $totalhtml.='</div>';
+        $commands [] = ajax_command_replace("#ORDERTOTALDIV", "<div id='ORDERTOTALDIV'>" . $totalhtml . "</div>");
+        //$commands [] = ajax_command_invoke('#savecartbtn', 'show');
+    }
+
+
+
+
+
+     $commands [] = ajax_command_invoke('#savecartbtn', 'show');
+
+
+
+
+
+
+
+
+
+
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+/* * *****************************************************************************
+ *
+ * FUNC  : Enhancement SUBMISSION
+ *
+ *
+ *       			
+ *
+ *
+ * ***************************************************************************** */
+
+function enhancements_submit($form, $form_state) {
+    $order_id = $form_state['values']['hiddenorderid'];
+    $enhancementtotalprice = 0;
+    foreach ($form_state['values'] as $key => $value) {
+        //Key -> ticketentrees2
+        $reg1 = "/^(enhancement)?\d+$/";
+        if (preg_match($reg1, $key)) {
+            $enhancementid = explode('enhancement', $key);
+            $eid = $enhancementid[1];
+            if ($form_state['values']['qty' . $eid] > 0) {
+                $result = array();
+                $result['enhancementid'] = $eid;
+                $result['qty'] = $form_state['values']['qty' . $eid];
+                $result['price'] = $form_state['values']['price' . $eid];
+                $result['name'] = $form_state['values']['_enhancementtitle' . $eid];
+                $productprice = $result['qty'] * (float) $result['price'];
+                $enhancementtotalprice+=$productprice;
+                $totalresults[] = $result;
+            }
+        }
+    }//foreach
+
+    CartSession::insertEnhancements($order_id, $totalresults);
+    CartSession::insertTotalEnhancementsPrice($order_id, $enhancementtotalprice);
+    //Enhancements
+    $enhancementhtml = '<div id="ENHANCEMENTDIV">';
+    $enhancementhtml .= '<div class="row-fluid"><div class="span12" style="padding-left:3%;"><h3>Enhancements <br/></h3></div>';
+    $enhancmentsitems = unserialize(CartSession::getEnhancements($order_id));
+    foreach ($enhancmentsitems as $enhancmentwidget) {
+        $amount = $enhancmentwidget['qty'] * $enhancmentwidget['price'];
+        $enhancementhtml.='<div class="row-fluid"><div class="span6" style="padding-left:6%;">'
+                . $enhancmentwidget['qty'] . '-' . $enhancmentwidget['name']
+                . '</div><div class="span6">$ ' . wwcFormatPrice($amount) . '</div></div>';
+    }
+    $enhancementhtml.='</div>';
+    $commands [] = ajax_command_replace("#ENHANCEMENTDIV", "<div id='ENHANCEMENTDIV'>" . $enhancementhtml . "</div>");
+
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+
+
+function ticketentrees_callback_orderedit($form, $form_state) {
+    return $form['cartinfo']['TICKETS']['ticketentrees_fieldset'];
+}
+
+
+
+
+
+function orderedit_calendars_day_fields($month, $year, $reservationdate, $cruiseeventid, $orderid) {
+
+    $first_day = mktime(0, 0, 0, $month, 1, $year);
+    $break = mktime(0, 0, 0, $month + 1, 1, $year); //break the month for end day
+//  $reservationday=date('d',$reservationdate);
+    // Find out what day of the week the first day of the month falls on
+    $day_of_week = date('D', $first_day);
+    $blank = date('w', $first_day);
+
+    $end_day = mktime(0, 0, 0, $month + 1, 0, $year); //last day of previous month
+    $days_in_month = date('j', $end_day);
+
+    //store these for the theme function
+    $form = array(
+        '#first_day' => $first_day,
+        '#day_of_week' => $day_of_week,
+        '#blank' => $blank,
+        '#end_day' => $end_day,
+        '#tree' => TRUE,
+        '#days_in_month' => $days_in_month,
+//    '#reservationdate'=>$reservationdate,
+        '#currentmonth' => $month,
+        '#currentyear' => $year,
+//      '#cruiseid'=>$cruiseeventid,
+//      '#orderid'=>$orderid
+    );
+
+//  var_dump($form);
+    //make assoc array of data existing availability
+    $assoc = array();
+    foreach ($days as $day) {
+        $day = (array) $day;
+        $dateTime = new DateTime($day['calendar_dt']);
+        $ref_day = $dateTime->format('j');
+        $assoc[$ref_day] = $day;
+    }
+
+    $rows = $row = array();
+    $counter = new DateObject(date(DATE_FORMAT_ISO, $first_day), date_default_timezone(), DATE_FORMAT_ISO);
+    while ((int) $counter->format('U') < $break) {
+        $ref_day = $counter->format('j');
+        $existing = (isset($assoc[$ref_day]) ? $assoc[$ref_day] : FALSE);
+        $form[$ref_day] = array();
+
+
+        //loop to next day
+        $counter->modify('+ 1 day');
+    }
+
+    $form['#token'] = false;
+
+    return $form;
+}
+
+function orderedit_calendar_add_form($form, &$form_state, $reservationdate, $cruiseeventid) {
+    // Generate the first day of the month
+// var_dump($reservationdate);
+    $year = date('Y', $reservationdate);
+    $month = date('m', $reservationdate);
+
+    $year = 2014;
+    $month = 02;
+
+
+    $form['calendar'] = orderedit_calendars_day_fields($month, $year, $reservationdate, $cruiseeventid);
+
+    return $form;
+}
+
+//calendar ajax implementation**/
+
+
+
+
+function loadevents_by_date() {
+
+    $datebasedevents = array(
+        'sunsetdinner' => 'laxmi',
+        'sundaybrunch' => 'sundaybrunch',
+        'happyhour' => 'happyhour',
+    );
+    $form['cartinfo']['cartdetails']['datebasedeventlist']['#options'] = $datebasedevents;
+    return $form['cartinfo']['cartdetails']['datebasedeventlist'];
+}
+
+function orderedit_theme() {
+    return array(
+        'orderedit_calendar_add_form' => array(
+            'file' => 'ordereditcalendar.theme.inc',
+            'render element' => 'form',
+        ),
+    );
+}
+
+/*   ajax call back function   */
+
+function getcruiseeventoptions() {
+    $selectedDate = $_POST['seldate'];
+
+    //2014-02-28
+
+    $beginDateTime = strtotime($selectedDate . " 00:00:00");
+    $endDateTime = strtotime($selectedDate . " 23:59:59");
+
+    $query = db_select('scheduledevents', '');
+    $query->fields('scheduledevents', array('id', 'name'));
+//    $query->fields('cruise', array('cruise_title'));
+    $query->innerJoin('scheduledevent_dates', '', 'scheduledevents.id = scheduledevent_dates.scheduledevent_id');
+    $query->innerJoin('cruise', '', 'cruise.id = scheduledevents.cruisetemplate_id');
+    $query->condition('scheduledevent_dates.scheduleddate', $beginDateTime, '>=');
+    $query->condition('scheduledevent_dates.scheduleddate', $endDateTime, '<=');
+
+    $result = $query->execute()->fetchAll();
+
+    $data = array();
+    for ($i = 0; $i < count($result); $i++) {
+//        $result[$i]->name=$result[$i]->cruise_title;
+        $data[] = $result[$i];
+    }
+
+    //if(count($data)==0){
+    // $data="No Events found";
+    //}
+
+    drupal_json_output($data);
+    exit();
+}
+
+function getcruiseeventoptionsbydate($selectedDate) {
+    //2014-02-28
+
+    $beginDateTime = strtotime($selectedDate . " 00:00:00");
+    $endDateTime = strtotime($selectedDate . " 23:59:59");
+
+    $query = db_select('scheduledevents', '');
+    $query->fields('scheduledevents', array('id', '`name`'));
+    $query->innerJoin('scheduledevent_dates', '', 'scheduledevents.id = scheduledevent_dates.scheduledevent_id');
+    $query->condition('scheduledevent_dates.scheduleddate', $beginDateTime, '>=');
+    $query->condition('scheduledevent_dates.scheduleddate', $endDateTime, '<=');
+
+    $result = $query->execute()->fetchAll();
+
+    $data = array();
+    for ($i = 0; $i < count($result); $i++) {
+        $data[] = $result[$i];
+    }
+    return $data;
+}
+
+//Resend Email
+function resendemailtouser($form, $form_state) {
+    $commands = array();
+    try {
+        $order_id = $form_state ['values'] ['hiddenorderid'];
+        $order = uc_order_load($order_id);
+        $params = array(
+            'subject' => t('Your Order at WATERWAYS'),
+            'body' => t("Data"),
+            'orderId' => $order->order_id
+        );
+        $to = $order->primary_email;
+         $from=SiteConfiguration::getConfirmationEmail();
+        $res = drupal_mail("email_system", "wwc_order_invoice_template", $to, language_default(), $params, $from);
+        $commands [] = ajax_command_alert("Message sent successfully");
+    } catch (Exception $message) {
+        watchdog("Order Edit", $message);
+    }
+
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+function updateuserDetails($form, $form_state) {
+    $order_id = $form_state['values']['hiddenorderid'];
+    $guest_firstname = $form_state['values']['guest_firstname'];
+    $guest_lastname = $form_state['values']['guest_lastname'];
+    $guest_address = $form_state['values']['guest_address'];
+    $guest_city = $form_state['values']['guest_city'];
+    $guest_state = $form_state['values']['guest_state'];
+    $guest_phone = $form_state['values']['guest_phone'];
+    $guest_zipcode = $form_state['values']['guest_zipcode'];
+    $guest_email = $form_state['values']['guest_email'];
+    
+    
+   
+    $order=  uc_order_load($order_id);
+    // load user object
+    $existingUser = user_load($order->uid);
+    
+    // update some user property
+    $existingUser->mail = $guest_email;
+    // save existing user
+    user_save((object) array('uid' => $existingUser->uid), (array) $existingUser);
+
+
+    $limited_mobility_flag = $form_state['values']['limitedmobility'];
+    $food_allergy_flag = $form_state['values']['foodallergy'];
+    $another_party_flag = $form_state['values']['anotherparty'];
+    $another_party_comments = $form_state['values']['specialinstructionscomments'];
+    $celebration_flag = $form_state['values']['ocassiontypeenabled'];
+    $celebration_comments = $form_state['values']['celebrationscomments'];
+    $receive_email_notification_flag = $form_state['values']['emailpromotions'];
+    $referal = $form_state['values']['referal'];
+
+
+    //var_dump($referal); exit();
+
+
+
+    $userChoicesObject = new stdClass();
+
+    $userChoicesObject->limited_mobility_flag = $limited_mobility_flag;
+    $userChoicesObject->food_allergy_flag = $food_allergy_flag;
+    $userChoicesObject->another_party_flag = $another_party_flag;
+    $userChoicesObject->another_party_comments = $another_party_comments;
+    $userChoicesObject->celebration_flag = $celebration_flag;
+    $userChoicesObject->celebration_comments = $celebration_comments;
+    $userChoicesObject->receive_email_notification_flag = $receive_email_notification_flag;
+    $userChoicesObject->order_id = $order_id;
+    $userChoicesObject->customer_email = $guest_email;
+    $userChoicesObject->referal = $referal;
+
+
+
+
+    $numuserchoiceUpdate = BookingLog::updateUserChoices($userChoicesObject);
+
+
+
+    try {
+        $num_updated = db_update('uc_orders')
+                ->fields(array(
+                    'delivery_first_name' => $guest_firstname,
+                    'delivery_last_name' => $guest_lastname,
+                    'delivery_phone' => $guest_phone,
+                    'delivery_street1' => $guest_address,
+                    'delivery_city' => $guest_city,
+                    'delivery_zone' => $guest_state,
+                    'delivery_postal_code' => $guest_zipcode,
+                    //'primary_email' => $guest_email,
+                ))
+                ->condition('order_id', $order_id, '=')
+                ->execute();
+    } catch (Exception $e) {
+        watchdog("orderedit", $e);
+    }
+    
+    
+    //Updating Guest Email
+    
+    
+    if (is_null($num_updated) || is_null($numuserchoiceUpdate)) {
+        $msg = "Operation failed";
+    } else if ($num_updated > 0 || $numuserchoiceUpdate > 0) {
+        $msg = "Record updated successfully";
+    } else if ($num_updated == 0 && $numuserchoiceUpdate == 0) {
+        $msg = "No changes detected";
+    }
+
+
+    // var_dump($num_updated); exit();
+
+    $commands[] = ajax_command_alert($msg);
+
+    return array(
+        '#type' => 'ajax',
+        '#commands' => $commands
+    );
+}
+
+//function selected_eventdata_replace($form, $form_state) {
+function selected_eventdata_replace() {
+
+//    $cruiseeventid = isset($form_state['values']['cruisetype']) ? $form_state['values']['cruisetype'] : '';
+    $cruiseeventid = isset($_POST['cruisetype']) ? $_POST['cruisetype'] : '';
+    $eventdetails = scheduledevents_load($cruiseeventid);
+    $eventsacheduleddate = getScheduleddatebyeventId($cruiseeventid);
+    $cruisedeparturetime = $eventdetails->departuretime;
+    $cruisereturntime = $eventdetails->returntime;
+    $cruiseborading = $eventdetails->boardingtime;
+    $bookingdate = date('m/d/Y', $eventsacheduleddate);
+
+    try {
+        $scheduledeventsObject = db_select('scheduledevents', 's')
+                        ->fields('s', array('cruisetemplate_id'))
+                        ->condition('id', $cruiseeventid)
+                        ->execute()->fetchObject();
+        $cruise_template_id = $scheduledeventsObject->cruisetemplate_id;
+    } catch (Exception $e) {
+        //_drupal_log_error($e);
+    }
+
+//Get the cruise Data
+    $cruiseObject = cruise_load($scheduledeventsObject->cruisetemplate_id);
+    $cruisetitle = isset($cruiseObject->cruise_title) ? $cruiseObject->cruise_title : '';
+
+    $availablestock = $eventdetails->availabletickets;
+    $availablewindowstock = $eventdetails->availablewindowseats;
+
+
+    $portId = $eventdetails->port_id;
+    $portData = loadportById($portId);
+
+    $eventdetailshtml = '<div class="row-fluid">
+                           <div class="span12" style="margin:4% 0px;">
+                                <div align="right" class="input-medium"><b>Selected</b></div>
+                           </div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Cruise Title</div>
+                           <div class="pull-left">' . $cruisetitle . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Cruise Date</div>
+                           <div class="pull-left">' . $bookingdate . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Port</div>
+                           <div class="pull-left">' . $portData['portname'] . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Boarding</div>
+                           <div class="pull-left">' . $cruiseborading . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Departure</div>
+                           <div class="pull-left">' . $cruisedeparturetime . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Return</div>
+                           <div class="pull-left">' . $cruisereturntime . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12 carteventinfotitle input-medium">
+                           <div align="right" class="input-medium" style="margin-top:4%;"><b>Available</b></div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Tickets</div>
+                           <div class="pull-left">' . $availablestock . '</div></div>
+                       </div>
+                       <div class="row-fluid"><div class="span12">
+                           <div class="pull-left carteventinfotitle input-medium">
+                              Windows</div>
+                           <div class="pull-left">' . $availablewindowstock . '</div></div>
+                       </div>';
+//    $commands = array();
+//    $commands[] = ajax_command_replace("#eventdetailsdiv", "<div id='eventdetailsdiv'>" . $eventdetailshtml . "</div>");
+//    return array(
+//        '#type' => 'ajax',
+//        '#commands' => $commands
+//    );
+    drupal_json_output($eventdetailshtml);
+}
+?>
+

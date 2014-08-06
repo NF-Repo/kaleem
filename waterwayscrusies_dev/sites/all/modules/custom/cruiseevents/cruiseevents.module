@@ -1,0 +1,2784 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function cruiseevents_menu() {
+    //Admin Management for Request Quote
+
+    $items['cruiseevents'] = array(
+        'title' => 'Cruise events Application form',
+        'page callback' => 'cruiseevents_list_view',
+        'access arguments' => array('view cruiseevents entity'),
+    );
+
+    $items['admin/structure/cruiseevents/manage'] = array(
+        'title' => 'Cruise Events Admin',
+        'description' => 'Manage Events Admin Structure',
+        'page callback' => 'cruiseevents_admin_page',
+        'access arguments' => array('administer Request Quote entities'),
+    );
+
+    //Detailed View for Request Quote
+    $items['cruiseevents/%cruiseevents'] = array(
+        'title callback' => 'cruiseevents_page_title',
+        'title arguments' => array(1),
+        'page callback' => 'cruiseevents_page_view',
+        'page arguments' => array(1),
+        'access arguments' => array('view cruiseevents entities'),
+        'type' => MENU_CALLBACK,
+    );
+
+
+    //Request Quote View
+    $items['cruiseevents/%cruiseevents/view'] = array(
+        'title' => 'View',
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'weight' => -10,
+    );
+
+
+    //Request Quote Edit
+    $items['cruiseevents/%cruiseevents/edit'] = array(
+        'title' => 'Edit',
+        'load arguments' => array('cruiseevents'),
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => 'cruiseevents_item_edit',
+        'access arguments' => array('edit cruiseevents entities'),
+        'page arguments' => array(1),
+    );
+
+    //Request Quote Add
+    $items['cruiseevents/add'] = array(
+        'title' => 'Add cruiseevents',
+        'page callback' => 'cruiseevents_add',
+        'access arguments' => array('create cruiseevents entities'),
+    );
+// Get Date Event 
+    $items['calenderevents'] = array(
+        'title' => 'Get Event By Month And Year',
+        'page callback' => 'cruiseevents_getdate',
+        'access arguments' => array('view cruiseevents entities'),
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function cruiseevents_permission() {
+    return array(
+        'administer cruiseevents entities' => array(
+            'title' => t('Administer cruiseevents entities'),
+            'restrict access' => TRUE,
+        ),
+        'view cruiseevents entities' => array(
+            'title' => t('View cruiseevents Entities'),
+        ),
+        'create cruiseevents entities' => array(
+            'title' => t('Create cruiseevents Entities'),
+        ),
+    );
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function cruiseevents_entity_info() {
+    $cruiseevents_info['cruiseevents'] = array(
+        'label' => t('cruiseevents Entity'),
+        'controller class' => 'cruiseeventsController',
+        'base table' => 'cruiseevents',
+        'uri callback' => 'cruiseevents_uri',
+        'fieldable' => TRUE,
+        'entity keys' => array(
+            'id' => 'id',
+        ),
+        'static cache' => TRUE,
+        'bundles' => array(
+            'cruiseevents_bundle' => array(
+                'label' => 'cruiseevents',
+                'admin' => array(
+                    'path' => 'admin/structure/cruiseevents/manage',
+                    'access arguments' => array('administer cruiseevents entities'),
+                ),
+            ),
+        ),
+        'view modes' => array(
+            'full' => array(
+                'label' => t('Full'),
+                'custom settings' => FALSE,
+            ),
+        )
+    );
+    return $cruiseevents_info;
+}
+
+function cruiseevents_page_title($cruiseevents) {
+    return 'Cruise Events';
+}
+
+function cruiseevents_load($id = NULL, $reset = FALSE) {
+    $ids = (isset($id) ? array($id) : array());
+    $cruiseevents = cruiseevents_load_multiple($ids, array(), $reset);
+    return $cruiseevents ? reset($cruiseevents) : FALSE;
+}
+
+function cruiseevents_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+    return entity_load('cruiseevents', $ids, $conditions, $reset);
+}
+
+function cruiseevents_uri($basic) {
+    return array(
+        'path' => 'cruiseevents/' . $cruiseevents->id,
+    );
+}
+
+function cruiseevents_admin_page() {
+    $output = 'Admin page for cruiseevents entities.<br/>';
+    $output .= '<a href="' . base_path() . 'cruiseevents/add">Add cruiseevents entity</a>';
+
+    return $output;
+}
+
+function getEventByDates($rows, $cruiseId) {
+    $records = array();
+//    var_dump($rows);
+    foreach ($rows as $row) {
+        foreach ($row as $key => $values) {
+            $arr = explode(',', $values['eventProductitems']);
+            //Loading the node data
+            $nodedetails = node_load_multiple($nids = $arr);
+            for ($i = 0; $i < count($arr); $i++) {
+                $portResult = getCruseItemDetailsById($arr[$i]);
+
+//                if ($cruiseId == $portResult['cruisenodeid']) {
+                if (!in_array($key, $records)) {
+                    $records[] = $key;
+//                    }
+                }
+            }
+        }
+    }
+
+    return $records;
+}
+
+function cruiseevents_getdate() {
+    global $user;
+    $userId = $user->uid;
+    $currentmonth = $_GET['mon'];
+    $currentyear = $_GET['year'];
+    $cruisefilter = $_GET['cruisefilter'];
+    $portfilter = $_GET['portfilter'];
+
+
+
+    $cruisecalendar = draw_calendar($currentmonth, $currentyear, $cruisefilter, $portfilter);
+    drupal_json_output($cruisecalendar);
+}
+
+function getEventByCruise($rows, $cruiseId) {
+    $records = array();
+    foreach ($rows as $row) {
+        foreach ($row as $key => $values) {
+            $arr = explode(',', $values['eventProductitems']);
+            //Loading the node data
+            $nodedetails = node_load_multiple($nids = $arr);
+            for ($i = 0; $i < count($arr); $i++) {
+                $portResult = getCruseItemDetailsById($arr[$i]);
+                if ($cruiseId == $arr[$i]) {
+                    $records[$key][$i]['id'] = $values['id'];
+                    $records[$key][$i]['eventStatus'] = $values['eventStatus'];
+                    $records[$key][$i]['eventType'] = $values['eventType'];
+                    $records[$key][$i]['recurrenceType'] = $values['recurrenceType'];
+                    $records[$key][$i]['eventDays'] = $values['eventDays'];
+                    $records[$key][$i]['productId'] = $arr[$i];
+                    $records[$key][$i]['created'] = $values['created'];
+                    $records[$key][$i]['name'] = $nodedetails[$arr[$i]]->title;
+                    //$records[$key][$i]['description'] = $portResult['description'];
+                    $records[$key][$i]['departureTime'] = $portResult['departuretime'];
+                    $records[$key][$i]['portName'] = $portResult['portname'];
+                    $records[$key][$i]['portDescription'] = $portResult['portdescription'];
+                    $records[$key][$i]['portId'] = $portResult['portid'];
+                    $records[$key][$i]['portColor'] = $portResult['portColor'];
+                    $records[$key][$i]['portAddress'] = $portResult['portAddress'];
+                    $records[$key][$i]['portState'] = $portResult['portState'];
+                    $records[$key][$i]['portCity'] = $portResult['portCity'];
+                    $records[$key][$i]['portPostalCode'] = $portResult['portPostalCode'];
+                    $records[$key][$i]['cruiseNodeId'] = $portResult['cruisenodeid'];
+                    $records[$key][$i]['portStreet'] = $portResult['portStreet'];
+                    $records[$key][$i]['portCategoryId'] = $portResult['portCategoryId'];
+                }
+            }
+        }
+    }
+
+    return $records;
+}
+
+function getEventByPort($rows, $portId) {
+
+    $records = array();
+    foreach ($rows as $row) {
+        foreach ($row as $key => $values) {
+            $arr = explode(',', $values['eventProductitems']);
+            //Loading the node data
+            $nodedetails = node_load_multiple($nids = $arr);
+            for ($i = 0; $i < count($arr); $i++) {
+                $portResult = getCruseItemDetailsById($arr[$i]);
+                if ($portId == $portResult['portCategoryId']) {
+                    $records[$key][$i]['id'] = $values['id'];
+                    $records[$key][$i]['eventStatus'] = $values['eventStatus'];
+                    $records[$key][$i]['eventType'] = $values['eventType'];
+                    $records[$key][$i]['recurrenceType'] = $values['recurrenceType'];
+                    $records[$key][$i]['eventDays'] = $values['eventDays'];
+                    $records[$key][$i]['productId'] = $arr[$i];
+                    $records[$key][$i]['created'] = $values['created'];
+                    $records[$key][$i]['name'] = $nodedetails[$arr[$i]]->title;
+                    //$records[$key][$i]['description'] = $portResult['description'];
+                    $records[$key][$i]['departureTime'] = $portResult['departuretime'];
+                    $records[$key][$i]['portName'] = $portResult['portname'];
+                    $records[$key][$i]['portDescription'] = $portResult['portdescription'];
+                    $records[$key][$i]['portId'] = $portResult['portid'];
+                    $records[$key][$i]['portColor'] = $portResult['portColor'];
+                    $records[$key][$i]['portAddress'] = $portResult['portAddress'];
+                    $records[$key][$i]['portState'] = $portResult['portState'];
+                    $records[$key][$i]['portCity'] = $portResult['portCity'];
+                    $records[$key][$i]['portPostalCode'] = $portResult['portPostalCode'];
+                    $records[$key][$i]['cruiseNodeId'] = $portResult['cruisenodeid'];
+                    $records[$key][$i]['portStreet'] = $portResult['portStreet'];
+                    $records[$key][$i]['portCategoryId'] = $portResult['portCategoryId'];
+                }
+            }
+        }
+    }
+    return $records;
+}
+
+function getEventByMonth($rows) {
+    $records = array();
+    foreach ($rows as $row) {
+        foreach ($row as $key => $values) {
+            $arr = explode(',', $values['eventProductitems']);
+            //Loading the node data
+            $nodedetails = node_load_multiple($nids = $arr);
+            for ($i = 0; $i < count($arr); $i++) {
+                $portResult = getCruseItemDetailsById($arr[$i]);
+                $records[$key][$i]['id'] = $values['id'];
+                $records[$key][$i]['eventStatus'] = $values['eventStatus'];
+                $records[$key][$i]['eventType'] = $values['eventType'];
+                $records[$key][$i]['recurrenceType'] = $values['recurrenceType'];
+                $records[$key][$i]['eventDays'] = $values['eventDays'];
+                $records[$key][$i]['productId'] = $arr[$i];
+                $records[$key][$i]['created'] = $values['created'];
+                $records[$key][$i]['name'] = $nodedetails[$arr[$i]]->title;
+                //$records[$key][$i]['description'] = $portResult['description'];
+                $records[$key][$i]['departureTime'] = $portResult['departuretime'];
+                $records[$key][$i]['portName'] = $portResult['portname'];
+                $records[$key][$i]['portDescription'] = $portResult['portdescription'];
+                $records[$key][$i]['portId'] = $portResult['portid'];
+                $records[$key][$i]['portColor'] = $portResult['portColor'];
+                $records[$key][$i]['portAddress'] = $portResult['portAddress'];
+                $records[$key][$i]['portState'] = $portResult['portState'];
+                $records[$key][$i]['portCity'] = $portResult['portCity'];
+                $records[$key][$i]['portPostalCode'] = $portResult['portPostalCode'];
+                $records[$key][$i]['cruiseNodeId'] = $portResult['cruisenodeid'];
+                $records[$key][$i]['portStreet'] = $portResult['portStreet'];
+                $records[$key][$i]['portCategoryId'] = $portResult['portCategoryId'];
+            }
+        }
+    }
+
+
+    return $records;
+}
+
+// Get Date 
+
+function getAllEvents($month, $year, $portId, $cruiseId, $bydate) {
+
+    //Getting The Start and End Date for passed argument (month)
+    $first = getFistAndEndDateOfMonth($month, $year, 'first');
+    $last = getFistAndEndDateOfMonth($month, $year, 'last');
+
+    $query = db_select('cruiseevents', 'n')->fields('n');
+    $and_statement = db_and()->condition('eventstartDate', $first, '>=')->condition('eventstartDate', $last, '<=');
+    $query->condition($and_statement);
+    $query->groupBy('id');
+    $result = $query->execute();
+
+    $diffrence = $last - $first;
+    $days = floor($diffrence / (60 * 60 * 24));
+    $rows = array();
+    while ($data = $result->fetchObject()) {
+        $daysarray = explode(',', $data->eventDays);
+        for ($i = 0; $i <= $days; $i++) {
+            $tempdate = strtotime(date("Y-m-d", $first) . " +" . $i . " day");
+            $weekday = date('N', $tempdate); // 1-7 (1-Sunday)
+            //in our scenario we treated 0 as Sunday so i decremented the weekday value
+            if (in_array($weekday, $daysarray)) {
+                $rows[] = array(date('Ymd', $tempdate) => array(
+                        'id' => $data->id, 'eventStatus' => $data->eventStatus, 'eventType' => $data->eventType
+                        , 'recurrenceType' => $data->recurrenceType, 'eventDays' => $data->eventDays,
+                        'eventProductitems' => $data->eventProductitems, 'created' => date('Y-m-d', $data->created)));
+            }
+        }
+    }
+//    var_dump($rows);
+    if ($bydate != "") {
+        $records = getEventByDates($rows, $cruiseId);
+    } else if ($cruiseId == "" && $portId == "") {
+        $records = getEventByMonth($rows);
+    } else if ($cruiseId != "") {
+        $records = getEventByCruise($rows, $cruiseId);
+    } else {
+        $records = getEventByPort($rows, $portId);
+    }
+
+    return $records;
+}
+
+function draw_calendar($month, $year, $cruisefilter, $portfilter) {
+
+    //  $testarray=array();
+    //
+	//
+	$testarray[] = $month;
+    $testarray[] = $year;
+    $testarray[] = $cruisefilter;
+    $testarray[] = $portfilter;
+
+
+    //
+    //
+	
+	
+	
+	global $user;
+        global $base_url;
+    $userId = $user->uid;
+    if ($cruisefilter != 'undefined' && $cruisefilter != 'all') {
+        //Filteration by cruise
+        $loadcheckapieventdates = getCruiseEventsByMonthByCruisetype($month, $year, $cruisefilter);
+        ////getAllEvents($month, $year, "", $cruisefilter);
+    //
+	
+	} else if ($portfilter != "all" && $portfilter != 'undefined') {
+        //filteration by port
+
+        $loadcheckapieventdates = getCruiseEventsByMonthByPorttype($month, $year, $portfilter); //getAllEvents($month, $year, $portfilter);
+    } else {
+        //All available cruise for that month
+
+        $loadcheckapieventdates = getCruiseEventsByMonth($month, $year);
+    }
+    // $loadcheckapieventdates = getAllEvents($month, $year,"","");
+    /*   this session variable is set at builder ajax services module    */
+    $calendar = '<script type="text/javascript">
+	
+	
+	$(document).ready(function(){
+	//identifying the table td cell popup positions
+function eleContainsInArray(arr,element){
+    if(arr != null && arr.length >0){
+        for(var i=0;i<arr.length;i++){
+            if(arr[i] == element)
+                return true;
+        }
+    }
+    return false;
+ } 
+//var calpoppositions = new Array();
+//calpoppositions[32] = "-540px";
+//calpoppositions[33] = "-540px";
+//calpoppositions[7]="-540px";
+//calpoppositions[12]="-540px";
+//calpoppositions[13]="-540px";
+//calpoppositions[14]="-540px";
+//calpoppositions[20]="-540px";
+//calpoppositions[21]="-540px";
+//calpoppositions[19]="-540px";
+//calpoppositions[26]="-540px";
+//calpoppositions[27]="-540px";
+//calpoppositions[28]="-540px";
+
+
+var calpoppositions = [5,6,33,7,12,13,14,20,21,19,26,27,28,34,35,42,41];
+
+var inheritarr = [22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42];
+
+var leftinherit=[1,2,3,17,16,15,22,23,24,29,30,31,15,16,17,8,9,10];
+
+var middlepositons =[11];
+//var caltopbottom=new Array();
+//caltopbottom[33]="inherit";
+
+
+
+//end of popup cell left position concept
+    $(".popupbackgroundimge").children(".close").click(function(){
+        $(".events ul").css({"opacity":0,"bottom":0,"display": "none"});
+    });
+    
+	
+    $(".date_has_event").each(function () {
+        // options
+	var distance = 10;
+	var time = 250;
+	var hideDelay = 500;
+	var tbl = document.getElementById("tblMain");
+	var hideDelayTimer = null;
+	// tracker
+	var beingShown = false;
+	var shown = false;
+	var trigger = $(this);
+	var popup = $(".events ul", this).css("opacity", 0);
+        //                console.log(popup);
+	// set the mouseover and mouseout on both element
+	//$([trigger.get(0), popup.get(0)]).mouseenter(function (e) {
+        
+            var isIOS = ((/iphone|ipad/gi).test(navigator.appVersion));
+            var myDown = isIOS ? "touchstart" : "mouseenter";
+            //var myUp = isIOS ? "touchend" : "mouseup";
+            $([trigger.get(0), popup.get(0)]).on(myDown,function (e) {
+        
+
+//          console.log(this);
+            var celltdvalue=$(this).parents("td").attr("id");
+//          console.log(celltdvalue);
+            var cellnumber = celltdvalue.split("cell");
+//          console.log(cellnumber[0]);
+            var cellleftid=cellnumber[1];
+            // popup.css("left",calpoppositions[cellleftid]);
+            //               console.log(calpoppositions);
+            if(eleContainsInArray(calpoppositions,parseInt(cellleftid)))
+            {
+                popup.css("left","-540px");
+            }
+            if(eleContainsInArray(inheritarr,parseInt(cellleftid)))
+            {
+                //console.log("we are in inherit mode");
+                popup.css("top","inherit");
+            }
+            if(eleContainsInArray(leftinherit,parseInt(cellleftid)))
+            {
+                popup.css("left","70px");
+            }
+            if(eleContainsInArray(middlepositons,parseInt(cellleftid)))
+            {
+                popup.css("left","1px");
+            }
+            $(".events ul").css({"opacity":0,"bottom":0,"display": "none","position": "absolute"});
+            if(!popup.attr("disabled")){
+                // stops the hide event if we move from the trigger to the popup element
+		if (hideDelayTimer) clearTimeout(hideDelayTimer);
+                // dont trigger the animation again if were being shown, or already visible
+                var scoll=$(window).scrollTop();
+                var pagex = e.pageX;
+    		var pagey = e.pageY;
+    		var currentpagex = "";
+    		var currentpagey = "";
+                width = $(window).width();
+    		height = $(window).height();
+	        //  console.log("window width > "+width);
+   		//console.log("window height > "+height);
+ 		//console.log("cursor pointer left > "+pagex);
+		//console.log("cursor pointer top > "+pagey);
+                var tablename=document.getElementById("tblMain");
+                // alert(document.getElementById("tblMain").rows[5].cells[0].innerHTML).popup.css(display:"block");
+                // document.write(pagey);
+                //  exit();
+                //document.write(pagey);
+                //exit();
+                if(width<=1345)
+                {
+                    if(eleContainsInArray(calpoppositions,parseInt(cellleftid)))
+                    {
+                        popup.css("clear","both");
+                        popup.css("left","-365px");
+                    }
+                }
+                if( pagex > width - 540 ){
+                    currentpagex -= 540;
+//                  console.log("popup left > "+currentpagex);
+                    // reset position of popup box
+                    popup.css({
+                        top: "e.pageY",
+			//left: currentpagex,
+			display: "block" // brings the popup back in to view
+                    })
+                }
+                if( pagey > height - 400 ){
+                    currentpagey -= 400;
+//                  console.log("popup top > "+currentpagey);
+                    // reset position of popup box
+                    popup.css({
+                        top: "e.pageY",
+			left: "e.pageX",
+			display: "block" // brings the popup back in to view
+                    })
+    		}
+                // reset position of popup box
+    		popup.css({
+                    top: "e.pageY",
+                    left: "e.pageX",
+                    display: "block" // brings the popup back in to view
+                })
+                // (were using chaining on the popup) now animate its opacity and position
+		.animate({
+//                  bottom: "+=" + distance + "px",
+                    opacity: 1
+                 }, time, "swing", function() {
+                    // once the animation is complete, set the tracker variables
+                    beingShown = false;
+                    shown = true;
+		});
+            }
+            
+            
+           
+	});
+	
+//     	$(popup.get(0)).mouseleave(function (e) {
+//     		$(".events ul").css({"opacity":0,"bottom":0,"display": "none"});
+//     	});
+	
+    });
+    $(".close").click(function(){
+            $(".events ul").css({"opacity":0,"bottom":0,"display": "none"});
+    });
+    $(".calendar-day").click(function(){    
+            
+       /*$(".events").click(function(){
+            $(".events ul").css({"opacity":0,"bottom":0,"display": "none"});
+            $(this).children("ul").css({"opacity":1,"display": "block"});
+       });*/
+
+    	if($(".responsiveMobile").css("display") == "block"){
+            $(".calendar-day").removeClass("active");
+            $(this).addClass("active");
+            if($(this).find(".event-list")){
+                $("#responsiveMobileviewEventslist").html($(this).html());
+                $(".event-list").click(function(){
+                    $(".date_has_event").removeClass("active");
+                    var popup=$(this).find("ul");
+                    if(!popup.attr("disabled")){
+                        if(popup.css("display")=="none"){
+                            $(".events ul").css({"opacity":0,"bottom":0,"display": "none"});
+                            $(this).find("ul").css({"opacity":1,"display": "none"});
+                            $(this).find("ul").css({"opacity":1,"display": "block"});
+                            $(this).find(".date_has_event").addClass("active");
+                        }
+                        else{
+                            $(this).find("ul").css({"opacity":0,"bottom":0,"display": "none"});
+                        }
+                    }
+                });
+            }
+        }
+    });
+	
+});
+	
+    
+	
+
+	
+	
+</script>';
+
+    /* draw table */
+    $calendar .= '<table cellpadding="0" cellspacing="1" class="calendar" id="caltable" >';
+
+    /* table headings */
+    $headings = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
+    $calendar.= '<tr class="calendar-row"><td class="calendar-day-head">' . implode('</td><td class="calendar-day-head">', $headings) . '</td></tr>';
+
+    /* days and weeks vars now ... */
+    $running_day = date('w', mktime(0, 0, 0, $month, 1, $year));
+    $days_in_month = date('t', mktime(0, 0, 0, $month, 1, $year));
+    $days_in_this_week = 1;
+    $day_counter = 0;
+    $dates_array = array();
+
+    /* row for week one */
+    $calendar.= '<tr class="calendar-row">';
+    $blankday = 1;
+    /* print "blank" days until the first of the current week */
+    for ($x = 0; $x < $running_day; $x++):
+        $calendar.= '<td class="calendar-day-np" id="cell' . $blankday . '"> </td>';
+        $days_in_this_week++;
+        $blankday++;
+    endfor;
+
+    /* keep going with days.... */
+    for ($list_day = 1; $list_day <= $days_in_month; $list_day++):
+        $calendar.= '<td class="calendar-day" id="cell' . $blankday . '">';
+        $calendar.= '<div class="day-number dateholder"><a id="' . $timestamp . '" href="javascript:void(0)" >' . $list_day . '</a></div><div class="main-eventList"><div class="event-bottom">';
+
+        /**
+         * Assign a unique id to the day number. This unique id will be
+         * used by jQuery to locate events from the database that are
+         * on this day. The unique id is the timestamp for the first minute
+         *  of $list_day of $month of $year.
+         *
+         *
+         */
+        $timestamp = mktime(0, 0, 0, $month, $list_day, $year);
+        $nextday = mktime(0, 0, 0, $month, ($list_day + 1), $year);
+
+
+
+
+        //Events building starts
+        $dateeventkey = (date('Ymd', $timestamp));
+        $currentdate = (date('Ymd'));
+        global $base_url;
+        if (count($loadcheckapieventdates) > 0) {
+
+            $i = 0;
+            $innerday = 0;
+            $dayassigned = 0;
+            foreach ($loadcheckapieventdates[$dateeventkey] as $availadate) {
+            	
+            	
+
+                $curise_html = '';
+
+
+
+                //loading template id for cruiseview details
+                $itemid = $availadate['cruisetemplate_id'];
+
+
+                $cruiseObject = cruise_load($itemid);
+
+                if ($cruiseObject->calendar_popup_img_fid != "") {
+
+                    $image = file_load($cruiseObject->calendar_popup_img_fid);
+                    $url = file_create_url($image->uri);
+                    $popupimgpath = $url;
+                    $popupimage = ' class="popupbackgroundimge" style="background-image: url(' . $popupimgpath . ')" ';
+                } else {
+                    $popupimage = 'class="popupbackgroundimge" style="background-image: url('.$base_url.'/sites/all/modules/custom/cruiseevents/calendar-pop-bgimg.png)"';
+                }
+
+
+                //getting cruise schedule eventid details using Item Id
+
+                $eventitemid = $availadate['scheduledevent_id'];
+
+
+                if (isset($availadate) && $availadate['status'] == 1) {
+
+
+
+
+                    $booknowurl = $base_url . "/booknow/date/$dateeventkey/item/" . $eventitemid;
+                    if ($currentdate > $dateeventkey) {
+                        $disableClass = 'disabled';
+                        $disabled = 'disabled="disabled"';
+                    } else {
+                        $disableClass = '';
+                        $disabled = '';
+                    }
+
+                    //checking for the stock availablity on that day
+
+
+
+                    $eventdate = date("F d, Y", $timestamp);
+
+
+                    //Deparure time
+                    $departureTimeString = $availadate['cruisedeparturetime'];
+                    $departureTimeUnix = strtotime($departureTimeString);
+                    $depHourMin = date('g:i', $departureTimeUnix);
+                    $depAmOrPm = date('a', $departureTimeUnix);
+                    $departureTime = $depHourMin . "<sup>" . $depAmOrPm . "</sup>";
+
+                    // Return time
+                    $returnTimeString = $availadate['cruisereturntime'];
+                    $returnTimeUnix = strtotime($returnTimeString);
+                    $retHourMin = date('g:i', $returnTimeUnix);
+                    $retAmOrPm = date('a', $departureTimeUnix);
+                    $retartureTime = $retHourMin . "<sup>" . $retAmOrPm . "</sup>";
+
+                    //Cutoff Sale
+                    $scheduleObject = scheduledevents_load($eventitemid);
+                    $query = db_select('scheduledevent_dates', 'sd');
+                    $query->fields('sd', array('scheduleddate'));
+                    $query->condition('sd.scheduledevent_id', $eventitemid);
+                    $date = $query->execute()->fetchField();
+                    $eventYMD = date("Y-m-d", $date); //2014-01-31
+                    $departuretime = $scheduleObject->departuretime;
+                    $onsaleshoursprior = $scheduleObject->onsaleshoursprior;  //2
+//                    $eventDate = $eventYMD . " " . $departuretime;
+                    $eventDate = $eventYMD . " " . $scheduleObject->boardingtime;
+                    $unixtmstmp = strtotime($eventDate);
+                    $eventDateRestricted = $unixtmstmp - ($onsaleshoursprior * 60 * 60);
+                    $currentTime = time();
+                    if ($availadate['stockavailable'] <= 0) {
+                        $soldout = '<div class="soldoutWrapper">SOLD OUT</div>';
+                        $transparentWrapper = $availadate['portColor'];
+                        $availableDisabled = 'disabled="disabled"';
+                        $availableDisabledClass = 'disabled';
+                    } else if ($currentTime > $eventDateRestricted) {
+                        $soldout = '<div class="soldoutWrapper">CLOSED</div>';
+                        $transparentWrapper = $availadate['portColor'];
+                        $availableDisabled = 'disabled="disabled"';
+                        $availableDisabledClass = 'disabled';
+                    } else {
+                        $soldout = '';
+                        $transparentWrapper = '';
+                        $availableDisabled = '';
+                        $availableDisabledClass = '';
+                    }
+                    $curise_html.='<li class="date_has_event">
+		<div class="cruise-color ' . $disableClass . '"" style="background-color: #' . $availadate['portColor'] . '"><span>' . $availadate['portname'][0] . '</span></div>
+	
+		<div class="events ' . $disableClass . '">
+		<div class="event-cruise">' . $availadate['calendartag'] . '</div>
+		<!--<div class="event-port">' . $availadate['portname'] . '</div>-->
+		<ul ' . $disabled . $availableDisabledClass . '' . $popupimage . '>
+		<button type="button" id="" class="close">x</button>
+		<li>
+	
+		<div class="row-fluid popup-header">
+		<div class="span2">
+		<div class="calendarpoptitleLine"></div>
+		</div>
+				<div class="span8">
+				<div class="eventPopupTitle">' . $cruiseObject->cruise_title. '</div>
+                    </div>
+		<div class="span2">
+		<div class="calendarpoptitleLine"></div>
+		</div>
+		</div>
+		<div class="row-fluid">
+		<div class="span8" style="max-height: 166px;">
+			<div class="eventPopupdatetime">
+			<div class="event-date">' . $eventdate . '&nbsp; </div> ' . $departureTime . '&nbsp;-&nbsp;' . $retartureTime . '</div>
+			<div class="eventPopupDeparture">Departure Port: ' . $availadate['portname'] . '</div>
+					
+			 <div class="eventPopupDeparture"> <!-From :$ ->' . /* $price=cruise_event_lowest_price($itemid) . */'</div> 
+                             
+			<div class="eventSeeDirections">
+			<div data="' . $itemid . '" class="view-details"><a href="portsdetailview/portid/' . $availadate['portid'] . '"> SEE DIRECTIONS </a><br/>'
+//                      . '<a href="cruisesdetailview/category/' . $itemid . '?portid=' . $availadate['portid'] . '&eventdate=' . $availadate['scheduleddate'] . '&eventid='.$availadate['scheduledevent_id'].'">VIEW CRUISE DETAILS</a></div>
+                          . '<a href="cruisesdetailview/category/' . $itemid . '?portid=' . $availadate['portid'] . '&eventdate=' . $timestamp  . '&eventid='.$availadate['scheduledevent_id'].'">VIEW CRUISE DETAILS</a></div>
+                        </div>
+			</div>
+<div class="span4">
+<div class="booknow">
+	<a href="' . $booknowurl . '">
+<div class="booknow-inner"><a href="' . $booknowurl . '">Book Now!</a></div>
+           </a>
+			</div>
+</div>
+</div>
+	
+	
+	<div class="row-fluid popup-footer">
+<div class="span5">
+<div class="calendarpopbottomLine"></div>
+</div>
+<div class="span2" align="center">
+<img src="' . drupal_get_path('module', 'wwccalendar') . '/images/banner-icon-img.png"/>
+</div>
+<div class="span5">
+<div class="calendarpopbottomLine"></div>
+</div>
+</div>
+       </li>
+        </ul>
+        </div>
+	</li>';
+                    if ($dayassigned == 0) {
+                        $dayassigned = 1;
+                        $calendar.= $soldout . '<div style="background-color: #' . $transparentWrapper . ';" ' . $availableDisabled . '><div class="event-list">' . $curise_html . '</div></div>';
+                    } else {
+                        $calendar.= $soldout . '<div style="background-color: #' . $transparentWrapper . ';" ' . $availableDisabled . '><div class="event-list cellborderremove">' . $curise_html . '</div></div>';
+                    }
+                }//if end
+
+
+                $i++;
+            }
+        } else {
+            
+        }
+
+        $calendar.= '</div></div></td>';
+        if ($running_day == 6):
+            $calendar.= '</tr>';
+            if (($day_counter + 1) != $days_in_month):
+                $calendar.= '<tr class="calendar-row" >';
+            endif;
+            $running_day = -1;
+            $days_in_this_week = 0;
+        endif;
+        $days_in_this_week++;
+        $running_day++;
+        $day_counter++;
+        $blankday++;
+    endfor;
+
+    /* finish the rest of the days in the week */
+    if ($days_in_this_week < 8):
+        for ($x = 1; $x <= (8 - $days_in_this_week); $x++):
+            $calendar.= '<td class="calendar-day-np" id="cell' . $blankday . '"> </td>';
+            $blankday++;
+        endfor;
+    endif;
+
+    /* final row */
+    $calendar.= '</tr>';
+
+    /* end the table */
+    $calendar.= '</table>';
+
+    /* all done, return result */
+    return $calendar;
+}
+
+function getEventByDateAndCategoryId($month, $year, $categoryId) {
+    $first = getFistAndEndDateOfMonth($month, $year, 'first');
+    $last = getFistAndEndDateOfMonth($month, $year, 'last');
+}
+
+//List View
+
+/*
+ * Following commented code removed from address info from calendar popup.
+ */
+//<div class="eventPopupAddress">Address: ' . $availadate['portAddress'] . ' ' . $availadate['portState'] . ' ' . $availadate['portCity'] . ' ' . $availadate['portPostalCode'] . '</div>
+
+/**
+ * Returns a render array with all userdocuments entities.
+ *
+ * In this basic example we know that there won't be many entities,
+ * so we'll just load them all for display. See pager_example.module
+ * to implement a pager. Most implementations would probably do this
+ * with the contrib Entity API module, or a view using views module,
+ * but we avoid using non-core features in the Examples project.
+ *
+ * @see pager_example.module
+ */
+function cruiseevents_list_view() {
+    global $user;
+
+    drupal_add_css(drupal_get_path('module', 'cruiseevents') . '/cruiseevents.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+//    drupal_add_js(drupal_get_path('module', 'userdocuments') . '/js/userdocuments.js');
+    // Initialising output
+
+    $output = '';
+    // Table header
+    $header = array(
+        array('data' => 'Id', 'field' => 'id'),
+        array('data' => 'Event Name', 'field' => 'eventName'),
+        //array('data' => 'Status', 'field' => 'eventStatus'),
+        //array('data' => 'Type', 'field' => 'eventType'),
+        //array('data' => 'RecurrenceType', 'field' => 'recurrenceType'),
+        //array('data' => 'Days', 'field' => 'eventDays'),
+        //array('data' => 'Products', 'field' => 'eventProductitems'),
+        array('data' => 'Products'),
+        //array('data' => 'Start Date', 'field' => 'eventstartDate'),
+        array('data' => 'Start Date'),
+        //array('data' => 'End Date', 'field' => 'eventendDate'),
+        array('data' => 'End Date'),
+        //array('data' => 'created', 'field' => 'created'),
+        array('data' => 'created'),
+        array('data' => 'Actions'),
+    );
+    // Setting the sort conditions
+    if (isset($_GET['sort']) && isset($_GET['order'])) {
+        // Sort it Ascending or Descending?
+        if ($_GET['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        // Which column will be sorted
+        switch ($_GET['order']) {
+            case 'Id':
+                $order = 'id';
+                break;
+            case 'Event Name':
+                $order = 'eventName';
+                break;
+        }
+
+        // Which column will be sorted
+    } else {
+        $sort = 'ASC';
+        $order = 'id';
+    }
+
+
+    $query = db_select("cruiseevents", "n");
+
+    // Adding fields
+    $query->fields('n', array('id', 'eventStatus', 'eventType',
+        'recurrenceType', 'eventDays',
+        'eventProductitems', 'eventstartDate',
+        'eventendDate', 'created', 'eventName'));
+
+    // Set order by
+    $query->orderBy($order, $sort);
+    // Pagination
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(10);
+    // Executing query
+    $result = $query->execute();
+//    $pageurl = drupal_get_destination();
+    // Looping for filling the table rows
+    //$daysList=array(1=>"Monday",2=>'Tuesday',3=>'Wednesday',4=>'Thursday',5=>'Friday',6=>'Saturday',7=>'Sunday');
+
+    global $base_url;
+
+    while ($data = $result->fetchObject()) {
+
+        //$editactionpath = $base_url . "/cruiseevents/" . $data->id . "/edit";
+        //$editactionpath .= $base_url . "/#/" . $data->id . "/edit";
+        //$data->eventDays,
+        // Adding the rows
+        $enddate = ($data->eventendDate != '0') ? date('m-d-Y', $data->eventendDate) : '';
+        $rows[] = array(
+            $data->id,
+            $data->eventName,
+            //$data->eventStatus,
+            //$data->eventType,
+            //$data->recurrenceType,
+            //$data->eventDays,
+            //$daysList[$data->eventDays],
+            //$data->eventDays,
+            $data->eventProductitems,
+            date('m-d-Y', $data->eventstartDate),
+            //date('m-d-Y', $data->eventendDate),
+            $enddate,
+            date('m-d-Y', $data->created),
+            '<a href="' . $base_url . '/cruiseevents/' . $data->id . '/edit">Edit |</a>
+             <a href="#">Delete</a>'
+        );
+    }
+    //Setting the output of the field
+
+
+
+    $output .= '<div class="eventRecordsWrapper">';
+    $output .= '<div class="cruiseEventSearchWrapper">';
+    $output .= drupal_render(drupal_get_form('cruise_eventsearch_form'));
+    $output .= '</div>';
+    $output .= theme_table(
+                    array(
+                        'header' => $header,
+                        'rows' => $rows,
+                        'attributes' => array('class' => array('eventListTable wwctable')),
+                        'sticky' => true,
+                        'caption' => '',
+                        'colgroups' => array(),
+                        'empty' => t("No Records!"), //The message to be displayed if table is empty
+                    )
+            ) . theme('pager');
+
+    $output .= '</div>';
+
+    return $output;
+}
+
+function cruise_event_lowest_price($itemid) {
+    $query = db_select('cruise_template_tickets', 'n');
+    $query->addExpression('MIN(price)', 'exp');
+    $query->condition('cruisetemplateid', $itemid);
+    $result = $query->execute()->fetchfield();
+    return $result;
+}
+
+function cruise_eventsearch_form($form, &$formstate) {
+
+    drupal_add_css(drupal_get_path('module', 'cruiseevents') . '/cruiseevents.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+
+    $form['addEventCruiseBtn'] = array(
+        '#type' => 'markup',
+        '#markup' => '<a href="' . base_path() . 'cruiseevents/add">Add Event</a>',
+        '#prefix' => '<div style="text-align: right;">',
+        '#suffix' => '</div>',
+    );
+
+    $form['cruiseEventStatus'] = array(
+        '#type' => 'select',
+        '#title' => t('Status'),
+        '#options' => array(0 => t('Active'), 1 => t('Expired'), 2 => t('Disabled')),
+        '#attributes' => array('class' => array('cruiseEventSearchLable')),
+        '#prefix' => '<div class="cruiseEventSearchfield">',
+        '#suffix' => '</div>',
+    );
+
+    $form['cruiseEventType'] = array(
+        '#type' => 'select',
+        '#title' => t('Type'),
+        '#options' => array(0 => t('All'), 1 => t('Seasonal'), 2 => t('Special')),
+        '#attributes' => array('class' => array('cruiseEventSearchLable')),
+        '#prefix' => '<div class="cruiseEventSearchfield">',
+        '#suffix' => '</div>',
+    );
+
+    $form['cruiseEventCategory'] = array(
+        '#type' => 'select',
+        '#title' => t('Category'),
+        '#options' => array(0 => t('Krikland Port'), 1 => t('Seattle Port'), 2 => t('Window Options')),
+        '#attributes' => array('class' => array('cruiseEventSearchLable')),
+        '#prefix' => '<div class="cruiseEventSearchfield">',
+        '#suffix' => '</div>',
+    );
+
+    $form['cruiseEventSearch'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Search'),
+        '#attributes' => array('class' => array('cruiseEventSearchLable')),
+        '#prefix' => '<div class="cruiseEventSearchfield">',
+        '#suffix' => '</div>',
+    );
+
+    $form['cruiseEventSearchBtn'] = array(
+        '#type' => 'submit',
+        '#title' => t('Submit'),
+        '#attributes' => array('class' => array('cruiseEventSearchButton')),
+        '#value' => 'Submit',
+        '#prefix' => '<div class="cruiseEventSearchfield">',
+        '#suffix' => '</div>',
+    );
+
+    return $form;
+}
+
+//end of List_view
+//Entity page view
+
+/**
+ * Menu callback to display an entity.
+ *
+ * As we load the entity for display, we're responsible for invoking a number
+ * of hooks in their proper order.
+ *
+ * @see hook_entity_prepare_view()
+ * @see hook_entity_view()
+ * @see hook_entity_view_alter()
+ */
+function cruiseevents_page_view($entity, $view_mode = 'tweaky') {
+
+    // Our entity type, for convenience.
+    $entity_type = 'cruiseevents';
+    // Start setting up the content.
+    $entity->content = array(
+        '#view_mode' => $view_mode,
+    );
+
+    // Build fields content - this is where the Field API really comes in to play.
+    // The task has very little code here because it all gets taken care of by
+    // field module.
+    // field_attach_prepare_view() lets the fields load any data they need
+    // before viewing.
+    field_attach_prepare_view($entity_type, array($entity->id => $entity), $view_mode);
+    // We call entity_prepare_view() so it can invoke hook_entity_prepare_view()
+    // for us.
+    entity_prepare_view($entity_type, array($entity->id => $entity));
+    // Now field_attach_view() generates the content for the fields.
+    $entity->content += field_attach_view($entity_type, $entity, $view_mode);
+
+    // OK, Field API done, now we can set up some of our own data.
+    //RequestQuote Id
+//    $form['#attributes'] = array('class' => array('addEventForm'));
+
+    $entity->content['id'] = array(
+        '#type' => 'item',
+        '#title' => t('id'),
+        '#markup' => $entity->id,
+    );
+
+    $entity->content['eventStatus'] = array(
+        '#type' => 'item',
+        '#title' => t('eventStatus'),
+        '#markup' => $entity->eventStatus,
+    );
+
+    $entity->content['eventType'] = array(
+        '#type' => 'item',
+        '#title' => t('eventType'),
+        '#markup' => $entity->eventType,
+    );
+
+    $entity->content['recurrenceType'] = array(
+        '#type' => 'item',
+        '#title' => t('recurrenceType'),
+        '#markup' => $entity->recurrenceType,
+    );
+
+    $entity->content['eventDays'] = array(
+        '#type' => 'item',
+        '#title' => t('eventDays'),
+        '#markup' => $entity->eventDays,
+    );
+
+    $entity->content['eventProductitems'] = array(
+        '#type' => 'item',
+        '#title' => t('eventProductitems'),
+        '#markup' => $entity->eventProductitems,
+    );
+
+    $entity->content['eventstartDate'] = array(
+        '#type' => 'item',
+        '#title' => t('eventstartDate'),
+        '#markup' => date('m-d-Y', $entity->eventstartDate),
+    );
+
+    $entity->content['eventendDate'] = array(
+        '#type' => 'item',
+        '#title' => t('eventendDate'),
+        '#markup' => date('m-d-Y', $entity->eventendDate),
+    );
+
+
+    //EventType Values 
+    // Now to invoke some hooks. We need the language code for
+    // hook_entity_view(), so let's get that.
+    global $language;
+    $langcode = $language->language;
+    // And now invoke hook_entity_view().
+    module_invoke_all('entity_view', $entity, $entity_type, $view_mode, $langcode);
+    // Now invoke hook_entity_view_alter().
+    drupal_alter(array('userdocuments_view', 'entity_view'), $entity->content, $entity_type);
+
+    // And finally return the content.
+    return $entity->content;
+}
+
+//Entity Page view gets 
+
+function cruiseevents_item_edit($cruiseevents) {
+
+    drupal_set_title(t('<em>Edit cruiseevents entity</em> @title', array('@title' =>
+        'Cruise Events')), PASS_THROUGH);
+    return drupal_get_form('cruiseevents_add_form', $cruiseevents);
+}
+
+function cruiseevents_add() {
+
+    $cruiseevents = (object) array(
+                'eventStatus' => '', //Values which are in saparated by comma.
+                'eventType' => '',
+                'eventName' => '',
+                'recurrenceType' => '',
+                'eventDays' => '',
+                'eventProductitems' => '',
+                'eventstartDate' => '',
+                'eventendDate' => '',
+                'created' => REQUEST_TIME
+    );
+
+    return drupal_get_form('cruiseevents_add_form', $cruiseevents);
+}
+
+function cruiseevents_add_form($form, &$form_state, $cruiseevents) {
+
+    drupal_add_css(drupal_get_path('module', 'cruiseevents') . '/cruiseevents.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+    drupal_add_js(drupal_get_path('module', 'cruiseevents') . '/js/cruiseevents.js');
+//
+    //Events Edit Operation
+    $eventDaysArray = '';
+    $eventProductItemsArray = '';
+    $eventoperation = "add";
+    if ($cruiseevents->eventName != '') {
+        $eventDaysArray = explode(',', $cruiseevents->eventDays);
+        $eventProductItemsArray = explode(',', $cruiseevents->eventProductitems);
+        $eventoperation = "edit";
+    }
+    $form['eventoperation'] = array(
+        '#title' => t('hidden variable for number of event operation'),
+        '#value' => $eventoperation,
+        '#type' => 'hidden',
+    );
+
+
+    //Event Primary Key ID
+    if (isset($cruiseevents->id) && ($cruiseevents->id != null)) {
+        $form['id'] = array(
+            '#type' => 'hidden',
+            '#title' => t('id'),
+            '#default_value' => $cruiseevents->id,
+            '#required' => TRUE,
+        );
+//    } else {
+//        $form['created'] = array(
+//            '#type' => 'hidden',
+//            '#title' => t('created'),
+//            '#default_value' => $cruiseevents->created,
+//        );
+    }
+
+    $form['#attributes'] = array('class' => array('addEventForm'));
+
+    $form['eventStatus'] = array(
+        '#type' => 'radios',
+        '#title' => t('Inventory Status'),
+        '#options' => array(t('Available'), t('Unavailable')),
+        '#default_value' => isset($cruiseevents->eventStatus) ? $cruiseevents->eventStatus : "",
+        '#required' => TRUE,
+        '#prefix' => '<div class="addEventTitlelable">',
+        '#suffix' => '</div>',
+        '#attributes' => array('class' => array('addEventRadios')),
+    );
+
+    $form['eventType'] = array(
+        '#type' => 'radios',
+        '#title' => t('Type'),
+        '#options' => array(t('Seasonal'), t('Special')),
+        '#default_value' => isset($cruiseevents->eventType) ? $cruiseevents->eventType : "",
+        '#required' => TRUE,
+        '#prefix' => '<div class="addEventTitlelable">',
+        '#suffix' => '</div>',
+        '#attributes' => array('class' => array('addEventRadios')),
+    );
+
+    $form['eventCruiseName'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Name'),
+        '#default_value' => isset($cruiseevents->eventName) ? $cruiseevents->eventName : "",
+        '#required' => TRUE,
+        '#prefix' => '<div class="addEventTitlelable">',
+        '#suffix' => '</div>',
+    );
+
+    $form['recurrenceType'] = array(
+        '#id' => 'recurrenceType',
+        '#type' => 'select',
+        '#title' => t('Recurrence'),
+        '#options' => array(0 => t('Never(one time)'), 1 => t('Weekly(by day of week)')),
+        '#default_value' => isset($cruiseevents->recurrenceType) ? $cruiseevents->recurrenceType : "0",
+        //'#value' => isset($cruiseevents->recurrenceType) ? $cruiseevents->recurrenceType : "0",
+        '#required' => TRUE,
+        '#prefix' => '<div class="addEventTitlelable">',
+        '#suffix' => '</div>',
+    );
+//commented by satya
+//    $form['Days'] = array(
+//        '#type' => 'textfield',
+//        '#title' => t('eventDays'),
+//        '#default_value' => $cruiseevents->eventDays,
+//        '#required' => TRUE,
+//        '#prefix' => '<div class="addEventTitlelable">',
+//        '#suffix' => '</div>',
+//    );
+
+    $form['eventDays'] = array(
+        '#type' => 'item',
+        '#title' => t('Days'),
+        '#prefix' => '<div id="recurranceWeeklyDatediv" style="display:none";><div class="addEventWeekly">',
+        '#suffix' => '</div>',
+    );
+
+    $form['eventDays']['sunday'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('SUN'),
+        '#prefix' => '<div class="eventWeeksWrapper"><div class="addEventWeek">',
+        '#suffix' => '</div>',
+        '#attributes' => (in_array('7', $eventDaysArray)) ? array('checked' => TRUE) : array(''),
+    );
+
+    $form['eventDays']['monday'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('MON'),
+        '#prefix' => '<div class="addEventWeek">',
+        '#suffix' => '</div>',
+        '#attributes' => (in_array('1', $eventDaysArray)) ? array('checked' => TRUE) : array(''),
+    );
+
+    $form['eventDays']['tueseday'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('TUE'),
+        '#prefix' => '<div class="addEventWeek">',
+        '#suffix' => '</div>',
+        '#attributes' => (in_array('2', $eventDaysArray)) ? array('checked' => TRUE) : array(''),
+    );
+
+    $form['eventDays']['wednesday'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('WED'),
+        '#prefix' => '<div class="addEventWeek">',
+        '#suffix' => '</div>',
+        '#attributes' => (in_array('3', $eventDaysArray)) ? array('checked' => TRUE) : array(''),
+    );
+
+    $form['eventDays']['thursday'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('THU'),
+        '#prefix' => '<div class="addEventWeek">',
+        '#suffix' => '</div>',
+        '#attributes' => (in_array('4', $eventDaysArray)) ? array('checked' => TRUE) : array(''),
+    );
+
+    $form['eventDays']['friday'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('FRI'),
+        '#prefix' => '<div class="addEventWeek">',
+        '#suffix' => '</div>',
+        '#attributes' => (in_array('5', $eventDaysArray)) ? array('checked' => TRUE) : array(''),
+    );
+
+    $form['eventDays']['saturday'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('SAT'),
+        '#prefix' => '<div class="addEventWeek">',
+        '#suffix' => '</div><br/><br/><br/></div></div>',
+        '#attributes' => (in_array('6', $eventDaysArray)) ? array('checked' => TRUE) : array(''),
+    );
+    $form['eventProductitems'] = array(
+        '#type' => 'item',
+        '#title' => t('Apply To'),
+        '#prefix' => '<div class="addEventTitlelable">',
+        '#suffix' => '</div>',
+    );
+    $form['cruiseeventslistdivstart'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div style="padding-left:498px;">',
+    );
+
+    $form['allitemsandcategoriescheckbox'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('All Items and Categories'),
+        '#prefix' => '<div style="padding-left:20px;">',
+        '#suffix' => '</div>',
+    );
+
+
+    $eventProducts = getProductsByPort();
+    $cruiseeventcategories = array();
+    $j = 0;
+    $numberofcruiseitems = 0;
+    $allcruiseitems = array();
+
+    //Add Operation
+    if ($eventoperation == "add") {
+        foreach ($eventProducts as $key => $products) {
+            $cruiseeventcategories[] = $key;
+
+            $form['cruiseeventcategory' . $j] = array(
+                '#type' => 'checkbox',
+                '#title' => t($key),
+                '#prefix' => '<div style="padding-left:20px;">',
+                '#suffix' => '</div>',
+                '#return_value' => $key,
+                '#states' => array(
+                    'checked' => array(
+                        ':input[name="allitemsandcategoriescheckbox"]' => array('checked' => TRUE),
+                    ),
+                ),
+            );
+
+            for ($k = 0; $k < count($products); $k++) {
+                $allcruiseitems[] = $products[$k]['nid'];
+                $numberofcruiseitems++;
+                $form['cruiseeventslist' . $key . "" . $k] = array(
+                    '#type' => 'checkbox',
+                    '#title' => $products[$k]['title'],
+                    '#prefix' => '<div style="padding-left:40px;">',
+                    '#suffix' => '</div>',
+                    '#return_value' => $products[$k]['nid'],
+                    '#states' => array(
+//                    'visible' => array(
+//                        ':input[name="cruiseeventcategory' . $j . '"]' => array('checked' => TRUE),
+//                    ),
+
+                        'checked' => array(
+                            ':input[name="cruiseeventcategory' . $j . '"]' => array('checked' => TRUE),
+                        ),
+                        'disabled' => array(
+                            ':input[name="allitemsandcategoriescheckbox"]' => array('checked' => TRUE),
+                        ),
+                    ),
+                        //'#attributes' => (in_array($products[$k]['nid'], $eventProductItemsArray)) ? array('checked' => TRUE) : array(''),
+                );
+            }
+
+            $j++;
+        }
+    } else {
+        //Edit Operation
+
+        foreach ($eventProducts as $key => $products) {
+            $cruiseeventcategories[] = $key;
+
+            $form['cruiseeventcategory' . $j] = array(
+                '#type' => 'checkbox',
+                '#title' => t($key),
+                '#prefix' => '<div style="padding-left:20px;">',
+                '#suffix' => '</div>',
+                '#return_value' => $key,
+            );
+
+            for ($k = 0; $k < count($products); $k++) {
+                $allcruiseitems[] = $products[$k]['nid'];
+                $numberofcruiseitems++;
+                $form['cruiseeventslist' . $key . "" . $k] = array(
+                    '#type' => 'checkbox',
+                    '#title' => $products[$k]['title'],
+                    '#prefix' => '<div style="padding-left:40px;">',
+                    '#suffix' => '</div>',
+                    '#return_value' => $products[$k]['nid'],
+                    '#attributes' => (in_array($products[$k]['nid'], $eventProductItemsArray)) ? array('checked' => TRUE) : array(''),
+                );
+            }
+
+            $j++;
+        }
+    }
+
+
+
+    //Storing All Categories
+    //Hidden Variable for storing the All Cruise Product Items if the All Checkbox selected
+    $form['hiddenallcruiseeventcategories'] = array(
+        '#title' => t('Hidden Variable for All Curise items'),
+        '#value' => $cruiseeventcategories,
+        '#type' => 'hidden',
+    );
+
+    $form['numberofcruiseitems'] = array(
+        '#title' => t('hidden variable for number of cruise items'),
+        '#value' => $numberofcruiseitems,
+        '#type' => 'hidden',
+    );
+
+
+
+
+    //Hidden Variable for storing the All Cruise Product Items if the All Checkbox selected
+    $form['hiddenallcruiseitems'] = array(
+        '#title' => t('Hidden Variable for All Curise items'),
+        '#value' => $allcruiseitems,
+        '#type' => 'hidden',
+    );
+
+    $form['cruiseeventslistdivend'] = array(
+        '#type' => 'markup',
+        '#markup' => '</div>',
+    );
+
+    $start_date = isset($cruiseevents->eventstartDate) ? $cruiseevents->eventstartDate : "";
+    $startDate = date('Y-m-d', $start_date);
+    $form['eventstartDate'] = array(
+        '#id' => 'eventstartDate',
+        '#title' => t('Start Date'),
+        '#type' => 'date_popup',
+        '#required' => TRUE,
+        '#date_format' => 'Y-m-d',
+        '#date_label_position' => 'within',
+        '#prefix' => '<div class="addEventTitlelable">',
+        '#suffix' => '</div>',
+        '#default_value' => $startDate,
+    );
+
+    $form['hideenddatecheckbox'] = array(
+        '#id' => 'hideenddatecheckbox',
+        '#type' => 'checkbox',
+        '#title' => t('No End Date'),
+        '#prefix' => '<div class="addEventWeeknoEndDate">',
+        '#suffix' => '</div>',
+    );
+
+
+
+
+    $endDate = ($cruiseevents->eventendDate != '0') ? date('Y-m-d', $cruiseevents->eventendDate) : '';
+    //$endDate = date('Y-m-d', $end_date);
+    $form['eventendDate'] = array(
+        '#id' => 'eventendDate',
+        '#title' => t('End Date'),
+        '#type' => 'date_popup',
+//            '#required' => TRUE,
+        '#date_format' => 'Y-m-d',
+        '#attributes' => array('autocomplete' => 'off'),
+        '#date_label_position' => 'within',
+        '#prefix' => '<div class="addEventTitlelable" id="eventEndDatediv">',
+        '#suffix' => '</div>',
+        '#default_value' => $endDate,
+    );
+
+    field_attach_form('cruiseevents', $cruiseevents, $form, $form_state);
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+        '#weight' => 100,
+        '#prefix' => '<div class="submitHolder">',
+        '#suffix' => '</div>',
+    );
+    return $form;
+}
+
+function getProductsByPort() {
+    $portList = array('Kirkland', 'Seattle');
+    $result = array();
+    for ($i = 0; $i < sizeof($portList); $i++) {
+        $productList = getCruiseProductList($portList[$i]);
+        foreach ($productList as $productLists) {
+            foreach ($productLists as $childList) {
+                $result[$portList[$i]][] = $childList;
+            }
+        }
+    }
+    return $result;
+}
+
+function cruiseevents_field_extra_fields() {
+    $form_elements['id'] = array(
+        'label' => t('id'),
+        'description' => t('id (an extra form field)'),
+        'weight' => -5,
+    );
+    //Event Type
+    $form_elements['eventStatus'] = array(
+        'label' => t('EventTypes'),
+        'description' => t('eventStatus (an extra form field)'),
+        'weight' => -5,
+    );
+    $form_elements['eventType'] = array(
+        'label' => t('eventType'),
+        'description' => t('eventType (an extra form field)'),
+        'weight' => -5,
+    );
+    //
+//   
+    $form_elements['recurrenceType'] = array(
+        'label' => t('recurrenceType'),
+        'description' => t('recurrenceType (an extra form field)'),
+        'weight' => -5,
+    );
+//   
+    $form_elements['eventDays'] = array(
+        'label' => t('eventDays'),
+        'description' => t('eventDays (an extra form field)'),
+        'weight' => -5,
+    );
+
+//    
+    $form_elements['eventProductitems'] = array(
+        'label' => t('eventProductitems'),
+        'description' => t('eventProductitems (an extra form field)'),
+        'weight' => -5,
+    );
+//      
+    $form_elements['eventstartDate'] = array(
+        'label' => t('eventstartDate'),
+        'description' => t('eventstartDate (an extra form field)'),
+        'weight' => -5,
+    );
+
+//     
+    $form_elements['eventendDate'] = array(
+        'label' => t('eventendDate'),
+        'description' => t('eventendDate (an extra form field)'),
+        'weight' => -5,
+    );
+
+
+    $display_elements['id'] = array(
+        'label' => t('id'),
+        'description' => t('id (an extra form field)'),
+        'weight' => -5,
+    );
+    //Event Type
+    $display_elements['eventStatus'] = array(
+        'label' => t('eventStatus'),
+        'description' => t('eventStatus (an extra form field)'),
+        'weight' => -5,
+    );
+    $display_elements['eventType'] = array(
+        'label' => t('eventType'),
+        'description' => t('eventType (an extra form field)'),
+        'weight' => -5,
+    );
+    //
+//   
+    $display_elements['recurrenceType'] = array(
+        'label' => t('recurrenceType'),
+        'description' => t('recurrenceType (an extra form field)'),
+        'weight' => -5,
+    );
+//   
+    $display_elements['eventDays'] = array(
+        'label' => t('eventDays'),
+        'description' => t('eventDays (an extra form field)'),
+        'weight' => -5,
+    );
+
+//    
+    $display_elements['eventProductitems'] = array(
+        'label' => t('eventProductitems'),
+        'description' => t('eventProductitems (an extra form field)'),
+        'weight' => -5,
+    );
+//      
+    $display_elements['eventstartDate'] = array(
+        'label' => t('eventstartDate'),
+        'description' => t('eventstartDate (an extra form field)'),
+        'weight' => -5,
+    );
+
+//     
+    $display_elements['eventendDate'] = array(
+        'label' => t('eventendDate'),
+        'description' => t('eventendDate (an extra form field)'),
+        'weight' => -5,
+    );
+
+
+    // Since we have only one bundle type, we'll just provide the extra_fields
+    // for it here.
+    $extra_fields['cruiseevents']['cruiseevents_bundle']['form'] = $form_elements;
+    $extra_fields['cruiseevents']['cruiseevents_bundle']['display'] = $display_elements;
+
+    return $extra_fields;
+}
+
+function cruiseevents_add_form_validate($form, &$form_state) {
+    $cruiseevents_submission = (object) $form_state['values'];
+    field_attach_form_validate('cruiseevents', $cruiseevents_submission, $form, $form_state);
+}
+
+function cruiseevents_add_form_submit($form, &$form_state) {
+
+    $allCategories = $form_state['values']['hiddenallcruiseeventcategories'];
+    $numberofcruiseitems = $form_state['values']['numberofcruiseitems'];
+
+    //allitemsandcategoriescheckbox
+
+    $selectedcruiseitems = array();
+    $allcategorieschecked = $form_state['values']['allitemsandcategoriescheckbox'];
+    if ($allcategorieschecked == "1") {
+        $selectedcruiseitems = $form_state['values']['hiddenallcruiseitems'];
+    } else {
+        for ($i = 0; $i < count($allCategories); $i++) {
+            for ($j = 0; $j < $numberofcruiseitems; $j++) {
+                $val = $form_state['values']['cruiseeventslist' . $allCategories[$i] . $j];
+                if ($val != '' && $val != NULL) {
+                    $selectedcruiseitems[] = $form_state['values']['cruiseeventslist' . $allCategories[$i] . $j];
+                }
+            }
+        }
+    }
+
+    //$eventstartDate = isset($form_state['values']['eventstartDate']['date']) ? $form_state['values']['eventstartDate']['date'] : "";
+    $eventStartDate = $form_state['values']['eventstartDate'];
+
+
+    //hideenddatecheckbox
+    //Date Checkbox
+    $eventEndDate = '';
+    $checkboxFlag = $form_state['values']['hideenddatecheckbox'];
+    if ($checkboxFlag == 1) {
+        //nothing
+    } else {
+        $eventEndDate = $form_state['values']['eventendDate'];
+    }
+
+    //here 1-Mon , 2-Tue , 3-Wed ,................. 7-Sun
+    $selecteddays = array();
+
+    $recurrenceFlag = $form_state['values']['recurrenceType'];
+    if ($recurrenceFlag == "1") {
+        $selecteddays[] = ($form_state['values']['sunday'] == '1') ? "7" : "";
+        $selecteddays[] = ($form_state['values']['monday'] == '1') ? "1" : "";
+        $selecteddays[] = ($form_state['values']['tueseday'] == '1') ? "2" : "";
+        $selecteddays[] = ($form_state['values']['wednesday'] == '1') ? "3" : "";
+        $selecteddays[] = ($form_state['values']['thursday'] == '1') ? "4" : "";
+        $selecteddays[] = ($form_state['values']['friday'] == '1') ? "5" : "";
+        $selecteddays[] = ($form_state['values']['saturday'] == '1') ? "6" : "";
+        for ($i = 0; $i < count($selecteddays); $i++) {
+            if ($selecteddays[$i] != '') {
+                $checkeddays[] = $selecteddays[$i];
+            }
+        }
+    } else {
+        
+    }
+
+
+    $cruiseevents_submission = (object) $form_state['values'];
+    $cruiseevents_submission->eventstartDate = strtotime($eventStartDate);
+    $cruiseevents_submission->eventendDate = ($eventEndDate != '') ? strtotime($eventEndDate) : "";
+
+
+    //$cruiseevents_submission->created = (int) $cruiseevents_submission->created;
+    $cruiseevents_submission->created = time();
+    $cruiseevents_submission->eventProductitems = implode(',', $selectedcruiseitems);
+    $cruiseevents_submission->eventDays = implode(',', $checkeddays);
+    $cruiseevents_submission->eventName = $form_state['values']['eventCruiseName'];
+    $cruiseevents_submission->recurrenceType = $form_state['values']['recurrenceType'];
+    field_attach_submit('cruiseevents', $cruiseevents_submission, $form, $form_state);
+    $cruiseevents = cruiseevents_save($cruiseevents_submission);
+
+    //$form_state['redirect'] = 'cruiseevents/' . $cruiseevents->id;
+    $operation = $form_state['values']['eventoperation'];
+    $msg = '';
+    if ($operation == "add") {
+        $msg = 'Cruise event created successfully.';
+    } else {
+        $msg = 'Cruise event updated successfully.';
+    }
+
+    drupal_set_message($msg);
+    $form_state['redirect'] = 'cruiseevents/';
+}
+
+function cruiseevents_save(&$cruiseevents) {
+
+    return entity_get_controller('cruiseevents')->save($cruiseevents);
+}
+
+class cruiseeventsController extends DrupalDefaultEntityController {
+
+    public function save($cruiseevents) {
+        if (isset($cruiseevents->id) && ($cruiseevents->id != null)) {
+            drupal_write_record('cruiseevents', $cruiseevents, array('id'));
+            field_attach_update('cruiseevents', $cruiseevents);
+        } else {
+            drupal_write_record('cruiseevents', $cruiseevents);
+            field_attach_insert('cruiseevents', $cruiseevents);
+        }
+        module_invoke_all('entity_insert', $cruiseevents, 'cruiseevents');
+        return $cruiseevents;
+    }
+
+}
+
+/* * Loading Cruise Events For Current Month */
+
+
+/* * *************Cruise Events************************* */
+
+function getCruiseEventsByMonth($month, $year) {
+
+    /**
+     * Loading Cruise Events on the following conditional based
+     * Loading Cruie Events of the current month and cehcking with cruise template active.
+     * 
+     * 
+     */
+    $query = db_select('scheduledevents', 'sd');
+    $query->join('cruise', 'ct', 'sd.cruisetemplate_id=ct.id');
+    $query->join('scheduledevent_dates', 'e', 'sd.id = e.scheduledevent_id');
+
+    $query->fields('sd');
+    $query->fields('ct');
+    $query->fields('e');
+    $query->addExpression('sd.id', 'eventid'); // Naresh 6-mar-2014
+    $query->condition('ct.cruise_status', 1, '=');
+    $query->condition('sd.status', 1, '=');
+    // $query->condition('sd.id',2);
+
+    $result = $query->execute();
+    $totalresults = array();
+    $cruisetemplates = array();
+    $scheduleddates = array();
+    foreach ($result as $cruiseentity) {
+
+
+        //Get listing the Current Month and  Yea results  only.
+        $currentmonth = date('m', $cruiseentity->scheduleddate);
+        $currentyear = date('Y', $cruiseentity->scheduleddate);
+        if ($currentmonth == $month && $currentyear = $year) {
+
+
+
+            $totalresults['calendartag'] = getCalendartag($cruiseentity->cruisetemplate_id);
+
+            if ($totalresults['calendartag'] != null) {
+                $totalresults['id'] = $cruiseentity->id;
+                $totalresults['eventid'] = $cruiseentity->eventid; // Naresh  6-mar-2014
+                $totalresults['name'] = $cruiseentity->name;
+                $totalresults['cruisetemplate_id'] = $cruiseentity->cruisetemplate_id;
+                $totalresults['calendartag'] = getCalendartag($cruiseentity->cruisetemplate_id);
+
+                $totalresults['vesselid'] = $cruiseentity->vessel_id;
+                $totalresults['vesselname'] = 'The em';
+// 		$totalresults['created']= '1380975971';
+                $totalresults['cruisetype'] = '7';
+                $totalresults['status'] = 1;
+                $totalresults['portid'] = $cruiseentity->port_id;
+
+
+                $portsdetails = loadportById($cruiseentity->port_id);
+
+                $totalresults['portname'] = $portsdetails['portname'];
+                $totalresults['portdescription'] = $portsdetails['portdescription'];
+                $totalresults['portColor'] = $portsdetails['portColor'];
+                $totalresults['portAddress'] = $portsdetails['portAddress'];
+                $totalresults['portState'] = $portsdetails['portState'];
+                $totalresults['portCity'] = $portsdetails['portCity'];
+                $totalresults['portPostalCode'] = $portsdetails['portPostalCode'];
+
+
+                $totalresults['cruisedeparturetime'] = $cruiseentity->departuretime;
+                $totalresults['cruisereturntime'] = $cruiseentity->returntime;
+                $totalresults['cruiseborading'] = $cruiseentity->boardingtime;
+                $totalresults['totalstock'] = $cruiseentity->ticketinventory;
+                $totalresults['stockavailable'] = $cruiseentity->availabletickets;
+                $totalresults['solditems'] = $cruiseentity->soldtickets;
+                $totalresults['windowseatinventory'] = $cruiseentity->windowseatinventory;
+                $totalresults['availablewindowseats'] = $cruiseentity->availablewindowseats;
+                $totalresults['windowseatssold'] = $cruiseentity->windowseatssold;
+                $totalresults['onsalesdaysprior'] = $cruiseentity->onsalesdaysprior;
+                $totalresults['onsaleshoursprior'] = $cruiseentity->onsaleshoursprior;
+                $totalresults['scheduledevent_id'] = $cruiseentity->scheduledevent_id;
+                $totalresults['scheduleddate'] = $cruiseentity->scheduleddate;
+                $totalresults['scheduleddatsaxc'] = count($scheduleddates[date('Ymd', $cruiseentity->scheduleddate)]);
+                $cruisetemplates[] = $totalresults;
+
+                if (count($scheduleddates[date('Ymd', $cruiseentity->scheduleddate)]) > 0) {
+                    array_push($scheduleddates[date('Ymd', $cruiseentity->scheduleddate)], $cruisetemplates[0]);
+                } else {
+                    $scheduleddates[date('Ymd', $cruiseentity->scheduleddate)] = $cruisetemplates;
+                }
+
+
+
+                unset($cruisetemplates);
+            }
+        }
+    }
+
+
+    return $scheduleddates;
+}
+
+/**
+ * 
+ * 
+ * 
+ * 
+ * @param unknown $month
+ * @param unknown $year
+ * @return mixed|Ambigous <multitype:, multitype:multitype:unknown NULL Ambigous <string, unknown> Ambigous <string, NULL, Ambigous <string, A, boolean, The>> Ambigous <NULL>  >
+ */
+//loading Cruise Events By Month and CruiseType
+function getCruiseEventsByMonthByCruisetype($month, $year, $cruiseType) {
+
+    $query = db_select('scheduledevents', 'sd');
+    $query->join('scheduledevent_dates', 'e', 'sd.id = e.scheduledevent_id');
+    $query->join('cruise', 'c', 'c.id = sd.cruisetemplate_id');
+    $query->fields('sd');
+    $query->fields('e');
+    $query->addExpression('sd.id', 'eventid'); //Naresh 6-mar-2014
+    $query->condition('c.cruise_type', $cruiseType, '=');
+    $query->condition('c.cruise_status', 1, '=');
+    $query->condition('sd.status', 1, '=');
+    // $query->condition('sd.id',2);
+
+    $result = $query->execute();
+    $totalresults = array();
+    $cruisetemplates = array();
+    $scheduleddates = array();
+    foreach ($result as $cruiseentity) {
+
+
+
+
+
+
+        // 		'id' => string '125' (length=3)
+        // 		'name' => string 'South Happy Hour Cruise' (length=23)
+        // 		'status' => string '1' (length=1)
+        // 		'created' => string '1380975971' (length=10)
+        // 		'cruisetype' => string '7' (length=1)
+        // 		'vesselid' => string '89' (length=2)
+        // 		'vesselname' => string 'The Destiny' (length=11)
+        // 		'portid' => string '27' (length=2)
+        // 		'portname' => string 'Waterways Home Port' (length=19)
+        // 		'portdescription' => string 'Waterways HomePort' (length=18)
+        // 		'portColor' => string 'e309dc' (length=6)
+        // 		'portAddress' => string '2441 N.Northlake Way' (length=20)
+        // 		'portState' => string 'WA ' (length=3)
+        // 		'portCity' => string ' Seattle, ' (length=10)
+        // 		'portPostalCode' => string '98103' (length=5)
+        // 		'eventstartdate' => string '1370232000' (length=10)
+        // 		'cruisedeparturetime' => string '2013-01-01 11:15:00' (length=19)
+        // 		'cruisereturntime' => string '2013-01-01 13:15:00' (length=19)
+        // 		'cruiseborading' => string '2013-01-01 10:45:00' (length=19)
+        // 		'cruiseweekdays' => string '3' (length=1)
+        // 		'solditems' => string '0' (length=1)
+        // 		'stockavailable' => string '98' (length=2)
+        // 		'totalstock' => string '98' (length=2)
+
+        $totalresults['id'] = $cruiseentity->id;
+        $totalresults['eventid'] = $cruiseentity->eventid; //Naresh 6-mar-2014
+        $totalresults['name'] = $cruiseentity->name;
+        $totalresults['cruisetemplate_id'] = $cruiseentity->cruisetemplate_id;
+        $totalresults['calendartag'] = getCalendartag($cruiseentity->cruisetemplate_id);
+
+        $totalresults['vesselid'] = $cruiseentity->vessel_id;
+        $totalresults['vesselname'] = 'The em';
+        // 		$totalresults['created']= '1380975971';
+        $totalresults['cruisetype'] = '7';
+        $totalresults['status'] = 1;
+        $totalresults['portid'] = $cruiseentity->port_id;
+
+
+        $portsdetails = loadportById($cruiseentity->port_id);
+
+        $totalresults['portname'] = $portsdetails['portname'];
+        $totalresults['portdescription'] = $portsdetails['portdescription'];
+        $totalresults['portColor'] = $portsdetails['portColor'];
+        $totalresults['portAddress'] = $portsdetails['portAddress'];
+        $totalresults['portState'] = $portsdetails['portState'];
+        $totalresults['portCity'] = $portsdetails['portCity'];
+        $totalresults['portPostalCode'] = $portsdetails['portPostalCode'];
+
+
+        $totalresults['cruisedeparturetime'] = $cruiseentity->departuretime;
+        $totalresults['cruisereturntime'] = $cruiseentity->returntime;
+        $totalresults['cruiseborading'] = $cruiseentity->boardingtime;
+        $totalresults['totalstock'] = $cruiseentity->ticketinventory;
+        $totalresults['stockavailable'] = $cruiseentity->availabletickets;
+        $totalresults['solditems'] = $cruiseentity->soldtickets;
+        $totalresults['windowseatinventory'] = $cruiseentity->windowseatinventory;
+        $totalresults['availablewindowseats'] = $cruiseentity->availablewindowseats;
+        $totalresults['windowseatssold'] = $cruiseentity->windowseatssold;
+        $totalresults['onsalesdaysprior'] = $cruiseentity->onsalesdaysprior;
+        $totalresults['onsaleshoursprior'] = $cruiseentity->onsaleshoursprior;
+        $totalresults['scheduledevent_id'] = $cruiseentity->scheduledevent_id;
+        $totalresults['scheduleddate'] = $cruiseentity->scheduleddate;
+
+        $cruisetemplates[] = $totalresults;
+        if (count($scheduleddates[date('Ymd', $cruiseentity->scheduleddate)]) > 0) {
+            array_push($scheduleddates[date('Ymd', $cruiseentity->scheduleddate)], $cruisetemplates[0]);
+        } else {
+            $scheduleddates[date('Ymd', $cruiseentity->scheduleddate)] = $cruisetemplates;
+        }
+        // $scheduleddates[date('Ymd', $cruiseentity->scheduleddate)] = $cruisetemplates;
+        unset($cruisetemplates);
+    }
+
+
+    return $scheduleddates;
+}
+
+/**
+ * 
+ * 
+ * port wise filteration
+ * @param unknown $month
+ * @param unknown $year
+ * @return mixed|Ambigous <multitype:, multitype:multitype:unknown NULL Ambigous <string, unknown> Ambigous <string, NULL, Ambigous <string, A, boolean, The>> Ambigous <NULL>  >
+ */
+//loading Cruise Events By Month and CruiseType
+function getCruiseEventsByMonthByPorttype($month, $year, $portType) {
+
+    $availableports = getsubportslistbyPortId($portType);
+
+
+    // 	var_dump($ticketlist[28]);
+    $portsids = array();
+    foreach ($availableports[$portType] as $ports) {
+        $portsids[] = $ports['id'];
+    }
+
+
+    $query = db_select('scheduledevents', 'sd');
+    $query->join('scheduledevent_dates', 'e', 'sd.id = e.scheduledevent_id');
+    $query->join('cruise', 'c', 'c.id = sd.cruisetemplate_id');
+    $query->fields('sd');
+    $query->fields('e');
+    $query->addExpression('sd.id', 'eventid'); // Naresh 6-mar-2014
+    // $query->condition('sd.id',2);
+    $query->condition('c.cruise_status', 1, '=');
+    $query->condition('sd.status', 1, '=');
+
+    $result = $query->execute();
+    $totalresults = array();
+    $cruisetemplates = array();
+    $scheduleddates = array();
+    foreach ($result as $cruiseentity) {
+
+
+        if (in_array($cruiseentity->port_id, $portsids)) {
+
+            $totalresults['id'] = $cruiseentity->id;
+            $totalresults['eventid'] = $cruiseentity->eventid; // Naresh 6-mar-2014
+            $totalresults['name'] = $cruiseentity->name;
+            $totalresults['cruisetemplate_id'] = $cruiseentity->cruisetemplate_id;
+            $totalresults['calendartag'] = getCalendartag($cruiseentity->cruisetemplate_id);
+
+            $totalresults['vesselid'] = $cruiseentity->vessel_id;
+            $totalresults['vesselname'] = 'The em';
+            // 		$totalresults['created']= '1380975971';
+            $totalresults['cruisetype'] = '7';
+            $totalresults['status'] = 1;
+            $totalresults['portid'] = $cruiseentity->port_id;
+
+
+            $portsdetails = loadportById($cruiseentity->port_id);
+
+            $totalresults['portname'] = $portsdetails['portname'];
+            $totalresults['portdescription'] = $portsdetails['portdescription'];
+            $totalresults['portColor'] = $portsdetails['portColor'];
+            $totalresults['portAddress'] = $portsdetails['portAddress'];
+            $totalresults['portState'] = $portsdetails['portState'];
+            $totalresults['portCity'] = $portsdetails['portCity'];
+            $totalresults['portPostalCode'] = $portsdetails['portPostalCode'];
+
+
+            $totalresults['cruisedeparturetime'] = $cruiseentity->departuretime;
+            $totalresults['cruisereturntime'] = $cruiseentity->returntime;
+            $totalresults['cruiseborading'] = $cruiseentity->boardingtime;
+            $totalresults['totalstock'] = $cruiseentity->ticketinventory;
+            $totalresults['stockavailable'] = $cruiseentity->availabletickets;
+            $totalresults['solditems'] = $cruiseentity->soldtickets;
+            $totalresults['windowseatinventory'] = $cruiseentity->windowseatinventory;
+            $totalresults['availablewindowseats'] = $cruiseentity->availablewindowseats;
+            $totalresults['windowseatssold'] = $cruiseentity->windowseatssold;
+            $totalresults['onsalesdaysprior'] = $cruiseentity->onsalesdaysprior;
+            $totalresults['onsaleshoursprior'] = $cruiseentity->onsaleshoursprior;
+            $totalresults['scheduledevent_id'] = $cruiseentity->scheduledevent_id;
+            $totalresults['scheduleddate'] = $cruiseentity->scheduleddate;
+
+            $cruisetemplates[] = $totalresults;
+            if (count($scheduleddates[date('Ymd', $cruiseentity->scheduleddate)]) > 0) {
+                array_push($scheduleddates[date('Ymd', $cruiseentity->scheduleddate)], $cruisetemplates[0]);
+            } else {
+                $scheduleddates[date('Ymd', $cruiseentity->scheduleddate)] = $cruisetemplates;
+            }
+
+            // drupal_json_output($cruisetemplates);
+            //exit();
+            unset($cruisetemplates);
+        }
+    }
+
+
+    return $scheduleddates;
+}
+
+function getCruiseEventsByMonthold($month, $year) {
+    /**
+     * stock inserts and updates implementation
+     * first inserting the monthly calendar stocks
+     * then after get stock updates on nid and timestamp
+     * 
+     * 
+     */
+    getCalendarstocks($month, $year);
+
+    /**
+     * 
+     * First Loading the Current Month CruiseEvents by checking with Cruise catalog 
+     * 
+     * 
+     */
+    $results = array();
+    $rows = array();
+//  $month =9;
+//  $year=2013;
+    $first = getFistAndEndDateOfMonth($month, $year, 'first');
+    $last = getFistAndEndDateOfMonth($month, $year, 'last');
+    $diffrence = $last - $first;
+    $days = floor($diffrence / (60 * 60 * 24));
+    $query = new EntityFieldQuery();
+    $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+    $query->entityCondition('bundle', 'catalog');
+    $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+    $query->execute();
+
+
+    if (count($catalogs->ordered_results) > 0) {
+        $totalcruiseitems = array();
+        foreach ($catalogs->ordered_results as $noderesults) {
+
+            $catalogid = $noderesults->entity_id;
+        }
+    }
+
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, 1);
+    $startdate = (date('Y-m-d 00:00:00', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d 00:00:00', $last_minute));
+
+//   $nodeQuery = new EntityFieldQuery();
+//  $entities = $nodeQuery->entityCondition('entity_type', 'node')
+//  ->entityCondition('bundle', 'product') 
+// ->fieldCondition('field_eventstartdate','value', $first_minute, '<=') //field_eventstartdatevalu1 <=cuurentmonthstartdate(1378008000<=1380600000)
+//  ->fieldCondition('field_eventstartdate','value2', $last_minute, '>=')//field_eventstartdatevalu2 >=cuurentmonthenddate(1412049600<=1383278340)
+// 
+// ->fieldCondition('taxonomy_catalog', 'tid', $catalogid)
+////  ->pager(10)
+//  ->execute();
+// 
+//  $entitiesnodes=array();
+//  foreach ($entities as $key => $nodesvalue) {
+//    $nodes=array_keys($nodesvalue);
+//  }
+
+
+
+    $result = db_query('SELECT a.entity_id FROM "field_data_field_eventstartdate" a,"field_data_taxonomy_catalog" b
+WHERE (("field_eventstartdate_value" >=' . $first_minute . ' and 
+            "field_eventstartdate_value"<=' . $last_minute . ') or ("field_eventstartdate_value2" >=' . $first_minute . ' and 
+            "field_eventstartdate_value2"<=' . $last_minute . ') or
+            ("field_eventstartdate_value"<=' . $first_minute . ' and "field_eventstartdate_value2">=' . $last_minute . ')) 
+            and b.taxonomy_catalog_tid=' . $catalogid . ' and a."entity_id"=b."entity_id"');
+// Result is returned as a iterable object that returns a stdClass object on each iteration
+    $nodes = array();
+    foreach ($result as $record) {
+        $nodes[] = $record->entity_id;
+    }
+
+
+    //Loading Multiple Nodes at one time
+
+    $bulknodelists = node_load_multiple($nodes);
+
+    $results = array();
+    $cruiseevents = array();
+    foreach ($bulknodelists as $eventnode) {
+        $cruiseevents['id'] = $eventnode->nid;
+        $cruiseevents['name'] = $eventnode->title;
+        $cruiseevents['status'] = $eventnode->status;
+        $cruiseevents['created'] = $eventnode->created;
+        $cruiseevents['cruisetype'] = getArrayloop($eventnode->field_cruisetype);
+
+        //load vessel details
+
+        $vessel = loadvesselById(getArrayloop($eventnode->field_vesseltype));
+        $cruiseevents['vesselid'] = $vessel['vesselid'];
+        $cruiseevents['vesselname'] = $vessel['vesselname'];
+
+
+        //load port details
+        $portsdetails = loadportById(getArrayloop($eventnode->field_portslist));
+        $cruiseevents['portid'] = getArrayloop($eventnode->field_portslist);
+        $cruiseevents['portname'] = $portsdetails['portname'];
+        $cruiseevents['portdescription'] = $portsdetails['portdescription'];
+        $cruiseevents['portColor'] = $portsdetails['portColor'];
+        $cruiseevents['portAddress'] = $portsdetails['portAddress'];
+        $cruiseevents['portState'] = $portsdetails['portState'];
+        $cruiseevents['portCity'] = $portsdetails['portCity'];
+        $cruiseevents['portPostalCode'] = $portsdetails['portPostalCode'];
+
+        //end of port details
+
+        $cruiseevents['eventstartdate'] = getArrayloop($eventnode->field_eventstartdate);
+//    $cruiseevents['eventenddate']=getArrayloop($eventnode->field_eventenddate);
+        $cruiseevents['cruisedeparturetime'] = getArrayloop($eventnode->field_cruisedeparturetime);
+
+        $cruiseevents['cruisereturntime'] = getArrayloop($eventnode->field_cruisereturntime);
+        $cruiseevents['cruiseborading'] = getArrayloop($eventnode->field_cruiseborading);
+
+        foreach ($eventnode->field_cruiseweekdays as $key => $eventdaysvalue) {
+
+            if (count($eventdaysvalue) > 0) {
+
+                foreach ($eventdaysvalue as $eventday) {
+                    if (isset($eventvalue))
+                        $eventvalue.=',' . $eventday['value'];
+                    else
+                        $eventvalue = $eventday['value'];
+                }
+                $cruiseevents['cruiseweekdays'] = $eventvalue;
+
+                //days logic
+                $daysarray = explode(',', $eventvalue);
+                for ($i = 0; $i <= $days; $i++) {
+                    $tempdate = strtotime(date("Y-m-d", $first) . " +" . $i . " day");
+//            var_dump($eventnode->nid);
+//            var_dump($tempdate);
+                    $stocks = getCalendarcurrentstock($eventnode->nid, $tempdate);
+                    $cruiseevents['solditems'] = $stocks->cruisesold;
+                    $cruiseevents['stockavailable'] = $stocks->available;
+                    $cruiseevents['totalstock'] = $stocks->totalstockavailability;
+                    $weekday = date('N', $tempdate); // 1-7 (7-Sunday)
+                    if (in_array($weekday, $daysarray)) {
+
+                        $rows[] = $cruiseevents;
+                        if (array_key_exists(date('Ymd', $tempdate), $totalcruiseitems))
+                            $totalcruiseitems[date('Ymd', $tempdate)] = array_merge($totalcruiseitems[date('Ymd', $tempdate)], $rows);
+                        else
+                            $totalcruiseitems[date('Ymd', $tempdate)] = $rows;
+                        unset($rows);
+                    }
+                }
+            }
+        }
+        //end of node results
+        $results[] = $totalcruiseitems;
+        unset($eventvalue);
+    }
+
+    return end($results);
+    if (count($bulknodelists) > 1) {
+        array_shift($results);
+    }
+    return $results[0];
+}
+
+//loading Cruise Events By Month and CruiseType
+function getCruiseEventsByMonthByCruisetypeold($month, $year, $cruiseType) {
+
+    /**
+     * 
+     * First Loading the Current Month CruiseEvents by checking with Cruise catalog 
+     * 
+     * 
+     */
+    getCalendarstocks($month, $year);
+    $results = array();
+    $rows = array();
+//  $month =9;
+//  $year=2013;
+    $first = getFistAndEndDateOfMonth($month, $year, 'first');
+    $last = getFistAndEndDateOfMonth($month, $year, 'last');
+    $diffrence = $last - $first;
+    $days = floor($diffrence / (60 * 60 * 24));
+    $query = new EntityFieldQuery();
+    $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+    $query->entityCondition('bundle', 'catalog');
+    $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+    $query->execute();
+
+
+    if (count($catalogs->ordered_results) > 0) {
+        $totalcruiseitems = array();
+        foreach ($catalogs->ordered_results as $noderesults) {
+
+            $catalogid = $noderesults->entity_id;
+        }
+    }
+
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, 1);
+    $startdate = (date('Y-m-d 00:00:00', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d 00:00:00', $last_minute));
+
+    $result = db_query('SELECT a.entity_id FROM "field_data_field_eventstartdate" a,"field_data_taxonomy_catalog" b
+WHERE (("field_eventstartdate_value" >=' . $first_minute . ' and 
+            "field_eventstartdate_value"<=' . $last_minute . ') or ("field_eventstartdate_value2" >=' . $first_minute . ' and 
+            "field_eventstartdate_value2"<=' . $last_minute . ') or
+            ("field_eventstartdate_value"<=' . $first_minute . ' and "field_eventstartdate_value2">=' . $last_minute . ')) 
+            and b.taxonomy_catalog_tid=' . $catalogid . ' and a."entity_id"=b."entity_id"');
+// Result is returned as a iterable object that returns a stdClass object on each iteration
+    $nodes = array();
+    foreach ($result as $record) {
+        $nodes[] = $record->entity_id;
+    }
+
+
+    //Loading Multiple Nodes at one time
+
+    $bulknodelists = node_load_multiple($nodes);
+
+    $results = array();
+    $cruiseevents = array();
+    foreach ($bulknodelists as $eventnode) {
+
+
+//   var_dump((int)getArrayloop($eventnode->field_cruisetype));
+        if ($cruiseType == (int) getArrayloop($eventnode->field_cruisetype)) {
+
+            $cruiseevents['id'] = $eventnode->nid;
+            $cruiseevents['name'] = $eventnode->title;
+            $cruiseevents['status'] = $eventnode->status;
+            $cruiseevents['created'] = $eventnode->created;
+            $cruiseevents['cruisetype'] = getArrayloop($eventnode->field_cruisetype);
+
+            //load vessel details
+
+            $vessel = loadvesselById(getArrayloop($eventnode->field_vesseltype));
+            $cruiseevents['vesselid'] = $vessel['vesselid'];
+            $cruiseevents['vesselname'] = $vessel['vesselname'];
+
+
+            //load port details
+            $portsdetails = loadportById(getArrayloop($eventnode->field_portslist));
+            $cruiseevents['portid'] = getArrayloop($eventnode->field_portslist);
+            $cruiseevents['portname'] = $portsdetails['portname'];
+            $cruiseevents['portdescription'] = $portsdetails['portdescription'];
+            $cruiseevents['portColor'] = $portsdetails['portColor'];
+            $cruiseevents['portAddress'] = $portsdetails['portAddress'];
+            $cruiseevents['portState'] = $portsdetails['portState'];
+            $cruiseevents['portCity'] = $portsdetails['portCity'];
+            $cruiseevents['portPostalCode'] = $portsdetails['portPostalCode'];
+
+            //end of port details
+
+            $cruiseevents['eventstartdate'] = getArrayloop($eventnode->field_eventstartdate);
+//    $cruiseevents['eventenddate']=getArrayloop($eventnode->field_eventenddate);
+            $cruiseevents['cruisedeparturetime'] = getArrayloop($eventnode->field_cruisedeparturetime);
+
+            $cruiseevents['cruisereturntime'] = getArrayloop($eventnode->field_cruisereturntime);
+            $cruiseevents['cruiseborading'] = getArrayloop($eventnode->field_cruiseborading);
+
+            foreach ($eventnode->field_cruiseweekdays as $key => $eventdaysvalue) {
+
+                if (count($eventdaysvalue) > 0) {
+
+                    foreach ($eventdaysvalue as $eventday) {
+                        if (isset($eventvalue))
+                            $eventvalue.=',' . $eventday['value'];
+                        else
+                            $eventvalue = $eventday['value'];
+                    }
+                    $cruiseevents['cruiseweekdays'] = $eventvalue;
+
+                    //days logic
+                    $daysarray = explode(',', $eventvalue);
+                    for ($i = 0; $i <= $days; $i++) {
+                        $tempdate = strtotime(date("Y-m-d", $first) . " +" . $i . " day");
+                        $stocks = getCalendarcurrentstock($eventnode->nid, $tempdate);
+                        $cruiseevents['solditems'] = $stocks->cruisesold;
+                        $cruiseevents['stockavailable'] = $stocks->available;
+                        $cruiseevents['totalstock'] = $stocks->totalstockavailability;
+                        $weekday = date('N', $tempdate); // 1-7 (7-Sunday)
+                        if (in_array($weekday, $daysarray)) {
+                            $rows[] = $cruiseevents;
+                            if (array_key_exists(date('Ymd', $tempdate), $totalcruiseitems))
+                                $totalcruiseitems[date('Ymd', $tempdate)] = array_merge($totalcruiseitems[date('Ymd', $tempdate)], $rows);
+                            else
+                                $totalcruiseitems[date('Ymd', $tempdate)] = $rows;
+                            unset($rows);
+                        }
+                    }
+                }
+            }
+
+            //end of node results
+            $results[] = $totalcruiseitems;
+            unset($eventvalue);
+        }
+    }
+
+    return end($results);
+    if (count($bulknodelists) > 1 && count($results) > 1) {
+        array_shift($results);
+    }
+
+    return $results[0];
+}
+
+//loading Cruise Events By Month and CruiseType
+function getCruiseEventsByMonthByPorttypeold($month, $year, $portType) {
+
+    /**
+     * 
+     * First Loading the Current Month CruiseEvents by checking with Cruise catalog 
+     * 
+     * 
+     */
+    getCalendarstocks($month, $year);
+    $results = array();
+    $rows = array();
+//  $month =9;
+//  $year=2013;
+    $first = getFistAndEndDateOfMonth($month, $year, 'first');
+    $last = getFistAndEndDateOfMonth($month, $year, 'last');
+    $diffrence = $last - $first;
+    $days = floor($diffrence / (60 * 60 * 24));
+    $query = new EntityFieldQuery();
+    $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+    $query->entityCondition('bundle', 'catalog');
+    $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+    $query->execute();
+
+
+    if (count($catalogs->ordered_results) > 0) {
+        $totalcruiseitems = array();
+        foreach ($catalogs->ordered_results as $noderesults) {
+
+            $catalogid = $noderesults->entity_id;
+        }
+    }
+
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, 1);
+    $startdate = (date('Y-m-d 00:00:00', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d 00:00:00', $last_minute));
+
+    $result = db_query('SELECT a.entity_id FROM "field_data_field_eventstartdate" a,"field_data_taxonomy_catalog" b
+WHERE (("field_eventstartdate_value" >=' . $first_minute . ' and 
+            "field_eventstartdate_value"<=' . $last_minute . ') or ("field_eventstartdate_value2" >=' . $first_minute . ' and 
+            "field_eventstartdate_value2"<=' . $last_minute . ') or
+            ("field_eventstartdate_value"<=' . $first_minute . ' and "field_eventstartdate_value2">=' . $last_minute . ')) 
+            and b.taxonomy_catalog_tid=' . $catalogid . ' and a."entity_id"=b."entity_id"');
+// Result is returned as a iterable object that returns a stdClass object on each iteration
+    $nodes = array();
+    foreach ($result as $record) {
+        $nodes[] = $record->entity_id;
+    }
+
+
+    //Loading Multiple Nodes at one time
+
+    $bulknodelists = node_load_multiple($nodes);
+
+    $results = array();
+    $cruiseevents = array();
+    foreach ($bulknodelists as $eventnode) {
+
+
+//   var_dump((int)getArrayloop($eventnode->field_cruisetype));
+        $cruises = taxonomy_get_parents(getArrayloop($eventnode->field_portslist));
+        $parentport = array_keys($cruises);
+
+        if ($parentport[0] == $portType) {
+
+            $cruiseevents['id'] = $eventnode->nid;
+            $cruiseevents['name'] = $eventnode->title;
+            $cruiseevents['status'] = $eventnode->status;
+            $cruiseevents['created'] = $eventnode->created;
+            $cruiseevents['cruisetype'] = getArrayloop($eventnode->field_cruisetype);
+
+            //load vessel details
+
+            $vessel = loadvesselById(getArrayloop($eventnode->field_vesseltype));
+            $cruiseevents['vesselid'] = $vessel['vesselid'];
+            $cruiseevents['vesselname'] = $vessel['vesselname'];
+
+
+            //load port details
+            $portsdetails = loadportById(getArrayloop($eventnode->field_portslist));
+
+
+            //
+
+            $cruiseevents['portid'] = getArrayloop($eventnode->field_portslist);
+            $cruiseevents['portname'] = $portsdetails['portname'];
+            $cruiseevents['portdescription'] = $portsdetails['portdescription'];
+            $cruiseevents['portColor'] = $portsdetails['portColor'];
+            $cruiseevents['portAddress'] = $portsdetails['portAddress'];
+            $cruiseevents['portState'] = $portsdetails['portState'];
+            $cruiseevents['portCity'] = $portsdetails['portCity'];
+            $cruiseevents['portPostalCode'] = $portsdetails['portPostalCode'];
+
+            //end of port details
+
+            $cruiseevents['eventstartdate'] = getArrayloop($eventnode->field_eventstartdate);
+//    $cruiseevents['eventenddate']=getArrayloop($eventnode->field_eventenddate);
+            $cruiseevents['cruisedeparturetime'] = getArrayloop($eventnode->field_cruisedeparturetime);
+
+            $cruiseevents['cruisereturntime'] = getArrayloop($eventnode->field_cruisereturntime);
+            $cruiseevents['cruiseborading'] = getArrayloop($eventnode->field_cruiseborading);
+
+            foreach ($eventnode->field_cruiseweekdays as $key => $eventdaysvalue) {
+
+                if (count($eventdaysvalue) > 0) {
+
+                    foreach ($eventdaysvalue as $eventday) {
+                        if (isset($eventvalue))
+                            $eventvalue.=',' . $eventday['value'];
+                        else
+                            $eventvalue = $eventday['value'];
+                    }
+                    $cruiseevents['cruiseweekdays'] = $eventvalue;
+
+                    //days logic
+                    $daysarray = explode(',', $eventvalue);
+                    for ($i = 0; $i <= $days; $i++) {
+                        $tempdate = strtotime(date("Y-m-d", $first) . " +" . $i . " day");
+                        $stocks = getCalendarcurrentstock($eventnode->nid, $tempdate);
+                        $cruiseevents['solditems'] = $stocks->cruisesold;
+                        $cruiseevents['stockavailable'] = $stocks->available;
+                        $cruiseevents['totalstock'] = $stocks->totalstockavailability;
+                        $weekday = date('N', $tempdate); // 1-7 (7-Sunday)
+                        if (in_array($weekday, $daysarray)) {
+                            $rows[] = $cruiseevents;
+                            if (array_key_exists(date('Ymd', $tempdate), $totalcruiseitems))
+                                $totalcruiseitems[date('Ymd', $tempdate)] = array_merge($totalcruiseitems[date('Ymd', $tempdate)], $rows);
+                            else
+                                $totalcruiseitems[date('Ymd', $tempdate)] = $rows;
+                            unset($rows);
+                        }
+                    }
+                }
+            }
+            //end of node results
+            $results[] = $totalcruiseitems;
+            unset($eventvalue);
+        }
+    }
+
+    return end($results);
+    if (count($bulknodelists) > 1 && count($results) > 1) {
+        array_shift($results);
+    }
+
+    return $results[0];
+}
+
+/* * *Single Cruise Events** */
+
+/* * *************Cruise Events************************* */
+/*
+ * @param $month
+ * @param $year
+ * @templateid 
+ * 
+ * 
+ * 
+ */
+
+function getSingleCruiseEventsByMonth($month, $year, $templateid, $portid) {
+// 	$month=11;
+// 	$year=2013;
+// 	$portid=29;
+// 	$templateid=1;
+    //
+	
+	$query = db_select('scheduledevents', 'sd');
+    $query->join('scheduledevent_dates', 'e', 'sd.id = e.scheduledevent_id');
+    $query->fields('sd');
+    $query->fields('e');
+    $query->condition('sd.cruisetemplate_id', $templateid, '=');
+
+    $result = $query->execute();
+    $totalresults = array();
+    $cruisetemplates = array();
+    $scheduleddates = array();
+    foreach ($result as $cruiseentity) {
+
+        $schedulemonth = date('m', $cruiseentity->scheduleddate);
+        $scheduleyear = date('Y', $cruiseentity->scheduleddate);
+
+
+
+        $totalresults['calendartag'] = getCalendartag($cruiseentity->cruisetemplate_id);
+
+        if ($schedulemonth == $month && $scheduleyear == $year && $portid == $cruiseentity->port_id && $totalresults['calendartag'] != null) {
+            $totalresults['id'] = $cruiseentity->id;
+            $totalresults['name'] = $cruiseentity->name;
+            $totalresults['cruisetemplate_id'] = $cruiseentity->cruisetemplate_id;
+            $totalresults['calendartag'] = getCalendartag($cruiseentity->cruisetemplate_id);
+
+            $totalresults['vesselid'] = $cruiseentity->vessel_id;
+            $totalresults['vesselname'] = 'The em';
+            // 		$totalresults['created']= '1380975971';
+            $totalresults['cruisetype'] = '7';
+            $totalresults['status'] = 1;
+            $totalresults['portid'] = $cruiseentity->port_id;
+
+
+            $portsdetails = loadportById($cruiseentity->port_id);
+
+            $totalresults['portname'] = $portsdetails['portname'];
+            $totalresults['portdescription'] = $portsdetails['portdescription'];
+            $totalresults['portColor'] = $portsdetails['portColor'];
+            $totalresults['portAddress'] = $portsdetails['portAddress'];
+            $totalresults['portState'] = $portsdetails['portState'];
+            $totalresults['portCity'] = $portsdetails['portCity'];
+            $totalresults['portPostalCode'] = $portsdetails['portPostalCode'];
+
+
+            $totalresults['cruisedeparturetime'] = $cruiseentity->departuretime;
+            $totalresults['cruisereturntime'] = $cruiseentity->returntime;
+            $totalresults['cruiseborading'] = $cruiseentity->boardingtime;
+            $totalresults['totalstock'] = $cruiseentity->ticketinventory;
+            $totalresults['stockavailable'] = $cruiseentity->availabletickets;
+            $totalresults['solditems'] = $cruiseentity->soldtickets;
+            $totalresults['windowseatinventory'] = $cruiseentity->windowseatinventory;
+            $totalresults['availablewindowseats'] = $cruiseentity->availablewindowseats;
+            $totalresults['windowseatssold'] = $cruiseentity->windowseatssold;
+            $totalresults['onsalesdaysprior'] = $cruiseentity->onsalesdaysprior;
+            $totalresults['onsaleshoursprior'] = $cruiseentity->onsaleshoursprior;
+            $totalresults['scheduledevent_id'] = $cruiseentity->scheduledevent_id;
+            $totalresults['scheduleddate'] = $cruiseentity->scheduleddate;
+
+            $cruisetemplates[] = $totalresults;
+            $scheduleddates[date('Y-m-d', $cruiseentity->scheduleddate)] = $cruisetemplates;
+            unset($cruisetemplates);
+        }
+    }
+
+
+    return $scheduleddates;
+}
+
+function getSingleCruiseEventsByMonthold($month, $year, $cruisenid) {
+
+    /**
+     * stock inserts and updates implementation
+     * first inserting the monthly calendar stocks
+     * then after get stock updates on nid and timestamp
+     * 
+     * 
+     */
+    /**
+     * 
+     * First Loading the Current Month CruiseEvents by checking with Cruise catalog 
+     * 
+     * 
+     */
+    $results = array();
+    $rows = array();
+//  $month =9;
+//  $year=2013;
+    $first = getFistAndEndDateOfMonth($month, $year, 'first');
+    $last = getFistAndEndDateOfMonth($month, $year, 'last');
+    $diffrence = $last - $first;
+    $days = floor($diffrence / (60 * 60 * 24));
+
+
+
+    //Loading Multiple Nodes at one time
+    $nodearray = array($cruisenid);
+    $bulknodelists = node_load_multiple($nodearray);
+
+    $results = array();
+    $cruiseevents = array();
+    foreach ($bulknodelists as $eventnode) {
+        $cruiseevents['id'] = $eventnode->nid;
+        $cruiseevents['name'] = $eventnode->title;
+        $cruiseevents['status'] = $eventnode->status;
+        $cruiseevents['created'] = $eventnode->created;
+        $cruiseevents['cruisetype'] = getArrayloop($eventnode->field_cruisetype);
+
+        //load vessel details
+
+        $vessel = loadvesselById(getArrayloop($eventnode->field_vesseltype));
+        $cruiseevents['vesselid'] = $vessel['vesselid'];
+        $cruiseevents['vesselname'] = $vessel['vesselname'];
+
+
+        //load port details
+        $portsdetails = loadportById(getArrayloop($eventnode->field_portslist));
+        $cruiseevents['portid'] = getArrayloop($eventnode->field_portslist);
+        $cruiseevents['portname'] = $portsdetails['portname'];
+        $cruiseevents['portdescription'] = $portsdetails['portdescription'];
+        $cruiseevents['portColor'] = $portsdetails['portColor'];
+        $cruiseevents['portAddress'] = $portsdetails['portAddress'];
+        $cruiseevents['portState'] = $portsdetails['portState'];
+        $cruiseevents['portCity'] = $portsdetails['portCity'];
+        $cruiseevents['portPostalCode'] = $portsdetails['portPostalCode'];
+
+        //end of port details
+
+        $cruiseevents['eventstartdate'] = getArrayloop($eventnode->field_eventstartdate);
+//    $cruiseevents['eventenddate']=getArrayloop($eventnode->field_eventenddate);
+        $cruiseevents['cruisedeparturetime'] = getArrayloop($eventnode->field_cruisedeparturetime);
+
+        $cruiseevents['cruisereturntime'] = getArrayloop($eventnode->field_cruisereturntime);
+        $cruiseevents['cruiseborading'] = getArrayloop($eventnode->field_cruiseborading);
+
+        foreach ($eventnode->field_cruiseweekdays as $key => $eventdaysvalue) {
+
+            if (count($eventdaysvalue) > 0) {
+
+                foreach ($eventdaysvalue as $eventday) {
+                    if (isset($eventvalue))
+                        $eventvalue.=',' . $eventday['value'];
+                    else
+                        $eventvalue = $eventday['value'];
+                }
+                $cruiseevents['cruiseweekdays'] = $eventvalue;
+
+                //days logic
+                $daysarray = explode(',', $eventvalue);
+                for ($i = 0; $i <= $days; $i++) {
+                    $tempdate = strtotime(date("Y-m-d", $first) . " +" . $i . " day");
+//            var_dump($eventnode->nid);
+//            var_dump($tempdate);
+                    $stocks = getCalendarcurrentstock($eventnode->nid, $tempdate);
+                    $cruiseevents['solditems'] = $stocks->cruisesold;
+                    $cruiseevents['stockavailable'] = $stocks->available;
+                    $cruiseevents['totalstock'] = $stocks->totalstockavailability;
+                    $weekday = date('N', $tempdate); // 1-7 (7-Sunday)
+                    if (in_array($weekday, $daysarray)) {
+
+                        $rows[] = $cruiseevents;
+                        if (array_key_exists(date('Y-m-d', $tempdate), $totalcruiseitems))
+                            $totalcruiseitems[date('Y-m-d', $tempdate)] = array_merge($totalcruiseitems[date('Ymd', $tempdate)], $rows);
+                        else
+                            $totalcruiseitems[date('Y-m-d', $tempdate)] = $rows;
+                        unset($rows);
+                    }
+                }
+            }
+        }
+        //end of node results
+        $results[] = $totalcruiseitems;
+        unset($eventvalue);
+    }
+
+    return end($results);
+    if (count($bulknodelists) > 1) {
+        array_shift($results);
+    }
+    return $results[0];
+}
+
+function getSingleCruiseEventsByport($templateid, $portid) {
+    $query = db_select('scheduledevents', 'sd');
+    $query->join('scheduledevent_dates', 'e', 'sd.id = e.scheduledevent_id');
+    $query->fields('sd');
+    $query->fields('e');
+    $query->condition('sd.cruisetemplate_id', $templateid, '=');
+    $query->condition('sd.status', 1, '=');
+    $query->condition('e.scheduleddate', time(), '>');
+    $query->orderBy('e.scheduleddate', 'ASC');
+    $result = $query->execute();
+    $totalresults = array();
+    $cruisetemplates = array();
+    $scheduleddates = array();
+    foreach ($result as $cruiseentity) {
+        $schedulemonth = date('m', $cruiseentity->scheduleddate);
+        $scheduleyear = date('Y', $cruiseentity->scheduleddate);
+
+        $totalresults['calendartag'] = getCalendartag($cruiseentity->cruisetemplate_id);
+        if ($portid == $cruiseentity->port_id && $totalresults['calendartag'] != null) {
+            $totalresults['id'] = $cruiseentity->id;
+            $totalresults['name'] = $cruiseentity->name;
+            $totalresults['cruisetemplate_id'] = $cruiseentity->cruisetemplate_id;
+            $totalresults['calendartag'] = getCalendartag($cruiseentity->cruisetemplate_id);
+
+            $totalresults['vesselid'] = $cruiseentity->vessel_id;
+            $totalresults['vesselname'] = 'The em';
+            // 		$totalresults['created']= '1380975971';
+            $totalresults['cruisetype'] = '7';
+            $totalresults['status'] = 1;
+            $totalresults['portid'] = $cruiseentity->port_id;
+
+
+            $portsdetails = loadportById($cruiseentity->port_id);
+
+            $totalresults['portname'] = $portsdetails['portname'];
+            $totalresults['portdescription'] = $portsdetails['portdescription'];
+            $totalresults['portColor'] = $portsdetails['portColor'];
+            $totalresults['portAddress'] = $portsdetails['portAddress'];
+            $totalresults['portState'] = $portsdetails['portState'];
+            $totalresults['portCity'] = $portsdetails['portCity'];
+            $totalresults['portPostalCode'] = $portsdetails['portPostalCode'];
+
+
+            $totalresults['cruisedeparturetime'] = $cruiseentity->departuretime;
+            $totalresults['cruisereturntime'] = $cruiseentity->returntime;
+            $totalresults['cruiseborading'] = $cruiseentity->boardingtime;
+            $totalresults['totalstock'] = $cruiseentity->ticketinventory;
+            $totalresults['stockavailable'] = $cruiseentity->availabletickets;
+            $totalresults['solditems'] = $cruiseentity->soldtickets;
+            $totalresults['windowseatinventory'] = $cruiseentity->windowseatinventory;
+            $totalresults['availablewindowseats'] = $cruiseentity->availablewindowseats;
+            $totalresults['windowseatssold'] = $cruiseentity->windowseatssold;
+            $totalresults['onsalesdaysprior'] = $cruiseentity->onsalesdaysprior;
+            $totalresults['onsaleshoursprior'] = $cruiseentity->onsaleshoursprior;
+            $totalresults['scheduledevent_id'] = $cruiseentity->scheduledevent_id;
+            $totalresults['scheduleddate'] = $cruiseentity->scheduleddate;
+
+            $cruisetemplates[] = $totalresults;
+            $scheduleddates[date('Y-m-d', $cruiseentity->scheduleddate)] = $cruisetemplates;
+            unset($cruisetemplates);
+        }
+    }
+
+
+    return $scheduleddates;
+}

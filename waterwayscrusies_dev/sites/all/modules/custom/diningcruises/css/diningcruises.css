@@ -1,0 +1,380 @@
+/* 
+    Document   : Dinining Cruises
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+   Purpose of the stylesheet follows.
+*/
+
+/* order form css starts here */
+
+/*.cap_font
+{
+    font-size: 23px;
+    font-family: "Monotype Corsiva";
+    src: url(fonts/MTCORSVA.TTF); if IE
+    src: local("Grandesign Regular"), url("fonts/MTCORSVA.TTF") format("truetype");  non-IE
+}
+
+@font-face {
+    font-family: "Monotype Corsiva";
+    font-style: normal;
+    src: url(fonts/MTCORSVA.TTF); if IE 
+    src: local("Grandesign Regular"), url("fonts/MTCORSVA.TTF") format("truetype");  non-IE 
+}
+
+.registrationtypeHeading{
+    font-size: 1.375em;
+    margin: 5px 0px;
+    font-weight: normal;
+    padding-left: 28px;
+}*/
+
+.item img {
+    width:100%;
+}
+
+
+
+/* Dining Cruises start css */
+
+.contentbox-inner
+{
+    width:82% !important;
+    margin:auto;
+    padding-top:5%;
+    padding-bottom:5%;
+}
+.cruisebox-first-inner{
+    padding-top: 15%;
+    font-size: 16.34px;
+    color: #818181;
+    line-height: 22px;
+    margin-left: 15px;
+    margin-right: 13px;
+    font-family: georgia;
+}
+
+.slider a.carousel-control, .slider .carousel-indicators, #content, .sliderBottomMobile{
+    display: block !important;
+}
+
+.slider{
+    width: 96% !important;
+    margin: 0 auto;
+}
+
+.diningTitle
+{
+    font-size:39px;
+    font-family:georgia;
+    color:#00529b;
+    line-height:60px;
+    font-weight: normal;
+    padding-left: 0%;
+    padding-top: 3%;
+    text-transform: uppercase;
+}
+
+.diningTitle a{
+    color: #00529b;
+}
+
+.diningTitle a:hover{
+    color: #00529b;
+}
+
+.cruisebox-first-inner{
+    text-align: center;
+}
+.cruisebox-first-inner a {
+font-size: 16.34px;
+color: #00529b;
+text-decoration: none;
+line-height: 40px;
+font-family: georgia;
+}
+.cruiseboxFirstout
+{
+    background:rgba(0,0,0,0.5);
+    margin:5%;
+    border:#fff 10px solid;
+    -moz-box-shadow: 0 0 10px 0px #999;
+    -webkit-box-shadow: 0 0 10px 0px#999;
+    box-shadow: 0 0 10px 0px #999;
+    height: 250px;
+    position: relative;
+    margin-top: 0;
+}
+.cruiseboxFirstover{
+    background: #fff;
+    margin: 5%;
+    width: 250px;
+    height: 250px;
+    border: #fff 10px solid;
+    -moz-box-shadow: 0 0 20px 1px #888;
+    -webkit-box-shadow: 0 0 20px 1px#888;
+    box-shadow: 0 0 20px 1px #888;
+    cursor: pointer;
+    margin-top: 0;
+}
+.cruiseboxFirstInner
+{
+    margin-top:30%;
+    font-size:29.34px;
+    font-family:georgia;
+    color:#fff;
+    line-height:35px;
+    margin-left: 15px;
+    margin-right: 13px;
+    text-align:center;
+    position: absolute;
+    z-index: 2;
+    width: 215px;
+}
+
+.cruiseboxFirstInner span
+{
+     font-size:43.34px;
+    font-family:"England";
+    color:#fff;
+    line-height:35px;
+    text-align:center;
+}
+.cruise-bgimage{
+    position: absolute;
+    height: 250px;
+    width: 100%;
+    z-index: 1;
+    background: rgba(0,0,0,0.5);
+}
+.cruiseboxFirstover{
+    display:none;
+}
+
+
+.cruiseboxFirstInner a
+{
+    font-size:19px;
+    font-family:georgia;
+    text-shadow:none;
+    text-decoration:none;
+}
+.SunsetBoxFirst
+{
+    background:url(../images/sunsetdinner-img.png) no-repeat;
+    margin:5%;
+    /*	width:250px;
+            height:250px;*/
+    border:#fff 10px solid;
+    -moz-box-shadow: 0 0 10px 0px #999;
+    -webkit-box-shadow: 0 0 10px 0px#999;
+    box-shadow: 0 0 10px 0px #999;
+    height: 250px;
+}
+.SunsetBoxFirstInner
+{
+    margin-top:30%;
+    font-family:georgia;
+    font-size:34px;
+    color:#fff;
+    line-height:35px;
+    margin-left: 15px;
+    margin-right: 13px;
+    text-align:center;
+}
+.SunsetBoxFirstInner a
+{
+    font-size:19px;
+    font-family:georgia;
+    text-shadow:none;
+    text-decoration:none;
+    color:#4596de;
+}
+
+
+#CarouselSlider .arrow-left {
+    width: 0; 
+    height: 0; 
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent; 
+    border-left: 10px solid transparent; 
+    border-right:10px solid blue; 
+}
+
+#bxsliderarrows .bx-wrapper .bx-prev {
+    top: 35% !important;
+    left: -12% !important;
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+    display:block !important;
+}
+#bxsliderarrows .bx-wrapper .bx-next {
+    top: 35% !important;
+    right: -12% !important;
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+    display:block !important;
+}
+.carouselNav a.left{
+
+    left:6%;
+
+}
+
+.carouselNav a.right{
+    right: 5%;
+}
+
+.carouselNav a.carousel-control{
+    background-color:inherit !important;
+    border: solid 0px !important;
+}
+/* Dining Cruises end css */
+
+#carousel{
+    height: 290px !important;
+}
+
+.contentbox-inner{
+    width: 85% !important;
+}
+
+@media (max-width: 480px){
+.container {
+width: 95% !important;
+}
+    .bx-viewport {
+    height: hidden !important; 
+}
+
+ .bx-controls .bx-controls-direction{
+        display: block !important;
+    }
+    
+    #bxsliderarrows .bx-wrapper .bx-prev {
+    top: 35% !important;
+    left: -5% !important;
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+    display:block;
+}
+
+#bxsliderarrows .bx-wrapper .bx-next {
+    top: 35% !important;
+    right: 6% !important;
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+    }
+
+@media screen and (max-width: 767px) {
+.container {
+width: 101% !important;
+}
+    .diningTitle{
+        font-size: 30px;
+    }
+    
+       #bxsliderarrows .bx-wrapper .bx-prev {
+    top: 35% !important;
+    left: -5% !important;
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+    display:block;
+}
+
+#bxsliderarrows .bx-wrapper .bx-next {
+    top: 35% !important;
+    right: -1% !important;
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+    }
+    
+
+
+
+
+@media (max-width: 979px) {
+  
+.container {
+width: 95% !important;
+}
+   #bxsliderarrows .bx-wrapper .bx-prev {
+    top: 35% !important;
+    left: -5% !important;
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+    display:block;
+}
+
+#bxsliderarrows .bx-wrapper .bx-next {
+    top: 35% !important;
+    right: 5% !important;
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+
+}
+
+
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+    
+/*    .diningCruises li{
+         width:300px !important;
+    }*/
+    
+
+/*.container {
+width: 84% !important;
+}
+.contentbox-inner {
+width: 82% !important;
+}*/
+
+#bxsliderarrows .bx-wrapper .bx-next {
+    top: 35% !important;
+    right: -4% !important;
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+    display:block !important;
+}
+#bxsliderarrows .bx-wrapper .bx-prev {
+top: 35% !important;
+left: -6% !important;
+background: url(../images/arrows.png) no-repeat 0px 0px !important;
+width: 74px !important;
+height: 144px !important;
+display: block !important;
+}
+}
+@media (min-width: 1160px) and (max-width: 1200px) { 
+    
+    .container {
+width: 100%  !important;
+}
+ #bxsliderarrows .bx-wrapper .bx-prev {
+top: 35% !important;
+left: -6% !important;
+background: url(../images/arrows.png) no-repeat 0px 0px !important;
+width: 74px !important;
+height: 144px !important;
+display: block !important;
+}
+}
+
+bx-controls bx-has-pager bx-has-controls-direction{
+    display:block !important;
+}
+

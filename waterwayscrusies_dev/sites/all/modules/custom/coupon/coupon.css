@@ -1,0 +1,86 @@
+#promo_start_date .control-label, #promo_start_date .controls .help-block{
+    display: none;
+}
+
+#promo_end_date .control-label, #promo_end_date .controls .help-block{
+    display: none;
+}
+
+#crusie_start_date .control-label, #crusie_start_date .controls .help-block{
+    display: none;
+}
+
+#crusie_end_date .control-label, #crusie_end_date .controls .help-block{
+    display: none;
+}
+
+#crusie_multi_date .control-label, #crusie_multi_date .controls .help-block{
+    display: none;
+}
+
+#couponForm fieldset#edit-crusievent{
+    padding: 2.5em 0.625em 0.35em;
+} 
+
+#coupon-list-form .form-type-select{
+    margin-top: 0px;
+}
+
+.customRowpromo .span3{
+    min-height: 0px !important;
+}
+
+.customRowpromo .span9{
+    min-height: 0px !important;
+}
+.customRowpromo .span12{
+    min-height: 0px !important;
+}
+
+
+.chkbox{
+    width:90%;
+    margin-left: 20px;
+}
+.chkboxevent{
+    width:30%;
+}
+.chkboxdate{
+    width:30%;
+}
+.chkboxport{
+    width:20%;
+}
+.cruiseeventsearch{
+    padding-left:1.5%;
+}
+.cruiseeventsearchbtn{
+    padding-left:1.5%;
+    padding-top:3.5%;
+}
+@media (min-width: 979px) and (max-width: 1160px) { 
+    .cruiseeventsearchbtn{
+        padding-top:5%;
+    }
+    
+}
+@media (min-width: 768px) and (max-width: 978px) { 
+     .cruiseeventsearchbtn{
+        padding-top:5.5%;
+    }
+    #edit-events div label.option{
+        float:left;
+        width:92%;
+    }
+    #edit-checkall{
+        margin-left: 3%;
+    }
+}
+
+#deal_cruise_ticketsdiv{
+    /*display:none;*/
+}
+
+.grouponodelabel{
+    padding-left:3px; 
+}

@@ -1,0 +1,6 @@
+; $Id$
+name = Connect Review
+description = "Connect Review Page"
+core = 7.x
+version = VERSION
+package = WWC

@@ -1,0 +1,38 @@
+name = Private Events Management
+description = Private Events
+core = 7.x
+;Satya Date :09 Jul 2014
+files[]=classes/PrivateEventMenus.class.inc
+files[]=classes/PrivateEvents.class.inc
+files[]=classes/PrivateEventHeaderMenu.class.inc
+files[]=classes/PrivateEventMenuList.class.inc
+
+
+files[]=classes/PrivateEventPackages.class.inc
+
+files[]=classes/PrivateEventPackagesSlider.class.inc
+
+files[]=classes/PrivateEventPackagesPriceTable.inc
+
+files[]=classes/PrivateEventPackageCateringSelection.class.inc
+
+files[]=classes/PrivateEventGallery.class.inc
+
+
+files[]=classes/PrivateEventPackagesHeaderMenu.class.inc
+
+
+files[]=classes/PrivateEventPackageCategories.class.inc
+
+
+
+
+
+
+
+
+
+
+
+
+

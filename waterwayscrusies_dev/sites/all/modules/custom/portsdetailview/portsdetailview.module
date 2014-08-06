@@ -1,0 +1,143 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function portsdetailview_menu() {
+    $items = array();
+    $items['portsdetailview/portid/%'] = array(
+        'title' => 'Ports and Directions Detailed View',
+        'page callback' => 'portsdetailview_callbackfunc',
+//      'access callback' => 'user_access',
+        'page arguments' => array(2),
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function portsdetailview_theme() {
+    $items['portsdetailview'] = array(
+        'template' => 'portsdetailview', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function portsdetailview_callbackfunc($category) {
+	
+// 	require('simpleCache.php');
+// 	$cache = new SimpleCache();
+// 	$cache->cache_path = $_SERVER['DOCUMENT_ROOT'] . '/workspace/dev/simplecache/temp/';
+// 	$cache->cache_time = 3600;
+	
+	//$portsevent = getPortdetails($category);
+	
+// 	$ports=  taxonomy_term_load($category);
+// 	$latitude=getArrayloop($ports->field_latitude);
+// 	$longititude=  getArrayloop($ports->field_longitude);
+	
+	
+	
+// 	//Forecast
+// 	$forecasturl="http://api.wunderground.com/api/5eb25dba4d998804/forecast/q/$latitude,$longititude.json";
+// 	$label=$category."-forecast";
+// 	if($data = $cache->get_cache($label)){
+// 		$data = json_decode($data);
+// 	} else {
+// 		$data = $cache->do_curl($forecasturl);
+// 		$cache->set_cache($label, $data);
+// 		$data = json_decode($data);
+// 	}
+	
+// 	//print_r($data);
+	
+// 	//Weathercast
+// 	$weatherconditionurl="http://api.wunderground.com/api/5eb25dba4d998804/conditions/q/$latitude,$longititude.json";
+// 	$weatherlabel=$category."-weathercondition";
+// 	if($wdata = $cache->get_cache($weatherlabel)){
+// 		$wdata = json_decode($wdata);
+// 	} else {
+// 		$wdata = $cache->do_curl($weatherconditionurl);
+// 		$cache->set_cache($weatherlabel, $wdata);
+// 		$wdata = json_decode($wdata);
+// 	}
+
+  
+    try {
+
+        global $user;
+        //get the product load 
+
+        $portsevent = getPortdetails($category);
+//        var_dump($portsevent);
+        $weatherreport=getCurrentDayReport($portsevent['tid']);
+        
+        
+        //var_dump($portsevent);
+       // exit();
+        
+//        var_dump($weatherreport);
+        return theme('portsdetailview', array('loadporttitle' => $portsevent['title'],
+            'loadportdirection'=> $portsevent['direction'],
+            'porttid' => $portsevent['tid'],
+            'loadportaddress' => $portsevent['address'],
+            'portlocation' => $portsevent['location'],
+            'directions' => $portsevent['directions'],
+            'waetherwidget'=>$weatherreport));
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+function template_preprocess_portsdetailview(&$variables) {
+    
+  drupal_add_css(drupal_get_path('module', 'portsdetailview') . '/css/portsdetailview.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+
+  
+}
+
+function getPortdetails($category) {
+    $data = getPortsevents();
+    $title = '';
+    $address = '';
+    $direction = '';
+    $tid='';
+    $location='';
+    foreach ($data as $key => $revalue) {
+
+        if (is_array($revalue)) {
+
+            foreach ($revalue as $key => $value) {
+                if ($value['tid'] == $category) {
+                  
+                    $tid=$value['tid'];
+                    $title.=$value['name'];
+                    $lat=$value['field_latitude'];
+                    $lon=$value['field_longitude'];
+                    $address.=$value['field_street'] . $value['field_city'] . $value['field_state'] . $value['field_postal_code'];
+                    $imagesrc = file_create_url($value['field_parking_image']);
+                    $direction.='<img src="' . $imagesrc . '">';
+                    $location.=$value['field_location'];
+                    $directions.=$value['field_directions'];
+                      $directions.='<br><div class="direction-image"><img src="' . $imagesrc . '"></div>';
+                }
+            }
+        }
+    }
+    return array('title' => $title,
+        'address' => $address,
+        'direction' => $direction,
+        'location' => $location,
+        'tid' => $category,
+        'directions'=>$directions,
+        'latitude'=>$lat,
+        'longititude'=>$lon);
+}

@@ -1,0 +1,223 @@
+<?php
+function cruise_routemap_menu() {
+	$items ['cruise/%cruise/edit/routemap'] = array(
+			'title' => 'Route Map(s)',
+			'load arguments' => array(
+					'cruise'
+			),
+			'type' => MENU_LOCAL_TASK,
+			//'weight' => 5,
+			'page callback' => 'upload_route_maps',
+			'access arguments' => array(
+					'upload route maps'
+			),
+			'page arguments' => array(
+					1
+			),
+			'access callback' => TRUE,
+	);
+    return $items;
+}
+
+function cruise_routemap_permission() {
+	return array(
+			'upload route maps' => array(
+					'title' => t('Upload Route Maps')
+			)
+	);
+}
+
+function upload_route_maps($cruisetemplate){
+	
+	drupal_set_title ($cruisetemplate->cruise_title );
+	
+	$ports = db_select ( 'scheduledevents', 's' )
+	->fields ( 's', array (	'port_id') )
+	->condition ( 'cruisetemplate_id', $cruisetemplate->id,'=')
+	->distinct()
+	->execute ()
+	->fetchAll ();
+	
+	$portsList=array();
+	foreach($ports as $port){
+		$portsList[$port->port_id] = loadportById($port->port_id);
+	}
+	
+	if(count ($portsList)>0){
+		return drupal_get_form ( 'upload_route_maps_form', $portsList,$cruisetemplate->id );
+		
+	}else{
+		return "No any available Event Schedules yet!";
+		
+	}
+	//
+	//drupal_json_output($portsList);
+	//exit();
+	//var_dump($scheduledeventsObject); exit();
+	
+// 	Scheduledevents::getAvailableWindowsCount($cruiseTempateID, $eventID);
+// 	exit();
+}
+
+function upload_route_maps_form($form, &$form_state, $portsList,$cruisetemplate_id) {
+	
+	$cruiseRouteMapData=CruiseRouteMap::getRouteMapsByCriuseId($cruisetemplate_id);
+	
+	
+	$routeid=$cruiseRouteMapData->id;
+	
+	
+	$serializeddata=($cruiseRouteMapData->route_map_img_fids);
+	
+	$routeMapImgFids=unserialize($serializeddata);
+	 
+	//var_dump($routeMapImgFids); exit();
+	$form=array();
+	
+	$numofMaps=0;
+	$numofMaps=count($portsList);
+	if($numofMaps>0){
+		$form_state['num_route_maps']=$numofMaps;
+	}
+	
+	$form_state['cruisetemplate_id']=$cruisetemplate_id;
+	
+	if(isset($routeid)){
+		$form_state['routemapid']=$routeid;
+	}
+	
+	
+	//var_dump($numofMaps); exit();
+	
+	foreach($portsList as $portid=>$portdata){
+		$form ['routemaps'] ['map' . $portid] = array (
+				'#name' => 'files[map_' . $portid . ']',
+				'#type' => 'managed_file',
+				'#title' => 'Choose a Route Map for ' . $portsList [$portid] ['portname'] . '',
+				// '#description' => t('Uploaded Image Size should be 799 x 765 pixels.'),
+				'#upload_location' => 'public://cruisetemplates/',
+				'#default_value' => $routeMapImgFids[$portid],
+				"#upload_validators" => array (
+						"file_validate_extensions" => "png gif jpg jpeg" 
+				) 
+		);
+		
+
+	}
+	
+
+	
+	$form['submit'] = array(
+			'#type' => 'submit',
+			'#value' => t('Save')
+	);
+	
+	return $form;
+}
+
+
+function upload_route_maps_form_submit($form, &$form_state) {
+	
+	$route_map_file_ids = array();
+	foreach ( $form_state ['values'] as $key => $value ) {
+		$reg1 = "/^(map)?\d+$/";
+		if (preg_match ( $reg1, $key )) {
+			$portArr = explode ( 'map', $key );
+			$portid=$portArr[1];
+			$validators = array();
+			$dest = file_default_scheme() . '://cruisetemplates/';
+			if ($form_state['values']['map' . $portid] != "") {
+				$file = file_save_upload('map_' . $portid, $validators, $dest);
+				if (is_null($file)) {
+					$file = file_load($form_state['values']['map' . $portid]);
+					$file->status = "1";
+					$fileobject = file_save($file);
+			
+					// file usuage
+					$fileusuage = new stdClass();
+					$fileusuage->fid = $fileobject->fid;
+					file_usage_add($fileusuage, 'file', 'cruiseroutemaps', '111');
+			
+					$route_map_file_ids[$portid] = $fileobject->fid;
+				} else {
+					$file->status = "1";
+					$fileobject = file_save($file);
+			
+					// file usuage
+					$fileusuage = new stdClass();
+					$fileusuage->fid = $fileobject->fid;
+					file_usage_add($fileusuage, 'file', 'cruiseroutemaps', '111');
+					$route_map_file_ids[$portid] = $fileobject->fid;
+				}
+			}
+		}
+	}
+	
+	$cruiseroutemap=new stdClass();
+	$cruiseroutemap->cruise_id=$form_state['cruisetemplate_id'];
+	$cruiseroutemap->route_map_img_fids=serialize($route_map_file_ids);
+	
+	//var_dump($cruiseroutemap); exit();
+	//
+	
+	//var_dump($form_state['routemapid']); exit();
+	
+	if(isset($form_state['routemapid'])){
+		$cruiseroutemap->id=$form_state['routemapid'];
+		$msg="Record Updated Successfully";
+		drupal_write_record('cruise_routemap', $cruiseroutemap, array('id'));
+	}else{
+		$msg="Record Created Successfully";
+		drupal_write_record('cruise_routemap', $cruiseroutemap);
+	}
+	
+	drupal_set_message($msg);
+	
+	
+
+	
+// 	$route_map_file_ids = array();
+// 	for ($i = 0; $i < $numOfRouteMaps; $i ++) {
+// 		$validators = array();
+// 		$dest = file_default_scheme() . '://cruisetemplates/';
+// 		if ($form_state['values']['map' . $i] != "") {
+// 			$file = file_save_upload('map_' . $i, $validators, $dest);
+// 			if (is_null($file)) {
+// 				$file = file_load($form_state['values']['map' . $i]);
+// 				$file->status = "1";
+// 				$fileobject = file_save($file);
+	
+// 				// file usuage
+// 				$fileusuage = new stdClass();
+// 				$fileusuage->fid = $fileobject->fid;
+// 				file_usage_add($fileusuage, 'file', 'cruiseroutemaps', '111');
+	
+// 				$route_map_file_ids[] = $fileobject->fid;
+// 			} else {
+// 				$file->status = "1";
+// 				$fileobject = file_save($file);
+	
+// 				// file usuage
+// 				$fileusuage = new stdClass();
+// 				$fileusuage->fid = $fileobject->fid;
+// 				file_usage_add($fileusuage, 'file', 'cruiseroutemaps', '111');
+// 				$route_map_file_ids[] = $fileobject->fid;
+// 			}
+// 		}
+// 	}
+	
+	//var_dump($route_map_file_ids); exit();
+	
+}
+
+class CruiseRouteMap{
+	public static function getRouteMapsByCriuseId($cruise_id){
+		$data = db_select ( 'cruise_routemap', 'c' )
+		->fields ( 'c')
+		->condition ( 'c.cruise_id', $cruise_id,'=')
+		->execute ()
+		->fetchObject ();
+		
+		return $data;
+	}
+}

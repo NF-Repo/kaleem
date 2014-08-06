@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/lsnrepo/!svn/ver/32771/waterways/trunk/web/sites/all/modules/custom/inventory
+END
+inventory.info
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/lsnrepo/!svn/ver/32771/waterways/trunk/web/sites/all/modules/custom/inventory/inventory.info
+END
+inventory.css
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/lsnrepo/!svn/ver/32771/waterways/trunk/web/sites/all/modules/custom/inventory/inventory.css
+END
+inventory.tpl.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/lsnrepo/!svn/ver/32771/waterways/trunk/web/sites/all/modules/custom/inventory/inventory.tpl.php
+END
+inventory.module
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/lsnrepo/!svn/ver/32771/waterways/trunk/web/sites/all/modules/custom/inventory/inventory.module
+END

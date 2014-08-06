@@ -1,0 +1,21 @@
+<?php
+
+/**
+* Implementation of hook_install().
+*/
+function checkfront_install() {
+  drupal_set_message(t('Checkfront been successfully installed.'));
+  drupal_set_message(t('You can configure the module on the <a href="@url">Checkfront settings page</a>.', array('@url' => url('admin/settings/checkfront'))));
+}
+
+/**
+* Implementation of hook_uninstall().
+*/
+function checkfront_uninstall() {
+  variable_del('checkfront_title');
+  variable_del('checkfront_url');
+  variable_del('checkfront_mode');
+  variable_del('checkfront_style_color');
+  variable_del('checkfront_style_background_color');
+  variable_del('checkfront_style_font');
+}

@@ -1,0 +1,6 @@
+name = GiftCard Profit Point API
+description = Application Programming Interface
+core = 7.x
+package = WWC
+
+

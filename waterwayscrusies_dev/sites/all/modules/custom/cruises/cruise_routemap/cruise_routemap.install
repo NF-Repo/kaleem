@@ -1,0 +1,41 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function cruise_routemap_schema() {
+	$schema = array ();
+	
+	$schema ['cruise_routemap'] = array (
+			'description' => 'The base table for cruise.',
+			'fields' => array (
+					'id' => array (
+						'description' => 'Primary key.',
+						'type' => 'serial',
+						'unsigned' => TRUE,
+						'not null' => TRUE 
+					),
+					'cruise_id' => array(
+							'description' => 'cruise_id',
+							'type' => 'int',
+							'unsigned' => TRUE,
+					),
+					'route_map_img_fids' => array (
+							'description' => 'Route Map Data',
+							'type' => 'text',
+							'size' => 'big',
+							'not null' => TRUE 
+					),
+										
+			),
+			'primary key' => array (
+					'id' 
+			) 
+	);
+	
+	
+	
+	return $schema;
+}
+

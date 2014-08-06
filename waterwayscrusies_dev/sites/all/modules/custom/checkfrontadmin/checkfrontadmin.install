@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * @file
+ * Install for a basic Request Quote Form entity - need to create 
+ * the base table for RequestQuote entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * 
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function checkfrontadmin_schema() {
+  $schema = array();
+
+  // The name of the table can be any name we choose. However, namespacing the
+  // table with the module name is best practice.
+  $schema['checkfrontadmin'] = array(
+      'description' => 'The base table for requestqutoe.',
+      'fields' => array(
+          'id' => array(
+              'description' => 'Primary key of the requestquiote.',
+              'type' => 'serial',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+          ),
+           'host' => array(
+              'description' => 'The Host url of checkfront system',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+          
+          'consumerKey' => array(
+              'description' => 'The consumer_key of the Checkfront system',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+          'consumerSecret' => array(
+              'description' => 'The consumerSecret of the checkfront system',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+           'redirectUri' => array(
+              'description' => 'The Redirect_uri of the checkfront system',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          
+          'refreshToken' => array(
+              'description' => 'The refresh_token value of the checkfrontn system',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+          'mode' => array(
+              'description' => 'The given mode of the checkfront system',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          
+           'accessToken' => array(
+              'description' => 'The generated access token of the checkfornt system',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          'tokenexpire' => array(
+              'description' => 'The expire token time of the genedrated one',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+          'tokenupdated' => array(
+              'description' => 'The token updated time of the checkfront system',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+           
+          'created' => array(
+              'description' => 'The QuestQuote Created Date and time',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+      ),
+      'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+
+/*
+ * Implements hook_uninstall().
+ *
+ * At uninstall time we'll notify field.module that the entity was deleted
+ * so that attached fields can be cleaned up.
+ */
+
+function checkfrontadmin_uninstall() {
+//field_attach_delete_bundle('userdocuments_basic', 'first_example_bundle');
+}

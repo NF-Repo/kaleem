@@ -1,0 +1,239 @@
+<?php
+
+class StaffAdminDashBoard{
+	public static function getCustomersCount(){
+		$query = db_select('users', '');
+		$query->addExpression('count(users_roles.uid)', 'noofusers');
+		$query->innerJoin('users_roles', '', 'users_roles.uid = users.uid');
+		$query->condition('rid', 7);
+		$result = $query->execute()->fetchobject();
+		$cnt=0;
+		if(isset($result)){
+			$cnt=$result->noofusers;
+		}
+		return $cnt;
+		//var_dump($result->noofusers); exit();
+	}	
+	
+	
+	public static function getAgentsCount(){
+		$query = db_select('users', '');
+		$query->addExpression('count(users_roles.uid)', 'noofusers');
+		$query->innerJoin('users_roles', '', 'users_roles.uid = users.uid');
+		$query->condition('rid', 4);
+		$result = $query->execute()->fetchobject();
+		$cnt=0;
+		if(isset($result)){
+			$cnt=$result->noofusers;
+		}
+		return $cnt;
+		//var_dump($result->noofusers); exit();
+	}
+	
+	public static function getEventsCount(){
+		
+		$currentTime=time();
+		$query = db_select('scheduledevent_dates', '');
+		$query->fields('scheduledevents', array('id', 'status'));
+		$query->fields('scheduledevent_dates', array('scheduleddate'));
+		$query->innerJoin('scheduledevents', '', 'scheduledevents.id = scheduledevent_dates.scheduledevent_id');
+		$query->condition('scheduledevent_dates.scheduleddate',$currentTime,'>');
+		$query->condition('scheduledevents.status','1','=');
+		$result = $query->execute()->fetchAll();
+		
+		//var_dump($result); exit();
+		
+		
+// 		$query = db_select('scheduledevents', '');
+// 		$query->addExpression('count(scheduledevents.id)', 'noofevents');
+// 		$result = $query->execute()->fetchobject();
+		$cnt=0;
+		if(isset($result)){
+			$cnt=count($result);
+		}
+		return $cnt;
+		//var_dump($result->noofusers); exit();
+	}
+	
+	
+	public static function getBookingOrdersCount(){
+		$query = db_select('booking_cart', '');
+		$query->addExpression('count(booking_cart.id)', 'cnt');
+		$result = $query->execute()->fetchobject();
+		$cnt=0;
+		if(isset($result) && $result->cnt > 0){
+			$cnt=$result->cnt;
+		}
+		return $cnt;
+		//var_dump($result->noofusers); exit();
+	}
+	
+	public static function getGiftOrdersCount(){
+		$query = db_select('giftcard_orders', '');
+		$query->addExpression('count(giftcard_orders.id)', 'cnt');
+		$query->distinct();
+		$result = $query->execute()->fetchobject();
+		$cnt=0;
+		if(isset($result) && $result->cnt > 0){
+			$cnt=$result->cnt;
+		}
+		return $cnt;
+		//var_dump($result->noofusers); exit();
+	}
+	
+	
+}
+
+
+function staffadmindashboard_menu() {
+
+	$items = array();
+	$items['staffadmin-dashboard'] = array(
+		'title' => 'Dashboard',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('staffadmindashboard'),
+		'access arguments' => array('staff_admin_dashboard'),
+		
+	);
+	
+	return $items;
+	
+}
+
+function staffadmindashboard_permission() {
+	return array(
+			'staff_admin_dashboard' => array(
+					'title' => t('View Dashboard'),
+			),
+	);
+}
+
+
+function staffadmindashboard($form, &$form_state){
+	
+	
+	
+	
+	drupal_add_css(drupal_get_path('module', 'staffadmindashboard') . '/dashboard.css');
+	
+	global $base_url;
+	$html='<div class="box inner light-gray">
+          <div class="row-fluid padded10">
+
+  <div class="span2 center">
+    <div class="stat-box medium-blue">
+      <span class="icon-user icon-white"></span>
+      <span class="count">'.StaffAdminDashBoard::getCustomersCount().'</span>
+      <span class="stat-text">Customers</span>
+    </div>
+  </div>
+      		
+      		
+  <div class="span2 center">
+    <div class="stat-box text-blue">
+      <i class="icon-user icon-white"></i>
+      <span class="count">'.StaffAdminDashBoard::getAgentsCount().'</span>
+      <span class="stat-text">Agents</span>
+    </div>
+  </div>
+
+  <div class="span2 center">
+    <div class="stat-box dark-blue">
+      <i class="icon-bell icon-white"></i>
+      <span class="count">'.StaffAdminDashBoard::getEventsCount().'</span>
+      <span class="stat-text">Events</span>
+    </div>
+  </div>
+
+  <div class="span2 center">
+    <div class="stat-box border-blue">
+      <i class="icon-shopping-cart icon-white"></i>
+      <span class="count">'.StaffAdminDashBoard::getBookingOrdersCount().'</span>
+      <span class="stat-text">Booking Orders</span>
+    </div>
+  </div>
+
+  <div class="span2 center">
+    <div class="stat-box text-blue">
+      <i class="icon-shopping-cart icon-white"></i>
+      <span class="count">'.StaffAdminDashBoard::getGiftOrdersCount().'</span>
+      <span class="stat-text">Giftcard Orders</span>
+    </div>
+  </div>
+
+ 
+
+</div>
+        </div>
+			
+			
+			
+			<div class="row-fluid">
+        <div class="span12">
+
+          <div class="box bordered">
+            <div class="box-header">
+              <i class="icon-link"></i> Quick links
+            </div>
+            <div class="row-fluid">
+              <div class="span12">
+                <div class="padded">
+                  <a href="'.$base_url.'/useraccounts" class="big-button">
+  <i class="icon-user"></i>
+  <span class="button-text">Users</span>
+</a>
+
+<a href="'.$base_url.'/customer/orders/list" class="big-button active">
+  <i class="icon-shopping-cart"></i>
+  <span class="button-text">Booking Orders</span>
+</a>
+
+<a href="'.$base_url.'/giftcard-orders" class="big-button">
+  <i class="icon-shopping-cart"></i>
+  <span class="button-text">Giftcard Orders</span>
+</a>
+
+<a href="'.$base_url.'/cruiseeventlist" class="big-button">
+  <i class="icon-flag"></i>
+  <span class="button-text">Events</span>
+</a>
+		
+<a href="'.$base_url.'/admin/structure/coupon/manage/list" class="big-button">
+  <i class="icon-tags"></i>
+  <span class="button-text">Promocodes</span>
+</a>
+		
+<a href="'.$base_url.'/admin/structure/groupon/manage/list" class="big-button">
+  <i class="icon-tags"></i>
+  <span class="button-text">Groupons</span>
+</a>
+		
+<a href="'.$base_url.'/wwccalendar" class="big-button">
+  <i class="icon-calendar"></i>
+  <span class="button-text">Calendar</span>
+</a>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+        </div>
+
+  
+      </div>
+			
+			
+			';
+	
+	$form['markup']=array(
+		'#type'=>'markup',
+		'#markup'=>$html,
+	);
+	
+	return $form;
+	//var_dump('asdf');
+	//exit();
+}

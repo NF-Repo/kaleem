@@ -1,0 +1,4 @@
+name = Tax Configuration
+description = Provides configuration view for tax
+core = 7.x
+package = WWC

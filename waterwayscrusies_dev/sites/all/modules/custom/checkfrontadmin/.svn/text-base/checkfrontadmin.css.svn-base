@@ -1,0 +1,55 @@
+/* 
+    Document   : connectgiftcards
+    Created on : 06 August, 2013, 10:00:00 AM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content .content{
+    margin: 0 auto;
+    max-width: 1000px;
+    padding-top: 1%;
+    padding-bottom: 3%;
+}
+
+.table thead th{
+    background-color: #F9F9F9;
+    border-bottom: 1px solid #BC9B6A;
+    font-size: 16px;
+    color: #333;
+}
+
+.table thead th a{
+    color: #333;
+}
+
+.table thead th a:hover{
+    color: #333;
+}
+
+tr.even, tr.odd{
+    background-color: transparent;
+}
+
+.table tbody tr td{
+    color: #666;
+    font-size: 14px;
+}
+
+.content h1{
+    font-family: georgia;
+    font-size: 32px;
+    font-weight: normal;
+    line-height: 46px;
+    text-transform: uppercase;
+}
+
+.checkoutViewpage .form-item.form-type-item > label{
+    display: block;
+    float: left;
+    font-weight: bold;
+    padding-top: 6px;
+    width: 20%;
+    margin-left: 10%;
+}

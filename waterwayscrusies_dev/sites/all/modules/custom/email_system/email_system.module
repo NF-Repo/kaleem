@@ -1,0 +1,660 @@
+<?php
+
+require_once 'includes/bootstrap.inc';
+drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+global $user; //taking global user drupal session 
+//session_start();
+
+function email_system_perm() {
+    return array('access email_system content');
+}
+
+function email_system_menu() {
+    $items = array();
+    $items['email_system'] = array(
+        'title' => 'Send mail Template Details',
+        'page callback' => '_email_system_page',
+        'access arguments' => array('access email_system content'),
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function email_system_theme() {
+    return array(
+        'email_system_page' => array(
+            'template' => 'email_system-page',
+            'arguments' => array('engines' => NULL),
+        ),
+    );
+}
+
+function _email_system_page() {
+    global $user;
+//    $userid=$user->uid;
+}
+
+function email_system_mail($key, &$message, $params) {
+    $server_url = $GLOBALS['base_url'];
+
+    /*
+     * This function is used to hook into drupal_mail function to send the mail
+     * Everytime drupal_mail is used, this function is called to setup the mail to be sent
+     */
+//    $language = $message['language'];
+    $language = $message['language'];
+
+    /*     Define the site info into a varible here     */
+    $var = array(
+        '!site-name' => variable_get('site_name', 'Drupal'),
+        '!subject' => $params['subject'],
+        '!category' => isset($params['category']['category']) ? $params['category']['category'] : '',
+        '!form-url' => url($_GET['q'], array('absolute' => TRUE, 'language' => $language)),
+//    '!sender-name' => format_username($params['sender']),
+//    '!sender-url' => $params['sender']->uid ? url('user/' . $params['sender']->uid, array('absolute' => TRUE, 'language' => $language)) : $params['sender']->mail,
+    );
+    switch ($key) {
+        /*
+         * Here we will be switching the key values, therefore different mails can be sent differently using different keys.
+         * As demonstrated above, we have different keys for the admin and other users to send normal mail to admins, and html mails to users
+         */
+
+        case 'wwc_requestquote':
+
+            $eventTypeArrayList = explode(',', $params['formdata']->eventType);
+
+
+            if (in_array('EventTypeOther', $eventTypeArrayList)) {
+                $eventTypeArrayList[] = $params['formdata']->eventTypeOther;
+            }
+
+            $u_eventTypeArrayList = array();
+            foreach ($eventTypeArrayList as $eventtype) {
+                if ($eventtype == "EventTypeOther") {
+                    
+                } else {
+                    $u_eventTypeArrayList[] = $eventtype;
+                }
+            }
+            $eventList = implode(',', $u_eventTypeArrayList);
+
+
+
+            $preferredtocontact = explode(',', $params['formdata']->preferedtocontact);
+
+            if (in_array('preferdphone', $preferredtocontact) && in_array('preferedemail', $preferredtocontact)) {
+                $contactthrough = "Phone and Email";
+            } else if (in_array('preferdphone', $preferredtocontact)) {
+                $contactthrough = "Phone";
+            } else if (in_array('preferedemail', $preferredtocontact)) {
+                $contactthrough = "Email";
+            } else {
+                $contactthrough = "";
+            }
+
+            if ($params['formdata']->preferedtochareter != "") {
+                if ($params['formdata']->preferedtochareter == 'hostEventAboard') {
+                    $choiceEventselection = 'Yes I can host my event aboard a scheduled dining cruise.';
+                    $choice = 'yes';
+                } else {
+                    $choiceEventselection = 'Yes,I prefer to charter a private yacht for my event.';
+                    $choice = 'yes';
+                }
+            }
+
+
+
+            if ($params['formdata']->specialEmailRequired == 1) {
+                $specialemailreqired = 'yes';
+            } else {
+                $specialemailreqired = 'No';
+            }
+
+
+            $logourl = $GLOBALS['base_url'] . "/sites/all/commonimages/logo.png";
+            $message['subject'] = t($params['subject'], $var, array('langcode' => $language->language));
+            $body = '';
+            $body = $body . '<html>
+              <body style="margin=0px; padding:0px;">
+              <table width="70%" cellpadding="0" cellspacing="0" border="0" style="margin: 30px auto;">
+                <tr>
+                  <td style="background: #bc9b6a;">
+                    <table cellpadding="0" cellspacing="1" border="0" width="100%">
+                      <tr>
+                        <td colspan="2" style="background: #fff; padding: 5px 5px 5px 6px;">
+                          <img src="' . $logourl . '" alt="Logo" />
+                        </td>
+                      </tr>
+                      
+                      
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Type of Event</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                              ' . $eventList . '
+                          </td>
+                      </tr>';
+
+            if ($choiceEventselection != "") {
+                $body.= '<tr>
+                     
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;"> ' . $choiceEventselection . '</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $choice . '
+                          </td>
+                      </tr>';
+            }
+            $body.= '<tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Company :</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->company . '
+                          </td>
+                      </tr>
+                
+                          <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">First Name :</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->firstName . '
+                          </td>
+                      </tr>
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Last Name :</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->lastName . '
+                          </td>
+                      </tr>
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Email :</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->email . '
+                          </td>
+                      </tr>
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">I prefer to be contacted via :</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $contactthrough . '
+                          </td>
+                      </tr>
+                      
+                     
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Phone Number :</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->phoneNumber . '
+                          </td>
+                      </tr>
+                      
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Best time to call? : </td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->bestTimetoCall . '
+                          </td>
+                      </tr>
+                      
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Your preferred date of the event?</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->preferredDateofEvent . '
+                          </td>
+                      </tr>
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Your preferred time of the event</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->preferredTimeofEvent . '
+                          </td>
+                      </tr>
+                        <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Estimated number of guests :</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->noOfGuests . '
+                          </td>
+                      </tr>
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Estimated Budget</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->estimatedbudget . '
+                          </td>
+                      </tr>
+                      
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">How did you find out about us?</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->findusby . '
+                          </td>
+                      </tr>
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Yes, I would like to receive Waterways specials by email.</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $specialemailreqired . '
+                          </td>
+                      </tr>
+                    
+
+
+                      <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Comments</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->usercomment . '
+                          </td>
+                      </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            </html>';
+
+            $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+            break;
+        case 'wwc_order_invoice_template':
+            $logourl = $GLOBALS['base_url'] . "/sites/all/commonimages/logo.png";
+            $message['subject'] = t($params['subject'], $var, array('langcode' => $language->language));
+            $body = '';
+            $html = getinvoicetemplatefororder($params['orderId']);
+            $body = $body . '<html>
+              <body style="margin=0px; padding:0px;">
+              ' . $html . '
+              </body>
+            </html>';
+
+            $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+            break;
+
+
+
+
+
+
+
+        case 'wwc_feedback':
+            $logourl = $GLOBALS['base_url'] . "/sites/all/commonimages/logo.png";
+            $message['subject'] = t($params['subject'], $var, array('langcode' => $language->language));
+            $body = '';
+            $body = $body . '<html>
+              <body style="margin=0px; padding:0px;">
+              <table width="70%" cellpadding="0" cellspacing="0" border="0" style="margin: 30px auto;">
+                <tr>
+                  <td style="background: #bc9b6a;">
+                    <table cellpadding="0" cellspacing="1" border="0" width="100%">
+                    <tr>
+                      <td colspan="2" style="background: #fff; padding: 5px 5px 5px 6px;">
+                        <img src="' . $logourl . '" alt="Logo" />
+                      </td>
+                    </tr>
+                    <tr >
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; width: 30%; font-weight: bold; color: #333; width: 40%;">Feedback Type</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->commentstype . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Feedback Description</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->feedbackdescription . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">First Name</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->firstName . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Last Name</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->lastName . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Email</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->email . '</td>
+                    </tr>
+                    </table>
+                  </td>
+               </tr>
+            </table>
+            </html>';
+
+            $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+            break;
+//kalim corporategiving Email start Here
+         case 'wwc_corporategiving':
+            $logourl = $GLOBALS['base_url'] . "/sites/all/commonimages/logo.png";
+            $message['subject'] = t($params['subject'], $var, array('langcode' => $language->language));
+            $body = '';
+            $body = $body . '<html>
+              <body style="margin=0px; padding:0px;">
+              <table width="70%" cellpadding="0" cellspacing="0" border="0" style="margin: 30px auto;">
+                <tr>
+                  <td style="background: #bc9b6a;">
+                    <table cellpadding="0" cellspacing="1" border="0" width="100%">
+                    <tr>
+                      <td colspan="2" style="background: #fff; padding: 5px 5px 5px 6px;">
+                        <img src="' . $logourl . '" alt="Logo" />
+                      </td>
+                    </tr>
+                    <tr >
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; width: 30%; font-weight: bold; color: #333; width: 40%;">Organization</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->organising_requsting_donation . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Event Date</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->date_event . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Description</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->description_event . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Goal</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->goal_event . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">First Name</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->first_name . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Last Name</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->first_name . '</td>
+                    </tr>
+                     <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Address1</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->address1 . '</td>
+                    </tr>
+                     <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Address2</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->address2 . '</td>
+                    </tr>
+                     <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">City</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->city . '</td>
+                    </tr>
+                     <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">State</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->state . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Zipcode</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->zipcode . '</td>
+                    </tr>
+                     <tr>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333;">Phone Number :</td>
+                          <td style="background: #fff; padding: 5px 5px 5px 6px;">
+                          ' . $params['formdata']->phone_number . '
+                          </td>
+                      </tr>
+                       <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Email</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->mail . '</td>
+                    </tr>
+                    </table>
+                  </td>
+               </tr>
+            </table>
+            </html>';
+
+            $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+            break;
+        
+        //kalim functionality of corporate giving ends here
+        case 'wwc_blogsubscribesmail':
+
+            $message['subject'] = t($params['subject'], array('langcode' => $language->language));
+
+
+            $body = '';
+            $body = $body . "<html><body><table width='600' cellspacing='0' cellpadding='0' border='0' style='background-color:#e5e6e6;'>";
+            $body = $body . "<tbody><tr><td width='600' valign='top' colspan='2' style='padding:0 20px;font-family:Verdana;font-size:18px;font-weight:bold' class='ecxarticle-title'>";
+            $body = $body . "<br>Hello, {$params['formdata'] ["username"]}<br><br></td></tr><tr><td valign='top' colspan='2' style='padding:0 20px 10px;color:#000;";
+            $body = $body . "font-size:12px;font-family:Verdana;line-height:18px' class='ecxcontent-copy'>";
+            $body = $body . "WaterwaysCruises New Blog Post <br><br><strong>{$params['formdata'] ["blogname"]} has Created . <br />";
+            $body = $body . '<a href="' . $params['formdata'] ["blogurl"] . '">click Here</a>';
+            $body = $body . "</td></tr></tbody></table></body></html>";
+
+
+
+
+            $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+            break;
+
+        case 'wwc_useraccountemail':
+            $loginurl = $server_url . '/user';
+            $message['subject'] = t($params['subject'], $var, array('langcode' => $language->language));
+            $body = '';
+            $body = $body . "<html><body><table width='600' cellspacing='0' cellpadding='0' border='0' style='background-color:#e5e6e6;'>";
+            $body = $body . "<tbody><tr><td width='600' valign='top' colspan='2' style='padding:0 20px;font-family:Verdana;font-size:18px;font-weight:bold' class='ecxarticle-title'>";
+            $body = $body . "<br>Hello, {$params['user']}<br><br></td></tr><tr><td valign='top' colspan='2' style='padding:0 20px 10px;color:#000;";
+            $body = $body . "font-size:12px;font-family:Verdana;line-height:18px' class='ecxcontent-copy'>";
+            $body = $body . "<strong>An account has been created for you.<br />";
+            $body = $body . "Login Details</strong><br />Username : {$params['user']}<br />Password : {$params['pass']}<br />";
+            $body = $body . "<br>If you want to login  <a target='_blank' style='color:#2c8bce;text-decoration:none' href='$loginurl'>Click Here</a><br><br>";
+            $body = $body . "</td></tr></tbody></table></body></html>";
+            $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+            break;
+        
+        
+        case 'wwc_contactus':
+            $logourl = $GLOBALS['base_url'] . "/sites/all/commonimages/logo.png";
+            $message['subject'] = t($params['subject'], $var, array('langcode' => $language->language));
+            $body = '';
+            $body = $body . '<html>
+              <body style="margin=0px; padding:0px;">
+              <table width="70%" cellpadding="0" cellspacing="0" border="0" style="margin: 30px auto;">
+                <tr>
+                  <td style="background: #bc9b6a;">
+                    <table cellpadding="0" cellspacing="1" border="0" width="100%">
+                    <tr>
+                      <td colspan="2" style="background: #fff; padding: 5px 5px 5px 6px;">
+                        <img src="' . $logourl . '" alt="Logo" />
+                      </td>
+                    </tr>
+                    <tr >
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; width: 30%; font-weight: bold; color: #333; width: 40%;">First Name</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->first_name . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Last Name</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->last_name . '</td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Email</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->mail . '</td>
+                    </tr>
+                      <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Phone Number</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->phone_number . '</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px; font-weight: bold; color: #333; width: 40%;">Comments</td>
+                        <td style="background: #fff; padding: 5px 5px 5px 6px;">' . $params['formdata']->comments . '</td>
+                    </tr>
+                    </table>
+                  </td>
+               </tr>
+            </table>
+            </html>';
+
+            $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+            break;
+            
+            
+            case 'wwc_giftcard_mail':
+            	$r_name=$params['r_name'];
+            	$amt=$params['amt'];
+            	$s_name=$params['s_name'];
+            	$sitename="<a href=".$GLOBALS['base_url'].">".$GLOBALS['base_url']."</a>";
+            	$giftcardnumbers=$params['giftcardnumbers'];
+            	$c_message=$params['message'];
+            	$logourl = $GLOBALS['base_url'] . "/sites/all/commonimages/logo.png";
+            	$message['subject'] = t($params['subject'], $var, array('langcode' => $language->language));
+            	$body = '';
+            	$body = '<html>
+				<body style="margin=0px; padding:0px;">
+					<table  width="95%" border="0" cellspacing="0" cellpadding="1" align="center" style="font-family:verdana,arial,helvetica;font-size:small;border: 1px solid #333333">
+		
+            	 <tr>
+                      <td colspan="2" style="background: #fff; padding: 5px 5px 5px 6px;">
+                        <img src="' . $logourl . '" alt="Logo" />
+                      </td>
+                    </tr>
+	  
+				<tr>
+					<td>
+		  			<h1>Hello '.$r_name.'!</h1>
+		  			You have received a $'.$amt.' Gift Card from '.$s_name.'! This card may be redeemed on '.$sitename.' website
+		  			</td>
+				 </tr>
+
+
+				 <tr>
+					<td>
+				  	<h4>to : '.$r_name.'</h4>
+				  	<h4>from : '.$s_name.'</h4>
+				  	<h4>message : '.$c_message.'</h4>
+				  	<h4>giftcard value : '.$amt.'</h4>
+				  	<h4>gift card claim code : '.$giftcardnumbers.'</h4>
+					</td>
+				 </tr>
+
+
+			  	 <tr>
+			  	 	<td>
+			  	 	To redeem and use your giftcard:
+			  	 		<ol>
+			  	 		<li>log into '.$sitename.'.</li>
+			  	 		<li>Redeem the card in Booking page of Payment section.</li>
+			  	 		</ol>
+			  	 	</td>
+			  	 </tr>
+    		 </table>
+			</html>';
+            $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+            break;
+            	
+            	
+
+            case 'wwc_giftcard_invoice_mail':
+            $order=uc_order_load($params['order_id']);
+            $r_name=$params['r_name'];
+            $amt=$params['amt'];
+            $s_name=$params['s_name'];
+            $c_message=$params['message'];
+            
+            $message['subject'] = t($params['subject'], $var, array('langcode' => $language->language));
+            
+            $sitename="<a href=".$GLOBALS['base_url'].">".$GLOBALS['base_url']."</a>";
+            //$giftcardnumbers=$params['giftcardnumbers'];
+            
+            
+           	$logourl = $GLOBALS['base_url'] . "/sites/all/commonimages/logo.png";
+			$body = '<html>
+			<body style="margin=0px; padding:0px;">
+			<table  width="95%" style="font-family:verdana,arial,helvetica;font-size:small;border: 1px solid #333333">
+			 <tr>
+                      <td colspan="2" style="background: #fff; padding: 5px 5px 5px 6px;">
+                        <img src="' . $logourl . '" alt="Logo" />
+                      </td>
+                    </tr>
+	  		
+			<tr>
+				<td>  
+			  	Thank you for ordering a Giftcard 
+			 </tr>
+	  			
+			 <tr>
+		        <td colspan="2" bgcolor="#006699" style="color:white">
+		          <b>Purchasing Information:</b>
+		         </td>
+		     </tr>
+	  			
+	  			
+			 <tr>
+		    	 <td valign="top" width="50%">
+		   		<b>Billing Address:</b><br>
+		    		' . $order->billing_first_name . ' ' . $order->billing_last_name . '<br>
+		    		' . $order->billing_street1 . '
+                                '.$order->delivery_street2.'<br>   
+		     		' . $order->billing_city . ', ' . uc_zone_get_by_id($order->billing_zone) . ' ' . $order->billing_postal_code . '<br>
+		    		' . $order->billing_phone.'<br/>'.$order->primary_email.'
+		  		</td>
+		    </tr>
+    				
+    				
+		    <tr>
+		        <td colspan="2" bgcolor="#006699" style="color:white">
+		          <b>Order Summary:</b>
+		         </td>
+		     </tr>
+    				
+    		 <tr>
+				<td nowrap="">
+				<b>Order #:</b> ' . $order->order_id . '
+				</td>
+    		</tr>
+
+			<tr>
+            	<td nowrap="">
+  				<b>Order Date: </b>'.date("m-d-Y", $order->created).'
+  				</td>
+  			</tr>
+                                                                		
+                                                                		
+			<tr>
+            	<td nowrap="">
+     				<b>Order Total: </b>'.uc_currency_format($order->order_total).'
+  				</td>
+    		</tr>
+  	 		
+			<tr>
+	        	<td colspan="2" bgcolor="#006699" style="color:white">
+	         		 <b>Gift Card Summary:</b>
+	         	</td>
+     		</tr>
+		 <tr>
+			<td>
+		  	<b>to : '.$r_name.'</b> <br/>
+		  	<b>from : '.$s_name.'</b><br/>
+		  	<b>message : '.$c_message.'</b><br/>
+		  	<b>giftcard value : '.$amt.'</b><br/>
+		  	
+			</td>
+		 </tr>
+  	 		
+	  	<tr>
+			<td colspan="2">
+				<hr noshade="" size="1">                                              
+			<p>                                                    
+			<span style="color:#000080;font-weight:bold">Waterways Cruises and Events</span>
+			2441 N. Northlake Way<br>
+			Seattle, WA 98103<br>
+			206-223-2060<br>
+			206-223-2066<br>
+			<span style="color:#000080;font-weight:bold">contact@waterwayscruises.com</span>
+			</p>
+			<p><b></b><br><b></b></p>
+			</td>
+		</tr>
+  	 		
+  	 
+     </table>
+</html>';
+
+			    $message['body'][] = $body;
+            $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+        break;
+        
+        
+        
+        case 'email_template_notification':
+        	$message['subject'] = t($params['emailsubject'], $var, array('langcode' => $language->language));
+        	$body=$params['emailbody'];
+        	$message['body'][] = $body;
+        	$message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+        	break;
+            	
+            	
+
+    }
+    
+    
+    
+}

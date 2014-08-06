@@ -1,0 +1,161 @@
+<?php
+
+/**
+ * @file
+ * Install the basic cruise Fees in the cruisefee table
+ * and implementing the ticket cruise assignement functionality
+ *
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function cruisefee_schema() {
+    $schema = array();
+    $schema['fees'] = array(
+        'description' => 'The base table for Fees.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the fees.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'title' => array(
+                'description' => 'The Cruise Fee  title',
+                'type' => 'varchar',
+                'length' => 255,
+               // 'not null' => TRUE,
+                'default' => '',
+            ),
+            'value' => array(
+                'description' => 'cruise fee prices',
+                'type' => 'numeric',
+                'precision' => 16,
+                'scale' => 5,
+               // 'not null' => TRUE,
+                'default' => 0.0,
+            ),
+            'type' => array(
+                'description' => 'The rate type is percentage or faltfee .',
+                'type' => 'varchar',
+                'length' => 255,
+               // 'not null' => TRUE,
+                'default' => '',
+            ),
+            //0 for inactive 1 for active
+            'active' => array(
+                'description' => 'The Fee  status .',
+                'type' => 'int',
+               // 'not null' => TRUE,
+                'default' => 0
+            ),
+            //0 for nontaxable 1 for taxable
+            'istaxable' => array(
+                'description' => 'The Tax  status .',
+                'type' => 'int',
+                'default' => 0
+            ),
+            'created' => array(
+                'description' => 'The Cruise Fee Created Date and time',
+                'type' => 'varchar',
+                'length' => 255,
+                //'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+    $schema ['cruise_fees'] = array(
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+                'unsigned' => true,
+                'not null' => true
+            ),
+            'cruise_id' => array(
+                'description' => 'cruise_id',
+                'type' => 'int',
+                'unsigned' => TRUE
+            ),
+            'cruisefee_price' => array(
+                'description' => 'cruise fee updated price',
+                 'type' => 'varchar',
+                'length' => 255,
+                //'not null' => TRUE,
+                //'default' => 0.0
+            ),
+        		//0 for inactive 1 for active
+        		'active' => array(
+        				'description' => 'The Cruise Fee  status .',
+        				'type' => 'int',
+        				//'not null' => TRUE,
+        				'default' => 0
+        		),
+            'fee_id' => array(
+                'type' => 'int'
+            )
+        ),
+        'foreign keys' => array(
+            'cruisefee_fk' => array(
+                'table' => 'fees',
+                'columns' => array(
+                    'fee_id' => 'id'
+                )
+            ),
+            'cruisefee_fk' => array(
+                'table' => 'cruise',
+                'columns' => array(
+                    'cruise_id' => 'id'
+                )
+            ),
+        ),
+        'primary key' => array(
+            'id'
+        )
+    );
+
+
+
+    // Tickets Fee Assignement 
+    $schema ['tickets_fees'] = array(
+        'description' => 'Ticket Based Fees',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE
+            ),
+            'feeid' => array(
+                'type' => 'int',
+                'description' => 'The Created Fee id',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0
+            ),
+            'ticket_id' => array(
+                'type' => 'int',
+                'description' => 'The Tciket Id',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0
+            ),
+        ),
+        'foreign keys' => array(
+            'ticketfee_fk' => array(
+                'table' => 'fees',
+                'columns' => array(
+                    'feeid' => 'id'
+                )
+            )
+        ),
+        'primary key' => array(
+            'id'
+        )
+    );
+
+    return $schema;
+}

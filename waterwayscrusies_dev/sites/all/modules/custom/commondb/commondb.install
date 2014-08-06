@@ -1,0 +1,110 @@
+<?php
+
+/**
+ * Implements hook_schema()
+ */
+function commondb_schema() {
+    $schema = array();
+// 	id 	parent_id 	position 	left 	right 	level 	title 	type
+    $schema['weatherunderground'] = array(
+        'fields' => array(
+            'id' => array(
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'portid' => array(
+              'description' => 'The portid getting from Depature Ports Taxonomy terms',
+              'type' => 'int',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+              'default' => 0,
+          ),
+            
+       'forcast' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized object contains of weather forcast details get updated form weather channel API.',
+      ),
+        'weathercondition' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized object contains of weather Conditions details get updated form weather channel API',
+      ),
+        'createdtime' => array(
+                'type' => 'varchar',
+                'length' => 12,
+                'description' => 'created date',
+            ),
+            
+            'updatedtime' => array(
+                'type' => 'varchar',
+                'length' => 12,
+                'description' => 'updated date',
+            ),
+     ),
+        'primary key' => array('id'),
+    );
+    //tree_node Schema 
+
+
+    //Gift Card Items
+   $schema['uc_discount_lineitems'] = array(
+  'description' => 'Gift Card Line Items',
+  'fields' => array(
+    'id' => array(
+      'description' => 'id',
+      'type' => 'serial',
+      'not null' => TRUE,
+    ),
+    'order_id' => array(
+      'description' => 'Order Id',
+      'type' => 'int',
+      'not null' => FALSE,
+    ),
+    'discount_code' => array(
+      'description' => 'Gift Card Number',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => FALSE,
+    ),
+    'discount_amount' => array(
+      'description' => 'Amount',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => FALSE,
+    ),
+    'created' => array(
+      'description' => 'Created Time',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => FALSE,
+    ),
+    'discount_type' => array(
+      'description' => 'Discount type',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => FALSE,
+    ),
+    'cartsession' => array(
+      'description' => 'Cart Session',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => FALSE,
+    ),
+    'field_weight' => array(
+      'description' => 'field type',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => FALSE,
+    ),
+  ),
+  'primary key' => array('id'),
+);
+     	
+    return $schema;
+}

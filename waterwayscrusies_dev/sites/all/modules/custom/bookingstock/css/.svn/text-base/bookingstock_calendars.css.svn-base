@@ -1,0 +1,165 @@
+/*
+ * @file hotel_booking_calendars.css
+ * Provides css for calendars
+ * @copyright Copyright(c) 2010 Lee Rowlands
+ * @license GPL v2 http://www.fsf.org/licensing/licenses/gpl.html
+ * @author Lee Rowlands leerowlands at rowlands-bcs dot com
+ *
+ */
+
+/*new stuff*/
+/*.calendar-day-number,
+.calendar-day-name {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2em;
+  border-bottom: 1px solid #ccc;
+  background-color: #797673;
+  color: white;
+}*/
+.calendar-day-number {
+    color: #D6D5D4;
+    font-family: georgia;
+    font-size: 49px;
+    text-decoration: none;
+    padding: 10px 0 0 10px;
+}
+.calendar-day-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    border-bottom: 1px solid #ccc;
+    background-color: #797673;
+    color: white;
+}
+tr.even, tr.odd{
+    background-color: #FFFFFF;
+}
+.bookingstock-calendar-with-prices .calendar-day-number,
+.bookingstock-calendar-with-prices .calendar-day-name {
+    border-bottom: none;
+}
+.bookingstock-availability-edit td,
+.bookingstock-availability-edit th,
+body.admin .bookingstock-rate-edit td,
+body.admin .bookingstock-rate-edit th{
+    padding: 0;
+    vertical-align: top;
+    border: 1px solid #DFCEB6;
+    line-height: 2.2em;
+    font-size: 16px;
+}
+.bookingstock-availability-edit,
+.bookingstock-rate-edit{
+    border-collapse: collapse;
+    width: 100%;
+}
+.calendar-edit-wrap {
+    padding: 20px 5px;
+}
+.bookingstock-calendar-outer {
+    width: 222px; /*width is 240 once you add borders in*/
+    text-align: center;
+    display: inline; /* for ie */
+    float: left;
+    margin: 10px 20px 10px 0;
+}
+.bookingstock-calendar-with-prices {
+    width: 385px;
+}
+.bookingstock-calendar-fourth,
+.bookingstock-calendar-second {
+    margin-right: 0;
+}
+.bookingstock-calendar-1,
+.bookingstock-calendar-5,
+.bookingstock-calendar-9,
+.bookingstock-calendar-13 {
+    clear: left;
+}
+
+.bookingstock-calendar-price {
+    text-align: center;
+    font-size: 0.8em;
+}
+.bookingstock-calendar-view {
+    width: 100%;
+}
+.bookingstock-calendar-month {
+    background-color: #ccc;
+    font-weight: bold;
+    color: #333;
+    padding: 2px 0;
+    border: 1px solid #999;
+}
+.bookingstock-calendar-view .calendar-day-name,
+.bookingstock-calendar-view .calendar-day-number {
+    font-size: 1em;
+    font-weight: normal;
+    color: #333;
+    background-color: #ccc;
+}
+
+
+
+.bookingstock-availability-edit .active{
+    color: #00529b;
+    /*background-color:#0066ff !important;*/
+}
+
+.availableWrap{
+    margin-top: 10px;
+}
+
+.availableWrap .availabilityStock{
+    color: #00529b;
+    font-size: 14px;
+    color: #009000;
+    padding: 10px 0 0 10px;
+    /*background-color:#0066ff !important;*/
+}
+
+.bookingstock-calendar-view .calendar-day-number {
+    background: none;
+}
+.bookingstock-state-unavailable {
+    background-color: #ff9999;
+}
+.bookingstock-state-available {
+    background-color: #99ff99;
+}
+.bookingstock-state-restricted {
+    background-color: #ffff99;
+}
+.bookingstock-calendar-view th,
+.bookingstock-calendar-view td {
+    padding: 0;
+    border: 1px solid #999;
+    min-width: 30px;
+}
+tr.odd .bookingstock-calendar-view th,
+tr.odd .bookingstock-calendar-view td,
+tr.even.bookingstock-calendar-view th,
+tr.even .bookingstock-calendar-view td {
+    padding: 0;
+}
+.bookingstock-key .description {
+    color: #666666;
+    font-size: 0.9167em;
+}
+.bookingstock-key .bookingstock-key-state {
+    display: inline; /* for ie */
+    padding: 5px;
+    float: left;
+    width: 210px;
+    border: 1px solid #ccc;
+    margin-right: 20px;
+    text-align: center;
+}
+table.bookingstock-rate-edit td,
+table.bookingstock-rate-edit th {
+    padding: 0 0 10px;
+}
+table.bookingstock-rate-edit .calendar-day-number {
+    padding: 5px 0;
+}

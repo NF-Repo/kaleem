@@ -1,0 +1,5 @@
+name = Cruise Packages (Tickets and Catering Selections)
+description = Ticket and Catering Selections
+core = 7.x
+version = VERSION
+package = WWC

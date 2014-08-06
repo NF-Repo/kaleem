@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ * Install for a basic Request Quote Form entity - need to create 
+ * the base table for RequestQuote entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * 
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function reservation_schema() {
+  $schema = array();
+
+  // The name of the table can be any name we choose. However, namespacing the
+  // table with the module name is best practice.
+  $schema['reservation'] = array(
+      'description' => 'The base table for Reservation Entity.',
+      'fields' => array(
+          'id' => array(
+              'description' => 'Primary key of the Reservation Entity.',
+              'type' => 'serial',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+          ),
+           
+          
+          
+          'bookingdate' => array(
+              'description' => 'The CruiseEvent Booking Date and time',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+      		
+      		'eventid' => array(
+      				'description' => 'Scheduled Event IDS',
+      				'type' => 'int',
+      				'unsigned' => TRUE,
+      				'not null' => TRUE,
+      				'default' => 0,
+      		),
+      		
+          
+         'orderid' => array(
+        'description' => 'The Created Cruise Event Booking OrderId',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+           'uid' => array(
+        'description' => 'The Booking Created UserId',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+          
+           'bookedby' => array(
+        'description' => 'The Cruise Event Booked by Role( 0 for anynomous,1 
+          for web admin,anyother numeric id for agent)',
+        'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+      ),
+          
+        'data' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized object contains of Booking user inputs information',
+      ),
+          
+       
+          
+          'created' => array(
+              'description' => 'The Object created date and time',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+              'default' => '',
+          ),
+      ),
+      'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+
+/*
+ * Implements hook_uninstall().
+ *
+ * At uninstall time we'll notify field.module that the entity was deleted
+ * so that attached fields can be cleaned up.
+ */
+
+function reservation_uninstall() {
+//field_attach_delete_bundle('userdocuments_basic', 'first_example_bundle');
+}

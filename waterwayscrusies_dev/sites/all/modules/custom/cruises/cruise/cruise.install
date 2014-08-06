@@ -1,0 +1,166 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function cruise_schema() {
+	$schema = array ();
+	
+	$schema ['cruise'] = array (
+			'description' => 'The base table for cruise.',
+			'fields' => array (
+					'id' => array (
+							'description' => 'Primary key.',
+							'type' => 'serial',
+							'unsigned' => TRUE,
+							'not null' => TRUE 
+					),
+					'cruise_title' => array (
+							'description' => 'Cruise Title',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					'calendar_tag' => array (
+							'description' => 'Cruise Tag',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					'cruise_type' => array (
+							'description' => 'Cruise Type',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					'tile_title' => array (
+							'description' => 'Tile Title',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					'tile_img_fid' => array (
+							'description' => 'Tile Image',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					
+					'calendar_popup_img_fid' => array (
+							'description' => 'Calendar Popup Image',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => ''
+					),
+					
+					
+					'title_hover_description' => array (
+							'description' => 'Title Hover Description',
+							'type' => 'text',
+							'size' => 'big',
+							'not null' => TRUE 
+					),
+					
+					'group_reservation_content' => array (
+							'description' => 'Group Reservation',
+							'type' => 'text',
+							'size' => 'big',
+					),
+					
+					
+					'rightslider_img_fids' => array (
+							'description' => 'Right Slider Image fids',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					'middleslider_img_fids' => array (
+							'description' => 'Middle Slider Image fids',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					'middle_content' => array (
+							'description' => 'Middle Content',
+							'type' => 'text',
+							'size' => 'big',
+							'not null' => TRUE 
+					),
+					'menu_content' => array (
+							'description' => 'Menu Content',
+							'type' => 'text',
+							'size' => 'big',
+							'not null' => TRUE 
+					),
+					'cruise_pdf_fid' => array (
+							'description' => 'Cruise PDF',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					'cruise_gallery_img_fids' => array (
+							'description' => 'Cruise Gallery',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					
+					'cruise_video_urls' => array (
+							'description' => 'payment_info',
+							'type' => 'blob' 
+					),
+					'search_keywords' => array (
+							'description' => 'Search Keywords',
+							'type' => 'text',
+							'size' => 'big',
+							'not null' => TRUE 
+					),
+					'cruise_status' => array (
+							'description' => 'Cruise Status',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+							'default' => 0 
+					),
+					'created' => array (
+							'description' => 'The created date and time',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					),
+					'template_category' => array (
+							'description' => 'Cruise Template Category',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+							'default' => 0
+					),
+					'menu_layout' => array (
+							'description' => 'Menu Layout',
+							'type' => 'int',
+							'unsigned' => TRUE,
+					),
+					
+			),
+			'primary key' => array (
+					'id' 
+			) 
+	);
+	
+	
+	
+	return $schema;
+}
+

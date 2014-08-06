@@ -1,0 +1,714 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function cruisesdetailview_menu() {
+    $items = array();
+    
+    $items['cruisesdetailview/category/%'] = array(
+        'title' => 'Cruises Detailed View',
+        'page callback' => 'cruisesdetailview',
+        'page arguments' => array(2),
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function cruisesdetailview_theme() {
+    $items['cruisesdetailview'] = array(
+        'template' => 'cruisesdetailview', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function cruisesdetailview($category) {
+	
+	// Adding Meta Tag information
+	MetaTag::setMetaTagByKeywords ( $category, 'cruise' );
+	MetaTag::setMetaTagByDescription ( $category, 'cruise' );
+	MetaTag::setMetaTagByTilte ( $category, 'cruise' );
+	try {
+		global $user;
+		$diningContent = DiningEvent ( $category );
+		return theme ( 'cruisesdetailview', $diningContent );
+	} catch ( Exception $ex ) {
+		
+		drupal_json_output ( 'The exception ' . $ex );
+	}
+}
+
+
+
+function template_preprocess_cruisesdetailview(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'cruisesdetailview') . '/css/cruisesdetailview.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+
+
+function DiningEvent($category) {
+	
+	//Variables
+	$caption='';
+	$description='';
+	$middleContent='';
+	$menu='';
+	$rightSlider='';
+	$middleSlider='';
+	$gallery='';
+	$video='';
+	try {
+		$cruiseSelectedLayout=Cruise::getLayout($category);
+		$menusList=array();
+		$menuCoursesArray=array();
+		try{
+			$query = db_select('cruise', '');
+			$query->fields('cruise', array('id'));
+			$query->fields('cruise_menus_list', array('image_path', 'menu_title', 'description','menulabel_show'));
+			$query->fields('cruise_course_list', array('course_name', 'column_name','courselabel_show'));
+			$query->innerJoin('cruise_menus_list', '', 'cruise.id = cruise_menus_list.cruise_id');
+			$query->innerJoin('cruise_course_list', '', 'cruise_menus_list.course_name = cruise_course_list.id');
+			$query->condition('cruise.id', $category);
+			$result = $query->execute();
+
+			
+			foreach ( $result as $record ) {
+				
+				if (in_array ( $record->column_name, $record )) {
+					$menusList [$record->column_name] [] = $record;
+				} else {
+					$menusList [$record->column_name] [] = $record;
+				}
+			}
+			foreach ( $menusList as $key => $val ) {
+				
+				foreach ( $val as $rec ) {
+					
+					if (in_array ( $rec->course_name, $rec )) {
+						$menuCoursesArray [$key] [$rec->course_name] [] = $rec;
+					} else {
+						$menuCoursesArray [$key] [$rec->course_name] [] = $rec;
+					}
+				}
+			}
+		}catch(Exception $e){
+			
+		}
+		
+		
+		
+		// Loading the Cruise Object
+		$cruiseObject = cruise_load ( $category );
+         $crusietypename=cruisetypes_load ( $cruiseObject->cruise_type );
+            $crusieetype=$crusietypename->name;
+		if (! empty ( $cruiseObject ) && ! is_null ( $cruiseObject )) {
+			$caption = $cruiseObject->cruise_title;
+			// $description = $cruiseObject->title_hover_description;
+			$titledescription = $cruiseObject->group_reservation_content;
+			$middleContent = $cruiseObject->middle_content;
+			
+		
+            //cruise menu starts
+			$colarr=array();
+			//$col=1;
+			foreach($menuCoursesArray as $key=>$menus){
+				if($key=="1_Column"){
+					$col=1;
+				}
+				if($key=="2_Column"){
+					$col=2;
+				}
+				if($key=="3_Column"){
+					$col=3;
+				}
+				$colarr[$col]='<li><div class="menuItemfirst"><div class="menuItem">';
+				foreach ( $menus as $key => $values ) {
+					
+					if ($values [0]->courselabel_show == 'hide')
+						$key = '';
+					if ($values [0]->courselabel_show == 'show')
+						$key = $key;
+					$colarr [$col] .= '<div class="menuItemTitle">' . $key . '</div>';
+					for($i = 0; $i < count ( $values ); $i ++) {
+						
+						if ($values [$i]->menulabel_show == "show") {
+							$menuTitle = $values [$i]->menu_title;
+						} else {
+							$menuTitle = '';
+						}
+						
+						$description = $values [$i]->description;
+						$courseName = $values [$i]->course_name;
+						
+						$colarr [$col] .= '<div class="menuItemthirdinner"><div class="row-fluid">';
+						
+						if (! is_null ( $values [$i]->image_path ) && $values [$i]->image_path != "") {
+							$imgurl = "<div class='span4'><img src=" . file_create_url ( $values [$i]->image_path ) . " width='150'>";
+							$colarr [$col] .= $imgurl . '</div><div class="span8">';
+						} else {
+							$colarr [$col] .= '<div class="span12">';
+						}
+						
+						$colarr [$col] .= '<div class="itemImgText">';
+						
+						$colarr [$col] .= '<div class="menuItmeSubTitle">' . $menuTitle . '</div>';
+						$colarr [$col] .= $description;
+						$colarr [$col] .= '</div></div></div>';
+						$colarr [$col] .= '</div><br/>';
+					}
+				}
+				
+				$colarr[$col].='</div></div></li>';
+			}
+			$layout = $cruiseSelectedLayout;
+			$result='';
+			for ($l = 1; $l <= $layout; $l++) {
+				$result.=$colarr[$l];
+				 
+			}
+			$menu=$result;
+
+			//cruise template  details
+			
+			//loading the cruise template details using 
+			//$cruisetemplateprice=getCruiseTicketsbyTemplate($category);
+                        
+                        $cruisetemplateprice=getCruiseTicketByWeight($category);
+			$portsdetails=eventportsBytemplateid($category);
+			$caption=$cruiseObject->cruise_title;
+			$departureTime="7.00PM";
+			$returnTime="7.00PM";
+			$days='SUNDAYS';
+			$tickettext=54;
+			drupal_set_title($caption, $output=CHECK_PLAIN);
+			
+			$details = '<div class="detailTitle">' . $caption . '</div>';
+			foreach ($cruisetemplateprice as $eventticketprice)
+			{ 
+				$details.='<div class="priceText">
+				<span>'.$eventticketprice->title.' : </span>'.uc_currency_format($eventticketprice->price) . '</div>';
+				
+			}
+			
+			// Rightslider images
+			$rightSliderImgArray = explode ( ',', $cruiseObject->rightslider_img_fids );
+			$rightSlider = "";
+			foreach ( $rightSliderImgArray as $file_id ) {
+				try {
+					$fileObject = file_load ( $file_id );
+					$rightSlider .= '<div class="item"><img src=' . file_create_url ( $fileObject->uri ) . ' /></div>';
+				} catch ( Exception $e ) {
+					//_drupal_log_error ( $e );
+				}
+			}
+			
+			
+			//Middleslider
+			$middleSlider = "";
+			$middleSliderImgArray = explode(',', $cruiseObject->middleslider_img_fids);
+			foreach($middleSliderImgArray as $file_id){
+				try{
+					$fileObject=file_load($file_id);
+					$middleSlider.='<div class="item"><img src=' . file_create_url($fileObject->uri) . ' /></div>';
+				} catch ( Exception $e ) {
+					//_drupal_log_error ( $e );
+				}
+				
+			}
+				
+				// Image Gallery
+			$gallery = '';
+			if ($cruiseObject->cruise_gallery_img_fids != "") {
+				$cruiseGalleryImgArray = explode ( ',', $cruiseObject->cruise_gallery_img_fids );
+				
+				foreach ( $cruiseGalleryImgArray as $file_id ) {
+					
+					try {
+						$fileObject = file_load ( $file_id );
+						$imgsrc = file_create_url ( $fileObject->uri );
+						$gallery .= '<li><div class="sliderBox"><div class="sliderBoxout">';
+						$gallery .= '<a  class="mfp-image image-link" href="' . $imgsrc . '" rel="Title photoset"> <img src="' . $imgsrc . '" alt="placeholder"> </a>';
+						$gallery .= '</div></div></li>';
+					} catch ( Exception $e ) {
+						//_drupal_log_error ( $e );
+					}
+				}  
+                        }
+                        
+			
+			
+			//video urls
+			$cruiseVideoUrlsArray=unserialize($cruiseObject->cruise_video_urls);
+			$video='';
+			foreach ($cruiseVideoUrlsArray as $url) {
+				$vdeourl = file_create_url($url);
+				$icon = 'public://videoicon.jpg';
+				$video.='<li><div class="sliderBox"><div class="sliderBoxout">';
+				$video.='<a  class="mfp-iframe image-link" href="' . $vdeourl . '" rel="Title photoset">
+                  <img src="' . file_create_url($icon) . '" alt="placeholder">
+                 </a>';
+				$video.='</div></div></li>';
+			}
+			
+			$actual_link = 'http://'.$_SERVER['HTTP_HOST'].request_uri();
+                       $details.= '<div id="sharebtnsdiv" style="display: none;">
+                                        <span class="st_sharethis_large" displayText="ShareThis" id="sharethisbtn" style="display:none;"></span>
+                                        <span class="st_facebook_large pull-left facebook"  id="fbsharebn" st_summary="'. $titledescription.'" st_image="http://'.$_SERVER['HTTP_HOST']. base_path().'sites/all/themes/waterways/assets/img/logo.png" st_url="'.$actual_link.'" st_title="'.$caption.'" style="width:30%" displayText="Facebook"></span>
+                                        <span class="st_twitter_large pull-left twitter" id="twitsharebn" st_summary="'.$titledescription.'" st_image="http://'. $_SERVER['HTTP_HOST']. base_path().'sites/all/themes/waterways/assets/img/logo.png" st_url="'.$actual_link.'"  st_title="'.$caption.'" style="width:30%" displayText="Tweet"></span>
+                                    </div>';
+                        
+			$fids = $cruiseObject->cruise_pdf_fid;
+			$fidsarr=explode(',', $fids);
+			
+			$pdfsarr=array();
+			foreach ( $fidsarr as $fid ) {
+				try {
+					$fileObject = file_load ( $fid );
+					if (! empty ( $fileObject->filename )) {
+						$filenamearr = explode ( '.pdf', $fileObject->filename );
+						$fname = $filenamearr [0];
+						$dinnermenuurl = file_create_url ( $fileObject->uri );
+						$pdfsarr [$fname] = $dinnermenuurl;
+					}
+				} catch ( Exception $e ) {
+					// _drupal_log_error ( $e );
+				}
+			}
+			
+			
+			//Hardcode this willbe replaced later with dynamic values
+			$departureTime = "3" . "<sup>" . "pm" . "</sup>";
+			$returnTime = "5" . "<sup>" . "pm" . "</sup>";
+			$days="Monday";
+			
+			
+			$portDetails = wwc_departureports("majorports");
+    		$portoptions = getPortbynodeid($category);
+				// Displaying Available Ports in
+				// the Dropodown fields Options
+			$selectedCruise = '';
+			// complete availaport details which are showing in Map
+			// Loading Cruiseevents which are associated with this template
+			// and taking those event ports address
+			$completeavailable_ports = array ();
+			
+			$portIDS = '';
+			$i = 1;
+			foreach ( $portsdetails as $key => $portsoption ) {
+				$mapPortdetails = loadportById ( $key );
+				// Portaddresses
+				$mapportaddress = $mapPortdetails ['portname'] . ',' . $mapPortdetails ['portCity'] . ',' . $mapPortdetails ['portState'] . ',' . $mapPortdetails ['portPostalCode'];
+				$completeavailable_ports [$key] = $mapportaddress;
+				
+				// if($i==1){
+				// $PORTSLIST.= "<li class='active'><a href='#directionItem" . $key . "'>" . $mapPortdetails['portname'] . "</a></li>";
+				// $DIRECTIONS.="<div id='directionItem" . $key . "' class='direction-details tab-pane active'><h4>" . $mapPortdetails['portname'] . "</h4>" . $mapPortdetails['fieldDirections'] . "<img src='" . file_create_url('public://'.$mapPortdetails['parkingImg']) . "'/></div>";
+				// }else{
+				// $PORTSLIST.= "<li><a href='#directionItem" . $key . "'>" . $mapPortdetails['portname'] . "</a></li>";
+				// $DIRECTIONS.="<div id='directionItem" . $key . "' class='direction-details tab-pane'><h4>" . $mapPortdetails['portname'] . "</h4>" . $mapPortdetails['fieldDirections'] . "<img src='" . file_create_url('public://'.$mapPortdetails['parkingImg']) . "'/></div>";
+				// }
+				
+// 				if ($i == 1) {
+// 					$PORTSLIST .= "<li class='active'><a href='#directionItem" . $key . "' style='background:none;'><h4>" . $mapPortdetails ['portname'] . "</h4></a></li>";
+// 					$DIRECTIONS .= "<div id='directionItem" . $key . "' class='direction-details tab-pane active'>" . $mapPortdetails ['fieldDirections'] . "<img src='" . file_create_url ( 'public://' . $mapPortdetails ['parkingImg'] ) . "'/></div>";
+// 				} else {
+// 					$PORTSLIST .= "<li><a href='#directionItem" . $key . "' style='background:none;'><h4>" . $mapPortdetails ['portname'] . "</h4></a></li>";
+// 					$DIRECTIONS .= "<div id='directionItem" . $key . "' class='direction-details tab-pane'>" . $mapPortdetails ['fieldDirections'] . "<img src='" . file_create_url ( 'public://' . $mapPortdetails ['parkingImg'] ) . "'/></div>";
+// 				}
+// 				$i ++;
+				
+				// $portIDS[]=$key;
+				
+				$portdropvalues .= '<option value=' . $key . '>' . $portsoption . '</option>';
+			}
+			
+			
+			//satya
+			$cruiseRouteMapData=CruiseRouteMap::getRouteMapsByCriuseId($category);
+			$serializeddata=($cruiseRouteMapData->route_map_img_fids);
+			$routeMapImgFids=unserialize($serializeddata);
+			$j=0;
+			foreach($routeMapImgFids as $portID=>$fid){
+				$portDATA=loadportById($portID);
+				$image = file_load($fid);
+				$routemapimageurl = file_create_url($image->uri);
+				if($j==0){
+					$PORTSLIST.= "<li class='active'><a href='#directionItem" . $portID . "' style='background:none;'><h4>" . $portDATA['portname'] . "</h4></a></li>";
+					$DIRECTIONS.="<div id='directionItem" . $portID . "' class='direction-details tab-pane active'><img src='" . $routemapimageurl . "'/></div>";
+						
+				}else{
+					$PORTSLIST.= "<li><a href='#directionItem" . $portID . "' style='background:none;'><h4>" . $portDATA['portname'] . "</h4></a></li>";
+					$DIRECTIONS.="<div id='directionItem" . $portID . "' class='direction-details tab-pane'><img src='" . $routemapimageurl . "'/></div>";
+						
+				}
+				$j++;
+			}
+			//satya code ends here
+			
+//			var_dump($completeavailable_ports);
+			$portData=taxonomy_get_parents($selectedCruise);
+                        
+			foreach($portData as $key=>$values){
+				$selectedportid=$key;
+			}
+			
+			
+			
+			foreach ($portDetails['majorPorts'] as $ports) {
+        		if($ports['tid']==$selectedportid){
+                 	$portList.="<li id='" . $ports['tid'] . "'><a>" . $ports['name'] . "</a></li>";
+					$portDirections.="<div class='direction-details' id='directionItem" . $ports['tid'] . "'><h4>" . $ports['name'] . "</h4>" . $ports['field_directions'] . "<img src='" . file_create_url($ports['field_parking_image']) . "'/></div>";
+					$address["address"] = $ports['field_street'] . $ports['field_city'] . $ports['field_state'] . $ports['field_postal_code'];
+					$address["data"] = $ports['tid'];
+					$addressArray[] = $address;
+				}
+			}
+			
+			$datesarrays = array();
+			$cruiseevents = getSingleCruiseEventsByMonth(date('m'), date("Y"), $category);
+			$eventdates = (array_keys($cruiseevents));
+			foreach ($eventdates as $datavalue) {
+				$datavalue=  strtotime($datavalue);
+				$datesarrays[]=(int)(date('Ymd',$datavalue));
+			}
+			
+		}
+	} catch ( Exception $e ) {
+		//_drupal_log_error ( $e );
+	}
+        
+
+        //availamap ports object conversion
+        $mappaddlist=array();
+        foreach ($completeavailable_ports as $key=>$mapadd) {
+          $mapclass=new stdClass();
+          $mapclass->address=$mapadd;
+          $mapclass->data=$key;//replace with your portid
+          $mappaddlist[]=$mapclass;
+        }
+        
+//        echo json_encode($mappaddlist);
+//        exit();
+	
+        
+        
+        $menulabeloptions=new CruiseCourse();
+
+        $course_menulabels=$menulabeloptions->getCourseMenuLabel($category);
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+	return array("caption" => $caption,
+			"titledescription"=>$titledescription,
+			"description" => $description,
+			"middleContent" => $middleContent,
+                        "crusieetype"=>$crusieetype,
+			"menu" => $menu,
+                        'coursemenulabels'=>$course_menulabels,
+                        "menulayout"=>$layout,
+			"details" => $details,
+			"gallery" => $gallery . $video,
+			"rightSlider" => $rightSlider,
+			"middleSlider" => $middleSlider,
+			"portOptions" => $portdropvalues,
+			"portList" => $portList,
+			"portDirections" => $portDirections,
+			"portaddress" => $addressArray,
+                        "mapaddress"=>$mappaddlist,
+			"dates" => $datesarrays,
+			"itemid" => $category,
+			"category" => $category,
+			//"dinnermenupdfurl" => $dinnermenuurl,
+			
+			"menupdfs"=>$pdfsarr,
+			"PORTSLIST" => $PORTSLIST,
+			"DIRECTIONS" => $DIRECTIONS,
+			
+			
+	);
+	
+	//satya::old code
+    $data = DiningContent($category);
+
+    //$data=node_load('99');
+    //drupal_json_output($data[1]['nid']);
+    //exit();
+
+    $nodeId = $data[1]['nid'];
+    $productAttributes = uc_attribute_load_product_attributes($nodeId);
+    //drupal_json_output($productAttributes[2]->options[2]->price);
+    //exit();
+    
+    
+    $tickettext='';
+    
+//    foreach($productAttributes as $key=>$val){
+//        $autoid=$key;
+//        $name=$val->name;
+//        $price=$val->options[$autoid]->price;
+//        
+//        
+//        $amountFormattedString = number_format($price, 2);
+//        $amtArray = explode('.', $amountFormattedString);
+//        $amtWholeNumber = 0;
+//        $amtDecimalNumber = 0;
+//        if (isset($amtArray)) {
+//            $amtWholeNumber = $amtArray[0];
+//            $amtDecimalNumber = $amtArray[1];
+//        }
+//        $finalamt=$amtWholeNumber . '.<sup>' . $amtDecimalNumber.'</sup>';
+//        
+//        //$tickettext.="<br>".$name.":".number_format($price,2);
+//        $tickettext.="<br>".$name.": $".$finalamt;
+//    }
+
+//    [4:15:44 PM] g_satya: 
+    foreach($productAttributes as $key=>$val){
+        $autoid=$key;
+        $name=$val->name;
+       //$price=$val->options[$autoid]->price;
+        $priceObject = getOptionPrice($val->options);
+        $price='$'.wwcFormatPrice($priceObject->price);
+        $tickettext.="<br>".$name.": ".$price;
+    }
+    
+    //getting download pdf link
+
+    $dinnermenuurl = $data[0];
+    //$caption = $data[1]['name'];
+    $caption = $data[1]['title'];
+    //$itemId = $data[1]['field_itemsku'];
+    //$description = $data[1]['description'];
+    $description = $data[1]['body'];
+    $middleContent = $data[1]['field_middle_content'];
+    $menu = $data[1]['field_dining_menu'];
+
+
+    $departureTimeUnix = strtotime($data[1]['field_cruisedeparturetime']);
+    $depMinSecs = date('g:i', $departureTimeUnix);
+    $depAmOrPm = date('a', $departureTimeUnix);
+    $departureTime = $depMinSecs . "<sup>" . $depAmOrPm . "</sup>";
+
+
+    $returnTimeUnix = strtotime($data[1]['field_cruisereturntime']);
+    $retMinSecs = date('g:i', $returnTimeUnix);
+    $retAmOrPm = date('a', $returnTimeUnix);
+    $returnTime = $retMinSecs . "<sup>" . $retAmOrPm . "</sup>";
+
+
+    $days = formatDaystoString($data[1]['field_cruiseweekdays']);
+
+    //$details = '<div class="detailTitle">' . $caption . '</div><div class="deparText">Departure: ' . $data[1]['field_cruise_departure_time'] . '<br>Return: ' . $data[1]['field_cruise_return_time'] . '<br>Days: <span>' . $data[1]['field_cruise_days'] . '</span></div><div class="priceText"><span>Ticket Pricing</span><br>General: ' . $data[1]['field_cruise_pricing_general'] . '<br>Senior: ' . $data[1]['field_cruise_pricing_senior'] . '</div>';
+    $details = '<div class="detailTitle">' . $caption . '</div><div class="deparText">Departure: <span>' . $departureTime . '</span><br>Return: <span>' . $returnTime . '</span><br>Days: <span>' . $days . '</span></div><div class="priceText"><span>Ticket Pricing</span>'.$tickettext . '</div>';
+    
+    $rightSlider = "";
+    $middleSlider = "";
+    foreach ($data[1]['field_right_slider'] as $sliders) {
+        $rightSlider.='<div class="item"><img src=' . file_create_url($sliders) . ' /></div>';
+    }
+    foreach ($data[1]['field_cruise_gallery'] as $sliders) {
+        $imgsrc = file_create_url($sliders);
+        $gallery.='<li><div class="sliderBox"><div class="sliderBoxout">';
+
+        $gallery.='<a  class="mfp-image image-link" href="' . $imgsrc . '" rel="Title photoset">
+                  <img src="' . $imgsrc . '" alt="placeholder">
+                 </a>';
+        $gallery.='</div></div></li>';
+    }
+    foreach ($data[1]['field_cruise_videourl'] as $sliders) {
+        $vdeourl = file_create_url($sliders);
+        $icon = 'public://videoicon.jpg';
+        $video.='<li><div class="sliderBox"><div class="sliderBoxout">';
+        $video.='<a  class="mfp-iframe image-link" href="' . $vdeourl . '" rel="Title photoset">
+                  <img src="' . file_create_url($icon) . '" alt="placeholder">
+                 </a>';
+        $video.='</div></div></li>';
+    }
+    foreach ($data[1]['field_middle_slider_img'] as $sliders) {
+        $middleSlider.='<div class="item"><img src=' . file_create_url($sliders) . ' /></div>';
+    }
+    $portDetails = wwc_departureports("majorports");
+    $portoptions = getPortbynodeid($category);
+
+    $portOptions = '';
+    $portList = '';
+    $selectedCruise='';
+    foreach ($portoptions as $key => $portsoption) {
+        $selectedCruise=$key;
+        $portdropvalues.='<option value=' . $key . '>' . $portsoption . '</option>';
+    }
+
+    $portData=taxonomy_get_parents($selectedCruise);
+    foreach($portData as $key=>$values){
+        $selectedportid=$key;
+    }
+    
+  
+
+    foreach ($portDetails['majorPorts'] as $ports) {
+        if($ports['tid']==$selectedportid){
+            $portList.="<li id='" . $ports['tid'] . "'><a>" . $ports['name'] . "</a></li>";
+            $portDirections.="<div class='direction-details' id='directionItem" . $ports['tid'] . "'><h4>" . $ports['name'] . "</h4>" . $ports['field_directions'] . "<img src='" . file_create_url($ports['field_parking_image']) . "'/></div>";
+            $address["address"] = $ports['field_street'] . $ports['field_city'] . $ports['field_state'] . $ports['field_postal_code'];
+            $address["data"] = $ports['tid'];
+            $addressArray[] = $address;
+        }
+    }
+
+    $datesarrays = array();
+    $cruiseevents = getSingleCruiseEventsByMonth(date('m'), date("Y"), $category);
+    $eventdates = (array_keys($cruiseevents));
+    foreach ($eventdates as $datavalue) {
+      $datavalue=  strtotime($datavalue);
+      $datesarrays[]=(int)(date('Ymd',$datavalue));
+    }
+    
+    
+
+
+    return array("caption" => $caption,
+        "description" => $description,
+        "middleContent" => $middleContent,
+        "menu" => $menu,
+        "details" => $details,
+        "gallery" => $gallery . $video,
+        "rightSlider" => $rightSlider,
+        "middleSlider" => $middleSlider,
+        "portOptions" => $portdropvalues,
+        "portList" => $portList,
+        "portDirections" => $portDirections,
+        "portaddress" => $addressArray,
+        "dates" => $datesarrays,
+        "itemid" => $category,
+        "dinnermenupdfurl" => $dinnermenuurl
+    );
+}
+
+function DiningContent($category) {
+
+
+
+    $fileoutput = array();
+
+    $result = array();
+//    $tree = taxonomy_term_load($category);
+    
+    //satya
+    //hardcode product id
+//    $tree = node_load('100');
+    $tree = node_load($category);
+//    $dinnerfid = $tree->field_dinner_cruise_menu_pdf['und'][0]['fid'];
+    $dinnerfid = $tree->field_cruisepdf['und'][0]['fid'];
+
+    $dinnerfileload = file_load($dinnerfid);
+
+
+
+    $dinnerfilehttpurl = "";
+    if ($dinnerfileload == TRUE) {
+        $dinnerfilepath = $dinnerfileload->uri;
+        $dinnerfilehttpurl = file_create_url($dinnerfilepath);
+    } else {
+        $dinnerfilehttpurl = "javascript:viod(0)";
+    }
+
+
+
+    $fileoutput[] = $dinnerfilehttpurl;
+
+    $result[$key] = '';
+    foreach ($tree as $key => $values) {
+
+        if (is_array($values)) {
+            $sliders = array();
+            if ($key == "field_right_slider" || $key == "field_middle_slider_img" || $key == "field_cruise_gallery" || $key == "field_cruise_videourl" || $key == "field_cruiseweekdays") {
+                foreach ($values as $slider) {
+                    foreach ($slider as $sliderImages) {
+                        if ($key == "field_cruise_videourl") {
+                            $sliders[] = $sliderImages['value'];
+                        } else if ($key == "field_cruiseweekdays") {
+                            $sliders[] = $sliderImages['value'];
+                        } else {
+                            $sliders[] = $sliderImages['uri'];
+                        }
+                    }
+                }
+                $result[$key] = $sliders;
+            } else {
+                $result[$key] = getArrayloop($values);
+            }
+        } else {
+            $result[$key] = $values;
+        }
+    }
+
+    $fileoutput[] = $result;
+
+
+    return $fileoutput;
+    exit();
+}
+
+
+function formatDaystoString($days) {
+    $daysArray = '';
+    for ($i = 0; $i < count($days); $i++) {
+
+
+        switch ($days[$i]) {
+            case "1":
+                $daysArray[] = "Mondays";
+                break;
+            case '2':
+                $daysArray[] = "Tuesdays";
+                break;
+            case '3':
+                $daysArray[] = "Wednesdays";
+                break;
+            case '4':
+                $daysArray[] = "Thursdays";
+                break;
+            case '5':
+                $daysArray[] = "Fridays";
+                break;
+            case '6':
+                $daysArray[] = "Saturdays";
+                break;
+            case '7':
+                $daysArray[] = "Sundays";
+                break;
+        }
+    }
+
+    $finalString = '';
+
+    if (isset($daysArray)) {
+        if (count($daysArray) == 1) {
+            $lastday = array_pop($daysArray);
+            $finalString = $lastday;
+            
+        } else {
+            $lastday = array_pop($daysArray);
+            $formattedArray = implode(', ', $daysArray);
+            $finalString = $formattedArray . " and " . $lastday;
+        }
+    }
+    return $finalString;
+}

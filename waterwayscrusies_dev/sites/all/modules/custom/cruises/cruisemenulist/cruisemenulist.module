@@ -1,0 +1,289 @@
+<?php
+
+class CruiseCourseMenus {
+
+    public $id;
+    public $menu_title;
+    public $image_path;
+    public $course_name;
+    public $description;
+    public $cruise_id;
+    public $status;
+
+    public function createCruiseCourseMenu() {
+        try {
+            $query = db_insert('cruise_menus_list');
+            $query->fields(array(
+                'menu_title' => $this->menu_title,
+                'course_name' => $this->course_name,
+                'description' => $this->description,
+                'image_path' => $this->image_path,
+                'menulabel_show' => $this->menulabel_show,
+                //'img_id'=>$tileimgfid ,
+                'cruise_id' => $this->cruise_id,
+                'status' => $this->status,
+            ));
+            $query->execute();
+        } catch (Exception $e) {
+            
+        }
+    }
+
+    public function updateCruiseCourseMenu() {
+
+        //if file uri is empty
+
+        if ($this->image_path != '') {
+            $num_updated = db_update('cruise_menus_list')
+                    ->fields(array(
+                        'menu_title' => $this->menu_title,
+                        'course_name' => $this->course_name,
+                        'description' => $this->description,
+                        'image_path' => $this->image_path,
+                        'cruise_id' => $this->cruise_id,
+                            //'status'=>$this->status,
+                    ))
+                    ->condition('id', $this->id, '=')
+                    ->execute();
+        } else {
+            $num_updated = db_update('cruise_menus_list')
+                    ->fields(array(
+                        'menu_title' => $this->menu_title,
+                        'course_name' => $this->course_name,
+                        'description' => $this->description,
+                        'menulabel_show' => $this->menulabel_show,
+                        //'image_path'=>$this->image_path,
+                        'cruise_id' => $this->cruise_id,
+                        'status' => $this->status,
+                    ))
+                    ->condition('id', $this->id, '=')
+                    ->execute();
+        }
+    }
+
+    public static function getAllMenusDetailsbyCurrentCruiseID($id) {
+        $data = db_select('cruise_menus_list', 'c')
+                ->fields('c')
+//		->condition('cruise_id',$_SESSION['temp_id'],'=')
+                ->condition('cruise_id', $id, '=')
+                ->execute()
+                ->fetchAll();
+
+        return $data;
+    }
+
+    public static function deleteCruiseCourseMenu($id) {
+
+        $result = '';
+        //Image deletion
+        $fileuri = CruiseCourseMenus::getImagePath($id);
+        if ($fileuri) {
+            drupal_unlink($fileuri);
+        }
+
+
+        try {
+            $rec = db_delete('cruise_menus_list')
+                    ->condition('id', $id, '=')
+                    ->execute();
+            if ($rec > 0) {
+                $result = "success";
+            } else {
+                $result = "failed";
+            }
+        } catch (Exception $e) {
+            
+        }
+
+        return $result;
+    }
+
+    
+    public static function deleteCruiseCourseMenuImage($id) {
+
+        $result = '';
+        //Image deletion
+        $fileuri = CruiseCourseMenus::getImagePath($id);
+        if ($fileuri) {
+            drupal_unlink($fileuri);
+        }
+
+        try {
+            $num_updated = db_update('cruise_menus_list')
+                    ->fields(array(
+                        'image_path' => '',
+                    ))
+                    ->condition('id', $id, '=')
+                    ->execute();
+            if ($num_updated > 0) {
+                $result = "success";
+            } else {
+                $result = "failed";
+            }
+        } catch (Exception $e) {
+            watchdog("cruisemenulist", $e);
+        }
+        return $result;
+    }
+    
+
+    
+    public static function getMenuTableFormattedDatabyCruiseID($id) {
+        $data = CruiseCourseMenus::getAllMenusDetailsbyCurrentCruiseID($id);
+        $output = '<table class="table table-striped">';
+        $output.='<tr><th>Menu Title</th><th>Image</th><th>Course Name</th><th>Description</th><th>Remove</th><th>Edit</th></tr>';
+        for ($i = 0; $i < count($data); $i++) {
+            $output.="<tr>";
+            $output.="<td>" . $data[$i]->menu_title . "</td>";
+            $output.="<td><img src=" . file_create_url($data[$i]->image_path) . " width='150'>";
+            
+            if(!empty($data[$i]->image_path)){
+                 $output.='<br/><a href="javascript:deleteImage(' . $data[$i]->id . ');">Remove Image</a>';
+            }
+           
+            $output.="</td>";
+            
+            $output.="<td>" . Cruise::getCourseName($data[$i]->course_name) . "</td>";
+            $output.="<td>" . $data[$i]->description . "</td>";
+            $output.='<td><a href="javascript:deleteCourseMenu(' . $data[$i]->id . ');">Remove</a></td>';
+            $output.='<td><a href="javascript:getCourseMenuDetails(' . $data[$i]->id . ');">Edit</a></td>';
+            $output.="</tr>";
+        }
+        $output.='</table>';
+
+        return $output;
+    }
+
+    public static function getImagePath($menuID) {
+
+        $data = db_select('cruise_menus_list', 'c')
+                ->fields('c', array('image_path'))
+                ->condition('id', $menuID, '=')
+                ->execute()
+                ->fetchField();
+        return $data;
+    }
+
+    public static function getCourseMenuDetails($id) {
+        $data = db_select('cruise_menus_list', 'c')
+                        ->condition('id', $id, '=')
+                        ->fields('c')
+                        ->execute()->fetchObject();
+        return $data;
+    }
+    
+    public static function getMenuCountByCourseId($course_id) {
+    	$result = db_select('cruise_menus_list', 'c')
+    	->condition('course_name', $course_id, '=')
+    	->fields('c')
+    	->execute()->fetchAll();
+    	
+    	return count($result);
+    }
+    
+    
+    public static function getMenusListByCourseId($course_id){
+    	$result = db_select('cruise_menus_list', 'c')
+    	->condition('course_name', $course_id, '=')
+    	->fields('c')
+    	->execute()->fetchAll();
+    	
+    	return $result;
+    	
+    }
+
+}
+
+function cruisemenulist_menu() {
+
+    // Cruise Table List View
+    $items ['menus'] = array(
+        'title' => 'Cruise',
+        'page callback' => 'cruise_list_view',
+        'access arguments' => array(
+            'view cruise entity'
+        )
+    );
+
+    //for ajax callback
+    $items ['deletecoursemenu'] = array(
+        'page callback' => 'delete_course_menu',
+        'access arguments' => array('access content'),
+            //'page arguments' => array (1),
+    );
+
+
+     //for ajax callback
+    $items ['deletecoursemenuimage'] = array(
+        'page callback' => 'delete_course_menu_image',
+        'access arguments' => array('access content'),
+            //'page arguments' => array (1),
+    );
+
+
+    $items ['getcoursemenudetails'] = array(
+        'page callback' => 'get_course_menu_details',
+        'access arguments' => array('access content'),
+    );
+    
+    
+    $items ['getmenucountbycourseid'] = array(
+    		'page callback' => 'get_menu_count_by_courseid',
+    		'access arguments' => array('access content'),
+    );
+
+
+    return $items;
+}
+
+//coursemenuid
+
+function delete_course_menu_image() {
+    $coursemenuid = $_POST['coursemenuid'];
+    
+    //var_dump($coursemenuid); exit();
+    $menudata = CruiseCourseMenus::getCourseMenuDetails($coursemenuid);
+    $cruisetempid = $menudata->cruise_id;
+    $t=CruiseCourseMenus::deleteCruiseCourseMenuImage($coursemenuid);
+    
+//	$data=CruiseCourseMenus::getMenuTableFormattedDatabyCruiseID($_SESSION['temp_id']);
+    $data = CruiseCourseMenus::getMenuTableFormattedDatabyCruiseID($cruisetempid);
+    drupal_json_output($data);
+}
+
+
+
+
+
+function get_menu_count_by_courseid() {
+	$courseid = $_POST['courseid'];
+	$result=CruiseCourseMenus::getMenuCountByCourseId($courseid);
+	drupal_json_output($result);
+}
+
+
+
+
+function delete_course_menu() {
+    $coursemenuid = $_POST['coursemenuid'];
+    $menudata = CruiseCourseMenus::getCourseMenuDetails($coursemenuid);
+    $cruisetempid = $menudata->cruise_id;
+    $t = CruiseCourseMenus::deleteCruiseCourseMenu($coursemenuid);
+    
+//	$data=CruiseCourseMenus::getMenuTableFormattedDatabyCruiseID($_SESSION['temp_id']);
+    $data = CruiseCourseMenus::getMenuTableFormattedDatabyCruiseID($cruisetempid);
+    drupal_json_output($data);
+}
+
+function get_course_menu_details() {
+    $menuid = $_GET['menuid'];
+    $data = CruiseCourseMenus::getCourseMenuDetails($menuid);
+    $arr = array();
+    $arr['menu_title'] = $data->menu_title;
+    $arr['course_name'] = $data->course_name;
+    $arr['description'] = $data->description;
+    $arr['menulabel_show'] = $data->menulabel_show;
+    drupal_json_output($arr);
+    exit();
+    //return $data;
+}

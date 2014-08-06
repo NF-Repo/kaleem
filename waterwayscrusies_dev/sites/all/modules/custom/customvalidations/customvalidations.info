@@ -1,0 +1,5 @@
+name = Custom Validations
+description = Custom validations for form values
+core = 7.x
+version = VERSION
+package = WWC

@@ -1,0 +1,294 @@
+<?php
+
+/*
+ * Menu
+ */
+function privateeventmanagement_menu(){
+	$items=array();
+	
+	$items['private-events/test'] = array(
+		'title' => 'Test Private Events',
+		'page callback' => 'private_events_test_page',
+		'file'=>'test/privateeventtestpage.inc',
+		'access arguments' => array('manage private event'),
+	);
+	
+	
+	
+	
+	$items['private-events'] = array(
+		'title' => 'Private Events',
+		'page callback' => 'private_events_list_page',
+		'file'=>'inc/private_events_list.inc',
+		'access arguments' => array('manage private event'),
+	);
+	
+	$items['private-event/new'] = array(
+			'title' => 'New Private Event',
+			'page callback' => 'new_private_event_page',
+			'file'=>'inc/manage_private_event.inc',
+			'access arguments' => array('manage private event'),
+	);
+	
+	
+	$items['private-event/%/manage'] = array(
+			'title' => 'Manage Private Event',
+			'page callback' => 'manage_private_event_page',
+			'file'=>'inc/manage_private_event.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (1),
+	);
+	
+	$items['private-event/%/status'] = array(
+			'title' => 'Manage Private Event',
+			'page callback' => 'manage_private_event_status_page',
+			'file'=>'inc/manage_private_event.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (1),
+	);
+	
+	
+	$items['private-event/%/delete'] = array(
+			'title' => '',
+			'page callback' => 'delete_private_event_page',
+			'file'=>'inc/manage_private_event.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (1),
+	);
+	
+
+	//not in use 1 OverView
+	$items['private-event/%/overview'] = array(
+		'title' => '',
+		'page callback' => 'private_events_overview_page',
+		'file'=>'inc/manage_overview.inc',
+		'access arguments' => array('manage private event'),
+		'page arguments' => array (1),
+	);
+	
+	//Yachts
+	$items['private-event/%/%/page'] = array(
+		'title' => '',
+		'page callback' => 'private_events_overview_page',
+		'file'=>'inc/manage_overview.inc',
+		'access arguments' => array('manage private event'),
+		'page arguments' => array (1,2),
+	);
+	
+	$items['private-event/%/gallery'] = array(
+			'title' => '',
+			'page callback' => 'private_events_gallery_page',
+			'file'=>'inc/gallery.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (1),
+	);
+	
+	
+	
+	
+	
+	
+	
+	
+	//Packages
+	$items['private-event/packages/%/new'] = array(
+		'title' => '',
+		'page callback' => 'create_new_package',
+		'page arguments' => array (2),
+		'file'=>'inc/manage_package.inc',
+		'access arguments' => array('manage private event'),
+	);
+	
+	$items['private-event/package/%/manage'] = array(
+		'title' => '',
+		'page callback' => 'package_page',
+		'file'=>'inc/manage_package.inc',
+		'access arguments' => array('manage private event'),
+		'page arguments' => array (2),
+	);
+	
+	
+	$items['private-event/package/%/sliders'] = array(
+			'title' => '',
+			'page callback' => 'slider_page',
+			'file'=>'inc/slider.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (2),
+	);
+	
+	
+	$items['private-event/package/%/pricetable'] = array(
+			'title' => '',
+			'page callback' => 'pricetable_page',
+			'file'=>'inc/manage_pricetable.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (2),
+	);
+	
+	
+	$items['private-event/package/%/cateringselections'] = array(
+			'title' => '',
+			'page callback' => 'catering_selections_page',
+			'file'=>'inc/manage_catering_selections.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (2),
+	);
+	
+	
+	$items['private-events/packages/%/list'] = array(
+			'title' => '',
+			'page callback' => 'private_events_packages_list_page',
+			'file'=>'inc/packages_list.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (2),
+	);
+	
+	
+	//Package ID
+	$items['private-events/packages/packages/list/%'] = array(
+			'title' => '',
+			'page callback' => 'redirect_to_packages_list',
+			'file'=>'inc/packages_list.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (4),
+	);
+	
+	$items['private-events/packagescategories'] = array(
+			'title' => '',
+			'page callback' => 'manage_package_categories',
+			'file'=>'inc/manage_package_categories.inc',
+			'access arguments' => array('manage private event'),
+			
+	);
+	
+
+	
+	$items['private-event/package/%/status'] = array(
+			'title' => '',
+			'page callback' => 'manage_private_event_packag_status_page',
+			'file'=>'inc/manage_package.inc',
+			'access arguments' => array('manage private event'),
+			'page arguments' => array (2),
+	);
+	
+	
+	
+	
+	
+	
+	
+	
+// 	//2 Yachts
+// 	$items['private-events/yachts/%'] = array(
+// 		'title' => '',
+// 		'page callback' => 'private_events_yachts_page',
+// 		'file'=>'inc/yachts.inc',
+// 		'access arguments' => array('manage private event'),
+// 		'page arguments' => array (2),
+// 	);
+	
+// 	//3 Event Planning
+// 	$items['private-events/eventplanning/%'] = array(
+// 		'title' => '',
+// 		'page callback' => 'private_events_planning_page',
+// 		'file'=>'inc/eventplanning.inc',
+// 		'access arguments' => array('manage private event'),
+// 		'page arguments' => array (2),
+// 	);
+	
+// 	//4 Packages
+// 	$items['private-events/packages/%'] = array(
+// 		'title' => '',
+// 		'page callback' => 'private_events_packages_page',
+// 		'file'=>'inc/packages.inc',
+// 		'access arguments' => array('manage private event'),
+// 		'page arguments' => array (2),
+// 	);
+	
+// 	//5 Catering
+// 	$items['private-events/catering/%'] = array(
+// 		'title' => '',
+// 		'page callback' => 'private_events_catering_page',
+// 		'file'=>'inc/catering.inc',
+// 		'access arguments' => array(''),
+// 		'page arguments' => array (2),
+// 	);
+	
+	
+// 	//6 Vendors
+// 	$items['private-events/vendors/%'] = array(
+// 			'title' => '',
+// 			'page callback' => 'private_events_vendors_page',
+// 			'file'=>'inc/vendors.inc',
+// 			'access arguments' => array('manage private event'),
+// 			'page arguments' => array (2),
+// 	);
+	
+	
+// 	//7 Gallery
+// 	$items['private-events/gallery/%'] = array(
+// 			'title' => '',
+// 			'page callback' => 'private_events_gallery_page',
+// 			'file'=>'inc/gallery.inc',
+// 			'access arguments' => array('manage private event'),
+// 			'page arguments' => array (2),
+// 	);
+	
+	
+// 	//Packages
+// 	$items['private-events/packages/%/new'] = array(
+// 			'title' => '',
+// 			'page callback' => 'create_new_package',
+// 			'page arguments' => array (2),
+// 			'file'=>'inc/manage_package.inc',
+// 			'access arguments' => array('manage private event'),
+			
+// 	);
+	
+// 	//Category ID
+// 	//Buffet ID
+// 	$items['private-events/packages/%/%'] = array(
+// 			'title' => '',
+// 			'page callback' => 'package_page',
+// 			'page arguments' => array (2,3),
+// 			'file'=>'inc/manage_package.inc',
+// 			'access arguments' => array('manage private event'),
+				
+// 	);
+	
+	
+	
+// 	//Price Table
+// 	$items['private-events/packages/%/%/pricetable'] = array(
+// 			'title' => '',
+// 			'page callback' => 'pricetable_page',
+// 			'page arguments' => array (2,3),
+// 			'file'=>'inc/pricetable.inc',
+// 			'access arguments' => array('manage private event'),
+	
+// 	);
+	
+	
+	
+// 	//buffet
+// 	$items['private-events/packages/%/%/buffet'] = array(
+// 			'title' => '',
+// 			'page callback' => 'buffet_page',
+// 			'page arguments' => array (2,3),
+// 			'file'=>'inc/buffet.inc',
+// 			'access arguments' => array('manage private event'),
+	
+// 	);
+	
+	
+	return $items;
+}
+
+
+function privateeventmanagement_permission() {
+	return array (
+		'manage private event' => array (
+			'title' => t ( 'Manage Private Events' ) 
+		) 
+	);
+}

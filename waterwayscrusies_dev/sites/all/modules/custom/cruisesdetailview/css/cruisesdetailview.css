@@ -1,0 +1,1466 @@
+/* 
+    Document   : cruisesdetailview
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content{
+    display: block  !important;
+}
+
+#menu
+{
+    position: static !important;
+}
+
+.sunset-slider-buttons ol.carousel-indicators{
+    display: none;
+}
+.cruiseDownslidermargin .bx-wrapper img {
+    height: 250px;
+}
+.slider .customIndicatorsMiddle,.customIndicatorsRight {
+    list-style: none;
+    position: absolute;
+    z-index: 1;
+    left: 47%;
+    top: 6%;
+    padding: 0px;
+    margin: 0px;
+}
+.slider .customIndicatorsMiddle{
+     left: 0%;
+}
+
+.slider .customIndicatorsMiddle li ,.customIndicatorsRight li{
+    display: block;
+    float: left;
+}
+
+#cruiseMenuRender .bx-wrapper{
+    margin:0 auto !Important;
+}
+.slider{
+    position: absolute;
+    z-index: 12;
+    margin-left: 50% !important;
+    width: 50% !important;
+    top:90%;
+}
+.silderIndicator,.silderIndicatorRight 
+{
+    border: #05559c 1px solid;
+    background-color: rgba(255,255,255,1) !important;
+    width: 8px !important;
+    height: 8px !important;
+    margin-left: 5px;
+    margin-top: 15px;
+    z-index: 1000;
+    border-radius: 5PX;
+}
+.customIndicatorsRight {
+     left: 11%;
+}
+#myCarousel .carousel-control{
+    background:none;
+    border:none;
+}
+.silderIndicator.active,.silderIndicatorRight.active
+{
+    background: #ab323b !important;
+    border: #ab323b 1px solid;
+}
+.cruiseDownslidermargin{
+    margin-top:8%;
+    padding-bottom: 9%;
+}
+.cruiseDownslidermargin .bx-wrapper .bx-controls-direction a{
+    top:106% !important;
+}
+.cruiseDownslidermargin .bx-wrapper .bx-next {
+    background: url(../images/gallery-leftarrow.png) no-repeat !important;
+    left: 55% !important;
+    width: 20px !important;
+    height: 35px !important;
+}
+.cruiseDownslidermargin .bx-controls-direction a{
+    opacity: 1;
+}
+.cruiseDownslidermargin .bx-wrapper .bx-prev {
+    background: url(../images/gallery-rightarrow.png) no-repeat !important;
+    left: 44% !important;
+    width: 20px !important;
+    height: 35px !important;
+}
+.bx-wrapper .bx-pager.bx-default-pager a{
+    border: #05559c 1px solid;
+    background-color: rgba(255,255,255,1) !important;
+    width: 8px !important;
+    height: 8px !important;
+
+}
+.bx-wrapper .bx-pager.bx-default-pager a:hover, .bx-wrapper .bx-pager.bx-default-pager a.active{
+    background: #ab323b !important;
+    border: #ab323b 1px solid;
+}
+.deparText span sup{
+    font-size: 13px !important;
+    top: -0.8em !important;
+}
+
+.priceText span{
+    font-size: 16px !important;
+}
+.mfp-zoom-out-cur, .mfp-zoom-out-cur .mfp-image-holder .mfp-close{
+    cursor: default !important;
+}
+.bx-wrapper .bx-controls-direction a{
+    z-index: 9;
+}
+.priceText sup{
+    font-size: 13px !important;
+    top: -0.5em !important;
+}
+
+/* gallery pop up css start*/
+.mfp-img{
+    padding:0 !important;
+}
+.mfp-close{
+    width: 65px !important;
+    font-size: 16px !important;
+    right:0px !important;
+    padding:2px !important;
+    background:#ab323b !important;
+    text-align: center !important;
+    opacity: 1 !important;
+    height: 32px !important;
+    color:#fff !important;
+    line-height: 21px !important;
+}
+
+.mfp-close.close-text{
+    border: 1px dotted #fff;
+    margin: 3% !IMPORTANT;
+    height: 21PX !important;
+    width: 53px !Important;
+}
+.mfp-bottom-bar{
+    margin-top: -22px !important;   
+}
+.mfp-counter{
+    background: #fff;
+    font-weight: bold;
+    color:#ab323b !important;  
+    padding:2px 12px;
+}
+.mfp-content{
+    border:10px solid #bc9b6a;
+}
+.mfp-arrow-right{
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    right: 10% !important;
+
+}
+
+.mfp-arrow-left{
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    left: 10% !important;
+}
+.mfp-figure:after{
+    box-shadow: none !important;
+    background:none !important;
+}
+.mfp-iframe-holder .mfp-close{
+    top:0 !important;
+}
+.mfp-arrow{
+    margin-top: 0 !important;
+    top:35% !important;
+    width:75px !important;
+    height:150px !Important;
+    opacity:1 !important;
+}
+.mfp-arrow:before, .mfp-arrow:after, .mfp-arrow .mfp-b, .mfp-arrow .mfp-a{
+    border:none !important;
+}
+.mfp-arrow-right:after, .mfp-arrow-right .mfp-a{
+    border:none !important;
+}
+/* gallery pop up css end*/
+
+.sunset-slider-buttons #downArrow
+{
+    position:absolute;
+    left:-7%;
+    bottom:5%;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.sunsetMapView #upArrow
+{
+    position:absolute;
+    left: 52%;
+    bottom: 3%;
+    z-index: 1;
+    cursor: pointer;
+}
+.sunsetBooknowMobile .sunsetLinePadding{
+    padding-top:0 !important;
+}
+.sunsetDownslider ol.carousel-indicators .active{
+    background-color:  inherit !important;
+    background-image:url("../images/Indicators-active.png") !important;
+    background-repeat: no-repeat !important;
+    width: 12px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.sunsetDownslider ol.carousel-indicators li{
+    background-color: inherit !important;
+    border-radius:0px !important;
+    background-image: url("../images/Indicators-inactive.png") !important;
+    background-repeat: no-repeat !important;
+    width: 11px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.sunsetDownslider a.carousel-control{
+    background: inherit !important;
+    border: solid 0px !important;
+}
+
+.sunsetDownslider .carousel-control{
+    width: auto !important;
+    height: auto !important;
+}
+
+.sunsetDownslider .carousel-indicators {
+    bottom: 20%;
+    left: 50%;
+    top: inherit;
+}
+
+/* Map Overlay css Styles */
+
+.mapOverlay{
+    width: 100%;
+    margin: 0; 
+    padding: 50px 0; 
+    position: absolute;
+    z-index: 1;
+    top: 0%;
+
+    /* "transparent" only works here because == rgba(0,0,0,0) */ 
+    background: -moz-linear-gradient(top, rgba(242,235,225,1) 0%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(242,235,225,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2ebe1', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+}
+
+/* Route Map Directions Pop Up styles */
+
+.mapDownsliderbox{
+    display:none;
+}
+#parkingDirectionsModal{
+   /* width: 80%;
+    margin-left: -40%;*/
+    position: fixed;
+    margin-top: 3%;
+}
+
+.reoutemapDirectionsbox
+{
+    background:#fff;
+  /*  min-width:100%;*/
+    max-height:500px !important;
+    border:10px #bc9b6a solid;
+    overflow: auto;
+    position:fixed;
+}
+
+.reoutemapDirectionsboxInner
+{
+    width:100%;
+   /* min-height:500px;*/
+}
+
+.reoutemapDirectionsboxInnerleft{
+    background: #fff;
+   /* min-height:500px;*/
+    padding: 2%;
+}
+
+.reoutemapDirectionsboxInnerright{
+    background: #bebebe;
+   /* min-height:500px !important;*/
+    /*    margin-left: 0% !important;
+        width: 100% !important;*/
+}
+
+.routemapContent{
+    color: #000;
+    text-align: center;
+    /*height: 500px;*/
+    overflow-x: hidden;
+   /* overflow-y: scroll;*/
+    padding:50px 10px 10px 10px;
+}
+.routemapContent .tab-content{
+    text-align: center;
+    overflow: hidden;
+}
+
+.routemapContent .item{
+    margin-bottom: 10px;
+}
+
+.reoutemapDirectionsboxInnerleft .sliderCaption
+{
+    font-family:georgia;
+    font-weight:600;
+    font-size:19px;
+    text-align:center;
+}
+.reoutemapDirectionsboxInnerleft ul
+{
+    list-style: none;
+    margin-top: 12px;
+}
+
+.reoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 9px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+.reoutemapDirectionsclosebutton a{
+    text-decoration:none;
+}
+.reoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+
+.radioLine
+{
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    margin-top: 12px;
+    background: #bc9b6a;
+}
+.choose
+{
+    float: left;
+    width: 100%;
+    font-family:georgia;
+    font-size: 19px;
+    color: #818181;
+    margin-bottom:6px;
+}
+.choosePortRadio
+{
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 65px;
+}
+.calendarRadio
+{
+    width: 40%;
+    float: left;
+    margin-left: 3%;
+    text-align: center;
+    line-height: 20px;
+}
+.calendarPortRadio{
+    position: absolute;
+    left: 25%;
+}
+.calendarRadio .portRadio
+{ 
+    width: 100%;
+
+}
+
+#parkingDirectionsPorts li{
+	display: block;
+	float: left !important;
+        margin-right: 10px;
+}
+
+#parkingDirectionsPorts li a{
+    cursor: pointer;
+    line-height: 28px;
+    border: 0px;
+    padding: 0px;
+}
+
+#parkingDirectionsPorts li a:hover{
+	background: transparent;
+}
+
+
+/* Route Map Directions Pop Up styles */
+#directionsModal, #clicktoSeeRouteMapModal{
+  /* width: 70%;
+   margin-left: -35%;*/
+   position: fixed;
+   border-radius: 0px;
+   box-shadow: transparent;
+   top: 12% !important;
+}
+
+#directionsModal #directionsContentRender{
+   background: #fff;
+}
+
+#directionsModal #directionsContentRender .direction-details{
+   display: block !important;
+}
+
+#directionsModal #directionsContentRender .direction-details h4{
+   margin-top: 20px;
+}
+
+#directionsModal #directionsContentRender .directionsContentHeader .sunsetLinePadding .line{
+   margin-top: 2%;
+}
+
+#directionsModal #directionsContentRender .directionsHeader{
+   font-size: 17px;
+   margin: 3% 0 1% 0;
+   font-weight: bold;
+}
+
+
+.detailport {
+    font-family: georgia;
+    font-size: 19px;
+    color: #818181;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.contentDetail .carousel
+{
+    margin-bottom: 0px;
+}
+#cruiseBookNowDate.input-append{
+    margin-bottom:6px;
+}
+
+.sliderInnercontent img{
+    float: left;
+    margin-top: 7px;  
+}
+.sliderInnercontent .clickMapLink
+{
+    float: left;
+    width: 90%;
+}
+
+.departurePortsclosebutton
+{
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    width:50px;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.departurePortsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+#cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+    display: none;
+}
+.bx-wrapper .bx-prev {
+    top: 35% !important;
+    left:-5% !important;
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+.bx-wrapper .bx-next {
+    top: 35% !important;
+    right:-5% !important;
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+.detailTitle{
+    margin-bottom: 5%;
+}
+
+
+ul.fleetbxslider li .sliderBox{
+    margin: 5%;
+}
+
+ul.fleetbxslider li .sliderBox .sliderBoxout{
+    margin: 0%;
+}
+
+ul.fleetbxslider li .sliderBox .sliderBoxout:hover{
+    -moz-box-shadow: 0 0 20px 1px #888;
+    -webkit-box-shadow: 0 0 20px 1px#888;
+    box-shadow: 0 0 20px 1px #888;
+}
+
+.mfp-bg
+{
+    background: #fff !important;
+}
+
+.cruiseDownslidermargin #upArrow
+{
+    position:absolute;
+    left: 48%;
+    bottom: 10%;
+    z-index: 1;
+    cursor: pointer;
+}
+#cruisecalander{
+    width: 176px;
+}
+.sunsetDownsliderInner .sunsetLinePadding{
+    margin-left: 0px !important;
+}
+@media (max-width: 480px) {
+  .cruiseDownslidermargin #upArrow {
+    position: absolute;
+    left: 45%;
+    bottom: 20%;
+    z-index: 1;
+    cursor: pointer;
+    display: block;
+   }
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+    .sunsetBooknowMobile .sunsetLinePadding {
+        padding-top: 4px !important;
+    }
+    .customIndicatorsRight{
+     display:none;   
+    }
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        opacity:1;
+        transition: opacity;
+        -moz-transition: opacity;
+        -webkit-transition: opacity;
+
+    }
+    .sunsetDownsliderbox{
+        height: auto;
+             max-height:100% !important;
+    }
+
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 33% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderInner{
+        position: static !important;
+        max-height: auto !important;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    .sunsetDownsliderInner{
+        margin: 0% !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 18% !important;
+        float: left !important;
+    }
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 64% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 45%;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 10%;
+        float: left;
+    }
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: none;
+    }
+    .map{
+        height: 360px !important;
+    }
+
+    .dinnerCruiseMenu li{
+        /*        float: none !important;*/
+        /*width: 100% !important;*/
+    }
+
+    .bx-controls .bx-controls-direction{
+        display: block !important;
+    }
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+    
+ #cruiseMenuRender .bx-wrapper .bx-controls-direction a.disabled{
+        display: none !important;
+    }
+    .sliderInnercontent img{
+
+        margin-right: 2px !important;
+    }
+   /* .departurePortsclosebutton
+    {
+        width:20%;
+    }*/
+    /*.reoutemapDirectionsclosebutton
+    {
+        width: 20% !important;
+        right:0px !important;
+    }*/
+    
+    #seeparkingDirectionsModal .modal-body {
+    width: 80%;
+    }
+
+}
+.bx-wrapper .bx-controls-direction a{
+ z-index:9 !important;   
+}
+ #cruiseDate{
+        width:179px;
+    }
+    .sunsetLinePadding,.linepadding{
+        padding-top:8px !important;
+    }
+    
+@media (max-width: 979px) {
+    
+    
+   
+
+    .cruiseDownslidermargin #upArrow {
+         position: absolute;
+         left: 45%;
+        bottom: 7%; //changes
+        z-index: 1;
+        cursor: pointer;
+        display: block;
+    }
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+   
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+    .sunsetDownslider{
+        margin-top:5%;
+    }
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+ #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+    
+ #cruiseMenuRender .bx-wrapper .bx-controls-direction a.disabled{
+        display: none !important;
+    }
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        opacity:1;
+        transition: opacity;
+        -moz-transition: opacity;
+        -webkit-transition: opacity;
+    }
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+    .sunsetBooknowMobile{
+        width: 93% !Important;
+        margin-left: 5% !important;
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 30% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 22% !important;
+        float: left !important;
+        padding-top: 0px;
+    }
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 50% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 24px;
+        line-height:24px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 33%;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 28%;
+        float: left;
+    }
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+        max-width: 100% !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: block;
+    }
+    .map{
+        height: 360px !important;
+    }
+    .contentDetail .span6{
+        float: none !important;
+        width: 100% !important;
+        margin-left: 0px !important;
+    }
+    .sunsetBannerBooknow .row-fluid .span6{
+        margin-left: 0px !important;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span2{
+        display: none;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span10{
+        width: 100%;
+        margin-left: 0px;
+    }
+    .contentDetail #rightsliderImages .item img{
+        width: 100%;
+
+    }
+
+    #seeparkingDirectionsModal .modal-body{
+    width:80%;
+   }
+   
+   
+    #block-system-main #seeparkingDirectionsModal .modal-body{
+    width:90%;
+    }
+    
+}
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+    .deparText{
+        font-size: 22px !important;
+    }
+
+    .sunsetBannerBooknow{
+        padding-bottom: 10px !important;
+        padding-top: 10px !important;
+    }
+
+    .sunsetBannerBooknow .row-fluid .span6{
+        float: none;
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    .carousel{
+        margin-bottom: 0px !important;
+    }
+
+    .sunsetDownsliderbox{
+        top: 4% !important;
+    }
+
+    .groupResNote{
+        margin-top: 12px;
+        margin-bottom: 10px;
+    }
+
+    .sunsetDownslider .carousel-indicators{
+        bottom: 6%;
+    }
+
+    .sliderCaption{
+        font-size: 26px !important;;
+    }
+
+    .contentDetail{
+        padding-left: 0% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 32% !important;
+    }
+
+    .detailTitle {
+        font-size: 35px !important;
+    }
+    .contentDetail #rightsliderImages .item img{
+        height: 530px;
+
+    }
+
+}
+
+@media (min-width: 1160px) and (max-width: 1200px) {
+
+    .contentDetail #rightsliderImages .item img{
+        height: 580px;
+    }
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+ #cruiseMenuRender .bx-wrapper .bx-controls-direction a.disabled{
+        display: none !important;
+    }
+}
+.contentDetail #rightsliderImages .item img{
+    height: 676px;
+    /*width: 100%;*/
+    max-width: none;
+}
+
+.reoutemapDirectionsclosebutton, .clicktoseereoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    width:50px;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.reoutemapDirectionsclosebuttoninner, .clicktoseereoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+
+#seeparkingDirectionsModal
+{
+    width: 700px;
+    border-radius: 0;
+    position: fixed;
+    top: 12% !important;
+}
+#parkingDirectionsModal{
+    border:none;
+    border-radius: none;
+    box-shadow: none;
+}
+.seereoutemapDirectionsclosebutton
+{
+
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.seereoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+.share-mobile{
+    position:absolute;
+    top:2%;
+    height:35px !important;
+    width: 70% !important;
+    margin-left: 18%;
+}
+
+.twitter-share{
+    position: absolute;
+    padding-left: 35%;
+    padding-top: 2.5%;
+}
+.share-text{
+    position: absolute;
+    margin-left: 70%;
+}
+.pluginButton{
+    padding: 2px 7px 3px;
+}
+
+#hideGalleryPager.hideGalleryPagercl{
+    margin-top: 0%;
+    padding-bottom: 0%;
+}
+
+#hideGalleryPager.hideGalleryPagercl .bx-wrapper{
+    display: none;
+}
+
+#Map  #upArrow {
+        bottom: 25%;
+       position: absolute;
+       top: inherit;
+        z-index: 994;
+  }
+
+@media screen and (max-width: 767px) { 
+    
+    .cruiseDownslidermargin #upArrow {
+      position: absolute;
+       left: 45%;
+       bottom: 20%;
+       z-index: 1;
+       cursor: pointer;
+       display: none;
+   }
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+     .customIndicatorsRight{
+        display:none;
+    }
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+    .Reviews{
+        top:70% !Important;
+        left:47% !important;
+    }
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 33% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 25% !important;
+        float: left !important;
+        padding-top: 8px;
+    }
+    .sunsetDownsliderInner .banner-icon{
+        padding-top: 0px;
+    }
+
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 50% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 36%;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 28%;
+        float: left;
+        margin-top: 2%;
+    }
+    .mapDownsliderbox .span2,.sunsetDownsliderbox .span2{
+   margin-top: 0px !important; 
+}
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+        max-width: 100% !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: block;
+    }
+    .map{
+        height: 360px !important;
+    }
+    .sliderInnercontent img{
+        margin-top: 6px;
+        float: left;
+        margin-right: 6px;
+    }
+    .sliderInnercontent .clickMapLink
+    {
+        font-size: 14px !important;
+    }
+    .contentDetail #rightsliderImages .item img{
+        height: auto !important;
+        width: 100%;
+    }
+.reoutemapDirectionsbox
+{
+    max-height:450px;
+}
+    #parkingDirectionsModal
+    {
+      /*  margin-left:0px;*/
+        position: absolute;
+    }
+}
+
+
+
+/*Cruises Menu Css application*/
+
+/*Single column css get here*/
+       .singlemenucol
+        {
+        list-style: none;
+        /*width:500px;*/
+        
+        /*for mobile view text is comingout*/
+        width: 100%;
+        max-width: 500px;
+        
+        
+        margin:auto;
+        }
+        
+ .singlemenucol .menuItemTitle {
+    margin-left: 25%;
+            }
+        
+            
+            
+            
+/*single column css gets ends here*/
+
+
+/**twomenucolumn css gets applied here**/
+.twomenucol
+{
+    list-style: none;
+    display:inline-flex;
+}
+
+/**two column menu css**/
+
+@media (max-width: 480px){
+.modal {
+right: 20px;
+left: 0px;
+}
+#routeMaplinesholder .span2{
+    margin-top: 1%;
+}
+.mapDownsliderbox .span2,.sunsetDownsliderbox .span2{
+   margin-top: 0px !important; 
+}
+.routemapContent img{
+padding-bottom: 20px;
+}
+.reoutemapDirectionsbox
+{
+    max-height:350px;
+}
+}
+
+@media (min-width:1150px) and (max-width:1230px)
+{
+.contentDetail {
+padding-left:5%;
+}
+}
+
+
+@media (min-width:979px) and (max-width:1024px){
+    .sunsetDownsliderInner{
+        max-height: 320px !important;
+    }
+}
+
+
+
+@media (min-width:770px) and (max-width:980px){
+    #block-system-main #seeparkingDirectionsModal .modal-body{
+    width:94%;
+    }
+}
+
+@media (min-width:1025px) and (max-width:1320px)
+{
+.sunsetDownsliderInner {
+max-height:350px !important;
+}
+}
+/**Cruise menu css**/
+
+
+
+
+/*.facebook .stButton .stLarge {*/
+ .fbsharebtnimg {
+    /*background-image:url("../images/fb-share.png") no-repeat !important;*/
+    background: url("../images/fb-share.png") no-repeat !important;
+    margin: 5px 0 0 8px;
+    padding: 10px;
+    cursor: pointer;
+}
+/*.facebook .stButton .stLarge {*/
+.fb-like.facebook {
+    /*background: url("../images/fb-share.png") no-repeat !important;*/
+    cursor: pointer;
+    /*margin: 5px 0 0 8px;*/
+    /*padding: 0 20px 0 10px;*/
+    padding: 5px 1%;
+    width: 50px;
+    /*width: 62px;*/
+}
+/*.twitter .stButton .stLarge {*/
+.twitsharebtnimg {
+    /*background-image:url("../images/fb-share.png") no-repeat !important;*/
+    background: url("../images/tweet.png") no-repeat !important;
+    margin-top: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+/*.twitter .stButton .stLarge {*/
+.twitter{
+    /*background: url("../images/tweet.png") no-repeat !important;*/
+    /*margin-top: 5px;*/
+    /*padding-top: 5px;*/
+    padding: 5px 4% 0px 2%;
+    /*padding: 10px;*/
+    cursor: pointer;
+    width:22%;
+}
+.pinterest{
+    width:20%;
+    /*padding-top: 5px;*/
+    padding:5px 1% 0px 1%;
+}
+.sharetext {
+    color:#ffffff;
+    padding: 5px 3px 0px 5px;
+    width: 20%;
+    text-align:center;
+    cursor: pointer;
+}
+
+.buttonsdiv{
+    border: 1px dotted #F1DDDF;
+    height: 82%;
+    margin: 2px;
+    width: 98%;
+}
+.share-text {
+    color:#ffffff;
+    position: absolute;
+    /*margin-left: 70%;*/
+    /*margin-top: 5px;*/
+    padding: 5px 5px 0px 5px;
+    /*width: 25%;*/
+    text-align:center;
+    cursor: pointer;
+}
+
+.imgLink {
+    display:none;
+}
+#stwrapper{
+    left:5%;
+}
+/*#stLframe{
+    width:310px; 
+    height:460px;
+    overflow:auto;
+}
+#stwrapper{
+    width:64%;
+}
+#stLframe html body #outerContainer{
+    width:270px !important;
+}*/
+/*#stLframe #outerContainer{
+    width:75%;
+}*/
+
+
+
+/*
+Make the Facebook Like box responsive (fluid width)
+https://developers.facebook.com/docs/reference/plugins/like-box/
+*/
+ 
+/* This element holds injected scripts inside iframes that in some cases may stretch layouts. So, we're just hiding it. */
+#fb-root {
+display: none;
+}
+ 
+/* To fill the container and nothing else */
+.fb_iframe_widget {
+width: 50px !important;
+}
+.fb_iframe_widget span,.fb_iframe_widget span iframe[style]{
+width: 100% !important;
+}
+
+#seeparkingDirectionsModal .modal-body{
+    width:100%;
+}
+
+.sunsetMapView .mapDownsliderbox{
+    min-width:30%;
+}

@@ -1,0 +1,158 @@
+<?php 
+
+
+
+/**
+ * Implements hook_menu().
+ */
+function uc_giftcard_menu() {
+  $items['admin/store/settings/giftcard'] = array(
+    'title' => 'Gift Card',
+    'access arguments' => array('administer gift Card'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_giftcard_admin_form')
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function uc_giftcard_permission() {
+  return array(
+    'administer gift card' => array(
+      'title' => 'Administer Gift Card Settings'
+    )
+  );
+}
+
+/**
+ * Form builder for the gift wrap settings.
+ */
+function uc_giftcard_admin_form($form, &$form_state) {
+  $form['uc_giftcard_cost'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Gift Card Cost'),
+    '#description' => t('Total cost of gift card for an order.'),
+    '#default_value' => round(variable_get('uc_giftcard_cost', '0.00'), 2),
+    '#field_prefix' => '&pound;',
+    '#size' => 10
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_uc_checkout_pane().
+ */
+function uc_giftcard_uc_checkout_pane() {
+  $panes['gift_card'] = array(
+    'callback' => 'uc_giftcard_uc_checkout_pane_callback',
+    'title' => 'Gift Card',
+    'desc' => 'Provide gift card options for the checkout.',
+    'weight' => 5
+  );
+
+  return $panes;
+}
+
+/**
+ * Callback for the checkout pane.
+ */
+function uc_giftcard_uc_checkout_pane_callback($op, $order, $form = NULL, &$form_state = NULL) {
+  if ($op == 'view') {
+    $description = t('Please check this box if you wish your order to be gift Card.');
+
+    $contents['gift_card'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Add Gift Card') . ' (' . uc_currency_format(variable_get('uc_giftcard_cost', 0)) . ')',
+      '#default_value' => isset($_SESSION['uc_giftcard_checkout']) ? 1 : 0,
+      '#ajax' => array(
+        'callback' => 'uc_giftcard_update_line_items',
+        'effect' => 'slide'
+      )
+    );
+
+    return array('description' => $description, 'contents' => $contents);
+  }
+  else if ($op == 'process') {
+    if ($form_state['values']['panes']['gift_wrap']['gift_wrap'] == 1) {
+      if (!isset($_SESSION['uc_giftcard_checkout'])) {
+        uc_order_line_item_add($order->order_id, 'gift_wrap', 'Gift Wrapping', variable_get('uc_giftcard_cost', 0));
+        $id = db_query('SELECT MAX(line_item_id) FROM {uc_order_line_items}')->fetchField();
+        $_SESSION['uc_giftcard_checkout'] = $id;
+      }
+    }
+    else {
+      if (isset($_SESSION['uc_giftcard_checkout'])) {
+        uc_order_delete_line_item($_SESSION['uc_giftcard_checkout']);
+        unset($_SESSION['uc_giftcard_checkout']);
+      }
+    }
+  }
+}
+
+/**
+ * AJAX callback for the checkout form (allows instant updating of total when gift wrap option is chosen).
+ */
+function uc_giftcard_update_line_items($form, $form_state) {
+  $commands = array();
+  if (isset($form['panes']['payment']['line_items'])) {
+    $commands[] = ajax_command_replace('#line-items-div', drupal_render($form['panes']['payment']['line_items']));
+    $commands[] = ajax_command_prepend('#line-items-div', theme('status_messages'));
+  }
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Implements hook_uc_line_item().
+ */
+function uc_giftcard_uc_line_item() {
+  $items[] = array(
+    'id' => 'gift_card',
+    'title' => t('Gift Card'),
+    'weight' => 2,
+    'default' => FALSE,
+    'stored' => TRUE,
+    'add_list' => TRUE,
+    'calculated' => TRUE,
+    'callback' => 'uc_giftcard_uc_line_item_gift_card',
+    'display_only' => FALSE
+  );
+
+  return $items;
+}
+
+/**
+ * Callback for line item type.
+ */
+function uc_giftcard_uc_line_item_gift_card($op, $arg1) {
+  // Required callback for hook_uc_line_item()
+}
+
+/**
+ * Implements hook_uc_checkout_complete().
+ */
+function uc_giftcard_uc_checkout_complete($order, $account) {
+  if (isset($_SESSION['uc_giftcard_checkout'])) {
+    unset($_SESSION['uc_giftcard_checkout']);
+  }
+}
+
+
+
+function uc_giftcard_uc_order($op, &$order) {
+  
+  if ($op == 'presave') {
+   
+    $order->line_items[] = uc_order_line_item_add($order->order_id,'gift_card',
+            'Gift Card',//$coupon->title,
+            -10,//$coupon->pretax_amount,
+            _uc_line_item_data('gift_card', 'weight'),
+            array('name' =>'gift_card')
+          );
+  
+  }
+}

@@ -1,0 +1,6 @@
+; $Id$
+name = Fleet
+description = "Waterways Fleet View Page"
+core = 7.x
+version = VERSION
+package = WWC

@@ -1,0 +1,7 @@
+name =Excel Export Data
+core = 7.x
+description = Excel Export Data
+package=WWC
+
+files[] = excelexport.module
+

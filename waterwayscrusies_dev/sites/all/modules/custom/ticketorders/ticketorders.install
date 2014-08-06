@@ -1,0 +1,49 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function ticketorders_schema() {
+    $schema = array();
+
+    $schema['ticketorders'] = array(
+        'description' => 'The base table for ticketorders.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'ticket_id' => array(
+                'description' => 'Ticket ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'order_id' => array(
+                'description' => 'Ubercart Order ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'ticket_qty' => array(
+                'description' => 'Ticket Quantity',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+
+    return $schema;
+}
+

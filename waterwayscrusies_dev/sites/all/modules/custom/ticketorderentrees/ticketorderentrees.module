@@ -1,0 +1,361 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function ticketorderentrees_menu() {
+
+    //Ticket Order Entrees Table List View
+    $items['ticketorderentrees'] = array(
+        'title' => 'Ticket Order Entree',
+        'page callback' => 'ticketorderentrees_list_view',
+        'access arguments' => array('view ticketorderentrees entity'),
+    );
+
+    //Adding New Ticket Order Entrees
+    $items['ticketorderentrees/add'] = array(
+        'title' => 'Add Ticket Order Entrees',
+        'page callback' => 'ticketorderentrees_add',
+        'access arguments' => array('create ticketorderentrees entities'),
+        'file' => 'ticketorderentrees.form.inc',
+    );
+
+    //Edit Ticket Order Entrees
+    $items['ticketorderentrees/%ticketorderentrees/edit'] = array(
+        'title' => 'Edit',
+        'load arguments' => array('ticketorderentrees'),
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => 'ticketorderentrees_item_edit',
+        'access arguments' => array('edit ticketorderentrees entities'),
+        'page arguments' => array(1),
+        'file' => 'ticketorderentrees.form.inc',
+    );
+
+    //Delete Ticket Order Entrees
+    $items['ticketorderentrees/%/delete'] = array(
+        'page callback' => 'ticketorderentrees_item_delete',
+        'access arguments' => array('delete ticketorderentrees entities'),
+        'page arguments' => array(1),
+        'file' => 'ticketorderentrees.form.inc',
+    );
+
+    //Manage Ticket Order Entrees through Admin Panel
+    $items['admin/structure/ticketorderentrees/manage'] = array(
+        'title' => 'Ticket Order Entrees',
+        'description' => 'Manage Ticket Order Entrees',
+        'page callback' => 'ticketorderentrees_admin_page',
+        'access arguments' => array('administer ticketorderentrees entities'),
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function ticketorderentrees_permission() {
+    return array(
+        'administer ticketorderentrees entities' => array(
+            'title' => t('Administer ticketorderentrees entities'),
+            'restrict access' => TRUE,
+        ),
+        'view ticketorderentrees entities' => array(
+            'title' => t('View ticketorderentrees Entities'),
+        ),
+        'create ticketorderentrees entities' => array(
+            'title' => t('Create ticketorderentrees Entities'),
+        ),
+        'delete ticketorderentrees entities' => array(
+            'title' => t('Delete ticketorderentrees Entities'),
+        ),
+    );
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function ticketorderentrees_entity_info() {
+    $ticketorderentrees_info['ticketorderentrees'] = array(
+        'label' => 'Ticket Order Entrees',
+        'controller class' => 'TicketOrdersEntreesController',
+        'base table' => 'ticketorderentrees',
+        'uri callback' => 'ticketorderentrees_uri',
+        'fieldable' => TRUE,
+        'entity keys' => array(
+            'id' => 'id',
+        ),
+        'static cache' => TRUE,
+        'bundles' => array(
+            'ticketorderentrees_bundle' => array(
+                'label' => 'ticketorderentrees',
+                'admin' => array(
+                    'path' => 'admin/structure/ticketorderentrees/manage',
+                    'access arguments' => array('administer ticketorderentrees entities'),
+                ),
+            ),
+        ),
+        'view modes' => array(
+            'full' => array(
+                'label' => t('Full'),
+                'custom settings' => FALSE,
+            ),
+        )
+    );
+    return $ticketorderentrees_info;
+}
+
+function ticketorderentrees_page_title($ticketorderentrees) {
+    return 'Ticket Order Entrees';
+}
+
+function ticketorderentrees_load($id = NULL, $reset = FALSE) {
+    $ids = (isset($id) ? array($id) : array());
+    $ticketorderentrees = ticketorderentrees_load_multiple($ids, array(), $reset);
+    return $ticketorderentrees ? reset($ticketorderentrees) : FALSE;
+}
+
+function ticketorderentrees_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+    return entity_load('ticketorderentrees', $ids, $conditions, $reset);
+}
+
+function ticketorderentrees_uri($ticketorderentrees) {
+    return array(
+        'path' => 'ticketorderentrees/' . $ticketorderentrees->id,
+    );
+}
+
+function ticketorderentrees_item_delete($id) {
+    $msg = '';
+    try {
+        ticketorderentrees_delete($id);
+        $msg = 'Ticket Order Entrees Deleted Successfully.';
+    } catch (Exception $e) {
+        $msg = 'Operation Failed.';
+    }
+    drupal_set_message($msg);
+    drupal_goto('admin/structure/ticketorderentrees/manage');
+}
+
+function ticketorderentrees_admin_page() {
+//$output = 'Admin page for ticketorderentrees entities.<br/>';
+    $output = '';
+    $output .= '<a href="' . base_path() . 'ticketorderentrees/add">Add Ticket Order Entree</a>';
+
+    $output.=ticketorderentrees_list_view();
+
+    return $output;
+}
+
+function ticketorderentrees_page_view($entity, $view_mode = 'tweaky') {
+
+    $entity_type = 'ticketorderentrees';
+    $entity->content = array(
+        '#view_mode' => $view_mode,
+    );
+
+    field_attach_prepare_view($entity_type, array($entity->id => $entity), $view_mode);
+    entity_prepare_view($entity_type, array($entity->id => $entity));
+    $entity->content += field_attach_view($entity_type, $entity, $view_mode);
+    $entity->content['id'] = array(
+        '#type' => 'item',
+        '#title' => t('id'),
+        '#markup' => $entity->id,
+    );
+
+    $entity->content['ticket_id'] = array(
+        '#type' => 'item',
+        '#title' => t('Ticket ID'),
+        '#value' => $entity->ticket_id,
+    );
+    
+    $entity->content['order_id'] = array(
+        '#type' => 'item',
+        '#title' => t('Order ID'),
+        '#value' => $entity->order_id,
+    );
+    
+    $entity->content['entree_id'] = array(
+        '#type' => 'item',
+        '#title' => t('Entree ID'),
+        '#value' => $entity->entree_id,
+    );
+    
+    $entity->content['dietary_text'] = array(
+        '#type' => 'item',
+        '#title' => t('Dietary Text'),
+        '#value' => $entity->dietary_text,
+    );
+    global $language;
+    $langcode = $language->language;
+    module_invoke_all('entity_view', $entity, $entity_type, $view_mode, $langcode);
+    //drupal_alter(array('viewxx', 'entity_view'), $entity->content, $entity_type);
+    return $entity->content;
+}
+
+function ticketorderentrees_item_edit($ticketorderentrees) {
+    drupal_set_title(t('<em>Edit Ticket Order Entrees </em> @title', array('@title' =>
+        '')), PASS_THROUGH);
+    return drupal_get_form('ticketorderentrees_add_form', $ticketorderentrees);
+}
+
+
+
+function ticketorderentrees_field_extra_fields() {
+    $form_elements['id'] = array(
+        'label' => t('Auto ID'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+    
+    $display_elements['id'] = array(
+        'label' => t('Auto ID'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+
+    $form_elements['ticket_id'] = array(
+        'label' => t('Ticket ID'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+
+    $display_elements['ticket_id'] = array(
+        'label' => t('Ticket ID'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+    $form_elements['order_id'] = array(
+        'label' => t('Order ID'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+
+    $display_elements['order_id'] = array(
+        'label' => t('Order ID'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+    
+    $form_elements['entree_id'] = array(
+        'label' => t('Entree ID'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+
+    $display_elements['entree_id'] = array(
+        'label' => t('Entree ID'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+    
+    
+    $form_elements['dietary_text'] = array(
+        'label' => t('Dietary Text'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+
+    $display_elements['dietary_text'] = array(
+        'label' => t('Dietary Text'),
+        'description' => t('Text'),
+        'weight' => -5,
+    );
+
+
+// Since we have only one bundle type, we'll just provide the extra_fields
+// for it here.
+    $extra_fields['ticketorderentrees']['ticketorderentrees_bundle']['form'] = $form_elements;
+    $extra_fields['ticketorderentrees']['ticketorderentrees_bundle']['display'] = $display_elements;
+    return $extra_fields;
+}
+
+
+
+function ticketorderentrees_save(&$ticketorderentrees) {
+    return entity_get_controller('ticketorderentrees')->save($ticketorderentrees);
+}
+
+function ticketorderentrees_delete($id) {
+    return entity_get_controller('ticketorderentrees')->delete($id);
+}
+
+
+
+
+
+
+function ticketorderentrees_list_view() {
+    $output = '';
+    $header = array(
+        array('data' => 'Id', 'field' => 'id'),
+        array('data' => 'Ticket ID', 'field' => 'ticket_id'),
+        array('data' => 'Order ID'),
+        array('data' => 'Entree ID'),
+        array('data' => 'Dietary Text'),
+        array('data' => 'Actions'),
+    );
+    if (isset($_GET['sort']) && isset($_GET['order'])) {
+        if ($_GET['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET['order']) {
+            case 'Id':
+                $order = 'id';
+                break;
+            case 'Ticket ID':
+                $order = 'ticket_id';
+                break;
+        }
+    } else {
+        $sort = 'ASC';
+        $order = 'id';
+    }
+
+
+    $query = db_select("ticketorderentrees", "n");
+    $query->fields('n', array('id', 'ticket_id', 'order_id', 'entree_id','dietary_text'));
+    $query->orderBy($order, $sort);
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
+    $result = $query->execute()->fetchAll();
+
+    //var_dump($result[0]->ticket_id);
+    //exit();
+
+    global $base_url;
+    $rows = array();
+    if (count($result) > 0) {
+        for ($i = 0; $i < count($result); $i++) {
+            $rows[] = array(
+                $result[$i]->id,
+                $result[$i]->ticket_id,
+                $result[$i]->order_id,
+                $result[$i]->entree_id,
+                $result[$i]->dietary_text,
+             
+                '<a href="' . $base_url . '/ticketorderentrees/' . $result[$i]->id . '/edit">Edit |</a>
+                <a href="' . $base_url . '/ticketorderentrees/' . $result[$i]->id . '/delete">Delete</a>'
+            );
+        }
+    }
+
+    $output .= '<div class="">';
+    $output .= '<div class="">';
+
+    $output .= '</div>';
+    $output .= theme_table(
+                    array(
+                        'header' => $header,
+                        'rows' => $rows,
+                        'attributes' => array('class' => array('')),
+                        'sticky' => true,
+                        'caption' => '',
+                        'colgroups' => array(),
+                        'empty' => t("No Records!"),
+                    )
+            ) . theme('pager');
+
+    $output .= '</div>';
+
+    return $output;
+}

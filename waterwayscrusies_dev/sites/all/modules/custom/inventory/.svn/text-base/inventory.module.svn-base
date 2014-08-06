@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function inventory_menu() {
+  $items = array();
+  $items['inventory'] = array(
+      'title' => 'Inventory',
+      'page callback' => 'inventory_table',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+function inventory_theme() {
+    $items['inventory'] = array(
+        'template' => 'inventory',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+/**
+ * This is the function which is used
+ * 
+ * 
+ */
+function inventory_table() {
+    
+  try {
+    
+    global $user;
+    //get the product load 
+    return theme('inventory');
+    
+  } catch (Exception $ex) {
+      
+    drupal_json_output('The exception ' . $ex);
+    
+  }
+  
+}
+
+function template_preprocess_inventory(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'inventory') . '/inventory.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+

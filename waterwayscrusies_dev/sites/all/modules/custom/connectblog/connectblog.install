@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * @file
+ * Install for a basic entity - need to create the base table for our entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * The minimum information for the entity to work is an id and an entity name.
+ */
+
+/**
+ * Implements hook_schema().
+ *
+ * @ingroup coupon
+ */
+function connectblog_schema() {
+    $schema = array();
+
+    // The name of the table can be any name we choose. However, namespacing the
+    // table with the module name is best practice.
+    $schema['connectblog'] = array(
+        'description' => 'The base table for our connectblog.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the  connectblog.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'post_notify' => array(
+                'description' => 'Type',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+            
+            
+            'subscription_user_id' => array(
+                'description' => 'subscription user Id',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+          
+         
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+   
+    return $schema;
+}
+

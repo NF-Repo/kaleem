@@ -1,0 +1,179 @@
+
+/* addEventForm page styles */
+
+.addEventForm{
+    width: 1000px;
+    height: auto;
+    margin: 0px auto;
+    padding: 50px 0px;
+}
+
+.addEventForm .addEventTitlelable .form-item label:first-child{
+    float: left;
+    width: 490px;
+    text-align: right;
+    height: auto;
+    line-height: 30px;
+    padding-right: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0px;
+}
+
+.addEventForm .addEventWeekly .eventWeeksWrapper{
+    width: 100%;
+    height: auto;
+}
+
+.addEventForm .addEventWeekly label{
+    float: left;
+    width: 490px;
+    height: auto;
+    line-height: 30px;
+    padding-right: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0px;
+    text-align: right;
+}
+
+.addEventForm .addEventWeekly .eventWeeksWrapper label{
+    width: 45px;
+    height: auto;
+    text-align: center;
+    padding-right: 0px;
+}
+
+.addEventForm .addEventWeekly .addEventWeek{
+    float: left;
+    width: 40px;
+    text-align: center;
+    height: auto;
+    line-height: 30px;
+    padding-right: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0 0 10px;
+}
+
+.addEventForm .addEventWeekly .addEventWeek input{
+    margin: 0 -3px 0 0;
+}
+
+.addEventForm .addEventWeekly .addEventWeek .form-item{
+    margin-top: 0px;
+}
+
+.addEventForm .addEventRadios .form-item{
+    width: 15%;
+    height: auto;
+    float: left;
+    margin-bottom: 1em;
+    margin-top: 0.2em;
+}
+
+.addEventForm .submitHolder{
+    width: 560px;
+    height: auto;
+    text-align: right;
+}
+
+.wwctable{
+    border-radius: 0px;
+    border: 1px solid #DFCEB6;
+    background: #FFF;
+}
+
+.wwctable tr.even, .wwctable tr.odd{
+    background-color: #FFF;
+}
+
+.wwctable thead th{
+    border: 1px solid #DFCEB6;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.wwctable tbody tr td{
+    border: 1px solid #DFCEB6;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.wwctable tbody tr td.active{
+    background-color: #F9F9F9;
+}
+
+.wwctable thead th a{
+    color: #333;
+}
+
+.eventListTable{
+    width: 1020px !important;
+    margin: 0px auto;
+}
+
+.eventRecordsWrapper{
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+
+.cruiseEventSearchWrapper{
+    width: 1020px;
+    margin: 0px auto;
+    height: auto;
+}
+
+.cruiseEventSearchWrapper .cruiseEventSearchLable .form-item label{
+    float: left;
+    width: 150px;
+    text-align: right;
+    height: auto;
+    line-height: 30px;
+    padding-right: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0px;
+}
+
+#cruise-eventsearch-form > div{
+    float: right;
+}
+
+.cruiseEventSearchWrapper .cruiseEventSearchfield{
+    float: left;
+    display: inline;
+}
+
+.cruiseEventSearchWrapper .cruiseEventSearchfield .cruiseEventSearchLable{
+    width: 120px;
+}
+
+.cruiseEventSearchWrapper .cruiseEventSearchfield .cruiseEventSearchButton{
+    height: 30px;
+    margin-bottom: 1em;
+    margin-left: 5px;
+    margin-top: 1.1em;
+    width: 100px;
+}
+
+.cruiseEventSearchWrapper .cruiseEventSearchfield label{
+    float: left;
+    line-height: 30px;
+    padding-right: 10px;
+    padding-left: 25px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+
+.eventSelecteDate{
+    width:70px !important;
+    display:inline !important;
+}

@@ -1,0 +1,6 @@
+; $Id$
+name = Dining Cruises
+description = "Dinning Cruises Category Page"
+core = 7.x
+version = VERSION
+package = WWC

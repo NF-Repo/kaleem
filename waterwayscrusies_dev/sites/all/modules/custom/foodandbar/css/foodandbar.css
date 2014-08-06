@@ -1,0 +1,471 @@
+#content{
+    display: block  !important;
+}
+
+#menu
+{
+     position: absolute !important;
+}
+
+.menu-container{
+    padding-bottom:5%;
+}
+
+.foodandbarlist{
+    list-style-type: none;
+    margin-top: 10px;
+}
+.foodandbar-details{
+    width:73% !important;
+}
+.cruiseDetailinfo .detailBackLink{
+    margin-top:5%!important;
+}
+
+
+.request-quote .sunsetLinePadding {
+    width: 27% !important;
+}
+
+.request-quote .span6 {
+    width:40% !important;
+}
+/*.foodandbarlist li {
+    width: 241px;
+    float: left;
+    margin: 1%;
+}*/
+/*.sliderBoxover{
+    width: 220px !Important;
+    height: 220px !Important;
+}
+.sliderBoxout, .sliderBoxover {
+    margin: 0 !important;
+}
+.sliderBoxInner{
+    width: 220px !Important;
+    height: auto !Important;
+    margin-left:0 !important;
+}
+.sliderBoxover .sliderBox-first-inner{
+    padding-top: 16%;
+    font-size: 16.34px;
+}*/
+
+.eventTitle{
+    font-size: 46px;
+    font-family: georgia;
+    color: #00529b;
+    line-height: 60px;
+    font-weight: normal;
+    padding-left: 0%;
+}
+
+.menuTitle {
+    font-size: 46px;
+    font-family: georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 3%;
+    margin-top: 5%;
+}
+
+.detailBackLink{
+    padding: 10px 0;
+}
+
+.menuDesc {
+    font-size: 15px;
+    font-family: georgia;
+    color: #454444;
+    margin-bottom: 5%;
+    margin-top: 4%;
+}
+.request-quote{
+    margin-top:8%;
+}
+.contentDetail #rightsliderImages img{
+    height: 530px;
+    width:100%;
+}
+hr{
+    border-top:1px solid #bc9b6a !important;
+    border-bottom:none !important;
+}
+table {
+    width:100%;
+    border-collapse: separate !important;
+    border-spacing: 35px 10px !important;
+}
+table.ui-datepicker-calendar{
+	border-spacing: 0px !important;
+}
+tbody{
+    border:none;
+}
+th{
+    border:none;
+}
+.menu-header{
+    margin:0 3%;
+}
+.foodmenuItem {
+    float: left;
+}
+.itemImgText{
+    width:90%;
+}
+.foodmenuItem .menuItemTitle {
+    font-size: 25px;
+    line-height: 25px;
+    color: #454444;
+    font-weight: 600;
+    margin-bottom: 0px;
+    text-transform: uppercase;
+    width: 75%;
+}
+.title {
+    font-family: georgia;
+    font-size: 29px;
+    line-height: 30px;
+    font-weight: 600;
+    color: #454444;
+}
+
+
+.foodSelectionMenu li {
+    /*margin-right: 0.5%;*/
+    padding-left: 1%;
+}
+.weddingmenuItem img {
+    float: left;
+    width: auto;
+}
+.weddingmenuItem {
+    float: left;
+    margin-top: 20%;
+}
+
+#upArrow {
+    bottom: 3%;
+    cursor: pointer;
+    left: 52%;
+    margin: 30px 0;
+    position: relative;
+    width: 100px;
+    z-index: 1;
+}
+
+.foodSelectionMenu .weddingmenuItem .menuItemTitle {
+    color: #454444;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 24px;
+    margin-bottom: 0;
+    text-transform: uppercase;
+    width: 75%;
+}
+
+
+.weddingmenuItem .itemImgText {
+    float: left;
+    padding-left: 3%;
+    width: 61%;
+}
+
+.foodSelectionMenu {
+    width: 70%;
+    padding-top: 8%;
+    padding-bottom: 8%;
+    margin: auto;
+}
+.foodSelectionMenu .title a {
+    font-family: georgia;
+    font-size: 15px;
+    font-weight: 600;
+    color: #00529b;
+    text-decoration: none;
+}
+.foodSelectionMenu .title a:hover{
+    color: #133659;
+}
+.foodmenuItem img {
+    width: auto;
+    float: left;
+}
+.foodSelection .bx-wrapper .bx-prev {
+    top: 35% !important;
+    left: -5% !important;
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+.foodSelection .bx-wrapper .bx-next {
+    top: 35% !important;
+    right: -5% !important;
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+/* foodmenu css start here */
+.foodSelectionMenu {
+    width: 70%;
+    padding-top: 5%;
+    padding-bottom: 8%;
+    margin: auto;
+}
+.foodSelectionMenu .title
+{
+    font-family: georgia;
+    font-size: 28px;
+    line-height: 30px;
+    font-weight: 600;
+    color: #454444;
+    padding-left:1%;
+}
+.foodSelectionMenu .title a {
+    font-family: georgia;
+    font-size: 15px;
+    font-weight: 600;
+    color: #00529b;
+    text-decoration: none;
+}
+
+.foodmenuItem{
+    float: left;
+    margin-top: 20%;
+    /*    margin-bottom: 20%;*/
+}
+.foodSelectionMenu .foodmenuItem .menuItemTitle
+{
+    font-size: 22px;
+    line-height: 24px;
+    color: #454444;
+    font-weight: 600;
+    margin-bottom: 0px;
+    text-transform: uppercase;
+    width: 75%;
+}
+.foodmenuItem .itemImgText {
+    width: 55%;
+    float: left;
+    padding-left: 3%;
+}
+
+.foodmenuItem img {
+    width: auto;
+    float: left;
+}
+.foodSelection .bx-wrapper{
+    max-width: 100% !important;
+}
+
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+    .foodandbar-details{
+        width: 82.9% !important;
+    }
+    .request-quote .sunsetLinePadding{
+        width: 25% !important;
+
+    }
+    .contentbox-inner {
+        width: 93% !important;
+    }
+
+    .request-quote .span6 {
+        width: 38% !important;
+    }
+}
+
+@media (max-width: 979px) {
+    .contentDetail .span6{
+        float: none !important;
+        width: 100% !important;
+        margin-left: 0px !important;
+    }
+    #content{
+    overflow:hidden;
+}
+    .foodandbar-details{
+        width:100% !important;
+    }
+    .foodSelection .bx-wrapper .bx-next {
+        left: 90% !important;
+    }
+    .foodSelection .bx-wrapper .bx-prev {
+        left: -10% !important;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span10 {
+        width: 100%;
+        margin-left: 0px;
+    }
+    .contentDetail #rightsliderImages img{
+        height:auto !important;
+    }
+    .contentDetail {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span2 {
+        display: none;
+    }
+    .menuTitle,.menuDesc{
+        margin-left:3%;
+        margin-top: 3%;
+    }
+    .request-quote .left-line-margin{
+      width: 12% !important;
+margin-left: 23% !important;
+    }
+    .request-quote .right-line-margin{
+        width:12% !important;
+    }
+    .request-quote .line{
+        margin-top: 14% !important;
+    }
+    .request-quote{
+        margin-bottom:5%;
+    }
+    .request-quote .span6 {
+        float: left !important;
+        width: 24% !important;
+        margin-left: 3% !important;
+    }
+    .foodSelectionMenu .bx-controls-direction a{
+        opacity:1;
+        transition: opacity;
+        -moz-transition: opacity;
+        -webkit-transition: opacity;
+    }
+
+}
+@media screen and (max-width: 767px) { 
+    .contentDetail {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+
+    .foodandbar-details{
+        width:100% !important;
+    }
+    .request-quote {
+        margin-bottom: 5% !important;
+    }
+    .request-quote .left-line-margin{
+        width:12% !important;
+        margin-left: 20% !important;
+    }
+    .request-quote .right-line-margin{
+        width:12% !important;
+    }
+    .request-quote .span3{
+        float:left !important; 
+    }
+    .request-quote .span6{
+        float:left !important; 
+        width:35% !important;
+        margin-left: 1% !important;
+    }
+
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr { 
+        display: block; 
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr { border: 1px solid #ccc; }
+
+    td { 
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%; 
+    }
+
+    td:before { 
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+    }
+
+    .foodSelectionMenu .bx-controls .bx-controls-direction{
+        display: block !important;
+    }
+    .foodSelectionMenu .bx-wrapper .bx-controls-direction a {
+        display: block !important;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .request-quote .left-line-margin{
+        width:20% !important;
+        margin-left:3% !important;
+    }
+    .request-quote .right-line-margin{
+        width:20% !important;
+    }
+    .request-quote .span4{
+        width:35% !important;
+        float:left !important;
+    }
+    .request-quote .span6 {
+        float: left !important;
+        width: 52% !important;
+    }
+
+    .foodSelectionMenu .bx-controls .bx-controls-direction{
+        display: block !important;
+    }
+    .foodSelectionMenu .bx-wrapper .bx-controls-direction a {
+        display: block !important;
+    }
+
+}
+
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+.foodSelectionMenu {
+width: 95%;
+padding-top: 5%;
+padding-bottom: 8%;
+margin: auto;
+}
+}
+#foodSelectionMenu li{
+float: left;
+list-style: none;
+position: relative;
+width: 300px;
+min-height:200px;
+}
+
+/*.foodSelectionMenu {
+margin-left:13%;
+}*/
+@media screen and (min-width: 769px) { 
+
+    .bx-viewport{
+    height:100% !important;
+}
+
+}
+

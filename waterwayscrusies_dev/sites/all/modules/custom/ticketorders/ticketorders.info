@@ -1,0 +1,9 @@
+name = Ticket Orders
+core = 7.x
+description = Storing Cruise Booking Ticket Orders
+files[] = ticketorders.controller.inc
+files[] = ticketorders.module
+files[] = ticketorders.form.inc
+files[] = ticketorders.install
+;Date 24Oct2013
+

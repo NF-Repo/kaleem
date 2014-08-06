@@ -1,0 +1,1366 @@
+<?php
+
+include('lib/CheckfrontAPI.php');
+require_once('Checkfront.php');
+
+//include('Cart.php');
+/**
+ * Implements hook_menu().
+ */
+function checkfrontapi_menu() {
+    $items = array();
+    $items['checkfrontapi'] = array(
+        'title' => 'CheckFront API',
+        'page callback' => 'checkfrontapi_json',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+/* * *
+ * Description::
+ * Generating the the boking form based on booking date and item assigned for the 
+ * booking process.The Item details is getting from the checkfornt system.
+ * Getting Form build for an Item using 
+ * booking data and item Id
+ * @param bookingdate,ItemId
+ * return form
+ * 
+ * Inputformats::
+ * date::'2013-08-23',Itemid::11
+ * 
+ * 
+ */
+
+//getoption fileteration
+
+function getOptionPrice($option = array()) {
+    foreach ($option as $optionprice) {
+        /**
+         * 
+         * public 'nid' => string '73' (length=2)
+          public 'oid' => string '3' (length=1)
+          public 'cost' => string '0.00000' (length=7)
+          public 'price' => string '69.00000' (length=8)
+          public 'weight' => string '0' (length=1)
+          public 'ordering' => string '0' (length=1)
+          public 'name' => string 'General' (length=7)
+          public 'aid' => string '2' (length=1)
+         */
+        return $optionprice;
+    }
+}
+
+function getOrderWidgetupdate() {
+    //Load the product information
+}
+
+function buildTicketsform($date, $itemId, $selectedTicketsArrayOptions) {
+
+    if (isset($selectedTicketsArrayOptions)) {
+
+
+        $selectedTicketsArray = $selectedTicketsArrayOptions['selectedTicketsArray'];
+        $specialinstructions = $selectedTicketsArrayOptions['specialinstructions'];
+        $additionalcomments = $selectedTicketsArrayOptions['additionalcomments'];
+    }
+
+    try {
+
+
+
+        /**
+         * Using the Booking Cruise Item Id (product NodeId)
+         * getting the attributtes options using node_load hook 
+         * function
+         * 
+         * 
+         * 
+         * 
+         */
+        $productid = $itemId; //replace with arugement To Do Task
+        $product_options = loadProductattributeoptions($productid);
+//  foreach ($product_options as $value) {
+//    var_dump(getOptionPrice($value['options']));
+//  }
+////  drupal_json_output($product_options);
+//  exit();
+//  
+//  $cruisesitems=getItemDetailsByItemId($date,$itemId);
+
+
+
+        /**
+         * creating the row fluid and dividng it two parts
+         * 
+         * 
+         */
+        $form['stepone'] = array(
+            '#type' => 'fieldset',
+            '#prefix' => '<div class="row-fluid">',
+            '#suffix' => '</div>',
+            '#title' => '',
+        );
+
+        $form['stepone']['TICKETS'] = array(
+            '#type' => 'fieldset',
+            '#prefix' => '<div class="span7">',
+            '#suffix' => '</div>',
+//    '#weight' =>1,
+            '#description' => '<div class="bookingSubTitle">
+Advanced purchase required on all dining cruises
+</div>
+<div class="purchasecontent">
+Select the number of tickets you would like to purchase. To purchase tickets for groups of eight or more guests, to reserve an entire deck for a private event, or to book a private yacht charter, go to
+</div>
+<div class="groupresButton"><a href="#myModalrequest" role="button" data-toggle="modal"><b>GROUP RESERVATIONS</b></a></div>'
+        );
+
+        $ticketsoutput = getPrintOrderWidget('TICKETS');
+
+        $form['stepone']['TICKETSORDERWIDGET'] = array(
+            '#type' => 'fieldset',
+            '#prefix' => '<div class="span5">',
+            '#suffix' => '</div>',
+            '#value' => $ticketsoutput,
+//    '#weight'=>20
+        );
+
+
+//Form fields of parent ['stepone']['TICKETS'] and span7
+
+
+        /*
+         * satya
+         * $selectedTicketsArray holds 0 1 2 3 4 5 6 7 respective 
+         * We highlight these for back operation
+         */
+
+        foreach ($product_options as $ticket) {
+            $optionprice = getOptionPrice($ticket['options']);
+            $amountFormattedString = number_format($optionprice->price, 2);
+            $amtArray = explode('.', $amountFormattedString);
+            $amtWholeNumber = 0;
+            $amtDecimalNumber = 0;
+            if (isset($amtArray)) {
+                $amtWholeNumber = $amtArray[0];
+                $amtDecimalNumber = $amtArray[1];
+            }
+            $chargeamt = '$' . $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+//            $ticketlabel = $ticket['name'] . ' ' . uc_currency_format($optionprice->price);
+            $ticketlabel = $ticket['name'] . ' ' . $chargeamt;
+            $form['stepone']['TICKETS']['attr-' . $ticket['aid']] = array(
+                '#type' => 'select',
+                '#prefix' => '<div class="bookfield">',
+                '#suffix' => '</div>',
+                '#title' => t($ticketlabel), //later we need to change this one as dynamic
+                '#options' => array(
+                    0 => 0, 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7
+                ),
+                '#default_value' => isset($selectedTicketsArray[$ticket['aid']]) ? $selectedTicketsArray[$ticket['aid']] : 0,
+                '#attributes' => array('class' => array('ticketpriceqty')),
+//    '#weight' =>2,
+            );
+
+            //Hidden field for knowing price for Entry selection
+            $form['stepone']['TICKETS']['price-' . $optionprice->oid] = array(
+                '#type' => 'hidden',
+                '#value' => number_format($optionprice->price, 2, '.', ''));
+
+            $form['stepone']['TICKETS']['priceattr-' . $ticket['aid']] = array(
+                '#type' => 'hidden',
+                '#value' => number_format($optionprice->price, 2, '.', ''));
+
+            //Hidden field implementation for storing itemID
+            $form['stepone']['TICKETS']['selecteditemid'] = array(
+                '#type' => 'hidden',
+                '#value' => $productid);
+
+            $form['stepone']['TICKETS']['cartsessionidvalue'] = array(
+                '#type' => 'hidden',
+                '#value' => $_SESSION['cruisecardsession'],
+                '#attributes' => array('id' => 'cruisecardsession')
+            );
+        }
+
+
+
+
+
+
+
+        $form['stepone']['TICKETS']['entry'] = array(
+            '#type' => 'fieldset',
+            '#prefix' => '<div class="entrywidget" id="entrywidget"><div id="entryContent" class="divTable">',
+            '#suffix' => '</div></div>',
+            '#title' => '',
+        );
+
+        $form['stepone']['TICKETS']['specialinstructions'] = array(
+            '#type' => 'checkboxes',
+            '#options' => drupal_map_assoc(array(
+                t('Limited Mobility (wheelchair, cane, etc.)'),
+                t('Food Allergy (seafood, peanuts, etc)'),
+                t('Would like to be seated with another party (specify below)')
+            )),
+            '#title' => t('<b>Let us know if you have any special instructions or concerns:</b>'),
+            '#default_value' => isset($specialinstructions) ? $specialinstructions : "",
+        );
+
+
+        $form['stepone']['TICKETS']['additionalcomments'] = array(
+            '#title' => t(''),
+            '#type' => 'textarea',
+            '#attributes' => array('placeholder' => t('Please explain, or provide additional comments:'), 'class' => array('textareaStyleMedium')),
+            '#default_value' => isset($additionalcomments) ? $additionalcomments : "",
+        );
+
+
+        $form['stepone']['TICKETS']['bookingdate'] = array(
+            '#type' => 'hidden',
+            '#value' => '2013-08-30'); //$inputbookingdata->date);
+
+
+        $form['TICKETS']['bookingdate'] = array(
+            '#type' => 'hidden',
+            '#value' => '2013-08-30'); //$inputbookingdata->date);
+
+        return $form;
+    } catch (Exception $exc) {
+        watchdog('Ticketsformbuilder Exception ' . $exc->getTraceAsString());
+    }
+}
+
+function getItemDetailsByItemId($date, $itemId) {
+
+
+
+//    $items=$Checkfront->get('item/9',array('category_id'=>3,'start_date'=>'2013-08-06','end_date'=>'2013-08-31'));
+
+    $queryarray = array('start_date' => $date, 'end_date' => $date);
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item/' . $itemId);
+    return $cruisesitems;
+}
+
+function buildformbyCategoryIdDup($enhancedinputs = null) {
+
+//    if(count($enhancedinputs)>0)
+//    {
+//      var_dump($enhancedinputs['75']['qty']);exit();
+//    }
+
+    $form['steptwo'] = array(
+        '#type' => 'fieldset',
+        '#prefix' => '<div class="row-fluid enhancementWrapper">',
+        '#suffix' => '</div>',
+        '#title' => '',
+    );
+
+    $form['steptwo']['ENHANCEMENTS'] = array(
+        '#type' => 'fieldset',
+        '#prefix' => '<div class="span7">',
+        '#suffix' => '</div>',
+//    '#weight' =>1,
+        '#description' => '<div class="bookingSubTitle">
+To enrich your cruising experience,include enhancements to your cruise
+</div>',
+    );
+
+    $enhancementsoutput = getPrintOrderWidget('ENHANCEMENTS');
+
+    $form['steptwo']['ENHANCEMENTSORDERWIDGET'] = array(
+        '#type' => 'fieldset',
+        '#prefix' => '<div class="span5">',
+        '#suffix' => '</div>',
+        '#description' => $enhancementsoutput,
+//    '#weight'=>20
+    );
+
+    $result = loadCatalogProducts();
+    
+    
+    
+    
+ 
+    /**
+     * Loading the Product Related Enhancements using 
+     * uc_product_enhancments section using for comparision and '
+     * only showing Product admin selected enhacnements only
+     * 
+     */
+//     $selectedproductEnhancments = getProductEnchancements($_SESSION['bookingInput']->itemid); //get the selected product id here
+   
+    //$selectedproductEnhancments=cruiseselectedEnhancments($_SESSION['bookingInput']->itemid);
+// $_SESSION['bookingInput']->templateid=12;
+  watchdog('templateid',$_SESSION['bookingInput']->templateid);
+    $selectedproductEnhancments=cruiseselectedEnhancments($_SESSION['bookingInput']->templateid);
+   
+    $i = 0;
+    foreach ($result as $productvalue) {
+
+        foreach ($productvalue as $key => $productdetails) {
+            if ($i == 0) {
+                $collapsed = FALSE; //By Default First one is in Opened Mode
+            } else {
+                $collapsed = TRUE; //Closed Mode
+            }
+
+            $ehancementsTitle=$key;
+            $key = str_replace(' ', '-', $key);
+//                     $titleoption=str_replace(' ', '-',$productform['title']);
+//                      $key=$key;
+//                     $titleoption=$productform['title'];
+
+
+            $form['steptwo']['ENHANCEMENTS'][$key] = array(
+                '#type' => 'fieldset',
+                '#title' => t($ehancementsTitle),
+                '#weight' => $i + 1,
+                '#collapsible' => TRUE,
+                '#collapsed' => $collapsed,
+                '#tree' => TRUE,
+                '#prefix' => '<div class="row-fluid groupmarginTop optionItemBorder"><div class="span12">',
+                '#suffix' => '</div></div>',
+            );
+
+
+            $rowfluidcount = 1;
+
+            foreach (array_chunk($productdetails, 2) as $optionsform) {
+
+
+//      $titleoption=$productform['title'];
+                $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount] = array(
+                    '#type' => 'markup',
+                    '#prefix' => '<div class="row-fluid">',
+                    '#suffix' => '</div>',
+                    '#title' => '',
+                );
+                
+                
+                foreach ($optionsform as $productform) {
+//                 	var_dump($productform);
+                    //checking the Enhancment productid are in selected arrays
+                    //Enhancments products are getting filtered based product selected enhancements
+                    $titleoption = str_replace(' ', '-', $productform['title']);
+                    
+//                    var_dump($productform['nid']);
+//                    echo 'test';
+//                    var_dump($selectedproductEnhancments);
+                    if (in_array($productform['nid'], $selectedproductEnhancments)) {
+                    
+                        $thumbhtml = '<div class="blogInner">
+                    <div class="blogTitle">
+                    <span>' . $productform['title'] . '</span>
+                    		<br/><span>'.$productform['caption'].'</span>
+                    		</div><img src="' . file_create_url($productform['enhancements_img_fid']) . '"></div>';
+
+//                    
+
+                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']] = array(
+                            '#type' => 'fieldset',
+                            '#prefix' => '<div class="optionItemWrapper span6">',
+                            '#suffix' => '</div>',
+                            '#title' => '',
+                        );
+
+
+                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']][$titleoption][$productform['nid']] = array(
+                            '#type' => 'fieldset',
+                            '#title' => '',
+                            '#description' => $thumbhtml,
+                            '#attributes' => array('class' => array('optionItemthumb'))
+                        );
+                        //option set one field
+//                    Window Options[1][options][71][WINDOW TABLE FOR TWO][item-71][qty]
+
+
+
+                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']][$titleoption]['item-' . $productform['nid']]['qty'] = array(
+                            '#type' => 'select',
+                            '#title' => uc_currency_format($productform['price']), //later we need to change this one as dynamic
+                            '#options' => array(
+                                0 => 0, 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7
+                            ),
+                            '#default_value' => (count($enhancedinputs) > 0) ? $enhancedinputs[$productform['nid']]['qty'] : '',
+                            "#empty_option" => t('- Select -'),
+                            '#prefix' => '<div class="optionQuantityWrapper">',
+                            '#suffix' => '</div>',
+                            '#attributes' => array('class' => array('selectFieldStyle selectFieldSmall'))
+                        );
+                        
+                        //laxmi check box adding
+                        
+//                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']][$titleoption]['item-' . $productform['nid']]['commentcheck'] = array(
+//                            '#type' =>'checkbox', 
+//                            '#title' => t('Send me a copy.'),
+//                           '#attributes' => array('id' => array('commentcheck'))
+//                            );
+//                        
+//                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']][$titleoption]['item-' . $productform['nid']]['addlink'] = array(
+//    '#markup' => '<a class="ctools-use-modal" href="modal_forms/nojs/popup/open">open popup</a>',
+//  );
+                        //adding checkbox
+                        
+                        
+
+
+                        //Hidden field for price section
+                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']][$titleoption]['item-' . $productform['nid']]['price'] = array(
+                            '#type' => 'hidden',
+                            '#value' => $productform['price']);
+                        //Name of Enhancement
+                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']][$titleoption]['item-' . $productform['nid']]['enhancementname'] = array(
+                            '#type' => 'hidden',
+                            '#value' => $productform['title']);
+
+
+                        //Enhancement Parent ProductId
+                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']][$titleoption]['item-' . $productform['nid']]['selectednode'] = array(
+                            '#type' => 'hidden',
+                            '#value' => 80);
+
+                        //Enhancement nodeId
+                        $form['steptwo']['ENHANCEMENTS'][$key][$rowfluidcount]['options'][$productform['nid']][$titleoption]['item-' . $productform['nid']]['enhacmentselectednode'] = array(
+                            '#type' => 'hidden',
+                            '#value' => $productform['nid']);
+                    }
+                }
+                $rowfluidcount++;
+            }//laxmi chunk for lop
+            $i++;
+        }
+    }
+    return $form;
+}
+
+//laxmi
+function buildformbyCategoryIdorg() {
+    $form = array();
+    $form['ENHANCEMENTS'] = array(
+        '#type' => 'fieldset',
+        '#prefix' => '<div class="row-fluid"><div class="span6">',
+        '#suffix' => '</div></div>',
+        '#title' => '',
+    );
+    $month = 8;
+    $year = 2013;
+    $categorylist = array(15, 11, 10, 9, 8, 7);
+    $categories = array(
+        7 => 'windowoptions',
+        8 => 'drinks',
+        9 => 'cakes',
+        10 => 'flowers',
+        11 => 'packages',
+        15 => 'flow');
+
+    foreach ($categorylist as $enhancementcat) {
+        $categoryname = $categories[$enhancementcat];
+        $categoryid = $enhancementcat;
+        if ($categoryname == 'windowoptions') {
+            $collapsed = FALSE;
+        } else {
+            $collapsed = TRUE;
+        }
+        $cuurentday = date('d', time());
+        $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+
+        $startdate = (date('Y-m-d', $first_minute));
+        $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+        $enddate = (date('Y-m-d', $last_minute));
+        $queryarray = array('category_id' => $categoryid, 'start_date' => $startdate, 'end_date' => $enddate);
+//    $queryarray=array('category_id'=>$categoryid);
+        $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item');
+        $imageurl = "https://lsnsoftinc.checkfront.com/media/M";
+        $details = array();
+        $results = array();
+        foreach ($cruisesitems['items'] as $itemlist) {
+//    $details[]=$itemlist;
+
+            $details['imageurl'] = $imageurl . $itemlist['image'][1]['src'] . '.jpg';
+            $details['name'] = $itemlist['name'];
+            $details['itemId'] = $itemlist['item_id'];
+            $details['price'] = $itemlist['rate']['summary']['title'];
+            $details['cateID'] = $categoryid;
+            $results[] = $details;
+        }
+
+        if (count($results) > 0) {
+            for ($i = 0; $i <= count($results); $i++) {
+                if ($i == 0) {
+                    $form['ENHANCEMENTS'][$categoryname] = array(
+                        '#type' => 'fieldset',
+                        '#title' => t($categoryname),
+                        '#weight' => 1,
+                        '#collapsible' => TRUE,
+                        '#collapsed' => $collapsed,
+                        '#tree' => TRUE,
+                    );
+                } else {
+                    $widget = 'widget' . $i;
+                    $form['ENHANCEMENTS'][$categoryname][$widget] = array(
+                        '#type' => 'fieldset',
+                        '#prefix' => '<div class="thumbscontainer">',
+                        '#suffix' => '</div>',
+                    );
+                }
+            }
+        }
+        $k = 0;
+        foreach ($results as $fieldvalue) {
+            $k++;
+
+            $kwdiget = 'widget' . $k++;
+            $thumb = 'thumb' . $k++;
+            $thumbhtml = '<div class="blogInner">
+            <div class="blogTitle">
+            <span>' . $fieldvalue['name'] . '</span></div><img src="' . $fieldvalue['imageurl'] . '"></div>';
+            $form['ENHANCEMENTS'][$categoryname][$kwdiget][$thumb] = array(
+                '#type' => 'fieldset',
+                '#prefix' => '<div class="headercontent span6">',
+                '#suffix' => '</div>',
+                '#title' => '',
+                '#value' => $thumbhtml,
+            );
+            //option set one field
+            $form['ENHANCEMENTS'][$categoryname][$kwdiget]['item-' . $fieldvalue['itemId']] = array(
+                '#type' => 'select',
+                '#title' => $fieldvalue['price'], //later we need to change this one as dynamic
+                '#options' => array(
+                    0 => 0, 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7
+                ),
+                '#default_value' => 0,
+            );
+        }
+    }
+
+
+
+    return $form;
+}
+
+/**
+ * Getting all Enhancement Category price and image details
+ * Right Now we are hardcoding the id's values later on we need to maintaing 
+ * thses categoriyid's into our wwc db system because there is no identification
+ * or sub-category system to identify the Enhancement system
+ * 
+ * 
+ * 
+ */
+function enhancementCategoriesDetails() {
+    $categories = array(7, 8, 9, 10, 11);
+    $results = array();
+    foreach ($categories as $cateId) {
+        $list = getcategoryItems(8, 2013, $cateId);
+        $results[] = $list;
+    }
+    return $results;
+}
+
+/* * *
+ * Getting Category Items
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+function getcategoryItems($month, $year, $categoryid) {
+
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+
+    $startdate = (date('Y-m-d', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d', $last_minute));
+    $queryarray = array('category_id' => $categoryid, 'start_date' => $startdate, 'end_date' => $enddate);
+//    $queryarray=array('category_id'=>$categoryid);
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item');
+
+
+
+
+    $imageurl = "https://lsnsoftinc.checkfront.com/media/M";
+    $details = array();
+    $results = array();
+    foreach ($cruisesitems['items'] as $itemlist) {
+//    $details[]=$itemlist;
+        $details['imageurl'] = $imageurl . $itemlist['image'][1]['src'] . '.jpg';
+        $details['name'] = $itemlist['name'];
+        $details['price'] = $itemlist['rate']['summary']['title'];
+        $details['cateID'] = $categoryid;
+        $results[] = $details;
+    }
+    return $results;
+}
+
+//checkfront shopping cart system
+/**
+ * Getting Item Details with slip information
+ * @param type $month
+ * @param type $year
+ * @param type $itemId
+ * @return type
+ * 
+ * 
+ */
+function getEventsByItemIdSlip($queryarray, $itemId) {
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item/' . $itemId);
+    return $cruisesitems;
+}
+
+/**
+ * Creating the Booking Sessions which is generating the cardId and SessionId
+ * @param type $slips
+ * 
+ * 
+ * 
+ */
+function createBookingSession($slips = array()) {
+    //$session_id is getting form Checkfront Class
+    $queryarr = array('slip' => $slips, 'session_id' => $session_id);
+    $bookingsession = getCheckfrontApiresults($queryarr, 'post', 'booking/session');
+    //return $response['booking']['session']['id']
+    if (count($bookingsession) > 0) {
+        if ($bookingsession['request']['status'] == 'OK') {
+            /*
+             * array(6) { ["version"]=> string(3) "2.1" 
+             * ["host_id"]=> string(25) "lsnsoftinc.checkfront.com" 
+             * ["name"]=> string(12) "LSN SOFT INC" 
+             * ["request"]=> array(2) { 
+             * ["obj"]=> string(15) "booking/session" 
+             * ["status"]=> string(2) "OK" } 
+             * ["booking"]=> 
+             * array(3) { 
+             * ["session"]=> array(2) { 
+             * ["id"]=> string(26) "hs664lalsi2l5vodljdh6lpqn2" 
+             * ["slip"]=> array(1) { 
+             * [1]=> string(80) "13.20130814X1-general.1-senior60plus.0-military.0-child512.0-child4under.0-qty.0" }
+             *  } 
+             * ["item"]=> array(1) { [1]=> array(8) { ["name"]=> string(11) "Happy Hour*" 
+             * ["rate"]=> string(47) "General: 1 x 1 Day @ $44.00" ["start_date"]=> string(8) "20130814" 
+             * ["end_date"]=> string(8) "20130814" 
+             * ["slip"]=> string(80) "13.20130814X1-general.1-senior60plus.0-military.0-child512.0-child4under.0-qty.0" 
+             * ["date_desc"]=> string(16) "Wed Aug 14, 2013" 
+             * ["days"]=> array(1) { [20130814]=> 
+             * array(7) { 
+             * ["status"]=> string(1) "A" 
+             * ["price"]=> array(6) { 
+             * ["general"]=> string(5) "44.00" 
+             * ["senior60plus"]=> string(5) "39.00" 
+             * ["military"]=> string(5) "39.00" 
+             * ["child512"]=> string(4) "0.00" 
+             * ["child4under"]=> string(4) "0.00" 
+             * ["qty"]=> string(4) "0.00" } 
+             * ["dow"]=> string(1) "3" 
+             * ["stock"]=> array(3) { 
+             * ["T"]=> int(100) ["B"]=> int(15) 
+             * ["A"]=> int(85) } ["rate_id"]=> int(8) 
+             * ["rates"]=> array(6) { ["general"]=> array(1) 
+             * { [8]=> string(5) "44.00" } 
+             * ["senior60plus"]=> array(1) { 
+             * [8]=> string(5) "39.00" } 
+             * ["military"]=> array(1) { [8]=> string(5) "39.00" } 
+             * ["child512"]=> array(1) { [8]=> string(4) "0.00" } 
+             * ["child4under"]=> array(1) { [8]=> string(4) "0.00" } 
+             * ["qty"]=> array(1) { [8]=> string(4) "0.00" } } 
+             * ["r"]=> int(1) } } ["total"]=> string(5) "44.00" } } 
+             * ["summary"]=> array(6) { ["sub_total"]=> string(5) "44.00"
+             *  ["tax_total"]=> string(4) "0.00" ["discount"]=> int(0) 
+             * ["total"]=> string(5) "44.00" ["start_date"]=> string(8) "20130814" 
+             * ["end_date"]=> string(8) "20130814" } } 
+             * ["13.20130814X1-general.1-senior60plus.0-military.0-child512.0-child4under.0-qty.0"]=> 
+             * array(8) { ["start_date"]=> string(8) "20130814" 
+             * ["end_date"]=> string(8) "20130814" 
+             * ["start_time"]=> NULL ["end_time"]=> NULL 
+             * ["days"]=> string(1) "1" ["hours"]=> NULL 
+             * ["item_id"]=> string(2) "13" ["param"]=> 
+             * array(6) { ["general"]=> int(1) ["senior60plus"]=> int(0) 
+             * ["military"]=> int(0) ["child512"]=> int(0) ["child4under"]=> 
+             * int(0) ["qty"]=> int(0) } } } 
+             */
+
+            return $bookingsession['booking']['session']['id'];
+        } else {
+            return $bookingsession['request']['status'];
+        }
+    } else {
+        return 'results failed';
+    }
+    return $bookingsession;
+// $response = $this->Checkfront->post('booking/session',array('slip'=>$slips,'session_id'=>$session_id));
+//		$this->cart_id= $response['booking']['session']['id'];
+}
+
+/**
+ * Creating the Cart Session
+ * 
+ * 
+ * 
+ */
+function createBoking($formarray) {
+
+
+    //Required form fields
+//customer_name
+//customer_email
+//customer_phone
+//customer_address
+//customer_city
+//customer_country
+//customer_region
+//customer_postal_zip
+//note
+    //End of Required Form fields
+//  $formarray=array(
+//      'cart_id'=>$cartid,
+//      'create'=>'Book Now ',
+//      'customer_name'=>'apidevloperwaterways',
+//      'customer_email'=>'lakshminarsimha@lsnsoft.com',
+//      'customer_country'=>'US',
+//      'customer_region'=>"AK",
+//      'customer_postal_zip'=>'99556',
+//      'session_id'=>$cartid
+//
+//  );
+
+
+    $queryarr = array('session_id' => $formarray['session_id'], 'form' => $formarray);
+    $createbookikng = getCheckfrontApiresults($queryarr, 'post', 'booking/create');
+    return $createbookikng;
+
+//  if($response = $this->Checkfront->post('booking/create',
+//          array('session_id'=>$this->cart_id,
+//                    'form'=>$form))) {
+//			return $response;
+//		}
+}
+
+//end of checkfront sahopping car system
+
+/**
+ * 
+ * 
+ * 
+ * 
+ */
+function checkfrontapi_json() {
+
+    //
+    //Getting Connect Menu
+    //getting categories
+    //https://lsnsoftinc.checkfront.com/api/2/category?access_token=86dccc14046cf5402cea045f6b549d87
+    $res = getMonthlyEvents(8, 2013);
+
+    drupal_json_output($res);
+    exit();
+}
+
+function getCheckfrontApiresults($query, $method, $resoucestype) {
+    $credentials = array();
+    $credentials = entity_load('checkfrontadmin', $ids = FALSE, $conditions = array('id' => 1));
+
+    if (count($credentials) > 0) {
+
+        /* $data = json_decode(trim(file_get_contents($tmp_file)),true);
+          watchdog('storecheckfrontfunction', 'credentialsfound'); */
+        foreach ($credentials as $values) {
+            $credentials["host"] = $values->host;
+            $credentials["consumerKey"] = $values->consumerKey;
+            $credentials["consumerSecret"] = $values->consumerSecret;
+            $credentials["redirectUri"] = $values->redirectUri;
+            $credentials["refreshToken"] = $values->refreshToken;
+            $credentials["mode"] = $values->mode;
+        }
+
+        $Checkfront = new Checkfront(
+                array(
+            'host' => $credentials["host"],
+            'consumer_key' => $credentials["consumerKey"],
+            'consumer_secret' => $credentials["consumerSecret"],
+            'redirect_uri' => $credentials["redirectUri"],
+            'refresh_token' => $credentials["refreshToken"],
+            'mode' => $credentials["mode"],
+                )
+        );
+
+
+        if ($resoucestype != 'category' && $resoucestype != 'journal') {
+            $items = $Checkfront->$method($resoucestype, $query);
+            return $items;
+        } else if ($resoucestype == 'journal') {
+            $items = $Checkfront->$method('booking/journal/' . $query);
+            return $items;
+        } else {
+            $items = $Checkfront->$method($resoucestype);
+            return $items;
+        }
+    } else {
+        watchdog('Checkfront API', 'Credentials are missed');
+    }
+}
+
+function getEventsByItemId($month, $year, $itemId) {
+
+
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+
+    $startdate = (date('Y-m-d', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d', $last_minute));
+
+
+//    $items=$Checkfront->get('item/9',array('category_id'=>3,'start_date'=>'2013-08-06','end_date'=>'2013-08-31'));
+    $queryarray = array('start_date' => $startdate, 'end_date' => $enddate);
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item/' . $itemId);
+
+    foreach ($cruisesitems['item']['rate'] as $key => $dates) {
+        if ($key == 'dates') {
+            foreach ($dates as $datekey => $datevalue) {
+
+                $results['item_id'] = $cruisesitems['item']['item_id'];
+                $results['sku'] = $cruisesitems['item']['sku'];
+                $results['name'] = $cruisesitems['item']['name'];
+                $results['category_id'] = $cruisesitems['item']['category_id'];
+                $results['status'] = $datevalue['status'];
+                $results['stock'] = $datevalue['stock'];
+                $results['price'] = $datevalue['price'];
+                $results['dow'] = $datevalue['dow'];
+                $resultsset[$datekey] = $results;
+            }
+        }
+    }
+
+    $totalresults[] = $resultsset;
+//    drupal_json_output($totalresults);
+    return $totalresults;
+}
+
+function getEventsByItemIdinDetails($month, $year, $itemId) {
+
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+
+    $startdate = (date('Y-m-d', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d', $last_minute));
+
+//    $items=$Checkfront->get('item/9',array('category_id'=>3,'start_date'=>'2013-08-06','end_date'=>'2013-08-31'));
+    $queryarray = array('start_date' => $startdate, 'end_date' => $enddate);
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item/' . $itemId);
+
+    foreach ($cruisesitems['item']['rate'] as $key => $dates) {
+
+        if ($key == 'dates') {
+            foreach ($dates as $datekey => $datevalue) {
+
+                $results['item_id'] = $cruisesitems['item']['item_id'];
+                $results['sku'] = $cruisesitems['item']['sku'];
+                $results['name'] = $cruisesitems['item']['name'];
+                $results['category_id'] = $cruisesitems['item']['category_id'];
+                $results['status'] = $datevalue['status'];
+                $results['stock'] = $datevalue['stock'];
+                $results['price'] = $datevalue['price'];
+                $results['dow'] = $datevalue['dow'];
+                $resultsset[$datekey] = $results;
+                if ($datevalue['status'] == "U") {
+
+                    $da = strtotime($datekey);
+                    $datesvalues = date('Y/m/d', $da);
+                    $result[] = $datesvalues; //$da*1000;  
+                }
+            }
+        }
+    }
+
+    return $result;
+}
+
+function getEventsByItemIdandCategory($month, $year, $categoryId, $itemId) {
+
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+    $startdate = (date('Y-m-d', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d', $last_minute));
+
+
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'category');
+//    $items=$Checkfront->get('item/9',array('category_id'=>3,'start_date'=>'2013-08-06','end_date'=>'2013-08-31'));
+    $queryarray = array('category_id' => $categoryid, 'start_date' => $startdate, 'end_date' => $enddate);
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item/' . $itemId);
+
+
+
+    foreach ($cruisesitems['item'] as $key => $cruise) {
+
+        foreach ($cruisesitems['item']['rate'] as $key => $dates) {
+
+            if ($key == 'dates') {
+                foreach ($dates as $datekey => $datevalue) {
+
+                    $results['item_id'] = $cruisesitems['item']['item_id'];
+                    $results['sku'] = $cruisesitems['item']['sku'];
+                    $results['name'] = $cruisesitems['item']['name'];
+                    $results['category_id'] = $cruisesitems['item']['category_id'];
+                    $results['status'] = $datevalue['status'];
+                    $results['stock'] = $datevalue['stock'];
+                    $results['price'] = $datevalue['price'];
+                    $results['dow'] = $datevalue['dow'];
+                    $resultsset[$datekey] = $results;
+                }
+            }
+        }
+    }
+    $totalresults[] = $resultsset;
+//    drupal_json_output($totalresults);
+    return $totalresults;
+}
+
+//calendar categoryItems Eventscalendar
+function getCategoryItemsEventscalendar($month, $year, $portselect_type) {
+
+
+    $queryarray = array();
+    $ports = array(3, 4); //later need to update dynamically
+    $categories = getCheckfrontApiresults($queryarray, 'get', 'category');
+    $results = array();
+    $allresults = array();
+    foreach ($categories['category'] as $key => $category) {
+
+        if (in_array($category['category_id'], $ports)) {
+
+            //gettting items details here
+
+            $eventdates = getDateEventsBycategorywise($month, $year, $category['category_id']);
+            $results[$category['category_id']] = $eventdates;
+            //end of getting details here
+        }
+    }
+
+    /**
+     * Mergeing the array items for all
+     * which is using for filetration in the calendar
+     * filter option for all.
+     * 
+     * 
+     */
+    foreach ($results as $key => $allitem) {
+        $allresults = array_merge($allresults, $results[$key]);
+    }
+
+    $output = array('categroies' => $results, 'all' => $allresults);
+
+    if ($portselect_type == "all") {
+        return $allresults;
+    } else {
+        return $results[$portselect_type];
+    }
+}
+
+function getMonthlyEventsBycategory($month, $year, $categoryid) {
+
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+
+    $startdate = (date('Y-m-d', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d', $last_minute));
+    $queryarray = array('category_id' => $categoryid, 'start_date' => $startdate, 'end_date' => $enddate);
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item');
+
+
+    $results = array();
+    $totalresults = array();
+    $resultsset = array();
+    if (count($cruisesitems['items']) > 0) {
+        foreach ($cruisesitems['items'] as $cruise) {
+
+            foreach ($cruise['rate'] as $key => $dates) {
+
+                if ($key == 'dates') {
+                    foreach ($dates as $datekey => $datevalue) {
+
+                        $results['item_id'] = $cruise['item_id'];
+                        $results['sku'] = $cruise['sku'];
+                        $results['name'] = $cruise['name'];
+                        $results['category_id'] = $cruise['category_id'];
+                        $results['status'] = $datevalue['status'];
+                        $results['stock'] = $datevalue['stock'];
+                        $results['price'] = $datevalue['price'];
+                        $results['dow'] = $datevalue['dow'];
+                        $resultsset[$datekey] = $results;
+                    }
+                }
+            }
+
+            $totalresults[] = $resultsset;
+        }
+        /**
+         * Return out format 
+         * 
+         * array
+          20130801 =>
+          array
+          'item_id' => int 43
+          'sku' => string 'tl1001' (length=6)
+          'name' => string 'Two Lakes Lunch Cruise (HomePort)' (length=33)
+          'category_id' => int 2
+          'status' => string 'U' (length=1)
+         * 
+         */
+        return $totalresults;
+    } else {
+        return null;
+    }
+}
+
+//category wise filteration
+function getDateEventsBycategorywise($month, $year, $category) {
+    $dd = getMonthlyEventsBycategory($month, $year, $category);
+
+//  $keydate=20130727;
+    $results = array();
+    foreach ($dd as $eventsvalue) {
+        foreach ($eventsvalue as $key => $events) {
+
+            $eventsresult['status'] = $events['status'];
+            $eventsresult['stock'] = $events['stock']['A'];
+            $eventsresult['name'] = $events['name'];
+            $eventsresult['item_id'] = $events['item_id'];
+            $eventsresult['sku'] = $events['sku'];
+            $eventsresult['category_id'] = $events['category_id'];
+            $results[$key] = $eventsresult;
+        }
+
+        $totals[] = $results;
+    }
+
+    return $totals;
+}
+
+//Get Date Events
+function getDateEvents($month, $year) {
+//return $month;
+    $dd = getMonthlyEvents($month, $year);
+
+//  $keydate=20130727;
+    $results = array();
+    foreach ($dd as $eventsvalue) {
+        foreach ($eventsvalue as $key => $events) {
+
+            $eventsresult['status'] = $events['status'];
+            $eventsresult['stock'] = $events['stock']['A'];
+            $eventsresult['name'] = $events['name'];
+            $eventsresult['item_id'] = $events['item_id'];
+            $eventsresult['sku'] = $events['sku'];
+            $eventsresult['category_id'] = $events['category_id'];
+            $results[$key] = $eventsresult;
+        }
+
+        $totals[] = $results;
+    }
+
+    return $totals;
+}
+
+//Get Monthly Events
+function getMonthlyEvents($month, $year) {
+    $categories = array(4, 3); //category id's
+    $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+    $startdate = (date('Y-m-d', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d', $last_minute));
+
+
+
+    $queryarray = array('start_date' => $startdate, 'end_date' => $enddate);
+
+
+    $cruisesitems = getCheckfrontApiresults($queryarray, 'get', 'item');
+
+    $results = array();
+    $totalresults = array();
+    $resultsset = array();
+//    $cruisesitems = drupal_json_decode($cruisesitems->data);
+    if (count($cruisesitems['items']) > 0) {
+        foreach ($cruisesitems['items'] as $cruise) {
+
+            foreach ($cruise['rate'] as $key => $dates) {
+                if ($key == 'dates') {
+                    foreach ($dates as $datekey => $datevalue) {
+                        if (in_array($cruise['category_id'], $categories)) {
+                            $results['item_id'] = $cruise['item_id'];
+                            $results['sku'] = $cruise['sku'];
+                            $results['name'] = $cruise['name'];
+                            $results['category_id'] = $cruise['category_id'];
+                            $results['status'] = $datevalue['status'];
+                            $results['stock'] = $datevalue['stock'];
+                            $results['price'] = $datevalue['price'];
+                            $results['dow'] = $datevalue['dow'];
+                            $resultsset[$datekey] = $results;
+                        }
+                    }
+                }
+            }
+            if (count($resultsset) > 0)
+                $totalresults[] = $resultsset;
+            unset($resultsset);
+            unset($results);
+        }
+
+        /**
+         * Return out format 
+         * 
+         * array
+          20130801 =>
+          array
+          'item_id' => int 43
+          'sku' => string 'tl1001' (length=6)
+          'name' => string 'Two Lakes Lunch Cruise (HomePort)' (length=33)
+          'category_id' => int 2
+          'status' => string 'U' (length=1)
+         * 
+         */
+        return $totalresults;
+    }
+    else {
+        return null;
+    }
+}
+
+//ports detials
+
+
+
+function getCruseItemDetailsById($itemid) {
+
+    $waterwaystree = taxonomy_get_tree(4);
+    $categories = array();
+    $ports = array();
+    $cuiseitems = array();
+    foreach ($waterwaystree as $waterwaystree) {
+
+        if ($waterwaystree->parents[0] == 0) {
+            $categories[] = $waterwaystree;
+            $children = taxonomy_get_children($waterwaystree->tid);
+            $ports[] = $children;
+            foreach ($children as $value) {
+                $cruiseitemsdata = taxonomy_get_children($value->tid);
+                //looping the cruise items
+
+
+                foreach ($cruiseitemsdata as $cruisevalue) {
+                    $cuiseitems['tid'] = $cruisevalue->tid;
+                    $cuiseitems['name'] = $cruisevalue->name;
+                    $cuiseitems['description'] = $cruisevalue->description;
+
+
+                    foreach ($cruisevalue->field_cruiseitemid as $fieldsku) {
+                        $cuiseitems['cruiseitemid'] = $fieldsku[0]['value'];
+                    }
+
+//                    foreach ($cruisevalue->field_cruiseitemid as $fieldsku) {
+//                        $cuiseitems['cruiseitemid'] = $fieldsku[0]['value'];
+//                    }
+
+                    foreach ($cruisevalue->field_cruise_departure_time as $departuretime) {
+                        $cuiseitems['departuretime'] = $departuretime[0]['value'];
+                    }
+
+//                    foreach ($cruisevalue->field_cruisenodeid as $cruisenodeid) {
+                    $cuiseitems['cruisenodeid'] = $cuiseitems['tid'];
+//                    }
+                    foreach ($cruisevalue->field_categoryid as $categoryid) {
+                        $cuiseitems['portCategoryId'] = $categoryid[0]['value'];
+                    }
+                    foreach ($cruisevalue->field_portid as $fieldport) {
+                        $cuiseitems['portid'] = $fieldport[0]['value'];
+
+                        $protdetails = taxonomy_term_load($cuiseitems['portid']);
+
+
+
+
+                        $cuiseitems['portname'] = $protdetails->name;
+                        $cuiseitems['portdescription'] = $protdetails->description;
+                        $cuiseitems['portColor'] = isset($protdetails->field_port_color['und'][0]['jquery_colorpicker']) ? $protdetails->field_port_color['und'][0]['jquery_colorpicker'] : "";
+                        $cuiseitems['portAddress'] = isset($protdetails->field_address['und'][0]['value']) ? $protdetails->field_address['und'][0]['value'] : "";
+                        $cuiseitems['portState'] = isset($protdetails->field_state['und'][0]['value']) ? $protdetails->field_state['und'][0]['value'] : "";
+                        $cuiseitems['portCity'] = isset($protdetails->field_city['und'][0]['value']) ? $protdetails->field_city['und'][0]['value'] : "";
+                        $cuiseitems['portPostalCode'] = isset($protdetails->field_postal_code['und'][0]['value']) ? $protdetails->field_postal_code['und'][0]['value'] : "";
+                        $cuiseitems['portStreet'] = isset($protdetails->field_street['und'][0]['value']) ? $protdetails->field_street['und'][0]['value'] : "";
+                    }
+
+
+                    if ($itemid == $cuiseitems['cruiseitemid'])
+                        $totalitems[] = $cuiseitems;
+                    unset($cuiseitems);
+                }
+            }
+        }
+    }
+    if (count($totalitems) > 0)
+        return $totalitems[0];
+    else
+        return 'notfound';
+}
+
+function getPortinformationBYItemid($itemid) {
+
+//Getting Connect Menu
+    $waterwaystree = taxonomy_get_tree(5);
+    $protdetails = array();
+    $totalresult = array();
+
+
+    foreach ($waterwaystree as $waterwaystree) {
+
+        if ($waterwaystree->parents[0] == 0) {
+            $categories[] = $waterwaystree;
+            $children = taxonomy_get_children($waterwaystree->tid);
+            foreach ($children as $key => $portvalue) {
+                $portsitems = getArrayloop($portvalue->field_itemid);
+                if (isset($portsitems) && $portsitems != null) {
+                    $ports = explode(',', $portsitems);
+                    if (in_array($itemid, $ports)) {
+
+                        $protdetails['name'] = $portvalue->name;
+                        $protdetails['id'] = $portvalue->tid;
+                        $totalresult[] = $protdetails;
+                        unset($protdetails);
+                    }
+                }
+            }
+        }
+    }
+    return ($totalresult);
+}
+
+//getportswithcruise
+function getPortsWithcruises() {
+    $portstree = taxonomy_get_tree(5);
+    $categories = array();
+    $portsList = array();
+    $portsArray = array();
+    $portsByIdList = array();
+    $itemIdArray = array();
+    foreach ($portstree as $portstree) {
+        if ($portstree->parents[0] == 0) {
+            $category = $portstree->name;
+            $categoryId = $portstree->tid;
+            $children = taxonomy_get_children($portstree->tid);
+            $portsList = array();
+            $portsArray = array();
+            foreach ($children as $value) {
+
+                $portsList['id'] = $value->tid;
+                $portsList['name'] = $value->name;
+                $portsColorList = $value->field_port_color;
+
+                foreach ($value->field_categoryid as $category) {
+                    $portsList['cid'] = $category[0]['value'];
+                }
+                foreach ($portsColorList as $portsColor) {
+
+                    foreach ($portsColor as $portColor) {
+                        foreach ($portColor as $portColors) {
+                            $portsList['color'] = $portColors;
+                        }
+                    }
+                }
+                foreach ($value->field_port_short_description as $portShortDesc) {
+                    $portsList['shortDesc'] = $portShortDesc[0]['value'];
+                }
+                foreach ($value->field_port_title as $tittle) {
+                    $portsList['title'] = $tittle[0]['value'];
+                }
+                foreach ($value->field_city as $city) {
+                    $portsList['city'] = $city[0]['value'];
+                }
+                foreach ($value->field_state as $state) {
+                    $portsList['state'] = $state[0]['value'];
+                }
+                foreach ($value->field_street as $street) {
+                    $portsList['street'] = $street[0]['value'];
+                }
+
+                foreach ($value->field_location as $location) {
+                    $portsList['location'] = $location[0]['value'];
+                }
+
+                foreach ($value->field_postal_code as $pincode) {
+                    $portsList['postalCode'] = $pincode[0]['value'];
+                }
+                foreach ($value->field_port_image as $portimage) {
+                    $portsList['image'] = $portimage[0]['filename'];
+                }
+                foreach ($value->field_port_image as $direction) {
+                    $portsList['portImage'] = $direction[0]['filename'];
+                }
+                foreach ($value->field_itemid as $itemid) {
+
+                    if ($itemid[0]['value']) {
+                        $array = split('[,]', $itemid[0]['value']);
+                        foreach ($array as $key => $value) {
+                            $totalresult = getCruseItemDetailsById($value);
+                            $portsList['itemdetails'] = $totalresult;
+                            $itemIdArray[$value] = $portsList;
+                        }
+                    }
+                }
+                $portsByIdList[$portsList['id']] = $portsList;
+                $portsArray[] = $portsList;
+            }
+            $portsByIdList[$categoryId] = $portstree;
+            $portresults[$category] = $portsArray;
+            $results = array('byId' => $portsByIdList, 'ports' => $portresults, 'byItemId' => $itemIdArray);
+        }
+    }
+
+    return $itemIdArray;
+}
+
+//port apis
+//ports details
+
+/**
+ * Getting the Cruise Item Details based on checkfront ItemId
+ * and also getting the information port for selected cruise Item
+ * 
+ * 
+ * 
+ */
+function cruisedetailsWithportdetails($cruiseitemId) {
+    $resultsarray = array();
+    $query = new EntityFieldQuery();
+    $entities = $query->entityCondition('entity_type', 'taxonomy_term');
+    $query->entityCondition('bundle', 'waterwayscruises');
+    $query->fieldCondition('field_cruiseitemid', 'value', $cruiseitemId, '=');
+    $query->execute();
+
+
+    if (count($entities->ordered_results) > 0) {
+        foreach ($entities->ordered_results as $termresults) {
+            $loadtaxonomy = taxonomy_term_load($termresults->entity_id);
+
+            $resultsarray['cruisename'] = $loadtaxonomy->name;
+            //getting portinformation
+            $portid = getArrayloop($loadtaxonomy->field_portid);
+            $ports = taxonomy_term_load($portid);
+
+            $resultsarray['portname'] = $ports->name;
+            $departuretime = getArrayloop($loadtaxonomy->field_cruise_departure_time);
+            $returntime = getArrayloop($loadtaxonomy->field_cruise_return_time);
+            $resultsarray['departuretime'] = $departuretime;
+            $resultsarray['returntime'] = $returntime;
+        }
+    }
+
+    return $resultsarray;
+}

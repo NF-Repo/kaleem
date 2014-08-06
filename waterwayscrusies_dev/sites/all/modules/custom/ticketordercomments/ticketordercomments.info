@@ -1,0 +1,9 @@
+name = Ticket Order Comments
+description = Storing the User Order Comments in Booking Form
+core = 7.x
+files[] = ticketordercomments.controller.inc
+files[] = ticketordercomments.module
+files[] = ticketordercomments.form.inc
+files[] = ticketordercomments.install
+;Date 24Oct2013
+

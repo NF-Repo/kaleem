@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function ticketentrees_menu() {
+    $items = array();
+    $items['ticketentrees'] = array(
+        'title' => 'Brochure',
+        'page callback' => 'ticketentrees_page',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function ticketentrees_theme() {
+    $items['ticketentrees'] = array(
+        'template' => 'ticketentrees', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function ticketentrees_page() {
+	
+	
+	$ticketid = $_POST['ticketid']; //selected entree
+    $ticketentreeid = $_POST['ticketentreeid']; //atrributte id
+    $selectedticket = $_POST['selectedticket']; //selected ticket number ex:general1,genral2
+    $dietaryrestriction = $_POST['dietarytext']; //selected dietary text
+    $cartsession = $_POST['cruisecartsession'];
+    $eventid = $_POST['eventid'];
+    
+
+    if (!isset($cartsession)) {
+        drupal_json_output('No Session');
+    }
+
+    /*
+     * Delete the Records if the user choose (select) option
+     */
+    if ($ticketid == "") {
+        try {
+            $num_deleted = db_delete('ticketentrees')
+                    ->condition('cartsession', $cartsession)
+                    ->condition('selectedticket', $selectedticket)
+                    ->execute();
+        } catch (Exception $e) {
+            
+        }
+        $sucess = array('code' => 200, 'cartsession' => $cartsession);
+        drupal_json_output($sucess);
+        exit();
+    }
+
+
+
+//     $record = array(
+//         'aid' => $aid,
+//         'entreenode' => $entreenode,
+//         'dietaryrestriction' => $dietaryrestriction,
+//         'cartsession' => $cartsession,
+//         'selectedticket' => $selectedticket,
+//         'createdtime' => REQUEST_TIME,
+//     );
+
+    
+    $record = array(
+    		'ticketid' => $ticketid,
+    		'ticketentreeid' => $ticketentreeid,
+    		'eventid'=>$eventid,
+    		'dietaryrestriction' => $dietaryrestriction,
+    		'cartsession' => $cartsession,
+    		'selectedticket' => $selectedticket,
+    		'createdtime' => REQUEST_TIME,
+    );
+
+
+
+//    $record = array();
+//    $record['aid'] = $aid;
+//    $record['entreenode'] = $entreenode;
+//    $record['dietaryrestriction'] = $dietaryrestriction;
+//    $record['cartsession'] = $_SESSION['cruisecardsession'];
+//    $record['selectedticket'] = $selectedticket;
+//    $record['createdtime'] = REQUEST_TIME;
+
+    $query = db_select('ticketentrees', 'p');
+    $query->fields('p', array('id'));
+    $query->condition('cartsession', $cartsession, '=');
+    $query->condition('selectedticket', $selectedticket, '=');
+    $ticketentrees = $query->execute()->fetchObject();
+
+    if ($ticketentrees) {
+        $result = db_update('ticketentrees') // Table name no longer needs {}
+                ->fields($record)
+                ->condition('cartsession', $cartsession, '=')
+                ->condition('selectedticket', $selectedticket, '=')
+                ->execute();
+    } else {
+        $result = db_insert('ticketentrees') // Table name no longer needs {}
+                ->fields($record)
+                ->execute();
+    }
+
+    //  $result = drupal_write_record('ticketentrees', $record);
+
+    if ($result) {
+        $sucess = array('code' => 200, 'cartsession' => $cartsession);
+        drupal_json_output($sucess);
+        exit();
+    }
+}
+
+function template_preprocess_ticketentrees(&$variables) {
+//    drupal_add_css(drupal_get_path('module', 'ticketentrees') . '/ticketentrees.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+

@@ -1,0 +1,8 @@
+name =Credit Card Freezer
+core = 7.x
+description = Credit Card Freezer
+package=WWC
+
+files[] = creditcardfreezer.module
+files[] = creditcardfreezer.install
+

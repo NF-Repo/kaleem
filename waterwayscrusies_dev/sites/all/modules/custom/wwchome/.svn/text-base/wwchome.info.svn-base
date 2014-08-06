@@ -1,0 +1,6 @@
+; $Id$
+name = wwchome
+description = "Waterways Home Page"
+core = 7.x
+version = VERSION
+package = WWC

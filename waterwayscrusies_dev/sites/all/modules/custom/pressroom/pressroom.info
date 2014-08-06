@@ -1,0 +1,6 @@
+; $Id$
+name = Press Room
+description = "Press Room"
+core = 7.x
+version = VERSION
+package = WWC

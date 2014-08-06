@@ -1,0 +1,844 @@
+<?php
+
+
+/*
+ * Class Cruise
+ */
+class Fees {
+    public static function calculate_cruise_fee() {
+        $feeitems = CruiseFee::load_fee_items();
+        foreach ($feeitems as $feeitem) {
+            var_dump($feeitem);
+        }
+
+        exit();
+    }
+
+    public static function load_fee_items() {
+        $query = db_select('fees', 'c');
+        $query->fields('c', array());
+        $query->condition('active', 1);
+        $result = $query->execute();
+        return $result;
+    }
+
+    public static function get_ticket_feeids($ticketid) {
+        $query = db_select('tickets_fees', 'c');
+        $query->fields('c', array('feeid'));
+        $query->condition('ticket_id', $ticketid, '=');
+        $result = $query->execute()->fetchAll();
+
+        $arr = array();
+        foreach ($result as $feeObject) {
+            $arr[] = $feeObject->feeid;
+        }
+        return $arr;
+    }
+
+    public static function is_taxable_cruisefee_item($id) {
+        $result = false;
+        try {
+            $query = db_select('fees', 'c');
+            $query->fields('c', array('istaxable'));
+            $query->condition('id', $id, '=');
+            $result = $query->execute()->fetchField();
+
+            if ($result) {
+                $result = true;
+            }
+        } catch (Exception $e) {
+            
+        }
+
+        return $result;
+    }
+
+}
+
+
+/*
+ * This class will override the Cruise Fee Prices
+ */
+class CruiseFees{
+	public $id;
+	public $fee_id;
+	public $cruise_id;
+	//public $ticket_id;
+	public $cruisefee_price;
+	public $active;
+	
+	
+	public function setID($id){
+		$this->id=trim($id);
+	}
+	
+	public function setFeeId($fee_id){
+		$this->fee_id=$fee_id;
+	}
+	
+	
+	public function setCruiseTemplateId($cruise_template_id){
+		$this->cruise_id=$cruise_template_id;
+	}
+	
+	public function setPrice($cruisefee_price){
+		$this->cruisefee_price=$cruisefee_price;
+	}
+	
+	public function setStatus($active){
+		$this->active=$active;
+	}
+	
+	
+	//Deleting the fields
+	
+	//Getting the fee details by cruise template id
+	public static function getAllFeeItemsByTemplateId($cruiseid){
+		$query = db_select('fees', '');
+		$query->fields('tickets_fees', array('feeid'));
+		$query->fields('fees', array('type', '`value`', 'title'));
+		$query->distinct();
+		$query->innerJoin('tickets_fees', '', 'fees.id = tickets_fees.feeid');
+		$query->innerJoin('cruise_template_tickets', '', 'cruise_template_tickets.ticketid = tickets_fees.ticket_id');
+		$query->condition('cruise_template_tickets.cruisetemplateid', $cruiseid,'=');
+		$query->condition('cruise_template_tickets.activestatus', 1,'=');
+		$result = $query->execute()->fetchAll();
+		return $result;
+	}
+	
+	
+	public static function getCruiesFeePrice($cruise_id,$fee_id){
+	try{
+	        $result = db_select('cruise_fees', 'c')
+	        ->fields('c',array('cruisefee_price'))
+	        ->condition('cruise_id', $cruise_id, '=')
+	        ->condition('fee_id', $fee_id, '=')
+	        ->execute()->fetchField();
+	    }catch(Exception $e){
+	        	
+	    }
+	    return $result;
+	}
+	
+	
+	public static function getCruiesFeeStatus($cruise_id,$fee_id){
+		try{
+			$result = db_select('cruise_fees', 'c')
+			->fields('c',array('active'))
+			->condition('cruise_id', $cruise_id, '=')
+			->condition('fee_id', $fee_id, '=')
+			->execute()->fetchField();
+		}catch(Exception $e){
+	
+		}
+		return $result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//insertion
+	public function createCruiseFee(){
+		try{
+			
+			$query=db_insert('cruise_fees');
+			$query->fields(array(
+					'cruise_id'=>$this->cruise_id,
+					'cruisefee_price'=>$this->cruisefee_price,
+					'fee_id'=>$this->fee_id,
+					'active'=>$this->active,
+			));
+			$result=$query->execute();
+			
+			//var_dump($result); exit(); 
+		}catch(Exception $e){
+				watchdog('Error in cruisefeeupdate for insertion operation', $e);
+		}
+		
+	}
+	
+	
+	public static function deleteFeeItemsByCruiseTID($cruiseid){
+		try{
+			$num_deleted = db_delete('cruise_fees')
+			->condition('cruise_id', $cruiseid)
+			->execute();
+		}catch(Exception $e){
+			
+		}
+		
+	}
+}
+
+
+
+
+
+
+/**
+ * Implements hook_menu().
+ */
+function cruisefee_menu() {
+    $items = array();
+
+    $items ['cruisefee'] = array(
+        'title' => 'Fees',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('cruiselist_form_table_form'),
+        'access callback' => 'user_access',
+        'access arguments' => array('viewcruisefee')
+    );
+    $items ['cruisefee/add'] = array(
+        'title' => ' Add Fee',
+        'page callback' => 'add_cruisefee',
+        'access callback' => 'user_access',
+        'access arguments' => array('createcruisefee')
+    );
+
+    $items ['cruisefee/%/edit'] = array(
+        'title' => 'Edit Fee',
+        'page callback' => 'edit_cruisefee',
+        'access callback' => 'user_access',
+        'access arguments' => array('editcruisefee'),
+        'page arguments' => array(1)
+    );
+
+    $items [' cruisefee/%/delete'] = array(
+        'title' => 'Delete  cruisefee',
+        'page callback' => 'delete_ cruisefee',
+        'access callback' => 'user_access',
+        'access arguments' => array('deletecruisefee'),
+        'page arguments' => array(1)
+    );
+    return $items;
+}
+
+
+
+function cruisefee_theme() {
+    $items ['cruisefee'] = array(
+        'template' => 'cruisefee', // here comes your template name
+        'render element' => 'content'
+    );
+
+    $items ['cruiselist_form_table'] = array(
+        'render element' => 'form',
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function cruisefee_permission() {
+    return array(
+        'viewcruisefee' => array(
+            'title' => t('View   cruisefee')
+        ),
+        'editcruisefee' => array(
+            'title' => t('Edit  cruisefee')
+        ),
+        'createcruisefee' => array(
+            'title' => t('Create cruisefee')
+        ),
+        'deletecruisefee' => array(
+            'title' => t('Delete cruisefee')
+        )
+            ) ;
+}
+
+/**
+ * Theme list view
+ * 
+ * 
+ * 
+ */
+function cruisefee_list_form($form, &$form_state) {
+
+    $promolistview = array();
+    $query = db_select("fees", "d");
+    // Adding fields
+    $query->fields('d');
+    $result = $query->execute();
+
+    foreach ($result as $code) {
+        $promolistview[$code->id] = array(
+            $code->code,
+            $code->rate,
+            $code->type,
+            $code->validfrom . '/' . $code->validuntil,
+        );
+    }
+
+    $header = array(
+        t('Promo Code'),
+        t('Rate'),
+        t('Type'),
+        t('Start /End dates'),
+    );
+
+    $form['checkboxes'] = array(
+        '#type' => 'tableselect',
+        '#header' => $header,
+        '#options' => $promolistview,
+        '#empty' => 'No users were found.',
+        '#title' => t('Select')
+    );
+
+
+
+
+
+    $form ['actions'] = array(
+        '#type' => 'actions'
+    );
+
+    $form ['actions'] ['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save')
+    );
+
+    $form ['actions'] ['cancel'] = array(
+        '#type' => 'submit',
+        '#value' => t('Cancel'),
+        '#submit' => array('enhancementcategories_form_cancel'),
+        '#limit_validation_errors' => array(),
+    );
+    return $form;
+}
+
+function enhancementcategories_form_cancel($form, &$form_state) {
+    $url = 'cruisefee';
+    drupal_goto($url);
+}
+
+function cruisefee_list_form_submit($form, &$form_state) {
+    var_dump($form_state['values']);
+    exit();
+}
+
+function cruisefee_listview() {
+
+    return drupal_get_form('cruisefee_list_form');
+}
+
+/**
+ * 
+ * Create Discount  
+ * 
+ * 
+ * 
+ */
+function add_cruisefee() {
+    return drupal_get_form('cruisefee_form');
+}
+
+/**
+ * edit discount code
+ * 
+ * 
+ */
+function edit_cruisefee($id) {
+    return drupal_get_form('cruisefee_form', $id);
+    //get the cruise details 
+}
+
+function cruiselistview_form($form, &$form_state) {
+    $feeslistview = array();
+    $query = db_select("fees", "f");
+    // Adding fields
+    $query->fields('f');
+
+    $result = $query->execute();
+
+
+    foreach ($result as $code) {
+        $feeslistview[$code->id] = array(
+            $code->title,
+            $code->type,
+            $code->active,
+        );
+    }
+
+    $header = array(
+        t('Fee'),
+        t('Type'),
+        t('status'),
+    );
+
+    $form['checkboxes'] = array(
+        '#type' => 'tableselect',
+        '#header' => $header,
+        '#options' => $ticketfeeslist_array,
+        '#empty' => 'No users were found.',
+        '#title' => t('Select')
+    );
+
+
+
+    return $form;
+}
+
+/* * *
+ * 
+ * Adsd form implementation
+ * 
+ * 
+ * 
+ */
+
+function cruisefee_form($form, &$form_state, $id = null) {
+
+
+    $query = db_select("fees", "d");
+    // Adding fields
+    $query->fields('d');
+    $query->condition('id', $id, '=');
+
+    $result = $query->execute();
+    foreach ($result as $feevalue) {
+        $feeid = $feevalue->id;
+        $feetitle = $feevalue->title;
+        $feetype = $feevalue->type;
+        $feeactive = $feevalue->active;
+        $istaxable = $feevalue->istaxable;
+
+        if ($feetype == "flatfee") {
+            $feevalue = sprintf('%.2f', $feevalue->value);
+        }
+
+        if ($feetype == "percentage") {
+            $feevalue = sprintf('%d', $feevalue->value);
+        }
+    }
+
+    $form['cruisefee']['title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Title'),
+        '#default_value' => isset($feetitle) ? $feetitle : '',
+        '#size' => 60,
+        '#maxlength' => 128,
+        '#required' => TRUE,
+    );
+
+    $form['cruisefee']['status'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Active'),
+        '#default_value' => isset($feeactive) ? $feeactive : '',
+        '#return_value' => 1,
+    );
+
+
+
+
+
+
+    $active = array('percentage' => t('Percentage'), 'flatfee' => t('Flat Fee'));
+    $form['cruisefee']['type'] = array(
+        '#type' => 'radios',
+        '#title' => t('Type'),
+        '#default_value' => isset($feetype) ? $feetype : 'flatfee',
+        '#options' => $active,
+    );
+
+
+    $form['cruisefee']['rate'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Rate'),
+        '#default_value' => isset($feevalue) ? $feevalue : '',
+        '#size' => 60,
+        '#maxlength' => 10,
+        '#required' => TRUE,
+    );
+
+    $taxablestatus = array(0 => t('Non-Taxable'), 1 => t('Taxable'));
+    $form['cruisefee']['istaxable'] = array(
+        '#type' => 'radios',
+        '#title' => t('Taxed Line Item'),
+        '#default_value' => isset($istaxable) ? $istaxable : 0,
+        '#options' => $taxablestatus,
+        '#description' => t('Apply taxes to the specified Line Item.'),
+            //'#access' => $admin,
+    );
+
+
+//hidden field for cruise fee id
+
+    $form['cruisefee']['feeid'] = array(
+        '#type' => 'hidden',
+        '#value' => $id);
+
+
+
+
+    $form ['cruisefee']['actions'] = array(
+        '#type' => 'actions'
+    );
+
+    $form ['cruisefee']['actions'] ['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+    );
+
+    $form ['cruisefee']['actions'] ['cancel'] = array(
+        '#type' => 'submit',
+        '#value' => t('Cancel'),
+        '#submit' => array('enhancementcategories_form_cancel'),
+        '#limit_validation_errors' => array(),
+    );
+
+// $form ['actions'] ['cancel'] = array (
+// '#markup' => l ( t ( 'Cancel' ), 'foo/bar' )
+// );
+    return $form;
+}
+
+function ajax_removefees($form, &$form_state) {
+    $commands = array();
+    $selectedfeesid = $form_state['values']['checkboxes'];
+    foreach ($selectedfeesid as $feeid) {
+        if (isset($feeid) && $feeid > 0) {
+            //delete the cruise fee record
+
+            $num_deleted = db_delete('fees')
+                    ->condition('id', $feeid)
+                    ->execute();
+        }
+    }
+    $redirect_url = 'cruisefee/add';
+    ctools_include('ajax');
+    ctools_add_js('ajax-responder');
+    $commands[] = ctools_ajax_command_redirect($redirect_url);
+
+    return array('#type' => 'ajax', '#commands' => $commands);
+// print ajax_render($commands);
+    exit;
+}
+
+/**
+ * form validate funciton implementation
+ * 
+ */
+function cruisefee_form_validate($form, &$form_state) {
+    
+}
+
+/* * *
+ * discount form submission
+ * 
+ */
+
+function cruisefee_form_submit($form, &$form_state) {
+
+// 'title' ,'rate','type' ,'active' ,'created'
+    $title = $form_state['values']['title'];
+    $rate = $form_state['values']['rate'];
+    $type = $form_state['values']['type'];
+    $istaxable = $form_state['values']['istaxable'];
+// var_dump($form_state['values']['status']);
+// exit();
+    $status = $form_state['values']['status'];
+    $active = $status; //by default we are setting this one as in active mode
+
+
+    $cruisefeeObj = new stdClass();
+    $cruisefeeObj->id = isset($form_state['values']['feeid']) ? $form_state['values']['feeid'] : null;
+
+    $cruisefeeObj->title = $title;
+    $cruisefeeObj->type = $type;
+    $cruisefeeObj->istaxable = $istaxable;
+    if ($cruisefeeObj->type == "flatfee") {
+        $cruisefeeObj->value = sprintf('%.2f', $rate);
+    }
+
+    if ($cruisefeeObj->type == "percentage") {
+        $cruisefeeObj->value = $rate;
+    }
+
+
+    $cruisefeeObj->active = $active;
+    $cruisefeeObj->created = REQUEST_TIME;
+
+//var_dump($cruisefeeObj);
+//exit();
+
+    cruisefeesSave($cruisefeeObj);
+}
+
+/* * *
+ * Save the Cruise fee
+ * These are the default cruise fee which are getting stored in the database 
+ * later on we are using in the tickets asscoiation
+ * 
+ * 
+ */
+
+function cruisefeesSave($cruisefeeObj) {
+
+    try {
+        if ($cruisefeeObj->id == null) {
+            drupal_write_record('fees', $cruisefeeObj);
+            drupal_set_message('Fee Created sucessfully');
+            drupal_goto('cruisefee');
+        } else {
+            drupal_write_record('fees', $cruisefeeObj, 'id');
+            drupal_set_message('Fee updated sucessfully');
+            drupal_goto('cruisefee');
+        }
+// 	var_dump($cruisefeeObj->id);
+// 	exit();	
+    } catch (Exception $e) {
+        watchdog('Fee', 'Fee Creation failed ' . $e);
+//	print 'Exception '.$e;
+    }
+}
+
+/**
+ * Page Callback / Form Builder for the table form.
+ */
+function cruiselist_form_table_form($form = array(), &$form_state) {
+
+    global $base_url;
+
+    $query = db_select("fees", "f");
+    // Adding fields
+    $query->fields('f');
+    $result = $query->execute();
+    $types = array(
+        1 => 'percentage',
+        2 => 'flatrate',
+    );
+    $form['fee'] = array();
+    $form['#theme'] = 'cruiselist_form_table';
+    foreach ($result as $fees) {
+
+// 	var_dump($code);
+
+
+
+        $form['fee'][$fees->id]['title'] = array(
+            '#type' => 'textfield',
+            '#title' => t(''),
+            '#default_value' => $fees->title,
+            '#maxlength' => 10,
+            '#size' => 10,
+            '#extra_data' => array('title' => $fees->title),
+            '#disabled' => TRUE,
+        );
+
+
+
+
+        $form['fee'][$fees->id]['ratetype'] = array(
+            '#type' => 'textfield',
+            '#title' => t(''),
+            '#default_value' => $fees->type,
+            '#maxlength' => 10,
+            '#extra_data' => array('ratetype' => $fees->type),
+            '#size' => 10,
+            '#disabled' => TRUE,
+        );
+
+
+
+        $form['fee'][$fees->id]['status'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Departure'),
+            '#value' => $fees->active,
+// 			'#default_value' =>$fees->active,
+            '#extra_data' => array('status' => $fees->active),
+            '#maxlength' => 10,
+            '#size' => 10,
+            '#disabled' => TRUE,
+            '#title_display' => 'invisible',
+        );
+
+
+
+
+        $form['fee'][$fees->id]['edit'] = array(
+            '#type' => 'button',
+            '#value' => t('Edit'),
+            '#ajax' => array(
+                'callback' => 'cruise_fee_edit_ajax',
+            ),
+        );
+
+        $link = $base_url . '/cruisefee/' . $fees->id . '/edit';
+
+        $form['fee'][$fees->id]['edit'] = array(
+            '#markup' => '<a href="' . $link . '">Edit</a>',
+        );
+    }
+
+
+
+
+
+    // Add a submit button for fun.
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit'),
+    );
+
+    return $form;
+}
+
+/* * *
+ * Cruise Fee Ajax Edit
+ * 
+ * 
+ */
+
+/**
+ * Theme callback for the form table.
+ */
+function theme_cruiselist_form_table(&$variables) {
+
+    $output = '';
+    $output .= '<a href="' . base_path() . 'cruisefee/add">Add Cruise Fee</a>';
+    
+    $output.='<br/>Listed below are the currently defined Cruise Fees. <br/>';
+
+    $checkablearray = array(
+        'title', 'ratetype', 'status'
+    );
+// 	var_dump($variables['form']['fee']);
+
+    foreach ($variables['form']['fee'] as $keysforms => $formvalues) {
+// 		var_dump($keysforms);
+// 		var_dump($formvalues);
+
+     if(@is_array($formvalues)){
+     	foreach ($formvalues as $keyval => $formdata) {
+     		// 		var_dump($keyval);
+     		// 		var_dump($formdata['#extra_data']);
+     		if (in_array($keyval, $checkablearray)) {
+     	
+     	
+     			if (is_string($keyval)) {
+     				// 	var_dump($formvalues['title']['#extra_data']['title']);
+     				// 	var_dump($formvalues['ratetype']['#extra_data']['ratetype']);
+     				// 	var_dump($formvalues['status']['#extra_data']['status']);
+     	
+     	
+     	
+     	
+     				$rows[] = array(
+     						//array('data' => 'label'),
+     						array('data' => $formvalues['title']['#extra_data']['title']),
+     						array('data' => $formvalues['ratetype']['#extra_data']['ratetype']),
+     						array('data' => $formvalues['status']),
+     						array('data' => render($formvalues['edit'])),
+     						//array('data'=>render($element[$key]))
+     				);
+     				break;
+     			}
+     		}
+     	}
+     }
+        
+    }
+
+
+
+
+
+    $header = array(t('Title'), t('Type'), t('Status'), t('Actions'));
+    $output .= theme('table', array('header' => $header, 'rows' => $rows));
+    return $output;
+
+    exit();
+
+
+
+
+
+
+
+
+
+
+
+    // Get the userful values.
+    $form = $variables['form'];
+    $rows = $form['rows'];
+    $header = $form['#header'];
+
+    // Setup the structure to be rendered and returned.
+    $content = array(
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => array(),
+    );
+
+    // Traverse each row.  @see element_chidren().
+    foreach (element_children($rows) as $row_index) {
+        $row = array();
+        // Traverse each column in the row.  @see element_children().
+        foreach (element_children($rows[$row_index]) as $col_index) {
+            // Render the column form element.
+            $row[] = drupal_render($rows[$row_index][$col_index]);
+        }
+        // Add the row to the table.
+        $content['#rows'][] = $row;
+    }
+
+    // Redner the table and return.
+    return drupal_render($content);
+}
+
+/* * *
+ * Get the Fee avaialable list
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+function getFeesList() {
+
+
+
+    $feesquery = db_select("fees", "f");
+    $feesquery->fields('f');
+    $result = $feesquery->execute();
+
+    $feelist = array();
+    foreach ($result as $feesvalue) {
+        $feelist[] = $feesvalue;
+    }
+    return $feelist;
+}
+
+/* * *
+ * Load the Feelist which are associated with ticket
+ * @param ticketId
+ * 
+ * 
+ * 
+ * 
+ */
+
+function getticketFeesByTicketId($ticketid) {
+    $ticketfeequery = db_select('tickets_fees', 'tf');
+    $ticketfeequery->fields('tf');
+    $ticketfeequery->condition('ticket_id', $ticketid, '=');
+    $ticketresultsfee = $ticketfeequery->execute();
+
+    $ticketfeeids = array();
+    foreach ($ticketresultsfee as $fees) {
+        $ticketfeeids[] = $fees->feeid;
+    }
+
+    return $ticketfeeids;
+}

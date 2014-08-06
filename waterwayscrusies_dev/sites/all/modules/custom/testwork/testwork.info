@@ -1,0 +1,6 @@
+name = Test Work
+description = A module for Code Internal Testing
+core = 7.x
+package = WWC
+
+

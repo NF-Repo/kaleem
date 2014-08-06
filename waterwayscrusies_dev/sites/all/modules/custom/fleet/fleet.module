@@ -1,0 +1,276 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function fleet_menu() {
+    $items = array();
+    $items['fleet/%'] = array(
+        'title' => 'Fleet View',
+        'page callback' => 'fleet_callbackfunc',
+        'page arguments' => array(1),
+//        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function fleet_theme() {
+    $items['fleet'] = array(
+        'template' => 'fleet', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+function getAccommodationContent($category) {
+
+    $data = getFleetEvents($category);
+    $accommodations = '';
+    foreach ($data as $key => $revalue) {
+        if ($category == $revalue[0]['tid']) {
+            $slider = getFleetSliders($category, 'field_gallery_image');
+
+            $accommodations.=$revalue[0]['parentfield_accommodations'];
+        }
+    }
+
+    return $accommodations;
+}
+
+//getting fllet sliders with videos
+function getFleetimagesVideos($tid) {
+    $totalgallery = array();
+    $sliderimage = getSlidersfeet($tid, 'field_gallery_image');
+    foreach ($sliderimage as $sliderimg) {
+        $htmlimg.='<li><div class="sliderBox"><div class="sliderBoxout">';
+        $totalgallery[] = $sliderimg['uri'];
+        $imgsrc = file_create_url($sliderimg['uri']);
+        $htmlimg.='<a  class="mfp-image image-link" href="' . $imgsrc . '" rel="Title photoset">
+                  <img src="' . $imgsrc . '" alt="placeholder">
+                 </a>';
+        $htmlimg.='</div></div></li>';
+    }
+
+
+    $videohtml = '';
+    $fleetvideos = getSlidersfeet($tid, 'field_videourl');
+
+    foreach ($fleetvideos as $value) {
+        $videohtml.='<li><div class="sliderBox"><div class="sliderBoxout">';
+        $totalgallery[] = $value['value'];
+        $vdeourl = $value['value'];
+        $icon = 'public://videoicon.jpg';
+        $videohtml.='<a  class="mfp-iframe image-link" href="' . $vdeourl . '" rel="Title photoset">
+                  <img src="' . file_create_url($icon) . '" alt="placeholder">
+                 </a>';
+        $html.='</div></div></li>';
+    }
+
+    $output = $htmlimg . $videohtml;
+    return $output;
+}
+
+function getFleetSliders($tid, $fieldname) {
+    $result = '';
+    $sliders = taxonomy_term_load($tid);
+
+    foreach ($sliders->$fieldname as $sliderfields) {
+
+        foreach ($sliderfields as $field) {
+
+            foreach ($field as $key => $fieldvalues) {
+
+                $fieldtype = $field['type'];
+
+                if ($fieldname == 'field_seeting_image') {
+                    if ($key == 'uri') {
+                        if ($fieldvalues) {
+                            $imgsrc = file_create_url($fieldvalues);
+                            $result.='<div class="item"  data="' . $tid . '" ><img src="' . $imgsrc . '"></div>';
+                        }
+                    }
+                } else {
+                    if ($key == 'uri') {
+                        if ($fieldvalues) {
+                            $results[] = $fieldvalues;
+                            $imgsrc = file_create_url($fieldvalues);
+                            $result.='<li><div class="diningBoxFirst"><div class="diningBoxFirstInner">';
+                            $result.='<a href="' . $imgsrc . '" rel="Title photoset">';
+                            $result.='<img src="' . $imgsrc . '" alt="placeholder" />';
+                            $result.='</a></div></div></li>';
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return $result;
+}
+
+function getFleetContent($category) {
+    $data = getFleetEvents($category);
+    $html = '';
+    $title = '';
+    $desc = '';
+    $accommodations = '';
+    $slider = '';
+    $childrens = '';
+    $rightimage = '';
+    $imggallery = '';
+    $webmenuhtml.='';
+    $mobilemenuhtml = '<select id="fleetsel">';
+//$actual_link = 'http://'.$_SERVER['HTTP_HOST'].drupal_get_destination();
+$actual_link = 'http://'.$_SERVER['HTTP_HOST'].request_uri();
+    foreach ($data as $key => $revalue) {
+
+        if ($category == $revalue[0]['parenttid']) {
+            $webmenuhtml.='<li><a class="active" href="' . $revalue[0]['parenttid'] . '">' . $key . '</a></li>';
+
+            $mobilemenuhtml.='<option value="' . $revalue[0]['parenttid'] . '" selected="selected">' . $key . '</option>';
+            $title.=$key;
+            drupal_set_title($key, $output = CHECK_PLAIN);
+            $desc.='<div class="fleetSubTitle">' . $key . '</div><div class="fleetDescription">' . $revalue[0]['parentfield_fleetpagedescription'] . '</div>';
+            $accommodations.='<div class="accommodations list' . $revalue[0]['parenttid'] . ' active">' . $revalue[0]['parentfield_accommodations'] . '</div>';
+            $imagesrc = file_create_url($revalue[0]['parentfield_seeting_image']);
+            $slider.=getFleetSliders($revalue[0]['parenttid'], "field_seeting_image");
+            $imagesrc = file_create_url($revalue[0]['parentfield_fleet_image']);
+            $rightimage.='<img src="' . $imagesrc . '">';
+            $imggallery = getFleetSliders($revalue[0]['parenttid'], "field_gallery_image");
+            $childrens = getchildren($revalue[0]['parenttid']);
+        } else {
+            $termid = $revalue[0]['parenttid'];
+            $fleetpath = "fleet/" . $termid;
+            $urlsource = "fleet/" . $termid;
+            $urlAliasObject = UrlAlias::getUrlAliasDetailsBySource($urlsource);
+            if ($urlAliasObject) {
+                $fleetpath = $urlAliasObject->alias;
+            }
+            $webmenuhtml.='<li><a href="' . $fleetpath . '">' . $key . '</a></li>';
+            $mobilemenuhtml.='<option value="' . $revalue[0]['parenttid'] . '">' . $key . '</option>';
+//            $accommodations.='<div class="accommodations list' . $revalue[0]['parenttid'] . '">' . $revalue[0]['parentfield_accommodations'] . '</div>';
+            $imagesrc = file_create_url($revalue[0]['parentfield_seeting_image']);
+//            $slider.='<div class="item"  data="' . $revalue[0]['parenttid'] . '" ><img src="' . $imagesrc . '"></div>';
+        }
+       $desc.= '<div style="display: none;">
+                <span class="st_facebook_large pull-left facebook"  id="fbsharebn' . $revalue[0]['parenttid'] . '" st_summary="' . $revalue[0]['parentfield_fleetpagedescription'] . '" st_image="http://'.$_SERVER['HTTP_HOST']. base_path().'sites/all/themes/waterways/assets/img/logo.png" st_url="'.$actual_link.'" st_title="' . $key . '" style="width:30%" displayText="Facebook"></span>
+                <span class="st_twitter_large pull-left twitter" id="twitsharebn' . $revalue[0]['parenttid'] . '" st_summary="' . $revalue[0]['parentfield_fleetpagedescription'] . '" st_image="http://'.$_SERVER['HTTP_HOST'].base_path().'sites/all/themes/waterways/assets/img/logo.png" st_url="'.$actual_link.'"  st_title="' . $key . '" style="width:30%" displayText="Tweet"></span>
+                </div>';
+        
+    }
+    $mobilemenuhtml.="</select>";
+//var_dump($imggallery);
+    return array('fleetDetails' => $desc,
+        'accommodationDetails' => $accommodations,
+        'sliderDetails' => $slider,
+        'title' => $title,
+        'webmenu' => $webmenuhtml,
+        'mobilemenu' => $mobilemenuhtml,
+        'virualtour' => $childrens['list'],
+        'tourimage' => $childrens['images'],
+        'gallery' => getFleetimagesVideos($category),
+        'rightimage' => $rightimage
+    );
+}
+
+function getchildren($tid) {
+    $list = '';
+    $tourimage = '';
+    $roomlist = taxonomy_get_children($tid);
+    foreach ($roomlist as $key => $revalue) {
+        $revalues = taxonomy_get_children($revalue->tid);
+        foreach ($revalues as $keys => $room) {
+
+            $list.='<li id="' . $room->tid . '">&nbsp;<a>' . $room->name . '</a></li>';
+
+            foreach ($room->field_fleet_image as $image) {
+                $imagesrc = file_create_url($image[0]['uri']);
+                if ($tourimage == '') {
+                    $tourimage.='<div class="panzoom panImage ' . $room->tid . 'Image"><img src="' . $imagesrc . '" style="width:100%;"></div>';
+                } else {
+                    $tourimage.='<div class="panImage ' . $room->tid . 'Image"><img src="' . $imagesrc . '" style="width:100%;"></div>';
+                }
+                $z++;
+            }
+        }
+    }
+
+
+    return array("list" => $list, "images" => $tourimage);
+}
+
+function getFleetEvents() {
+
+
+    $ports = taxonomy_get_tree(7);
+    $portslist = array();
+    $total = array();
+    $protsdata = array();
+    foreach ($ports as $portvalues) {
+
+        if ($portvalues->parents[0] == 0) {
+            $protsdata['parenttid'] = $portvalues->tid;
+            $protsdata['parentname'] = $portvalues->name;
+            $parenttree = taxonomy_term_load($portvalues->tid);
+            foreach ($parenttree as $key => $listvalues) {
+                if (is_array($listvalues)) {
+                    $protsdata['parent' . $key] = getArrayloop($listvalues);
+                } else {
+                    $protsdata['parent' . $key] = $listvalues;
+                }
+            }
+
+            $portslist['children'] = taxonomy_get_children($portvalues->tid);
+            foreach ($portslist['children'] as $portdetailsvalue) {
+                foreach ($portdetailsvalue as $key => $listvalues) {
+                    if (is_array($listvalues)) {
+                        $protsdata[$key] = getArrayloop($listvalues);
+                    } else {
+                        $protsdata[$key] = $listvalues;
+                    }
+                }
+                $total[] = $protsdata;
+            }
+            $totalresutle[$portvalues->name] = $total;
+            unset($total);
+        }
+    }
+    return $totalresutle;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+//$category = 35;
+function fleet_callbackfunc($category) {
+
+
+    try {
+
+        global $user;
+        //get the product load 
+        $fleetevent = getFleetContent($category);
+        return theme('fleet', array('loadfleetcontent' => $fleetevent['fleetDetails'],
+            'loadaccommodations' => $fleetevent['accommodationDetails'],
+            'loadslider' => $fleetevent['sliderDetails'],
+            'loadvirualtour' => $fleetevent['virualtour'],
+            'loadtourimages' => $fleetevent['tourimage'],
+            'loadgallery' => $fleetevent['gallery'],
+            'loadtitle' => $fleetevent['title'],
+            'mobilemenu' => $fleetevent['mobilemenu'],
+            'webmenu' => $fleetevent['webmenu'],
+            'rightimage' => $fleetevent['rightimage']));
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+function template_preprocess_fleet(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'fleet') . '/css/fleet.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}

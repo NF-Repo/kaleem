@@ -1,0 +1,6 @@
+; $Id$
+name = Connect Overview
+description = "Connect Overview Page"
+core = 7.x
+version = VERSION
+package = WWC

@@ -1,0 +1,6 @@
+; $Id$
+name = inventory
+description = "Inventory Calendar System"
+core = 7.x
+version = VERSION
+package = Agent

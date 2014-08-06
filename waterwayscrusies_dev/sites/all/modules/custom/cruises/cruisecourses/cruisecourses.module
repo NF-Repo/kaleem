@@ -1,0 +1,282 @@
+<?php
+
+class CruiseCourse {
+
+    public $id;
+    public $course_name;
+    public $column_name;
+    public $cruise_id;
+    public $status;
+    public $course_id;
+    public $menulabelid;
+    public $coursemenulabel;
+    public $coursemenucaption;
+
+    public function createCruiseCourses() {
+        try {
+            $query = db_insert('cruise_course_list');
+            $query->fields(array(
+                'course_name' => $this->course_name,
+                'column_name' => $this->column_name,
+                'courselabel_show' => $this->courselabel_show,
+                'cruise_id' => $this->cruise_id,
+                'status' => $this->status,
+            ));
+            $query->execute();
+        } catch (Exception $e) {
+            
+        }
+    }
+
+    
+    //creating Menu Name and label
+    public function createCruiseCoursesMenuLabel() {
+
+
+
+
+        try {
+
+            $cruisedata = db_select('cruise_menu_name_template', 'c')
+                            ->condition('cruise_id', $this->cruise_id, '=')
+                            ->fields('c')
+                            ->execute()->fetchObject();
+
+
+
+            if ($cruisedata) {
+                $cruise_updated = db_update('cruise_menu_name_template')
+                        ->fields(array(
+                            'menu_lable' => $this->coursemenulabel,
+                            'menu_caption' => $this->coursemenucaption,
+                            'cruise_id' => $this->cruise_id,
+                        ))
+                        ->condition('cruise_id', $this->cruise_id, '=')
+                        ->execute();
+            } else {
+
+                $query = db_insert('cruise_menu_name_template');
+                $query->fields(array(
+                    'menu_lable' => $this->coursemenulabel,
+                    'menu_caption' => $this->coursemenucaption,
+                    'cruise_id' => $this->cruise_id,
+                ));
+                $query->execute();
+            }
+        } catch (Exception $e) {
+            
+        }
+    }
+    
+    
+    //end of creating menu name and label
+    
+    
+    
+    
+     public static function getCruiseMenuLabel($cruise_id) {
+     try{
+      $data = db_select('cruise_menu_name_template', 'c')
+      ->condition('cruise_id', $cruise_id, '=')
+      ->fields('c')
+      ->execute()->fetchObject();
+      return $data;
+     }catch(Exception $e){
+      
+     }
+     
+    }
+    
+    
+    
+    public function updateCruiseCourses() {
+
+        try {
+            $num_updated = db_update('cruise_course_list')
+                    ->fields(array(
+                        'course_name' => $this->course_name,
+                'column_name' => $this->column_name,
+                 'courselabel_show' => $this->courselabel_show,
+               
+                            //'status'=>$this->status,
+                    ))
+                    ->condition('id', $this->course_id, '=')
+                    ->execute();
+        } catch (Exception $e) {
+            
+        }
+    }
+
+    
+    //Updating Course Menu name and label
+    public function updateCruiseCoursesLabel() {
+
+        try {
+            $num_updated = db_update('cruise_menu_name_template')
+                    ->fields(array(
+                 'menu_lable' => $this->coursemenulabel,
+                'menu_caption' => $this->coursemenucaption,
+                       
+                            //'status'=>$this->status,
+                    ))
+                    ->condition('cruise_id', $this->course_id, '=')
+                    ->execute();
+        } catch (Exception $e) {
+            
+        }
+    }
+    //end of creating menu label and label
+    
+    
+    
+    
+    
+    public static function deleteCruiseCourse($id) {
+        $result = '';
+        try {
+            $rec = db_delete('cruise_course_list')
+                    ->condition('id', $id, '=')
+                    ->execute();
+            if ($rec > 0) {
+                $result = "success";
+            } else {
+                $result = "failed";
+            }
+        } catch (Exception $e) {
+            
+        }
+
+        return $result;
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //get the CourseMenu Label Option
+      public static function getCourseMenuLabel($id) {
+        $data = db_select('cruise_menu_name_template', 'cm')
+                        ->condition('cruise_id', $id, '=')
+                        ->fields('cm')
+                        ->execute()->fetchObject();
+        return $data;
+    }
+
+    
+    
+    
+    
+    
+    public static function getSingleCourseDetails($id) {
+        $data = db_select('cruise_course_list', 'c')
+                        ->condition('id', $id, '=')
+                        ->fields('c')
+                        ->execute()->fetchObject();
+        return $data;
+    }
+
+    public static function getAllCourseDetailsbyCurrentCruiseID($id) {
+        $data = db_select('cruise_course_list', 'c')
+                ->fields('c')
+                ->condition('cruise_id', $id, '=')
+                ->execute()
+                ->fetchAll();
+
+        return $data;
+    }
+
+    public static function getTableFormattedDatabyCruiseID($id) {
+        $data = CruiseCourse::getAllCourseDetailsbyCurrentCruiseID($id);
+        $output = '<table class="table table-striped">';
+        $output.='<tr><th>Course Name</th><th>Column Name</th><th>Remove</th><th>Edit</th></tr>';
+        for ($i = 0; $i < count($data); $i++) {
+            $output.="<tr>";
+            $output.="<td>" . $data[$i]->course_name . "</td>";
+            $output.="<td>" . $data[$i]->column_name . "</td>";
+            $output.='<td><a href="javascript:deletecourse(' . $data[$i]->id . ','.$id.');">Remove</a></td>';
+            $output.='<td><a href="javascript:getCourseDetails(' . $data[$i]->id . ');">Edit</a></td>';
+            $output.="</tr>";
+        }
+        $output.='</table>';
+
+        return $output;
+    }
+
+}
+
+function cruisecourses_menu() {
+
+    // Cruise Table List View
+    $items ['courses'] = array(
+        'title' => 'Cruise',
+        'page callback' => 'cruise_list_view',
+        'access arguments' => array(
+            'view cruise entity'
+        )
+    );
+
+    //for ajax callback
+    $items ['deletecourse'] = array(
+        'page callback' => 'delete_course',
+        'access arguments' => array('access content'),
+            //'page arguments' => array (1),
+    );
+
+
+    $items ['getcouredetails'] = array(
+        'page callback' => 'get_course_details',
+        'access arguments' => array('access content'),
+    );
+
+
+    return $items;
+}
+
+function delete_course() {
+    $courseid = $_POST['courseid'];
+    
+    
+    //Deleting All Menus
+    $menus=CruiseCourseMenus::getMenusListByCourseId($courseid);
+    foreach($menus as $menu){
+    	CruiseCourseMenus::deleteCruiseCourseMenu($menu->id);
+    	//var_dump($menu->id);
+    }
+    
+    
+    $coursedata = CruiseCourse::getSingleCourseDetails($courseid);
+    $cruisetempid = $coursedata->cruise_id;
+    $t = CruiseCourse::deleteCruiseCourse($courseid);
+//	$data=CruiseCourse::getTableFormattedDatabyCruiseID($_SESSION['temp_id']);
+    $course_data = CruiseCourse::getTableFormattedDatabyCruiseID($cruisetempid);
+    $menu_data = CruiseCourseMenus::getMenuTableFormattedDatabyCruiseID($cruisetempid);
+    
+    $data['coursedata']=$course_data;
+    $data['menu_data']=$menu_data;
+
+    //drupal_json_output($data);
+    
+    
+    drupal_json_output($data);
+}
+
+function get_course_details() {
+    $courseid = $_GET['courseid'];
+    $data = CruiseCourse::getSingleCourseDetails($courseid);
+    $arr = array();
+    $arr['course_name'] = $data->course_name;
+    $arr['column_name'] = $data->column_name;
+    $arr['courselabel_show'] = $data->courselabel_show;
+    drupal_json_output($arr);
+    exit();
+    //return $data;
+}

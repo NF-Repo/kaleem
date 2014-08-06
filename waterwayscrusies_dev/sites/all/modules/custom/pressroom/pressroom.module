@@ -1,0 +1,743 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function pressroom_menu() {
+    $items = array();
+    $items['pressroom'] = array(
+        'title' => 'Press Room',
+        'page callback' => 'press_room',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    $items['pressroom/pressid/%'] = array(
+        'title' => 'Press Room details page',
+        'page callback' => 'press_category_room',
+//        'access callback' => 'user_access',
+        'page arguments' => array(2),
+        'access arguments' => array('access content'),
+    );
+
+    $items['pressroom/year/%/month/%'] = array(
+        'title' => 'Press Room archive',
+        'page callback' => 'pressroom_yearmonthpagecategory',
+        'page arguments' => array(2, 4),
+//        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    
+    $items['pressreleases/list'] = array(
+        'title' => 'Press Releases List View',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('press_list_view'),
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+   
+}
+
+function pressroom_theme() {
+    $items['pressroom'] = array(
+        'template' => 'pressroom', // here comes your template name
+        'render element' => 'content'
+    );
+    $items['pressroom_category'] = array(
+        'template' => 'pressroom_category', // here comes your template name
+        'render element' => 'content'
+    );
+    $items['pressroom_yearmonthpagecategory'] = array(
+        'template' => 'pressroom_yearmonthpagecategory', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function press_room() {
+
+    try {
+
+//         unlink(field_pdf_download_link);
+        
+        global $user;
+        //get the product load 
+        $pressresources = getPressroompagecontent();
+
+        $currentmonth = date('m');
+        $currentyear = date('Y');
+
+        $pressroomEvent = getPressRoomContent();
+     
+        $connectresources = array(
+            'presspage' => $pressresources['pagecontent'],
+            'pressimage' => $pressresources['pressimage'],
+            'pressthumpage' => $pressresources['thumbnailresultset'],
+            'pressid' => $pressresources['currentpressid'],
+            'presstitle' => $pressresources['presstitle'],
+            'presscreated' => $pressresources['createddate'],
+            'expandcomments' => $pressresources['presscommentsdataview'],
+            'latestdownloadpdfurl' => $pressresources['latestdownloadpdfurl'],
+            'loadcontacts' => getPressRoomMediaContent(),//$pressroomEvent['contacts'],
+            'loadphotos' => getMediaPhotos(),//$pressroomEvent['photos'],
+            'loadkit' => getPressMediaKitContent(),//$pressroomEvent['kit'],
+            'archivepressreleases' => getArchivepressreleases($currentmonth, $currentyear)
+        );
+        return theme('pressroom', $connectresources);
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+
+
+function getMediaPhotos()
+{
+   //media photos
+    
+    $media_photos=  taxonomy_vocabulary_machine_name_load('media_photos');
+    $mediaphoto_elements=taxonomy_get_tree($media_photos->vid);
+    $photos='';
+        foreach ($mediaphoto_elements as $photoelements) {
+            $mediaphoto_taxonomy_terms=taxonomy_term_load($photoelements->tid);
+             $photos.='<li><img class="media-image" src="' . file_create_url(getArrayloop($mediaphoto_taxonomy_terms->field_image)) . '"/>';
+                    $photos.='<b><a href="' . file_create_url(getArrayloop($mediaphoto_taxonomy_terms->field_image)) . '" target="_blank">Download Image</a></b>';
+                    $photos.='<div class="media-text">' . $mediaphoto_taxonomy_terms->description. '</div></li>';
+//                
+        }
+    
+    return $photos;
+      
+                    
+}
+function getPressMediaKitContent()
+{
+    $mediakitterm=taxonomy_vocabulary_machine_name_load('media_kit');
+        $mediakit_elements=taxonomy_get_tree($mediakitterm->vid);
+        $kithtml='';
+        foreach ($mediakit_elements as $kit) {
+            
+            $mediakit_taxonomy_terms=taxonomy_term_load($kit->tid);
+            
+           
+          $imageurl=  getArrayloop($mediakit_taxonomy_terms->field_image);
+//          var_dump(file_create_url($imageurl));exit();
+            $kithtml.='<li><img class="media-image" src="' . file_create_url($imageurl) . '"/>';
+                    $kithtml.='<b><a href="' . file_create_url($imageurl) . '" target="_blank">Download Image</a></b>';
+                    $kithtml.='<div class="media-text">' . $mediakit_taxonomy_terms->description . '</div></li>';
+                
+                    
+                    
+          
+        }
+        
+        return $kithtml;
+}
+
+
+function getPressRoomMediaContent()
+{
+    //Loading Press Realse Vocabulabory
+    
+    $mediacontacts=taxonomy_vocabulary_machine_name_load('media_contacts');
+        $mediacontacs_elements=taxonomy_get_tree($mediacontacts->vid);
+        $contacts='';
+        foreach ($mediacontacs_elements as $mediacontact) {
+         $media_taxonomy_terms=taxonomy_term_load($mediacontact->tid);
+         $contacts.='<li><div class="contact-name">' . $media_taxonomy_terms->name . '</div>';
+         $contacts.='<div><img src = "' . base_path() . 'sites/all/themes/waterways/assets/img/phone-footer-icon.png">&nbsp;' .getArrayloop($media_taxonomy_terms->field_media_phone). '</div>';
+         $contacts.='<div><div class="email-icon"><img src = "' . base_path() . 'sites/all/themes/waterways/assets/img/email-footer-icon.png"></div><b><div class="email-text"><a href="mailto:' .getArrayloop($media_taxonomy_terms->field_media_email). '">' . getArrayloop($media_taxonomy_terms->field_media_email). '</a></div></b><br></div></li>';
+                
+       
+        }
+       return $contacts;
+}
+
+
+function press_list_view($form, &$form_state) {
+    global $base_url;
+    if (isset($form_state['values']['option'])) {
+        $option = $form_state['values']['option'];
+    }
+
+    $html = '<div class="row-fluid"><div class="span12">'
+            . '<a style="color:#0088CC;text-decoration:none;" href="' . $base_url . '/node/add/press-releases">Create New Press Release</a>'.
+            '</div></div>';
+    $form['option'] = array(
+        '#type' => 'markup',
+        '#default_value' => $option,
+        '#prefix' => $html,
+        '#attributes' => array('class' => array('input-medium')),
+    );
+
+    $header = array(
+        array(
+            'data' => 'Title',
+            'field' => 'title'
+        ),
+        array(
+            'data' => 'Author',
+            'field' => 'uid'
+        ),
+        array(
+            'data' => 'Updated',
+            'field' => 'created'
+        ),
+        array(
+            'data' => 'operations',
+        ),
+    );
+    if (isset($_GET ['sort']) && isset($_GET ['order'])) {
+        if ($_GET ['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET ['order']) {
+            case 'Id' :
+                $order = 'nid';
+                break;
+            case 'Title' :
+                $order = 'title';
+                break;
+            case 'Author' :
+                $order = 'uid';
+                break;
+            case 'Updated' :
+                $order = 'changed';
+                break;
+        }
+    } else {
+        $sort = 'ASC';
+        $order = 'nid';
+    }
+
+
+    $query = db_select('node', 'n');
+    $query->join('users', 'u', 'u.uid=n.uid');
+    $query->fields('n', array('title', 'nid', 'uid', 'changed'));
+    $query->fields('u', array('name'));
+    $query->condition('n.status', 1);
+    $query->condition('n.type', array('press_releases'), 'IN');
+    
+    if(!isset($_GET ['order'])){
+      $query->orderBy('n.created', 'DESC');
+    }
+    else{
+      $query->orderBy($order, $sort);
+    }
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
+    $result = $query->execute()->fetchAll();
+
+    global $base_url;
+    $rows = array();
+    if (count($result) > 0) {
+        for ($i = 0; $i < count($result); $i ++) {
+            $updated = $result[$i]->changed;
+            $rows [] = array(
+                $result [$i]->title,
+                $result [$i]->name,
+                date("Y-m-d H:i", $updated),
+                '<a href="' . $base_url . '/node/' . $result [$i]->nid . '/edit">edit  </a>
+                	<a href="' . $base_url . '/node/' . $result [$i]->nid . '/delete?destination=pressreleases/list">delete  </a>',
+            );
+        }
+    }
+
+    $output .= '<div class="">';
+    $output .= '<div class="">';
+
+    $output .= '</div>';
+    $output .= theme_table(array(
+                'header' => $header,
+                'rows' => $rows,
+                'attributes' => array(
+                    'class' => array(
+                        ''
+                    )
+                ),
+                'sticky' => true,
+                'caption' => '',
+                'colgroups' => array(),
+                'empty' => t("No Records!")
+            )) . theme('pager');
+
+    $output .= '</div>';
+
+
+    $form['outputmarkup'] = array(
+        '#type' => 'markup',
+        '#markup' => $output
+    );
+    return $form;
+}
+
+
+function pressroom_yearmonthpagecategory($year, $month) {
+    global $user;
+    //get the product load 
+
+    try {
+
+
+        //get the product load 
+        $pressresources = getPressroompagecontentyearmonth($year, $month);
+
+
+        $currentmonth = date('m');
+        $currentyear = date('Y');
+
+        $pressroomEvent = getPressRoomContent();
+
+        $connectresources = array(
+            'presspage' => $pressresources['pagecontent'],
+            'pressimage' => $pressresources['pressimage'],
+            'pressthumpage' => $pressresources['thumbnailresultset'],
+            'pressid' => $pressresources['currentpressid'],
+            'presstitle' => $pressresources['presstitle'],
+            'presscreated' => $pressresources['createddate'],
+            'expandcomments' => $pressresources['presscommentsdataview'],
+            'latestdownloadpdfurl' => $pressresources['latestdownloadpdfurl'],
+            'loadcontacts' => $pressroomEvent['contacts'],
+            'loadphotos' => $pressroomEvent['photos'],
+            'loadkit' => $pressroomEvent['kit'],
+            'archivepressreleases' => getArchivepressreleases($year, $month)
+        );
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+
+
+    return theme('pressroom_yearmonthpagecategory', $connectresources);
+}
+
+function getPressroompagecontentyearmonth($year, $month) {
+    $getmodulepath = drupal_get_path('module', 'pressroom');
+    $thumbpresshtml = '';
+    $resultset = array();
+    //  yyyy-mm-dd
+    $startdate = $year . '-' . $month . '-1';
+
+    $query = db_select('node', 'n');
+    $query->condition('n.type', 'press_releases', '=');
+    $query->where("n.created BETWEEN UNIX_TIMESTAMP('$startdate') and (SELECT UNIX_TIMESTAMP( LAST_DAY( DATE_ADD( '$startdate', INTERVAL 0 MONTH ) ) ) )");
+    $query->fields('n', array('nid'))//SELECT the fields from node
+            ->orderBy('created', 'DESC'); //ORDER BY created
+    $result = $query->execute();
+
+
+    $imageset = 1;
+    $getloopcount = 1;
+    //var_dump($result->rowCount());
+    $pagehtml = '<div class="row-fluid blogsthumbnails">';
+    $html = '';
+
+    while ($data = $result->fetchObject()) {
+        $testter = node_load($data->nid);
+        $dd = getArrayloop($testter->field_press_realease_image);
+        $imagesrc = file_create_url($dd);
+
+        $downloadpdfURL = getArrayloop($testter->field_pdf_download_link);
+//        var_dump($downloadpdfURL);
+//        $presscontent = getArrayloopwithSafevalue($testter->body);
+        foreach ($testter->body as $press) {
+            $presspagecontent = $press[0]['safe_value'];
+
+            if ($getloopcount == 1) {
+                $latestdownloadpdfURLs = getArrayloop($testter->field_pdf_download_link);
+                
+                $latestdownloadpdfURL=file_create_url($latestdownloadpdfURLs);
+                $pressid = $data->nid;
+                $presscontent = $press[0]['safe_value'];
+                $presslimitContent = limit_words($presscontent, 20);
+            
+                $pressimages = '<img src="' . $imagesrc . '"/>';
+                $presspagetitle = $testter->title;
+                $presscreated = date("M d, Y", $testter->created);
+            }
+        }
+
+//        var_dump($presspagecontent);
+//        var_dump($presscontent);
+//        exit();
+
+        if ($getloopcount != 1) {
+
+            $pressthumprehtml = '<div class="span6"><div class="row-fluid pastpressReleaseContainer"><div class="span4">';
+            $pressthumprehtml.='<img src="' . $imagesrc . '"/>';
+            $pressthumprehtml.='</div>';
+
+            $pressidurl = base_path() . "pressroom/pressid/" . $testter->nid;
+//            $downloadicon = base_path() . 'sites/all/modules/custom/pressroom/images/download-icon.png';
+
+            $pressthumprehtml.='<div class="span8"><div class="pastpressroomTitle"><a href="' . $pressidurl . '">' . $testter->title . '</a><br/>';
+            $pressthumprehtml.='<span>' . date("M d, Y", $testter->created) . '</span>';
+            $pressthumprehtml.='<div class="pressroomDescription">';
+            $pressthumprehtml.= limit_words($presspagecontent, 10);
+            $pressthumprehtml.= '</div><div class="down"><img src="' . base_path() . 'sites/all/modules/custom/pressroom/images/download-icon.png" style="float: left;" /><a href="' . $downloadpdfURL . '" class="downloadpdfLink">Download PDF</a></div>';
+            $pressthumprehtml.='</div></div>';
+
+            $pressthumprehtml.='</div></div>';
+
+            $html.=$pressthumprehtml;
+
+
+            if ($imageset == 2) {
+                $pressdatahtml = $pagehtml . $html;
+                $html = '';
+                $pagehtmlend = '</div>';
+
+                $pagehtml = '<div class="row-fluid">';
+                $imageset = 0;
+                $resultset[] = $pressdatahtml . $pagehtmlend;
+            }
+            if ($getloopcount == $result->rowCount()) {
+                $pressdatahtml = $pagehtml . $html;
+                $pagehtmlend = '</div>';
+                $resultset[] = $pressdatahtml . $pagehtmlend;
+            }
+
+            //end of getting the title images data
+            //  var_dump($imageset);
+            $imageset++;
+        }
+        $getloopcount++;
+    }
+    $results = array(
+        'pagecontent' => $presslimitContent,
+        'pressimage' => $pressimages,
+        'currentpressid' => $pressid,
+        'presstitle' => $presspagetitle,
+        'createddate' => $presscreated,
+        'thumbnailresultset' => $resultset,
+        'latestdownloadpdfurl' => $latestdownloadpdfURL
+    );
+
+    return $results;
+}
+
+function getPressroompagecontent() {
+    $getmodulepath = drupal_get_path('module', 'pressroom');
+    $thumbpresshtml = '';
+    $resultset = array();
+    $query = db_select('node', 'n');
+    $query->condition('n.type', 'press_releases', '=');
+    $query->fields('n', array('nid'))//SELECT the fields from node
+            ->orderBy('created', 'DESC'); //ORDER BY created
+    $result = $query->execute();
+    $imageset = 1;
+    $getloopcount = 1;
+    //var_dump($result->rowCount());
+    $pagehtml = '<div class="row-fluid blogsthumbnails">';
+    $html = '';
+
+    while ($data = $result->fetchObject()) {
+        $testter = node_load($data->nid);
+        $dd = getArrayloop($testter->field_press_realease_image);
+        $imagesrc = file_create_url($dd);
+
+        $downloadpdfURLs = getArrayloop($testter->field_pdf_download_link);
+        
+        $downloadpdfURL =file_create_url($downloadpdfURLs);
+//        var_dump($downloadpdfURL);
+//        $presscontent = getArrayloopwithSafevalue($testter->body);
+        foreach ($testter->body as $press) {
+            $presspagecontent = $press[0]['safe_value'];
+
+            if ($getloopcount == 1) {
+                $latestdownloadpdfURLs = getArrayloop($testter->field_pdf_download_link);
+                
+                 $latestdownloadpdfURL = file_create_url($latestdownloadpdfURLs);
+                $pressid = $data->nid;
+                $presscontent = $press[0]['safe_value'];
+                $presslimitContent = limit_words($presscontent, 20);
+
+                $pressimages = '<img src="' . $imagesrc . '"/>';
+                $presspagetitle = $testter->title;
+                $presscreated = date("M d, Y", $testter->created);
+            }
+        }
+
+//        var_dump($presspagecontent);
+//        var_dump($presscontent);
+//        exit();
+ global $base_url;
+ 
+
+
+        if($imagesrc==$base_url.'/'){
+       $image_display= "none";
+       $pastpressroom_width="span12";
+        }else{
+           $image_display= "block"; 
+           $pastpressroom_width="span8";
+        }
+      
+        
+        if( $downloadpdfURL==$base_url.'/'){
+            $downloadlink_display="none";
+        }else{
+            $downloadlink_display="block";
+        }
+        if ($getloopcount != 1) {
+
+            $pressthumprehtml = '<div class="span6"><div class="row-fluid pastpressReleaseContainer">'.'<div class="span4" style="display:'.$image_display.' ">';
+  
+            $pressthumprehtml.='<img src="' . $imagesrc . '"/>';
+            $pressthumprehtml.='</div>';
+
+            $pressidurl = base_path() . "pressroom/pressid/" . $testter->nid;
+//            $downloadicon = base_path() . 'sites/all/modules/custom/pressroom/images/download-icon.png';
+
+            $pressthumprehtml.='<div class="'.$pastpressroom_width.'"><div class="pastpressroomTitle"><a href="' . $pressidurl . '">' . $testter->title . '</a><br/>';
+            $pressthumprehtml.='<span>' . date("M d, Y", $testter->created) . '</span>';
+            $pressthumprehtml.='<div class="pressroomDescription">';
+            $pressthumprehtml.= limit_words($presspagecontent, 10);
+            $pressthumprehtml.= '</div><div class="down" style="display:'.$downloadlink_display.'"><img src="' . base_path() . 'sites/all/modules/custom/pressroom/images/download-icon.png" style="float: left;" /><a href="' . $downloadpdfURL . '" class="downloadpdfLink">Download PDF</a></div>';
+            $pressthumprehtml.='</div></div>';
+
+            $pressthumprehtml.='</div></div>';
+
+            $html.=$pressthumprehtml;
+
+
+            if ($imageset == 2) {
+                $pressdatahtml = $pagehtml . $html;
+                $html = '';
+                $pagehtmlend = '</div>';
+
+                $pagehtml = '<div class="row-fluid">';
+                $imageset = 0;
+                $resultset[] = $pressdatahtml . $pagehtmlend;
+            }
+            if ($getloopcount == $result->rowCount()) {
+                $pressdatahtml = $pagehtml . $html;
+                $pagehtmlend = '</div>';
+                $resultset[] = $pressdatahtml . $pagehtmlend;
+            }
+
+            //end of getting the title images data
+            //  var_dump($imageset);
+            $imageset++;
+        }
+        $getloopcount++;
+    }
+    $results = array(
+        'pagecontent' => $presslimitContent,
+        'pressimage' => $pressimages,
+        'currentpressid' => $pressid,
+        'presstitle' => $presspagetitle,
+        'createddate' => $presscreated,
+        'thumbnailresultset' => $resultset,
+        'latestdownloadpdfurl' => $latestdownloadpdfURL
+    );
+
+    return $results;
+}
+
+function press_category_room($pressreleaseid) {
+
+    try {
+
+        global $user;
+
+//        $templateresourses = array(
+//            
+//        );
+
+        $pressroomCategory = getPressRoomContent();
+        return theme('pressroom_category', array(
+            'loadcontacts' => $pressroomCategory['contacts'],
+            'loadphotos' => $pressroomCategory['photos'],
+            'loadpressrelease' => pressreleasetemplateDetails($pressreleaseid),
+            'pressid'=>$pressreleaseid
+        ));
+    } catch (Exception $ex) {
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+function getPressRoomContent() {
+
+    $tree = taxonomy_get_tree(12);
+    $treelist = array();
+    $contacts = '';
+    $photos = '';
+    $kit = '';
+    foreach ($tree as $treevalues) {
+
+        if ($treevalues->parents[0] == 0) {
+            $treelist['children'] = taxonomy_get_children($treevalues->tid);
+            foreach ($treelist['children'] as $keys => $treedetailsvalue) {
+                foreach ($treedetailsvalue as $key => $treedetails) {
+                    if (is_array($treedetails)) {
+                        if ($key == "field_media_image") {
+                            foreach ($treedetails as $keys => $mediaImage) {
+                                $children[$key] = $mediaImage[0]['uri'];
+                            }
+                        } else {
+                            $children[$key] = getArrayloop($treedetails);
+                        }
+                    } else {
+                        $children[$key] = $treedetails;
+                    }
+                }
+                if ($treevalues->name == "Media Contacts") {
+                  
+                    $contacts.='<li><div class="contact-name">' . $children['name'] . '</div>';
+                    $contacts.='<div><img src = "' . base_path() . 'sites/all/themes/waterways/assets/img/phone-footer-icon.png">&nbsp;' . $children["field_media_phone"] . '</div>';
+                    $contacts.='<div><div class="email-icon"><img src = "' . base_path() . 'sites/all/themes/waterways/assets/img/email-footer-icon.png"></div><b><div class="email-text"><a href="mailto:' . $children["field_media_email"] . '">' . $children["field_media_email"] . '</a></div></b><br></div></li>';
+                
+                    
+                } else if ($treevalues->name == "Media Photos") {
+                    $photos.='<li><img class="media-image" src="' . file_create_url($children['field_media_image']) . '"/>';
+                    $photos.='<b><a href="' . file_create_url($children['field_media_image']) . '" target="_blank">Download Image</a></b>';
+                    $photos.='<div class="media-text">' . $children["description"] . '</div></li>';
+                
+                    
+                    
+                    
+                } else if ($treevalues->name == "Media Kit") {
+                    $kit.='<li><img class="media-image" src="' . file_create_url($children['field_media_image']) . '"/>';
+                    $kit.='<b><a href="' . file_create_url($children['field_media_image']) . '" target="_blank">Download Image</a></b>';
+                    $kit.='<div class="media-text">' . $children["description"] . '</div></li>';
+                
+                    
+                    
+                    
+                }
+            }
+        }
+    }
+    return array("contacts" => $contacts, "photos" => $photos, "kit" => $kit);
+}
+
+function pressreleasetemplateDetails($pressreleaseid) {
+
+    $pressreleasenode = node_load($pressreleaseid);
+    $pressnid = $pressreleasenode->nid;
+    $presspage = $pressreleasenode->body;
+
+    foreach ($presspage as $presspageval) {
+        $pressbody = $presspageval[0]['safe_value'];
+    }
+
+    $pressnid = $pressreleasenode->field_press_realease_image;
+    $presspdflink = $pressreleasenode->field_pdf_download_link;
+    $presspdfgetlinks = getArrayloop($presspdflink);
+    $presspdfgetlink =file_create_url($presspdfgetlinks);
+    $presstitle = $pressreleasenode->title;
+    $presscreateddate = date("M d, Y", $pressreleasenode->created);
+    $pressimg = getArrayloop($pressnid);
+    $pressimagesrc = file_create_url($pressimg);
+    $pressreleasetemplatehtml = '';
+    $pressreleasetemplatehtml .= '<div class = "row-fluid">';
+    global $base_url;
+ 
+        if($pressimagesrc==$base_url.'/'){
+    $image_display= "none";
+    $full_width="span12";
+        }else{
+           $image_display= "block"; 
+            $full_width="span8";
+        }
+      
+        
+        
+        
+        if($presspdfgetlink==$base_url.'/'){
+           $downloadlink_displays="none";
+           
+        }else{
+            $downloadlink_displays="block";
+        }
+        
+        
+   
+//    $pressreleasetemplatehtml .= '<div class = "'.$full_width.'">';
+        $pressreleasetemplatehtml .= '<div class = "span12">';
+     $pressreleasetemplatehtml .= '<div class = "span6" style="display:'.$image_display.';padding-right: 10px;">';
+    $pressreleasetemplatehtml .= '<img class = "span12" src = "' . $pressimagesrc . '" />';
+    $pressreleasetemplatehtml .= '</div>';
+    $pressreleasetemplatehtml .= '<div class = "pressroomTitle">';
+    $pressreleasetemplatehtml .= '<span class="presstemplateTitle">' . $presstitle . '</span><br/>';
+    $pressreleasetemplatehtml .= '<span>' . $presscreateddate . '</span>';
+    $pressreleasetemplatehtml .= '<div class="pressroomtempDescription">';
+    $pressreleasetemplatehtml .= $pressbody;
+    $pressreleasetemplatehtml .= '</div>';
+//    $downloadicon = base_path() . 'sites/all/modules/custom/pressroom/images/download-icon.png';
+//    $pressreleasetemplatehtml .= base_path() . 'sites/all/modules/custom/pressroom/images/download-icon.png';
+    $pressreleasetemplatehtml .= '<div class="printdownloadpdf" style="display:'.$downloadlink_displays.'"><img src="' . base_path() . 'sites/all/modules/custom/pressroom/images/download-icon.png" style="float: left;" /><a href="' . $presspdfgetlink . '" class="downloadpdfLink">Download PDF</a></div>';
+    $pressreleasetemplatehtml .= '</div>';
+    $pressreleasetemplatehtml .= '</div>';
+    $pressreleasetemplatehtml .= '</div>';
+
+    return $pressreleasetemplatehtml;
+
+}
+
+function getArchivepressreleases($currentyear,$currentmonth ) {
+
+    $month_names = array(
+        '',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec');
+    $archivehtml = '<select class="selectpicker" id="archives">';
+    $type = 'press_releases';
+    $date = _archive_date($type, $year, $month, $day);
+
+    foreach ($date->years as $key => $value) {
+
+        $slectedcurrentyear = $key;
+        $archivehtml.='<optgroup label="' . $slectedcurrentyear . '">';
+
+        //Get Months Posts count
+        $monthlist = _archive_date($type, $key, $month, $day);
+
+
+        foreach ($monthlist->months as $monthkey => $posts) {
+
+            $monthlabel = $month_names[$monthkey] . "(" . $posts . ")";
+            if ($monthkey == $currentmonth && $slectedcurrentyear == $currentyear) {
+                $archivehtml.='<option value="' . $monthkey . '" selected="selected">' . $monthlabel . '</option>';
+            } else {
+                $archivehtml.='<option value=' . $monthkey . '>' . $monthlabel . '</option>';
+            }
+        }
+    }
+    $archivehtml.='</optgroup></select>';
+
+
+    return $archivehtml;
+}
+
+function template_preprocess_pressroom_category(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'pressroom') . '/css/pressroom.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function template_preprocess_pressroom(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'pressroom') . '/css/pressroom.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function template_preprocess_pressroom_yearmonthpagecategory(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'pressroom') . '/css/pressroom.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}

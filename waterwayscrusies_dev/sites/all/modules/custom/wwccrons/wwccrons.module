@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function wwccrons_menu() {
+    $items = array();
+    $items['wwccrons'] = array(
+        'title' => 'Cron jobs WWC',
+        'page callback' => 'wwccrons_page',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    return $items;
+}
+
+/**
+ * Service which is using for checking the provided username existence
+ * checking the provided username with in the user entity
+ * @param type $username username column filed in the drupal core user table
+ * @return json Object true /false
+ * @see user_existence 
+ * 
+ * 
+ * 
+ * Simple to use
+ * */
+ function wwccrons_page()
+ {
+   
+ }
+ 
+ 
+
+
+
+function wwccrons_cron() {
+  // Default to an hourly interval. Of course, cron has to be running at least
+  // hourly for this to work.
+  $interval = variable_get('wwccrons_interval', 60 * 60);
+  // We usually don't want to act every time cron runs (which could be every
+  // minute) so keep a time for the next run in a variable.
+
+  if (time() >= variable_get('wwccrons_next_execution', 0)) {
+    // This is a silly example of a cron job.
+    // It just makes it obvious that the job has run without
+    // making any changes to your database.
+    
+    //Cron running for Ports getting weather json Object into Database
+    //Right Now We are saving information for only 4 ports because of API
+    //limitaiton which is allowing only 10 calls perminute
+    //getting ports list
+    
+    $ports=  getDepatureportsList();
+  $i=0;
+  foreach ($ports as $list) {
+    if($i<=3)
+    {
+   
+//$portsresults=portsWeather_insertion($list['id']);
+   watchdog('wwccrons',$portsresults.'--'.time());
+    }
+    else
+    {
+      break;
+    }
+    $i++;
+  }
+    //end of ports list
+    
+    if (!empty($GLOBALS['wwccrons_show_status_message'])) {
+//      drupal_set_message(t('wwccrons executed at %time', array('%time' => date_iso8601(time(0)))));
+    }
+    variable_set('wwccrons_next_execution', time() + $interval);
+  }
+  else
+  {
+    watchdog('wwccrons','timenotmatched');
+  }
+}

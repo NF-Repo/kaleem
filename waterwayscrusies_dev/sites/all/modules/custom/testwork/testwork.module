@@ -1,0 +1,1631 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+
+function testwork_menu() {
+    $items = array();
+    $items['testwork'] = array(
+        'title' => 'Test Module WWC',
+        'page callback' => 'wwc_test',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    return $items;
+
+}
+/**
+ * Service which is using for checking the provided username existence
+ * checking the provided username with in the user entity
+ * @param type $username username column filed in the drupal core user table
+ * @return json Object true /false
+ * @see user_existence 
+ * 
+ * 
+ * 
+ * Simple to use
+ * 
+  $detect = new Mobile_Detect();
+
+  // Check for any mobile device.
+  if ($detect->isMobile())
+
+  // Check for any tablet.
+  if($detect->isTablet())
+
+  // 3. Check for any mobile device, excluding tablets.
+  if ($detect->isMobile() && !$detect->isTablet())
+ * 
+ * 
+ * Loads of features
+ * 
+ * 
+ * // Alternative to $detect->isAndroidOS()
+  $detect->is('AndroidOS');
+
+  // Batch usage
+  foreach($userAgents as $userAgent){
+  $detect->setUserAgent($userAgent);
+  $isMobile = $detect->isMobile();
+  }
+
+  // Version check.
+  $detect->version('iPad'); // 4.3 (float)
+ * 
+ * 
+ * 
+ */
+
+/**
+ * 
+ * @param string $form
+ * @param type $form_state
+ * @param type $form_id
+ *  Implementing the Call back hook functionality
+ * 
+ */
+function testwork_form_alter(&$form, &$form_state, $form_id) {
+  if($form_id == 'pay_form') {
+    $form['#submit'][] = 'mycallback';
+  }
+}
+
+function mycallback(&$form, &$form_state) {
+// do stuff
+  var_dump($form_state);
+exit();
+//  pay_form_callback('validate', $form, $form_state);
+//
+//
+//  pay_form_callback('submit', $form, $form_state);
+
+
+// exit();
+//  
+}
+
+
+function testarray()
+{
+  $tet=array(
+      'menu_path' => 'laxmibook',
+      'header_text' => array (
+          'value' => 'Lakshmi',
+          'format' => 'filtered_html',
+          ),
+      'confirmation_text' => array ( 'value' => 'Thanks for Your Paying for Cruise.',
+          'format' => 'filtered_html', ),
+      'confirmation_path' => '',
+      'embeddable' => true,
+      'pfid' => '2',
+      'title' => 'laxmibook',
+      'status' => 1,
+      'uid' => 1,
+      'min_amount' => '1.00',
+      'max_amount' => '1000.00',
+      'total_goal' => NULL,
+      'currency' => 'USD',
+      'pay_methods' => array ( 1 => '1', ),
+      'notes_title' => 'Comments',
+      'notes_format' => 'plain_text',
+      'notes_description' => '',
+      'user_register' => false,
+      'table' => 'pay_form',
+      'key' => 'pfid',
+      'permissions' => array ( 'default' => array ( 'all' => 1, ), ),
+      'handler' => 'bookpay',
+      'notes' => 'Greata',
+      'type' => 'pay_form',
+      'form' => 'form',
+      'form_type' => 'default', );
+          
+          $tty=array (
+              'menu_path' => 'laxmibook',
+              'header_text' => 
+              array ( 'value' => 'Lakshmi', 'format' => 'filtered_html', ),
+              'confirmation_text' => array ( 'value' => 'Thanks for Your Paying for Cruise.',
+                  'format' => 'filtered_html', ), 'confirmation_path' => '',
+              'embeddable' => true,
+              'pfid' => '2',
+              'title' => 'laxmibook',
+              'status' => 1,
+              'uid' => 1,
+              'min_amount' => '1.00',
+              'max_amount' => '1000.00',
+              'total_goal' => NULL,
+              'currency' => 'USD',
+              'pay_methods' => array ( 1 => '1', ),
+              'notes_title' => 'Comments',
+              'notes_format' => 'plain_text',
+              'notes_description' => '',
+              'user_register' => false,
+              'table' => 'pay_form',
+              'key' => 'pfid',
+              'permissions' => array ( 'default' => array ( 'all' => 1, ), ),
+              'handler' => 'bookpay', 
+              'notes' => 'Greata', 
+              'type' => 'pay_form',
+              'form' => 'form',
+              'form_type' => 'default', );
+                  $ttddd=array ( 'menu_path' => 'laxmibook',
+                      'header_text' => array ( 'value' => 'Lakshmi',
+                          'format' => 'filtered_html', ),
+                      'confirmation_text' => array ( 'value' => 'Thanks for Your Paying for Cruise.',
+                          'format' => 'filtered_html', ),
+                      'confirmation_path' => '',
+                      'embeddable' => true,
+                      'pfid' => '2',
+                      'title' => 'laxmibook',
+                      'status' => 1,
+                      'uid' => 1,
+                      'min_amount' => '1.00',
+                      'max_amount' => '1000.00',
+                      'total_goal' => NULL,
+                      'currency' => 'USD',
+                      'pay_methods' => array ( 1 => '1', ),
+                      'notes_title' => 'Comments',
+                      'notes_format' => 'plain_text',
+                      'notes_description' => '',
+                      'user_register' => false,
+                      'table' => 'pay_form',
+                      'key' => 'pfid',
+                      'permissions' => array ( 'default' => array ( 'all' => 1, ), ),
+                      'handler' => 'bookpay',
+                      'notes' => 'Greata',
+                      'type' => 'pay_form',
+                      'form' => 'form',
+                      'form_type' => 'default',
+                      );
+                  $fdfd=array (
+                      'menu_path' => 'laxmibook',
+                      'header_text' => array ( 'value' => 'Lakshmi',
+                          'format' => 'filtered_html', ),
+                      'confirmation_text' => array ( 'value' => 'Thanks for Your Paying for Cruise.',
+                          'format' => 'filtered_html', ),
+                      'confirmation_path' => '',
+                      'embeddable' => true,
+                      'pfid' => '2',
+                      'title' => 'laxmibook',
+                      'status' => 1,
+                      'uid' => 1,
+                      'min_amount' => '1.00', 
+                      'max_amount' => '1000.00',
+                      'total_goal' => NULL,
+                      'currency' => 'USD', 
+                      'pay_methods' => array ( 1 => '1', ),
+                      'notes_title' => 'Comments', 
+                      'notes_format' => 'plain_text',
+                      'notes_description' => '',
+                      'user_register' => false,
+                      'table' => 'pay_form',
+                      'key' => 'pfid',
+                      'permissions' => array ('default' => array ( 'all' => 1, ), ),
+                      'handler' => 'bookpay',
+                      'type' => 'pay_form',
+                      'form' => 'form',
+                      'form_type' => 'default',);
+}
+
+
+function getCruiseDaysAssocnidArray()
+{
+  $resultsarray = array();
+  $query = new EntityFieldQuery();
+  $entities = $query->entityCondition('entity_type', 'taxonomy_term');
+  $query->entityCondition('bundle', 'catalog');
+  $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+//    $query->fieldCondition('field_cruiseitemid', 'value', $cruiseitemId, '=');
+  $query->execute();
+
+  if (count($entities->ordered_results) > 0) {
+    $totalcruiseitems=array();
+    foreach ($entities->ordered_results as $noderesults) {
+     
+     $nodequery = new EntityFieldQuery();
+  $nodequery->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'product')
+//    ->propertyCondition('status', 1) // Don't include unpublished products.
+    ->fieldCondition('taxonomy_catalog', 'tid', $noderesults->entity_id)
+    ->execute();
+  
+  
+foreach ($nodequery->ordered_results as $nodevalue) {
+  
+  //node results get here
+  
+  $eventnode = node_load($nodevalue->entity_id);
+  $results=array();
+  $cruiseevents=array();
+      foreach ($eventnode->field_cruiseweekdays as $key => $eventdaysvalue) {
+        if(count($eventdaysvalue) > 0)
+      {
+     foreach ($eventdaysvalue as $eventday) {
+          if(isset($eventvalue))
+          $eventvalue.=','.$eventday['value'];
+          else
+            $eventvalue=$eventday['value'];
+          
+        }
+        $cruiseevents[$eventnode->nid]= explode(',',$eventvalue);
+      }
+       
+    }
+  //end of node results
+  
+  
+  
+  
+}
+$totalcruiseitems[]=$cruiseevents;
+
+ 
+    }
+  }
+  
+  return $totalcruiseitems;
+}
+
+
+function GetDays($sStartDate, $sEndDate){
+  // Firstly, format the provided dates.
+  // This function works best with YYYY-MM-DD
+  // but other date formats will work thanks
+  // to strtotime().
+  $sStartDate = gmdate("Y-m-d", strtotime($sStartDate));
+  $sEndDate = gmdate("Y-m-d", strtotime($sEndDate));
+
+  // Start the variable off with the start date
+  $aDays[] = $sStartDate;
+
+  // Set a 'temp' variable, sCurrentDate, with
+  // the start date - before beginning the loop
+  $sCurrentDate = $sStartDate;
+
+  // While the current date is less than the end date
+  while($sCurrentDate < $sEndDate){
+    // Add a day to the current date
+    $sCurrentDate = gmdate("Y-m-d", strtotime("+1 day", strtotime($sCurrentDate)));
+
+    // Add this new day to the aDays array
+    $aDays[] = $sCurrentDate;
+  }
+
+  // Once the loop has finished, return the
+  // array of days.
+  return $aDays;
+}
+
+
+
+
+function realine($a)
+{
+$re[]=$a;
+return $re;
+}
+
+function wwc_test() {
+	
+	
+	echo date('Y-m-d h:i a','1401708600'); exit();
+	
+	
+	$datestamp=Scheduledevents::getEventDateNTimeTimeStamp(180);
+	
+	
+	$emailNotificationObject = new EmailTemplateNotification ();
+	$emailNotificationObject->user_id = 102;
+	$emailNotificationObject->cruise_template_id = '3';
+	$emailNotificationObject->schedule_event_id = "180";
+	$emailNotificationObject->schedule_event_date = $_SESSION['bookingInput']->date;
+	
+	
+	$emailNotificationObject->email_3_days_before=strtotime("-72 hours",$datestamp);
+	$emailNotificationObject->email_1_day_before=strtotime("-24 hours",$datestamp);
+	$emailNotificationObject->email_1_day_after=strtotime("+24 hours",$datestamp);
+	
+	$emailNotificationObject->email_3_days_before_status="pending";
+	$emailNotificationObject->email_1_day_before_status="pending";
+	$emailNotificationObject->email_1_day_after_status="pending";
+	
+	$emailNotificationObject->order_id= "234";
+	$emailNotificationObject->emailNotification ();
+	
+	
+	echo "Created date is " . date("Y-m-d h:i:sa", $d);
+	 exit();
+	
+	//$d=strtotime("05:00pm June 01 2014");
+	
+// 	//01 -> Date , 06-Month (june) , 2014 Year
+// 	$d=strtotime("01-06-2014 05:00 pm");
+// 	echo "Created date is " . date("Y-m-d h:i:sa", $d);
+	
+	//exit();
+	$query = db_select('scheduledevents', '');
+	$query->fields('scheduledevents', array('departuretime'));
+	$query->fields('scheduledevent_dates', array('scheduleddate', 'id'));
+	$query->innerJoin('scheduledevent_dates', '', 'scheduledevents.id = scheduledevent_dates.scheduledevent_id');
+	$query->condition('scheduledevent_id', 180);
+	$eventObject = $query->execute()->fetchObject();
+	
+	$dateMDY= date('m/d/Y', $eventObject->scheduleddate);
+	$datestr=$dateMDY." ".$eventObject->departuretime;
+	
+	$datestamp=strtotime($datestr);
+	$addHours="+24 hours";
+	echo date('Y-m-d h:i a', strtotime($addHours,$datestamp)); exit();
+	
+	
+	//$newDate = date('Y-m-d H:i:S', mktime(date('H',$datestamp)+13, date('i',$datestamp), date('s',$datestamp), date('m',$datestamp), date('d',$datestamp), date('Y',$datestamp)));
+	//
+	//echo date("jS F, Y h:i a", $newDate); exit();
+	
+	$hours24=strtotime(24*60*60,$unixtimestamp);
+	echo date("jS F, Y h:i a", $hours24);
+	
+	
+	
+	exit();
+	//echo $datestr; exit();
+	
+	
+	var_dump($eventObject); exit();
+	
+	
+	
+	
+	
+	$hour=0;
+	$minute=0;
+	$seconds=0;
+	$month=$dateMDYArr[0];
+	$day=01;
+	$year=2014;
+	
+	mktime($hour,$minute,$seconds,$month,$day,$year);
+	
+	
+	
+	
+	
+	exit();
+	
+	//var_dump($eventObject); exit();
+	
+	$timestamp= strtotime('d-m-Y',$eventObject->scheduleddate);
+	var_dump($timestamp); exit();
+	
+	$date = new DateTime();
+	$date->setTimestamp($eventObject->scheduleddate);
+	echo $date->format('U = Y-m-d H:i:s') . "\n";
+	
+	var_dump($da); exit();
+	
+	
+	$date = new DateTime();
+	$timestamp="1401606000";
+	$date->setTimestamp($timestamp);
+	echo $date->format('U = Y-m-d H:i:s') . "\n";
+	exit();
+	
+	
+	$t=Scheduledevents::getEventDateNTimeTimeStamp("174");
+	var_dump($t);
+	exit();
+	
+	
+	
+	
+
+	$date = new DateTime();
+	//echo $date->format('U = Y-m-d H:i:s') . "\n";
+	
+	$date->setTimestamp(1409425200);
+	echo $date->format('U = Y-m-d H:i:s') . "\n";
+	exit();
+	
+	
+	
+	
+	$emailNotificationObject=new EmailTemplateNotification();
+	$emailNotificationObject->user_id='102';
+	$emailNotificationObject->cruise_template_id='3';
+	$emailNotificationObject->schedule_event_id='4';
+	$emailNotificationObject->schedule_event_date='23-23-2222';
+	$emailNotificationObject->emailNotification();
+	
+	exit();
+	
+	$t=EmailTemplateNotification::getEmailTemplateId('7');
+	
+	var_dump($t); exit();
+//    $test = '34,35,36,37,38,45,47,49,50,51,52,53,54,55,56,58,59,60,61,62,63,67,70,72,73,74,75,77,79,80,81,82,83,84,85,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,151,152,154,155,156,157,158,159,160,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,219,220,223,231,233,234,235,238,240,247,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,273,274,275,276,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,346,347,348,349,350,351,354,355';
+//    
+//    $select="select 
+//GROUP_CONCAT(uid)
+//from 
+//users u where ";
+//    
+//    $testarray = explode(',', $test);
+//    
+    
+    $query = db_select('users', 'u');
+    $query->fields('u', array('uid'));
+    $query->where("u.uid not in(select uid from users_roles ur,role r where ur.rid=r.rid  and r.name in('agent','administrator','staff admin')) and u.uid !=0");
+    $testarray = $query->execute()
+            ->fetchAll();
+    foreach ($testarray as $testrow) {
+        $userlist[] = $testrow->uid;
+        user_delete($testrow->uid);
+//        var_dump($userlist);
+//        exit();
+    }
+//    var_dump($userlist);
+//    exit();
+    $test=implode(',',$userlist);
+    $query = db_select('uc_orders', 'u');
+    $query->fields('u', array('order_id'));
+    $query->where("u.uid IN ($test)");
+    $results = $query->execute()
+            ->fetchAll();
+    foreach ($results as $regusersdata) {
+        $regusers[] = $regusersdata->order_id;
+    }
+    foreach ($regusers as $row) {
+        uc_order_delete($row);
+    }
+
+
+
+    exit();
+    
+    
+    
+
+	$loadcheckapieventdates = getCruiseEventsByMonth(02, 2014);
+ 	var_dump($loadcheckapieventdates);
+ 	exit();
+ 	$cruiselist=getCruiseTypes('tplbased');
+ 	var_dump($cruiselist);
+ 	exit();
+	$res=getenhancementlistby(233);
+	var_dump($res);
+	exit();
+	$query = db_select("cruiseenhancements", "n");
+	// Adding fields
+	$query->fields('n');
+	
+	$result = $query->execute();
+
+
+	
+	$enhancements=array();
+	
+	foreach ($result as $cruiseenhancement)
+	{
+// 		var_dump($cruiseenhancement);
+// 		$enhancements[]=
+		$cruiseenhancement->enhancements_img_fid=file_load($cruiseenhancement->enhancements_img_fid)->uri;
+		
+	}
+	var_dump($cruiseenhancement);
+	exit();
+
+	$query = db_select('cruise_template_enhancements','cen');
+	$query->fields('cen');
+	$query->condition('cen.cruisetemplateid',2,'=');
+	$result = $query->execute();
+	$enhancmentresults=array();
+	foreach ($result as $val)
+	{
+		$enhancmentresults=unserialize($val->templateenhancements);
+	}
+	
+	return $enhancmentresults;
+	
+	exit();
+	
+	$result = loadCatalogProducts();
+	var_dump($result);
+	exit();
+		$selecteddate='11/19/2013';
+	$portid=29;
+	$templateid=1;
+	
+	$results=getEventTimeslotsbyDate($selecteddate,$portid,$templateid);
+		var_dump($results);exit();
+	//cruise schdueld dates
+	//fileter by portid month and year
+	//m/d/Y::11/22/2013 
+
+	
+	
+// 	
+	
+	$query = db_select('scheduledevents','sd');
+	$query->join('scheduledevent_dates','e','sd.id = e.scheduledevent_id');
+	$query->fields('sd');
+	$query->fields('e');
+	$query->condition('sd.cruisetemplate_id',$templateid,'=');
+	
+	$result = $query->execute();
+	
+	$totalresults=array();
+	$cruisetemplates=array();
+	$scheduleddates=array();
+	foreach ($result as  $cruiseentity) {
+	
+		$currentdate=date('m/d/Y',$cruiseentity->scheduleddate);
+		
+		
+	
+	
+		$calendartag =getCalendartag($cruiseentity->cruisetemplate_id);
+	
+		if($currentdate==$selecteddate && $portid==$cruiseentity->port_id && $calendartag!=null)
+		{
+			
+		
+			//Departuretime---boradingtime---returntime
+			
+			$totalresults[$cruiseentity->scheduledevent_id]=$cruiseentity->departuretime.'---'.$cruiseentity->boardingtime.'---'.$cruiseentity->returntime;
+	
+		}
+	
+	}
+	
+	
+	var_dump($totalresults);exit();
+	//cruise scheduled dates
+	
+	
+
+	$ticketlist=getSingleCruiseEventsByMonth(11,2013,170);
+	var_dump($ticketlist);exit();
+	$portsresultset=array();
+//	foreach ($ticketlist as $ports)
+//	{
+//		var_dump($ports->port);
+//		//var_dump(getPortdetails($ports->port)['title']);
+//		$portsresultset[$ports->port]=getPortdetails($ports->port)['title'];
+//	}
+	
+	
+	var_dump($portsresultset);exit();
+$portsids=array();
+foreach ($ticketlist[28] as $tickets)
+{
+	$portsids[]=$tickets['id'];
+}
+	var_dump($portsids);
+	exit();
+	
+	
+	
+	//
+	
+	//getting the enhancements catalog terms
+	
+	$query = new EntityFieldQuery();
+	$catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+	$query->entityCondition('bundle', 'catalog');
+	$query->propertyCondition('name', 'Enhancements'); //change This one as disabled
+	$query->execute();
+	
+	$resultset=array();
+	if (count($catalogs->ordered_results) > 0) {
+		$totalcruiseitems=array();
+		foreach ($catalogs->ordered_results as $noderesults) {
+	
+			
+			$childs=taxonomy_get_children($noderesults->entity_id);
+			
+			foreach($childs as $childkey=>$childvalue)
+			{
+				$resultset[$childkey]=$childvalue->name;
+			}
+			
+		}
+	}
+	var_dump($resultset);
+	
+	exit();
+	
+	//cruise testing loading
+	
+	
+	//creating the enhancement product using the ubercart api
+	
+// 	$node=node_load(116);
+// 	var_dump($node);exit();
+// 	$node->taxonomy_catalog['und'][0]['tid']
+// 	var_dump($node->uc_product_image['und']['0']);exit();	
+	require_once 'modules/node/node.pages.inc'; // Required for node_object_prepare();
+	$node = new stdClass();
+	$node->type = 'product';
+	node_object_prepare($node); // This sets up all the default node fields so we don't accidentally leave something off.
+	
+	// Copy over all the existing settings from Drupal 5.
+	$node->uid = 1;
+	$node->status = '1';
+	$node->title ='laxmistestproduct';
+	$node->created =time();
+	$node->changed =time();
+	$node->language='und';
+	// Set Ubercart variables
+// 	$node->model =E1001P; // the SKU is a required field, so I generated a SKU based on the node title
+	$node->list_price = '45.00';
+	$node->cost ='45.00';
+	$node->sell_price = '45.00';;
+	$node->default_qty = 1;
+	$node->pkg_qty = 1;
+	
+	// Set taxonomy + menu etc if you need to
+	$node->taxonomy_catalog['und'][0]['tid'] = 232;
+// 	$node->menu = array();
+// 	
+
+	
+	$filepath='C:/Dev/xampp/htdocs/works/dev/waterways/trunk/web/sites/default/files/pictures/test.jpg';
+	
+	// Create managed File object and associate with Image field.
+	$file = new StdClass();
+	$file->uid = 1;
+	$file->uri = $filepath;
+	$file->filemime = file_get_mimetype($file->uri);
+	$file->status = 1;
+	$dest = file_default_scheme() . '://pictures'; // Subdirectory name within files directory. ($dest is optional.)
+	$file = file_copy($file, $dest);
+
+	$node->uc_product_image['und']['0']=(array)$file;
+	
+	
+	
+	
+	
+	// Save the node
+	node_save($node);  // This will update the $node object with the $node->nid which is important for the next step.
+	//end product creating
+	
+	
+	
+	
+	var_dump($node);exit();
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+// 	@param id
+// 	* @param cruisetemplateid
+// 	* @param productenhanments(blob) object  format array(enhancedproducts=>array(nodeid,nodeid,nodeid));
+// 	* @param created timestamp
+	
+	$list=getenhancementlist();
+	var_dump($list);
+	
+	exit();
+	
+	
+	$result = db_select('uc_product_enhancements', 'c')
+	->fields('c')
+	->condition('nid', 181, '=')
+	->execute();
+	foreach ($result as $val)
+	{
+		var_dump(unserialize($val->productenhancements));
+	}
+	exit();
+	
+	$list=draw_calendar(11, 2013, 'all', 'all');
+	var_dump($list);exit();
+	
+	//loading cruises load
+// 	$loadcheckapieventdates = getCruiseEventsByMonth(11, 2013);
+// 	var_dump($loadcheckapieventdates);
+// 	exit();
+// 	$cruiselist=getCruiseTypes('tplbased');
+// 	var_dump($cruiselist);
+// 	exit();
+	
+	
+	
+	
+	//getting the schduled list
+	
+	//display elements 
+// scheduled date,departure time ,boarding time,return time,scheduledeventid,eventid
+	$query = db_select('scheduledevents','sd');
+	$query->join('scheduledevent_dates','e','sd.id = e.scheduledevent_id');
+	$query->fields('sd');
+	$query->fields('e');
+// $query->condition('sd.id',2);
+
+	$result = $query->execute();
+	$totalresults=array();
+	$cruisetemplates=array();
+	$scheduleddates=array();
+	foreach ($result as  $cruiseentity) {
+		
+		$totalresults['id'] =$cruiseentity->id;
+		$totalresults['name'] =$cruiseentity->name;
+		$totalresults['cruisetemplate_id'] =$cruiseentity->cruisetemplate_id;
+		$totalresults['vessel_id'] =$cruiseentity->vessel_id;
+		$totalresults['port_id'] =$cruiseentity->port_id;
+		$totalresults['departuretime'] =$cruiseentity->departuretime;
+		$totalresults['returntime'] =$cruiseentity->returntime;
+		$totalresults['boardingtime'] =$cruiseentity->boardingtime;
+		$totalresults['ticketinventory'] =$cruiseentity->ticketinventory;
+		$totalresults['availabletickets'] =$cruiseentity->availabletickets;
+		$totalresults['soldtickets'] =$cruiseentity->soldtickets;
+		$totalresults['windowseatinventory'] =$cruiseentity->windowseatinventory;
+		$totalresults['availablewindowseats'] =$cruiseentity->availablewindowseats;
+		$totalresults['windowseatssold'] =$cruiseentity->windowseatssold;
+		$totalresults['onsalesdaysprior'] =$cruiseentity->onsalesdaysprior;
+		$totalresults['onsaleshoursprior'] =$cruiseentity->onsaleshoursprior;
+		$totalresults['scheduledevent_id'] =$cruiseentity->scheduledevent_id;
+		$totalresults['scheduleddate'] =$cruiseentity->scheduleddate;
+		
+		$cruisetemplates[]=$totalresults;
+		$scheduleddates[date('Ymd',$cruiseentity->scheduleddate)]=$cruisetemplates;
+		unset($cruisetemplates);
+		
+	}
+	
+	
+	var_dump($scheduleddates);
+	exit();
+	
+	
+// 	$query = db_select('scheduledevents','s')
+// 	->join('scheduledevent_dates','e','s.id = e.scheduledevent_id')
+// 	->fields('n',array('yourfieldnames'))
+// 	->fields('p',array('yourfieldnames'))
+// 	->condition('n.nid','5') ;
+// 	$result = $query->execute();
+	
+	module_load_include('inc', 'node', 'node.pages');
+	
+	$form=array();
+	
+	$form['laxmi'] = array(
+
+  '#type' => 'fieldset', 
+
+  '#title' => t('Contact
+settings'), 
+
+  '#weight' => 5, 
+
+  '#collapsible' => TRUE, 
+
+  '#collapsed' => FALSE,
+
+);
+	
+	$form['laxmi']['subject']= array(
+	
+			'#type' => 'textfield',
+	
+			'#title' => t('Subject'),
+	
+			'#default_value' => $node->title,
+	
+			'#size' => 60,
+	
+			'#maxlength' => 128,
+	
+			'#required' => TRUE,
+	
+	);
+	$form['laxmi']['content'] = node_add('product');
+$output = drupal_render($form);
+	
+	print $output;
+	
+	
+	exit();
+      $result = db_select('reservation', 'c')
+            ->fields('c')
+            ->condition('orderid',141, '=')
+            ->execute();
+    
+   foreach ($result as $value) {
+     $itemsobj = unserialize($value->data);
+    }
+    
+
+    var_dump($itemsobj);exit();
+//  array(2) { [8]=> string(1) "1" [4]=> string(1) "3" } //aid=>qty
+  //calcualte tickets
+     $totalqty=0;
+  foreach ($tickets as $qty) {
+    
+    $totalqty+=(int)$qty;
+   
+  }
+  var_dump($totalqty);
+  exit();
+  
+  
+ 
+   $resultsset = array();
+    $result = db_select('reservation', 'c')
+            ->fields('c')
+            ->condition('orderid',120, '=')
+            ->execute();
+   foreach ($result as $value) {
+     $itemsobj = unserialize($value->data);
+    }
+    
+    
+    drupal_json_output($itemsobj);exit();
+     foreach ($itemsobj->userchoice as $key => $datavalue) {
+      if($key=='cruiseproduct')
+    {
+     foreach($datavalue["producttickets"] as $tickets)
+     {
+//       var_dump($tickets);
+       var_dump($tickets['attrid']);
+       var_dump($tickets['qty']);
+     }
+    }
+     }
+     exit();
+
+     $result = db_select('cartsession', 'c')
+            ->fields('c')
+            ->condition('sessionid','F9XjWLUu13814938812bWrxWAE', '=')
+            ->execute();
+    foreach ($result as $value) {
+        $itemsobj = unserialize($value->bookitems);
+    }
+    foreach ($itemsobj->ticketoptions as $ticketoptions) {
+        if ($ticketoptions['qty'] > 0) {
+            $selectedproductattributes[] = $ticketoptions;
+            $pricekey = $ticketoptions['optionid'] . '-price';
+//     var_dump($ticketoptions[$pricekey]);
+            $total_product_price+=$ticketoptions['qty'] * $ticketoptions[$pricekey];
+
+
+            //laxmi attributte section
+        }
+    }
+            drupal_json_output($selectedproductattributes);
+  exit();
+  $resultsset = array();
+    $result = db_select('reservation', 'c')
+            ->fields('c')
+            ->condition('orderid',113, '=')
+            ->execute();
+    
+   foreach ($result as $value) {
+     $itemsobj = unserialize($value->data);
+    }
+     foreach ($itemsobj->userchoice as $key => $datavalue) {
+      if($key=='cruiseproduct')
+    {
+     foreach($datavalue["producttickets"] as $tickets)
+     {
+//       var_dump($tickets);
+       var_dump($tickets['attrid']);
+       var_dump($tickets['qty']);
+     }
+    }
+     }
+  exit();
+  
+   $query = new EntityFieldQuery();
+  $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+  $query->entityCondition('bundle', 'catalog');
+  $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+  $query->execute();
+  
+
+  if (count($catalogs->ordered_results) > 0) {
+    $totalcruiseitems=array();
+    foreach ($catalogs->ordered_results as $noderesults) {
+      
+    $catalogid=$noderesults->entity_id;
+    }
+  }
+    
+  
+   $nodeQuery = new EntityFieldQuery();
+  $entities = $nodeQuery->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'product') 
+
+ ->fieldCondition('taxonomy_catalog', 'tid', $catalogid)
+//  ->pager(10)
+  ->execute();
+ 
+  $entitiesnodes=array();
+  foreach ($entities as $key => $nodesvalue) {
+    $nodes=array_keys($nodesvalue);
+  }
+  
+  //Loading Multiple Nodes at one time
+  
+ $bulknodelists=node_load_multiple($nodes);
+
+ drupal_json_output($bulknodelists);
+  
+  exit();
+ $month=10;
+  $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, 1);
+    $startdate = (date('Y-m-d 00:00:00', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d 00:00:00', $last_minute));
+  
+    
+//   SELECT a.* FROM "field_data_field_eventstartdate" a,"field_data_taxonomy_catalog" b
+//WHERE (("field_eventstartdate_value" >=1380600000 and 
+//            "field_eventstartdate_value"<=1383278340) or ("field_eventstartdate_value2" >=1380600000 and 
+//            "field_eventstartdate_value2"<=1383278340) or
+//            ("field_eventstartdate_value"<=1380600000 and "field_eventstartdate_value2">=1383278340)) 
+//            and b.taxonomy_catalog_tid=235 and a."entity_id"=b."entity_id"
+    
+    
+    
+    $result = db_query('SELECT a.entity_id FROM "field_data_field_eventstartdate" a,"field_data_taxonomy_catalog" b
+WHERE (("field_eventstartdate_value" >='.$first_minute.' and 
+            "field_eventstartdate_value"<='.$last_minute.') or ("field_eventstartdate_value2" >='.$first_minute.' and 
+            "field_eventstartdate_value2"<='.$last_minute.') or
+            ("field_eventstartdate_value"<='.$first_minute.' and "field_eventstartdate_value2">='.$last_minute.')) 
+            and b.taxonomy_catalog_tid=235 and a."entity_id"=b."entity_id"');
+// Result is returned as a iterable object that returns a stdClass object on each iteration
+    $nodes=array();
+foreach ($result as $record) {
+  $nodes[]=$record->entity_id;
+}
+
+    exit();
+    
+    
+    
+   $nodeQuery = new EntityFieldQuery();
+  $entities = $nodeQuery->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'product') 
+ ->fieldCondition('field_eventstartdate','value', $first_minute, '>=') //field_eventstartdatevalu1 <=cuurentmonthstartdate(1378008000<=1380600000)
+  ->fieldCondition('field_eventstartdate','value2', $last_minute, '<=')//field_eventstartdatevalu2 >=cuurentmonthenddate(1412049600<=1383278340)
+// ->fieldCondition('field_eventstartdate', 'value', array($first_minute, $last_minute), 'BETWEEN')
+ ->fieldCondition('taxonomy_catalog', 'tid', 235)
+//  ->pager(10)
+  ->execute();
+ 
+  $entitiesnodes=array();
+  
+  foreach ($entities as $key => $nodesvalue) {
+//    $nodes=array_keys($nodesvalue);
+    var_dump($nodesvalue);
+  }
+//  var_dump($nodes);
+  exit();
+  
+//  $order=uc_order_load(74);
+  $bookingdates=getBookingdatebyorderId(88);
+  var_dump($bookingdates);
+ exit();
+  $nodeids=array();
+  foreach ($or->products as $bookey => $bookvalue) {
+    $nodeids[]=$bookvalue->nid;
+  }
+  
+ 
+$query = new EntityFieldQuery();
+  $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+  $query->entityCondition('bundle', 'catalog');
+  $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+  $query->execute();
+  
+
+  if (count($catalogs->ordered_results) > 0) {
+    $totalcruiseitems=array();
+    foreach ($catalogs->ordered_results as $noderesults) {
+      
+    $catalogid=$noderesults->entity_id;
+    }
+  }
+
+   $nodeQuery = new EntityFieldQuery();
+  $entities = $nodeQuery->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'product') 
+ 
+ ->fieldCondition('taxonomy_catalog', 'tid', $catalogid)
+//  ->pager(10)
+  ->execute();
+ 
+  $entitiesnodes=array();
+  foreach ($entities as $key => $nodesvalue) {
+    $nodes=array_keys($nodesvalue);
+  }
+  $resultsnode=array();
+  foreach ($nodeids as $nodevalue) {
+    if(in_array($nodevalue, $nodes))
+    {
+      $resultsnode[]=$nodevalue;
+    }
+  }
+  
+  
+  var_dump($resultsnode);
+  
+  exit();
+    $cruises= getCruiseEventsByMonth(10,2013);
+//  $cruises= getCruiseEventsByMonthByCruisetype(10,2013,7);
+//  $cruises= getCruiseEventsByMonthByPorttype(10,2013,32);
+//  $cruises=  getParentports();//taxonomy_term_load(27);
+//  $results=array_keys($cruises);
+  drupal_json_output($cruises);exit();
+  $resultsset = array();
+    $result = db_select('reservation', 'c')
+            ->fields('c')
+            ->condition('orderid', 44, '=')
+            ->execute();
+    
+   foreach ($result as $value) {
+       
+        $itemsobj = unserialize($value->data);
+    }
+    foreach ($itemsobj->userchoice as $key => $datavalue) {
+      if($key=='cruiseproduct')
+    {
+     var_dump($datavalue['cruiseitem']);
+    }
+    }
+    
+  exit();
+   $orderdetails = uc_order_load(44);
+    $productobject = array_keys($orderdetails->products);
+    $productNodeId = $productobject->nid;
+    var_dump($_SESSION['bookingInput']);
+    exit();
+  $loadcheckapieventdates = getCruiseEventsByMonth(9, 2013);
+        
+        drupal_json_output($loadcheckapieventdates);exit();
+ $cuurentday = date('d', time());
+  $month=9;
+    $first_minute = mktime(0, 0, 0, $month, 1);
+    $startdate = (date('Y-m-d 00:00:00', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d 00:00:00', $last_minute));
+  
+//  var_dump($first_minute);
+//  var_dump($last_minute);
+//
+//exit();
+    
+   $nodeQuery = new EntityFieldQuery();
+  $entities = $nodeQuery->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'product') 
+  ->fieldCondition('field_eventstartdate','value', $first_minute, '<=') //1375329600-1378008000field_eventstartdatevalu1 <=cuurentmonthstartdate(1378008000<=1380600000)
+  ->fieldCondition('field_eventstartdate','value2', $last_minute, '>=')//1380513600 1380599940field_eventstartdatevalu2 >=cuurentmonthenddate(1412049600<=1383278340)
+ 
+          ->fieldCondition('taxonomy_catalog', 'tid', 234)
+//  ->pager(10)
+  ->execute();
+drupal_json_output($entities);
+  exit();
+  
+  $tt=getCruiseEventsByMonth(10,2013);
+//  var_dump($tt);exit();
+  drupal_json_output($tt);
+  exit();
+  $month =9;
+  $year=2013;
+          $first = getFistAndEndDateOfMonth($month, $year, 'first');
+    $last = getFistAndEndDateOfMonth($month, $year, 'last');
+
+
+
+    $diffrence = $last - $first;
+    $days = floor($diffrence / (60 * 60 * 24));
+    for ($i = 0; $i <= $days; $i++) {
+            $tempdate = strtotime(date("Y-m-d", $first) . " +" . $i . " day");
+            $weekday = date('N', $tempdate); // 1-7 (1-Sunday)
+            var_dump($weekday);
+    }
+exit();
+  
+ /*
+   * Loading the Monthly calendar Events
+   * load events based on the following conditions
+   * eventstart date and current week dates
+   * step 1:CurrentMonth Day Number
+   * Step 2:Load cruise nodes of that day
+   * 
+   * 
+   */
+  
+  
+  
+
+ 
+  $cuurentday = date('d', time());
+    $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+    $startdate = (date('Y-m-d', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d', $last_minute));
+    
+    
+    var_dump($startdate);
+    var_dump($enddate);
+//    $events=getCruiseDaysAssocnidArray();
+//  var_dump($events);
+    
+    //load certial category product 
+  $resultsarray = array();
+  $query = new EntityFieldQuery();
+  $entities = $query->entityCondition('entity_type', 'taxonomy_term');
+  $query->entityCondition('bundle', 'catalog');
+  $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+//    $query->fieldCondition('field_cruiseitemid', 'value', $cruiseitemId, '=');
+  $query->execute();
+
+  if (count($entities->ordered_results) > 0) {
+    $totalcruiseitems=array();
+    foreach ($entities->ordered_results as $noderesults) {
+     
+     $nodequery = new EntityFieldQuery();
+  $nodequery->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'product')
+//    ->propertyCondition('status', 1) // Don't include unpublished products.
+    ->fieldCondition('taxonomy_catalog', 'tid', $noderesults->entity_id)
+    ->execute();
+  
+  
+foreach ($nodequery->ordered_results as $nodevalue) {
+  
+  //node results get here
+  
+  $eventnode = node_load($nodevalue->entity_id);
+  $results=array();
+  $cruiseevents=array();
+  
+  
+    $cruiseevents['id']=$eventnode->nid;
+    $cruiseevents['name']=$eventnode->title;
+    $cruiseevents['status']=$eventnode->status;
+    $cruiseevents['created']=$eventnode->created;
+    $cruiseevents['cruisetype']=getArrayloop($eventnode->field_cruisetype);
+    
+    //load vessel details
+    
+    $vessel=loadvesselById(getArrayloop($eventnode->field_vesseltype));
+    $cruiseevents['vesselid']=$vessel['vesselid'];
+  $cruiseevents['vesselname']=$vessel['vesselname'];
+  
+  
+    //load port details
+    $portsdetails=loadportById(getArrayloop($eventnode->field_portslist));
+    $cruiseevents['portname']=$portsdetails['portname'];
+                        $cruiseevents['portdescription']=$portsdetails['portdescription'];
+                        $cruiseevents['portColor']=$portsdetails['portColor'];
+                        $cruiseevents['portAddress']=$portsdetails['portAddress'];
+                        $cruiseevents['portState']=$portsdetails['portState'];
+                        $cruiseevents['portCity']=$portsdetails['portCity'];
+                        $cruiseevents['portPostalCode']=$portsdetails['portPostalCode'];
+    
+    //end of port details
+    
+    $cruiseevents['eventstartdate']=getArrayloop($eventnode->field_eventstartdate);
+    $cruiseevents['eventenddate']=getArrayloop($eventnode->field_eventenddate);
+    $cruiseevents['cruisedeparturetime']=getArrayloop($eventnode->field_cruisedeparturetime);
+    
+    $cruiseevents['cruisereturntime']=getArrayloop($eventnode->field_cruisereturntime);
+    $cruiseevents['cruiseborading']=getArrayloop($eventnode->field_cruiseborading);
+    
+    foreach ($eventnode->field_cruiseweekdays as $key => $eventdaysvalue) {
+      
+      if(count($eventdaysvalue) > 0)
+      {
+        
+        foreach ($eventdaysvalue as $eventday) {
+          if(isset($eventvalue))
+          $eventvalue.=','.$eventday['value'];
+          else
+            $eventvalue=$eventday['value'];
+          
+        }
+        $cruiseevents['cruiseweekdays']= $eventvalue;
+      }
+       
+    }
+  //end of node results
+  
+  
+  
+  
+}
+$totalcruiseitems[]=$cruiseevents;
+
+ 
+    }
+  }
+  
+  var_dump($totalcruiseitems);
+  
+   exit();
+ 
+  $eventnode = node_load(88);
+  $results=array();
+  $cruiseevents=array();
+  
+  
+    $cruiseevents['id']=$eventnode->nid;
+    $cruiseevents['name']=$eventnode->title;
+    $cruiseevents['status']=$eventnode->status;
+    $cruiseevents['created']=$eventnode->created;
+    $cruiseevents['cruisetype']=getArrayloop($eventnode->field_cruisetype);
+    
+    //load vessel details
+    
+    $vessel=loadvesselById(getArrayloop($eventnode->field_vesseltype));
+    $cruiseevents['vesselid']=$vessel['vesselid'];
+  $cruiseevents['vesselname']=$vessel['vesselname'];
+  
+  
+    //load port details
+    $portsdetails=loadportById(getArrayloop($eventnode->field_portslist));
+    $cruiseevents['portname']=$portsdetails['portname'];
+                        $cruiseevents['portdescription']=$portsdetails['portdescription'];
+                        $cruiseevents['portColor']=$portsdetails['portColor'];
+                        $cruiseevents['portAddress']=$portsdetails['portAddress'];
+                        $cruiseevents['portState']=$portsdetails['portState'];
+                        $cruiseevents['portCity']=$portsdetails['portCity'];
+                        $cruiseevents['portPostalCode']=$portsdetails['portPostalCode'];
+    
+    //end of port details
+    
+    $cruiseevents['eventstartdate']=getArrayloop($eventnode->field_eventstartdate);
+    $cruiseevents['eventenddate']=getArrayloop($eventnode->field_eventenddate);
+    $cruiseevents['cruisedeparturetime']=getArrayloop($eventnode->field_cruisedeparturetime);
+    
+    $cruiseevents['cruisereturntime']=getArrayloop($eventnode->field_cruisereturntime);
+    $cruiseevents['cruiseborading']=getArrayloop($eventnode->field_cruiseborading);
+    
+    foreach ($eventnode->field_cruiseweekdays as $key => $eventdaysvalue) {
+      
+      if(count($eventdaysvalue) > 0)
+      {
+        
+        foreach ($eventdaysvalue as $eventday) {
+          if(isset($eventvalue))
+          $eventvalue.=','.$eventday['value'];
+          else
+            $eventvalue=$eventday['value'];
+          
+        }
+        $cruiseevents['cruiseweekdays']= $eventvalue;
+      }
+       
+    }
+    
+    
+    
+  
+  drupal_json_output($cruiseevents);
+  
+  
+  
+  
+  
+  
+  
+  exit();
+  
+  
+  $it=getCheckfrontApiresults('FPVQ-150813','get','journal');
+  
+  if($it['request']['status']=='OK' && $it['request']['records'] > 0)
+  {
+    drupal_json_output($it['booking']['total']);
+  }
+  exit();
+  $payformInputObj=new stdClass();
+  $payformInputObj->amount_other=4;
+$payformInputObj->total=4;
+$payformInputObj->notes='Checking with Custom Payment';
+$payformInputObj->payment_type='visa';
+$payformInputObj->first_name='Lakshmi';
+$payformInputObj->last_name='Narsimha';
+$payformInputObj->mail='lakshminarsimha@lsnsoft.com';
+$payformInputObj->cc_type='visa';
+$payformInputObj->cc_number='4007000000027';
+$payformInputObj->cc_ccv2='854';
+
+$payformInputObj->cc_exp_month='02';
+$payformInputObj->cc_exp_year='15';
+  //end of building Input Object
+  
+  
+  $auithresults = autorize($payformInputObj);
+  drupal_json_output($auithresults);
+  exit();
+
+  
+//  $cruisesitems=getItemDetailsByItemId('2013-08-30',11);
+  $cruisesitems=buildTicketsform('2013-08-30',11);
+  var_dump($cruisesitems);
+  exit();
+  $form=array();
+
+ $form['pay'] = drupal_get_form('pay_form', 2, 'pay_form');
+ 
+ $form['pay']['bookpay']['amount_other']['#value'] = 4;
+ $form['pay']['bookpay']['pay_method'][1]['first_name']['#value'] = 'laxmi';
+ $form['pay']['bookpay']['pay_method'][1]['last_name']['#value'] = 'narsimha';
+ $form['pay']['bookpay']['pay_method'][1]['mail']['#value'] = 'lakshminarsimha@lsnsoft.com';
+ $form['pay']['bookpay']['pay_method'][1]['cc_type']['#value'] = 'visa';
+ $form['pay']['bookpay']['pay_method'][1]['cc_number']['#value'] = '4007000000027';
+ $form['pay']['bookpay']['pay_method'][1]['cc_ccv2']['#value'] = '854';
+ $form['pay']['bookpay']['pay_method'][1]['cc_exp_month']['#value'] = '01';
+ $form['pay']['bookpay']['pay_method'][1]['cc_exp_year']['#value'] = '15';
+  $form['pay']['bookpay']['notes']['#value'] = 'Greata';
+// drupal_json_output($output['bookpay']);
+  
+ $form['pay']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('lapay'),
+    );
+//     pay_validate($form, &$form_state);
+      
+//pay_submit($form, &$form_state);
+// $form=array();
+//pay_form_callback('submit', $form, $form_state);
+//drupal_form_submit('pay_form', $form_state);
+//pay_submit($form, &$form_state);
+        print_r (drupal_render($form));
+ 
+         exit();
+  
+ 
+  
+//$dataArray=array();
+//$cruisesitems=getItemDetailsByItemId('2013-08-23', 11);
+//drupal_json_output($cruisesitems);exit();
+//$results=array();
+//$form=array();
+//foreach ($cruisesitems['item'] as $key=> $cruise) {
+////   $results['name']=$cruisesitems['item']['name'];
+//   if($key=='rate')
+//   {
+//     foreach ($cruisesitems['item']['rate'] as $ratekey => $value) {
+////       $results[]=$ratekey;
+//       if($ratekey=="event")
+//       {
+//         if(count($value)>0)
+//         {
+//           foreach ($value as $rateeventkey=>$data) {
+//              //again loop
+//              foreach ($data as $prickey=>$pricevalue) {
+//                 $results[$prickey]=$pricevalue['amount'];
+//                 $pricedetails=$prickey.' '.$pricevalue['amount'];
+//                 $form['TICKETS'][$prickey] = array(
+//       '#type' => 'select',
+//       '#title' => t($pricedetails),//later we need to change this one as dynamic
+//       '#options' => array(
+//          1=>1,
+//         2 =>2,
+//         3=>3,
+//       ),
+//       '#default_value' =>1,
+//       
+//   );
+//                  
+//              }
+//              break;//using only onetime(0,7) only 0 is uisng
+//           }
+//         }
+//       }
+//       
+//     }
+//   }
+////  $results[]=$cruise;
+//}
+//
+//drupal_json_output($results);
+//exit();
+//  $form=array();
+// $month=8;
+// $year=2013;
+// $categoryid=7;
+//   $categories=array(
+//       7=>'windowoptions',
+//       8=>'drinks',
+//       9=>'cakes',
+//       10=>'flowers',
+//       11=>'packages');
+//   
+//   $cuurentday=date('d',time());
+//    $first_minute = mktime(0, 0, 0, $month, $cuurentday);
+// 
+//    $startdate = (date('Y-m-d', $first_minute));
+//    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+//    $enddate = (date('Y-m-d', $last_minute));
+//    $queryarray=array('category_id'=>$categoryid,'start_date'=>$startdate,'end_date'=>$enddate);
+////    $queryarray=array('category_id'=>$categoryid);
+//   $cruisesitems=getCheckfrontApiresults($queryarray,'get','item');
+// 
+//   
+//   
+//    
+//  $imageurl="https://lsnsoftinc.checkfront.com/media/M";
+//  $details=array();
+//  $results=array();
+//  foreach ($cruisesitems['items'] as $itemlist) {
+////    $details[]=$itemlist;
+//     $details['imageurl']=$imageurl.$itemlist['image'][1]['src'].'.jpg';
+//       $details['name']=$itemlist['name'];
+//    $details['price']=$itemlist['rate']['summary']['title'];
+//    $details['cateID']=$categoryid;
+//    $results[]=$details;
+//  }
+//  
+//  if(count($results) > 0)
+//  {
+//    for($i=0;$i<=count($results);$i++)
+//    {
+//      if($i==0)
+//      {
+//  $form['ENHANCEMENTS']['windowsoption'] = array(
+//  '#type' => 'fieldset', 
+//  '#title' => t('WindowOptions'), 
+//  '#weight' => 1, 
+//  '#collapsible' => TRUE, 
+//  '#collapsed' => FALSE, 
+//  '#tree' => TRUE,
+//);
+//      }
+//      else
+//      {
+//        $widget='widget'.$i;
+//         $form['ENHANCEMENTS']['windowsoption'][$widget] = array(
+//    '#type' => 'fieldset',
+//     '#prefix' => '<div class="thumbscontainer">',
+//     '#suffix' => '</div>', 
+//);
+//      }
+//    }
+//  }
+//  $k=0;
+//  foreach ($results as $value) {
+//    $k++;
+//    $kwdiget='widget1'.$k++;
+//    $thumb='thumb'.$k++;
+//    
+//    $samplhtml='<div class="span6 blogInner">
+//    <div class="blogTitle">
+//    <span>'.$value['name'].'</span></div><img src="'.$value['imageurl'].'"></div>';
+//  
+////    var_dump($value['name']);
+////    var_dump($value['imageurl']);
+////     var_dump($value['price']);
+////     
+//     
+//     $form['ENHANCEMENTS']['windowsoption'][$kwdiget][$thumb] = array(
+//    '#type' => 'fieldset',
+//     '#prefix' => '<div class="headercontent">',
+//     '#suffix' => '</div>', 
+//     '#title' => '',
+//     '#value' =>$samplhtml,
+//   
+//  );
+//  //option set one field
+// $form['ENHANCEMENTS']['windowsoption']['widget1'][$value['name']] = array(
+//       '#type' => 'select',
+//       '#title' => $value['price'],//later we need to change this one as dynamic
+//       '#options' => array(
+//          1=>1,
+//         2 =>2,
+//         3=>3,
+//       ),
+//   
+//       '#default_value' =>1,
+//       
+//   );
+//    
+//  }
+//  print drupal_render($form);
+//  
+//// drupal_json_output($results);
+//
+//   exit();
+// 
+//    
+//    $items=$Checkfront->get('item/9',array('category_id'=>3,'start_date'=>'2013-08-06','end_date'=>'2013-08-31'));
+  $queryarray=array('start_date'=>'2013-08-23',
+      'end_date'=>'2013-08-23',
+//      'discount_code'=>'4LV4546',
+      'param'=>array('qty'=>1));
+  
+  
+
+$items = getEventsByItemIdSlip($queryarray,33);
+drupal_json_output($items);exit();
+//Getting the Item Slip for creating the booking session
+if(count($items)) {
+
+	foreach($items as $item_id => $item) {
+         
+          if(isset($item['rate']) && $item_id=='item')
+          {
+            
+         var_dump($item['rate']['status']);
+                  echo '<br/>';
+
+         var_dump($item['rate']['available']);
+         echo '<br/>';
+         var_dump($item['rate']['slip']);
+         
+         echo '<br/>';
+         var_dump($item['rate']['date']);
+         
+         echo '<br/>';
+         echo '<br/>';
+         echo '<br/>';
+         
+         //creating the booking section
+         //checking with the available staus
+         if($item['rate']['status']=='A')
+         {
+           //applying session
+           $slips=array($item['rate']['slip']);
+            
+           $res=createBookingSession($slips);
+           
+           
+           var_dump($res);
+           $bookingres=createBoking($res);
+           var_dump($bookingres);
+           if($bookingres['request']['status']=='OK')
+           {
+             header("Location: {$bookingres['request']['url']}");
+           }
+           else
+           {
+             var_dump($bookingres['request']['status']);
+           }
+           
+         }
+         
+         
+         
+          }
+         
+        
+		// Let's only show 5 for the sake of the demo;
+		
+	}
+}
+
+//End of slip code
+
+//  $items=getDateEventsBycategorywise_test(8,2013,4);
+  
+//  $items=getCategoryItemsEventscalendar_test(8, 2013,'all');
+//  $items=getEventsByItemIdandCategory_test(8,2013,3,9);
+//  $items=getEventsByItemIdinDetails_test(8, 2013, 9);
+//  $items=getEventsByItemId_test(8, 2013, 9);
+  
+
+
+//drupal_json_output($loadcheckapieventdates);
+  exit();
+  
+  
+}

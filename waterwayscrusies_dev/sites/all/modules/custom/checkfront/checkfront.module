@@ -1,0 +1,282 @@
+<?php
+ini_set('display_errors','On');
+/**
+ * @file
+ * Integrates the Checkfront Online Booking System.
+*/
+
+/**
+ * Implementation of hook_perm().q
+ * thanks Patrick Bovenschen
+*/
+
+//laxmi changes checkfront_perm to checkfrontpermission
+function checkfront_permission() {
+	return array(
+		'access checkfront content' => array(
+			'title' => t('Access content site of Checkfront'),
+
+		),
+		'administer checkfront content' => array(
+			'title' => t('Access administration of Checkfront'),
+
+		)
+	); 
+        
+        
+  
+        
+        
+        
+}
+
+/**
+ * Implementation of hook_menu().
+*/
+function checkfront_menu() {    
+    $items['checkfront'] = array(
+      'page callback' => 'checkfront_page',
+      'access arguments' => array('access checkfront content'),
+      'title' => variable_get('checkfront_page_title', 'Book Now'),
+      'type' => MENU_NORMAL_ITEM,
+    );
+    //laxmi
+     $items['checkfront/date/%/item/%'] = array(
+        'title' => 'Waterways Cruises',
+        'page callback' => 'checkfront_itempage',
+        'page arguments' => array(2, 4),
+//        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    //laxmiend
+    
+    $items['admin/settings/checkfront'] = array(
+      'title' => 'Checkfront',
+      'description' => 'Integrate the Checkfront online booking system.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('checkfront_admin_settings'),
+      'access arguments' => array('administer checkfront content'),
+      'type' => MENU_NORMAL_ITEM,
+    );
+
+  return $items;
+}
+
+//lamxi
+function checkfront_itempage($date,$item)
+{
+  drupal_add_css(drupal_get_path('module', 'checkfront') . '/checkfront.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+   	$title = variable_get('checkfront_title', 'Book Now');
+	$host = checkfront_host();
+
+	if(!$host) {
+		return '<p style="color: firebrick">Please configure this module to enable bookings.</p>';
+	}
+	$path = drupal_get_path('module', 'checkfront');
+	global $base_url, $is_https;
+
+	$root = dirname(__FILE__);
+	include($root . DIRECTORY_SEPARATOR .'CheckfrontWidget.php');
+	$schema = ($is_https) ? 'https:' : 'http:';
+
+
+
+	$Checkfront = new CheckfrontWidget(
+		array(
+			'host'=>$host,
+			'pipe_url'=> $base_url .'/'. $path . '/pipe.html',
+			'interface' =>'v2',
+			'provider' =>'drupal',
+			'load_msg'=>'Searching Availability',
+			'continue_msg'=>'Continue to Secure Booking System',
+		)
+	);
+	$cnf=array(
+//		'category_id' => '1',
+//		'item_id' => '1',
+		'tid' => '',
+		'discount' => '',
+		'options' => 'tabs',
+            'layout'=>'D', // detail or list view for the booking page
+		'style' => '',
+		'width' => 'auto',
+		'theme' => 'Default',
+		'category_id'=>'',
+		'item_id'=>$item,
+            'date'=>$date
+            
+	);
+
+	
+
+	drupal_add_js("{$schema}//{$host}/lib/interface--{$Checkfront->interface_build}.js");
+
+	return $Checkfront->render($cnf);
+}
+//lamxi
+
+
+
+/**
+ * Menu callback; display checkfront settings.
+*/
+function checkfront_admin_settings() {
+  $form['div_tag'] = array('#type' => 'markup', '#value' => '<div><img src="//media.checkfront.com/images/brand/Checkfront-Logo-Tag-60.png"><h3>' . t('Get Started') . '</h3><ol><li><a href="https://www.checkfront.com/start/" target="_blank">' . t('Create your free Checkfront account') . '</a>, ' . t('setup your inventory, configure your account and e-commerce') . '.</li><li>' . t('Supply <strong>your Checkfront URL</strong> in the setup below.') . '</li><li><a href="http://www.checkfront.com/support/faq">' . t('See our FAQ for more information') . '.</a></li></ol>');
+  $form['account'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Setup'),
+    '#collapsible' => FALSE,
+  );
+    
+  $form['account']['checkfront_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Checkfront URL'),
+    '#default_value' => variable_get('checkfront_url', 'demo.checkfront.com'),
+    '#size' => 50, 
+    '#maxlength' => 100,
+    '#required' => TRUE,
+    '#description' => t('Location of your Checkfront Account '),
+  );
+  $form['account']['checkfront_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Checkfront Title'),
+    '#default_value' => variable_get('checkfront_title','Book Now'),
+    '#size' => 50, 
+    '#maxlength' => 100,
+    '#required' => TRUE,
+    '#description' => t('Title of Booking Page'),
+  );
+
+  $form['account']['checkfront_style_background_color'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Background color'),
+    '#default_value' => variable_get('checkfront_style_background_color', '#FFFFFF'),
+    '#size' => 10, 
+    '#maxlength' => 10,
+    '#required' => False,
+    '#description' => t('Background color for booking page'),
+  );
+
+  $form['account']['checkfront_style_color'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Font color'),
+    '#default_value' => variable_get('checkfront_style_color', '#000000'),
+    '#size' => 10, 
+    '#maxlength' => 10,
+    '#required' => False,
+    '#description' => t('Font color for booking page'),
+  );
+    
+
+  $form['account']['checkfront_style_font'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Font family'),
+    '#default_value' => variable_get('checkfront_style_font', ''),
+    '#size' => 30, 
+    '#maxlength' => 30,
+    '#required' => False,
+    '#description' => t('Font for booking page'),
+  );
+    
+  $form['account']['checkfront_hdr'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Header'),
+    '#default_value' => variable_get('checkfront_hdr',''),
+    '#description' => t('Optional header to be displayed above the booking window.'),
+    '#required' => FALSE,
+  );
+
+  
+  
+
+
+  return system_settings_form($form);
+}
+
+/**
+ * Validate settings
+*/
+function checkfront_host() {
+	$str = variable_get('checkfront_url');
+
+	if(!preg_match('~^http://|https://~',$str)) $str = 'https://' . $str;
+	if($uri = parse_url($str)) {
+		if($uri['host']) {
+			$host= $uri['host'];
+		}
+	}
+	return $host;
+}
+
+/**
+ *  Embed inline booking window 
+*/
+function checkfront_page() {
+   drupal_add_css(drupal_get_path('module', 'checkfront') . '/checkfront.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+   	$title = variable_get('checkfront_title', 'Book Now');
+	$host = checkfront_host();
+
+	if(!$host) {
+		return '<p style="color: firebrick">Please configure this module to enable bookings.</p>';
+	}
+	$path = drupal_get_path('module', 'checkfront');
+	global $base_url, $is_https;
+
+	$root = dirname(__FILE__);
+	include($root . DIRECTORY_SEPARATOR .'CheckfrontWidget.php');
+	$schema = ($is_https) ? 'https:' : 'http:';
+
+
+
+	$Checkfront = new CheckfrontWidget(
+		array(
+			'host'=>$host,
+			'pipe_url'=> $base_url .'/'. $path . '/pipe.html',
+			'interface' =>'v2',
+			'provider' =>'drupal',
+			'load_msg'=>'Searching Availability',
+			'continue_msg'=>'Continue to Secure Booking System',
+		)
+	);
+	$cnf=array(
+//		'category_id' => '1',
+//		'item_id' => '1',
+		'tid' => '',
+		'discount' => '',
+		'options' => 'tabs',
+            'layout'=>'D', // detail or list view for the booking page
+		'style' => '',
+		'width' => 'auto',
+		'theme' => 'Default',
+		'category_id'=>'',
+		'item_id'=>'',
+//            'date'=>20130726
+            
+	);
+
+	$style = array();
+        
+	if($color = variable_get('checkfront_style_color', 0)) {
+		$style[]= "color:{$color}";
+	}
+
+	if($background= variable_get('checkfront_style_background_color', 0)) {
+		$style[]= "background-color:{$background}";
+                
+	}
+
+	if($font = variable_get('checkfront_style_font', 0)) {
+		$style[]= "font-family:{$font}";
+	}
+
+	if(count($style)) {
+		$cnf['style'] = implode(';',$style);
+	}
+
+	drupal_add_js("{$schema}//{$host}/lib/interface--{$Checkfront->interface_build}.js");
+
+	return $Checkfront->render($cnf);
+}
+
+
+

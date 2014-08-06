@@ -1,0 +1,229 @@
+
+
+
+/* #edit-guest th{
+	width: 100px !important;
+} */
+
+/* #edit-guest td{
+	float:left;
+	width: 100px !important;
+} */
+
+
+#edit-orderinfo .form-type-textfield input {
+    width: 250px;
+}
+
+
+/* #edit-guest table{
+	padding: 0px !important;
+	border:none !important;
+	
+} */
+
+
+#orderdiv {
+  /* background: none repeat scroll 0 0 #FFFFFF;*/
+    height: auto;
+    left: 0;
+    margin-left: 71%;
+    margin-top: 4%;
+    max-height: 400px;
+    overflow: auto;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    width: 274px;
+    z-index:10;
+     background-color: #F5F5F5;
+    border-left: 1px solid #E6E6E6;
+    
+ border: 5px solid #FFFFFF;
+ 
+ box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0.3),
+             0px 20px 15px 0px rgba(0, 0, 0, 0.6);  
+             
+            /*   -moz-box-sizing: border-box;
+    background-color: #F5F5F5;
+    border-left: 1px solid #E6E6E6;
+    bottom: 0;
+    height: 600px;
+    padding: 8px 0 8px 16px;
+    position: absolute;
+    right: 0;
+    width: 365px; */
+    
+
+}
+ 
+ 
+ div.vertical-tabs ul.vertical-tabs-list li{
+display: inline-block;
+/*width:10%;*/
+}
+
+.vertical-tabs ul.vertical-tabs-list{
+margin: -1px 0 -1px 0;
+width:100%;
+}
+div.vertical-tabs{
+margin:1em 0 1em 0 !important;
+}
+
+div.vertical-tabs-panes.vertical-tabs-processed{
+    width:100% ;
+    float:left ;
+}
+li.selected a{
+    background-color: #0088CC;   
+    text-decoration: none;
+}
+.vertical-tabs ul.vertical-tabs-list .selected strong{
+     color: #FFFFFF !important;
+}
+
+
+.ordertitle{
+    font-weight: bold;
+    text-align: right;
+    /*padding:18px;*/
+}
+.orderinfotitle{
+/*    font-weight: bold;*/
+    text-align: right;
+    padding-right:4%;
+}
+.carteventinfotitle{
+    text-align: right;
+    padding-right:4%;
+}
+.purchaseinfotitle{
+    text-align: right;
+    padding-right:4%;
+    width:280px;
+    padding-bottom: 20px;
+}
+.txtordertitle{
+    font-weight: bold;
+    text-align: right;
+    padding:18px;
+}
+.guestinfotitle{
+/*    font-weight: bold;*/
+    text-align: right;
+    padding:4% 4% 0 0;
+}
+.chkformitem .form-type-checkbox{
+    margin:0px !important;
+}
+.chkformitem .form-type-textarea{
+    margin:0px !important;
+    padding: 0 10px 10px 0;
+}
+#purchaseondiv{
+    font-weight: bold;
+    margin: 20px;
+}
+
+#edit-guest .fieldset-wrapper .form-type-textfield input{
+    max-width: 203px !important;
+}
+
+
+
+#edit-tickets .fieldset-wrapper .form-type-textfield input{
+    max-width: 160px !important;
+}
+
+
+#edit-enhancements .fieldset-wrapper .form-type-textfield input{
+    max-width: 160px !important;
+}
+
+
+
+
+#edit-cruisefees .fieldset-wrapper .form-type-textfield input{
+    max-width: 160px !important;
+}
+
+
+
+#edit-tax--2 .fieldset-wrapper .form-type-textfield input{
+    max-width: 160px !important;
+}
+
+
+#edit-payment .fieldset-wrapper .form-type-textfield input{
+    max-width: 203px !important;
+}
+
+
+
+
+
+.eventdetails{
+    margin: 10px;
+}
+.lineitemtitle{
+    margin: 10px;
+    font-weight: bold;
+}
+.lineitempadd{
+    padding-left: 10px;
+}
+.ordersummarywidgettitle{
+    padding-left:3%;
+    width:50%;
+}
+
+#edit-orderdetails{
+    border: 1px solid #000000;
+}
+
+#edit-guest{
+    border:none;
+    background-color: #F0F0F0;
+}
+
+#edit-guest .fieldset-legend{
+    border:none;
+    background-color: #F0F0F0;
+}
+
+#edit-purchase{
+    border:none;
+    background-color: #F0F0F0;
+    
+}
+
+
+#edit-purchase .fieldset-legend{
+    border:none;
+    background-color: #F0F0F0;
+}
+
+
+
+
+.fieldset-wrapper .row-fluid table .form-item {
+    margin: 0;
+}
+
+.tableborder{
+    border: 1px;
+    border-color: #000000;
+}
+
+.tdrightalign{
+    text-align:right;
+}
+
+
+.textareafield{
+width:400px;
+height:50px;
+/* border:1px solid #000000; */
+background-color:#CCCCCC;
+}

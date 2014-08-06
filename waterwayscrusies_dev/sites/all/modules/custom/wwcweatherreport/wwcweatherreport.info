@@ -1,0 +1,6 @@
+name = WWC Weather
+description = A Weather Report based on Address Latitude and Longititude
+core = 7.x
+package = WWC
+
+

@@ -1,0 +1,61 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function cruisemenulist_schema() {
+    $schema = array();
+    $schema['cruise_menus_list'] = array(
+        'description' => 'Cruise Menu List.',
+        'fields' => array(
+            'id' => array(
+                'description' => '',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'menu_title' => array(
+                'description' => 'menu_title',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+            'menulabel_show' => array(
+                'description' => 'menulabel show or hidden',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+            'image_path' => array(
+                'description' => 'image_path',
+                'type' => 'text',
+                'size' => 'big',
+            ),
+            'course_name' => array(
+                'description' => 'course_name',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+            'description' => array(
+                'description' => 'description',
+                'type' => 'text',
+                'size' => 'big',
+            ),
+            'cruise_id' => array(
+                'description' => 'cruise_id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+            'status' => array(
+                'description' => 'status',
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    return $schema;
+}

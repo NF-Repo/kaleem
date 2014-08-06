@@ -1,0 +1,100 @@
+#manage-package-form {
+ 
+  /*  border: 1px solid #ddd;
+    border-radius: 4px 0;
+    color: #9da0a4;
+    content: "Example";
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 20px;*/
+  
+   
+}
+
+#edit-pricetable-fieldset {
+    border: none !important;
+   
+}
+
+
+.pricetable{
+	border: none !important;
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
+#switch_edit-buffet-content-value{
+	display: none !important; 
+}
+
+#switch_edit-buffet-editor-value{
+	display: none !important; 
+}
+
+.row-ID {
+	width: 10%;
+}
+
+.row-name {
+	width: 40%;
+}
+
+.row-job {
+	width: 30%;
+}
+
+.row-email {
+	width: 20%;
+}
+
+.privateeventbuffet td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.privateeventbuffet th {
+	background: gray;
+	color: white;
+}
+
+.privateeventbuffet td,.privateeventbuffet th {
+	text-align: left;
+	padding: 5px 10px;
+}
+
+.privateeventbuffet tr:nth-child(even) {
+	background: #EBECE9;
+}
+
+
+
+
+
+.overviewformbackground{
+   
+    border-radius: 5px;
+    box-shadow: 0px 0px 6px #B2B2B2;
+    
+    width:  100%;
+    padding: 10px;
+}
+
+
+.galleryfileuploadBackground{
+   
+    border-radius: 5px;
+    box-shadow: 0px 0px 6px #B2B2B2;
+    
+    width:  100%;
+    padding: 10px;
+}
+
+.ckeditor_links{
+	display: none !important;
+}
+
+#privateeventdata{
+	padding-top: 0px !important;
+	margin-top:40px;
+}

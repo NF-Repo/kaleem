@@ -1,0 +1,291 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function departureports_menu() {
+    $items = array();
+    $items['departureports'] = array(
+        'title' => 'Ports and Directions',
+        'page callback' => 'departureports_callfunc',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    $items['parentports'] = array(
+        'title' => 'Ports and Directions',
+        'page callback' => 'parent_departureports',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+    return $items;
+}
+
+function departureports_theme() {
+    $items['departureports'] = array(
+        'template' => 'departureports', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+function parent_departureports() {
+    $parentports = getParentports();
+    drupal_json_output($parentports);
+    exit();
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function departureports_callfunc() {
+
+    try {
+
+        global $user;
+        //get the product load 
+        $portsevent = getPortsContent();
+        return theme('departureports', array('loadportscontent' => $portsevent));
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+function template_preprocess_departureports(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'departureports') . '/css/departureports.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function getPortsContent() {
+    $data = getPortsevents();
+    $html = '';
+    foreach ($data as $key => $revalue) {
+        //rendering title code
+        $html.='<div class="row-fluid" style="margin-top: 10px;">';
+        $html.='<div class="span12">';
+
+        $html.='<div class="departureTitle">' . $key . '</div>';
+        $html.='</div>';
+        $html.='</div>';
+        $html.='<div class="row-fluid tiles">';
+        $html.='<ul class="kirklandDeparture portsList">';
+        global $base_url;
+
+        if (is_array($revalue)) {
+
+            foreach ($revalue as $key => $value) {
+
+                $html.='<li>';
+                $html.='<div class="sliderBox">';
+                $imagesrc = file_create_url($value['field_port_image']);
+                $html.='<div class="sliderBoxout" style="background:url(' . $imagesrc . ');width:250px;height:250px; background-size: cover;">';
+                foreach ($value as $termkey => $termdata) {
+
+                    if ($termkey == 'field_porttile_title') {
+
+
+                        $portpath = 'false';
+                        $urlsource = "portsdetailview/portid/" . $value['tid'];
+                        $urlAliasObject = UrlAlias::getUrlAliasDetailsBySource($urlsource);
+                        if ($urlAliasObject) {
+                            $portpath = $urlAliasObject->alias;
+                        }
+
+
+
+                        $html.='<div class="departure-bgimage">';
+                        $html.='</div>';
+                        $html.='<div class="sliderBoxInner">' . $termdata . '</div>';
+                        $html.='</div>';
+
+                        $html.='<div class="sliderBoxover" onclick="portsDetails(' . $value['tid'] . ',\'' . $portpath . '\')" style="display: none;">';
+                        $html.='<div class="sliderBox-first-inner">';
+                        $html.='<img src="' . $base_url . '/sites/all/themes/waterways/assets/img/innerbox-top-img.png"><br>Beard in lo-fi, raw denim ea fugiat organic consectetur. Gentrify duis proident.<br>
+                     <a>Click to Learn More</a><div class="line"></div>';
+//                   $html.='<img src="'.base_path().'sites/all/themes/waterways/assets/img/innerbox-top-img.png"><br>Beard in lo-fi, raw denim ea fugiat organic consectetur. Gentrify duis proident.<br>
+//                     <a>Click to Learn More</a><div class="line"></div>';
+                        $html.='</div>';
+                    }
+                }
+                $html.='</div></div></li>';
+            }
+        }
+
+        $html.='</ul>';
+        $html.='</div>';
+    }
+    return $html;
+}
+
+function getPortsevents() {
+    $ports = taxonomy_get_tree(5);
+
+    $portslist = array();
+    $total = array();
+    $protsdata = array();
+    foreach ($ports as $portvalues) {
+
+        if ($portvalues->parents[0] == 0) {
+            $protsdata['parenttid'] = $portvalues->tid;
+            $protsdata['parentname'] = $portvalues->name;
+            $parenttree = taxonomy_term_load($portvalues->tid);
+            foreach ($parenttree as $key => $listvalues) {
+                if (is_array($listvalues)) {
+                    $protsdata['parent' . $key] = getArrayloop($listvalues);
+                } else {
+                    $protsdata['parent' . $key] = $listvalues;
+                }
+            }
+
+            $portslist['children'] = taxonomy_get_children($portvalues->tid);
+            foreach ($portslist['children'] as $portdetailsvalue) {
+                foreach ($portdetailsvalue as $key => $listvalues) {
+                    if (is_array($listvalues)) {
+                        $protsdata[$key] = getArrayloop($listvalues);
+                    } else {
+                        $protsdata[$key] = $listvalues;
+                    }
+                }
+                $total[] = $protsdata;
+            }
+            $totalresutle[$portvalues->name] = $total;
+            unset($total);
+        }
+    }
+    return $totalresutle;
+}
+
+function getDepatureportsList() {
+
+    $portstree = taxonomy_get_tree(5);
+    $categories = array();
+    $portsList = array();
+    $portsArray = array();
+    $portsByIdList = array();
+    foreach ($portstree as $portstree) {
+        if ($portstree->parents[0] == 0) {
+            $category = $portstree->name;
+            $categoryId = $portstree->tid;
+            $children = taxonomy_get_children($portstree->tid);
+            $portsList = array();
+            $portsArray = array();
+            foreach ($children as $value) {
+
+                $portsList['id'] = $value->tid;
+                $portsList['name'] = $value->name;
+
+
+                $portresults[] = $portsList;
+            }
+        }
+    }
+    return $portresults;
+}
+
+//Getting Departure Parent Ports
+function getParentports() {
+    $portstree = taxonomy_get_tree(5);
+    $categories = array();
+    foreach ($portstree as $portstree) {
+        if ($portstree->parents[0] == 0) {
+            $categories[$portstree->tid] = $portstree->name;
+        }
+    }
+//    krsort($categories);
+    return $categories;
+}
+
+function getDropdownportslist() {
+    $results = array();
+    $ports = getPortsevents();
+    foreach ($ports as $key => $portsvalue) {
+//    var_dump($key);
+        foreach ($portsvalue as $portslist) {
+            $results[$portslist['tid']] = $portslist['name'] . '(' . $key . ')';
+        }
+//    var_dump($value);
+    }
+    return $results;
+}
+
+//load Port By Id
+
+function loadportById($portid) {
+    $portsresults = array();
+    $protdetails = taxonomy_term_load($portid);
+
+    $portsresults['portname'] = $protdetails->name;
+    $portsresults['portdescription'] = $protdetails->description;
+    $portsresults['portColor'] = isset($protdetails->field_port_color['und'][0]['jquery_colorpicker']) ? $protdetails->field_port_color['und'][0]['jquery_colorpicker'] : "";
+    $portsresults['portAddress'] = isset($protdetails->field_address['und'][0]['value']) ? $protdetails->field_address['und'][0]['value'] : "";
+    $portsresults['portState'] = isset($protdetails->field_state['und'][0]['value']) ? $protdetails->field_state['und'][0]['value'] : "";
+    $portsresults['portCity'] = isset($protdetails->field_city['und'][0]['value']) ? $protdetails->field_city['und'][0]['value'] : "";
+    $portsresults['portPostalCode'] = isset($protdetails->field_postal_code['und'][0]['value']) ? $protdetails->field_postal_code['und'][0]['value'] : "";
+
+
+    $portsresults['parkingImg'] = isset($protdetails->field_parking_image['und'][0]["filename"]) ? $protdetails->field_parking_image['und'][0]["filename"] : "";
+
+
+    $parkingpdffid = isset($protdetails->field_parking_download_pdf['und'][0]['fid']) ? $protdetails->field_parking_download_pdf['und'][0]['fid'] : '';
+    $parkingpdffileload = file_load($parkingpdffid);
+
+    $parkingpdffileurl = "";
+    if ($parkingpdffileload == TRUE) {
+        $parkingpdffilepath = $parkingpdffileload->uri;
+        $parkingpdffileurl = file_create_url($parkingpdffilepath);
+    } else {
+        $parkingpdffileurl = "javascript:void(0)";
+    }
+
+    $portsresults['parkingdownloadpdf'] = $parkingpdffileurl;
+
+    return $portsresults;
+}
+
+//getting portid by node
+
+function getPortbynodeid($nodeid) {
+
+    $nodedetails = node_load($nodeid);
+    $portdetails = loadportById(getArrayloop($nodedetails->field_portslist));
+    $eventport = array();
+    $eventport[getArrayloop($nodedetails->field_portslist)] = $portdetails['portname'];
+    return $eventport;
+}
+
+//load ports by  ports category
+function getsubportslistbyPortId($portid) {
+    $portstree = taxonomy_get_tree(5);
+    $categories = array();
+    $portsList = array();
+    $portsArray = array();
+    $portsByIdList = array();
+    foreach ($portstree as $portstree) {
+        if ($portstree->parents[0] == 0) {
+            $category = $portstree->name;
+            $categoryId = $portstree->tid;
+            if ($portid == $categoryId) {
+                $children = taxonomy_get_children($portstree->tid);
+                $portsList = array();
+                $portsArray = array();
+                foreach ($children as $value) {
+
+                    $portsList['id'] = $value->tid;
+                    $portsList['name'] = $value->name;
+                    $portsList['parent'] = $category;
+
+
+                    $portresults[] = $portsList;
+                }
+                $resultsets[$categoryId] = $portresults;
+                unset($portresults);
+            }
+        }
+    }
+    return $resultsets;
+}

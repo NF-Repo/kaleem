@@ -1,0 +1,6 @@
+name = WWC Cron Jobs
+description = A module for WWC Sheduled funcitons
+core = 7.x
+package = WWC
+
+

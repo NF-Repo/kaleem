@@ -1,0 +1,6 @@
+; $Id$
+name = Connect Special Offers
+description = "Connect Special offers Page"
+core = 7.x
+version = VERSION
+package = WWC

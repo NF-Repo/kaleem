@@ -1,0 +1,43 @@
+/* 
+    Document   : Scheduled Events Stylesheet
+    Created on : Jun 25, 2013, 6:54:59 PM
+    Author     : LSN37
+    Description: Scheduled Events Stylesheet
+*/
+
+.main-container .form-item label{
+	width: 200px;
+	height: auto;
+	float: left;
+}
+
+.form-item-scheduleeventsdates{
+	margin-top: 0px !important;
+}
+
+.form-item-scheduleeventsdates select{
+	width: 280px;
+	height: 200px !important;
+}
+
+.form-item-selectedscheduleddate .date-padding{
+	padding: 0px;
+	margin-top: 30px;
+}
+
+.form-item-selectedscheduleddate-date .controls .help-block{
+	display: none;
+}
+
+.updateDetails{
+	margin-left: 200px;
+}
+
+.form-item-onsaleshoursprior .controls input{
+	float: left;
+}
+
+.form-item-onsaleshoursprior .controls p{
+	padding-top: 10px;
+}
+

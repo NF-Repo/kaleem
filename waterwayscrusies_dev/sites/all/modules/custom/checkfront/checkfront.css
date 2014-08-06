@@ -1,0 +1,19 @@
+/* 
+    Document   : checkfront
+    Created on : Jul 25, 2013, 12:02:20 PM
+    Author     : LSN37
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content {display: block  !important;
+ 
+}
+/*Checkfront Id Please Dont Change the ID*/
+#CHECKFRONT_WIDGET_01
+{
+  margin-top:3%;
+  
+}
+
+

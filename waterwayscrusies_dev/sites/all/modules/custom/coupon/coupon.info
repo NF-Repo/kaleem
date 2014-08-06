@@ -1,0 +1,14 @@
+name = Coupon 
+core = 7.x
+description = coupon discount management system 
+files[] = coupon.controller.inc
+files[] = coupon.module
+files[] = coupon.form.inc
+files[] = coupon.form.install
+package = WWC
+
+files[]=classes/Coupon.class.inc
+files[]=classes/Groupon.class.inc
+
+
+

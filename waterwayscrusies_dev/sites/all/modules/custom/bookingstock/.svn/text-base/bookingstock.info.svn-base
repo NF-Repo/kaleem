@@ -1,0 +1,16 @@
+name = The Booking Events Stock Availability
+description = An Booking Stock Availability 
+core = 7.x
+package = WWC
+dependencies[] = field
+files[] = bookingstock.test
+files[] = bookingstock.install
+files[] = bookingstock.module
+
+
+; Information added by drupal.org packaging script on 2013-02-01
+version = "7.x"
+core = "7.x"
+project = "WWC"
+datestamp = "1371686400"
+

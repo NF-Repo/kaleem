@@ -1,0 +1,6 @@
+name = Check Front API
+description = A module for CheckFront API Integration
+core = 7.x
+package = WWC
+
+

@@ -1,0 +1,1022 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function profitpoint_menu() {
+    $items = array();
+    $items['profitpoint'] = array(
+        'title' => 'GiftCard API',
+        'page callback' => 'profitpointapi_page',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    //card balance checker
+
+    $items['balancechecker'] = array(
+        'title' => 'GiftCard API',
+        'page callback' => 'profitpointapi_balancechecker',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    $items['giftissuance'] = array(
+        'title' => 'GiftCard API',
+        'page callback' => 'profitpointapi_giftissuance',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+  $items['giftRedemption']=array(
+    'title'=>'GiftCard API',
+    'page callback'=>'profitpoint_giftcardredemption',
+    'access callback'=>'user_access',
+    'access arguments'=>array('access content'),
+    
+);
+
+
+    return $items;
+}
+
+/**
+ * 
+ * 
+ * 
+ * 
+ */
+/**
+ * Profit Point GiftCard Constants
+ * 
+ * 
+ */
+require('wsClasses.php');
+require('wsConfig.php');
+
+/**
+ * Gift redemption
+ * 
+ */
+
+/**
+ * 
+ * Gift Issuance
+ */
+function profitpointapi_giftissuance($inputobject) {
+
+	$orderId=$inputobject->orderid;
+	$userId=$inputobject->uid;
+
+    /* get the gift cards available  
+     * conditions : status=1
+     */
+    $giftcards = array();
+    $giftcardsdata = array();
+    $giftcardsdata = entity_load('giftcard', $ids = FALSE, $conditions = array('flag' => 0), $reset = FALSE);
+    foreach ($giftcardsdata as $giftcard) {
+        $giftcards[] = $giftcard;
+    }
+    
+      try {
+        //Getting giftobject 
+        $test = array();
+        $pregiftcardAmount = $inputobject->giftcarddata['pregiftcardamount'];
+        $test[] = $pregiftcardAmount;
+        $customgiftcardAmount = $inputobject->giftcarddata['customgiftcardamount'];
+        $test[] = $customgiftcardAmount;
+        $RecipientEmail = $inputobject->giftcarddata['recipientemail'];
+        $test[] = $RecipientEmail;
+        $customerName = $inputobject->giftcarddata['yourname'];
+        $test[] = $customerName;
+        $customerMessage = $inputobject->giftcarddata['customermessage'];
+        $test[] = $customerMessage;
+        $giftCardqty = $inputobject->giftcarddata['giftcardqty'];
+        $test[] = $giftCardqty;
+        $deliverydate = $inputobject->giftcarddata['deliverydate'];
+        $test[] = $deliverydate;
+        $giftCardpromo = $inputobject->giftcarddata['promotioncode'];
+        $test[] = $giftCardpromo;
+        $customerFirstName = $inputobject->mailingaddressdata['customerfirstname'];
+        $test[] = $customerFirstName;
+        $customerLastName = $inputobject->mailingaddressdata['customerlastname'];
+        $test[] = $customerLastName;
+        $customerAddress = $inputobject->mailingaddressdata['customeraddress'];
+        $test[] = $customerAddress;
+        $customersecondaryAddress = $inputobject->mailingaddressdata['customersecondaryaddress'];
+        $test[] = $customersecondaryAddress;
+        $customerCity = $inputobject->mailingaddressdata['customercity'];
+        $test[] = $customerCity;
+        $customerState = $inputobject->mailingaddressdata['customerstate'];
+        $test[] = $customerState;
+        $customerZipcode = $inputobject->mailingaddressdata['customerzipcode'];
+        $test[] = $customerZipcode;
+        $customerPhone = $inputobject->mailingaddressdata['customerphonenumber'];
+        $test[] = $customerPhone;
+        $customerEmail = $inputobject->mailingaddressdata['customeremail'];
+        $test[] = $customerEmail;
+        $customerConfirmemail = $inputobject->mailingaddressdata['customerconfirmemail'];
+        $test[] = $customerConfirmemail;
+        $cardNumber = $inputobject->creditdata['creditcardnumber'];
+        $test[] = $cardNumber;
+        $cardcvv = $inputobject->creditdata['creditcardcvv'];
+        $test[] = $cardcvv;
+        $cardExpMonth = $inputobject->creditdata['cardexpmonth'];
+        $test[] = $cardExpMonth;
+        $cardExpYear = $inputobject->creditdata['cardexpyear'];
+        $test[] = $cardExpYear;
+        $knownby = $inputobject->creditdata['knownby'];
+        $test[] = $knownby;
+        
+        $amt = $pregiftcardAmount;
+        if(strcasecmp($pregiftcardAmount,"setmyown")==0){
+        	$amt=$customgiftcardAmount;
+        }
+        
+    
+        //Account details
+//Loading the avaliable card details from db
+//        $latestcardid = giftcard_details($giftCardqty);//
+//        return $giftCardqty;
+       
+        $res = array();
+
+        for ($u = 0; $u < $giftCardqty; $u++) {
+        	$cardId=$giftcards[$u]->card_id;
+           // $giftlatestId = $latestcardid[$u]->card_id;
+//             /id
+        	$giftCardAutotID=$giftcards[$u]->id;
+        	//$orderId
+                
+            GiftCard::updateGiftCardStatus($giftCardAutotID);
+            
+            
+            $giftcardtrackObject= new GiftCardsTrack();
+            $giftcardtrackObject->card_id=$cardId;
+            $giftcardtrackObject->order_id=$orderId;
+            $giftcardtrackObject->uid=$userId;
+            $giftcardtrackObject->created=REQUEST_TIME;
+            Giftcard::loggingGiftCards($giftcardtrackObject);
+            
+//            $inputdata['accountId'] = '4101000000000001'; //$giftlatestId;//passing the GiftcardId
+            $inputdata['accountId'] = $cardId; //$giftlatestId;//passing the GiftcardId
+            $inputdata['entryType'] = "K";
+            $inputdata['pin'] = '';
+
+            $inputdata['activating'] = "Y"; //bydefault we are activating entry type
+            //amount
+
+            $inputdata['valueCode'] = 'USD';
+            $inputdata['enteredAmount'] = $amt;
+            $inputdata['nsfAllowed'] = 'N'; //By Default we are not allowing
+
+            $codes = array();
+            $codes[] = null;
+            $inputdata['promotionCodes'] = $codes;
+            //end of promotion codes
+            //Questionandanuswers 
+            $inputdata['questionsAndAnswers'] = null;
+            
+            //customer information
+            $inputdata['customerType'] = '1'; //primary::1,Alternate::2,Giver of Card::3
+            $inputdata['firstName'] = $customerFirstName;
+            $inputdata['middleName'] = $customerFirstName;
+            $inputdata['lastName'] = $customerLastName;
+            $inputdata['address1'] = $customerAddress;
+            $inputdata['address2'] = $customersecondaryAddress;
+            $inputdata['city'] = $customerCity;
+            $inputdata['state'] = $customerState;
+            $inputdata['postal'] = $customerZipcode;
+            $inputdata['country'] = '';
+            $inputdata['mailPref'] = 'I';
+            $inputdata['phone'] = $customerPhone; //$customerPhone;
+            $inputdata['isMobile'] = '';
+            $inputdata['phonePref'] = 'I'; //depends upon phone number availability if not available then it is o
+            $inputdata['email'] = $customerEmail;
+            $inputdata['emailPref'] = 'I';
+            $inputdata['birthday'] = '';
+            $inputdata['anniversary'] = '';
+            $inputdata['gender'] = ''; //not available
+            
+            
+
+          
+            
+            $request = CreateRequest('GiftIssuance', $inputdata);
+
+            $response = SendRequest($request, 'GiftIssuance');
+
+            if ($response->standardHeader->status == "E") {
+                $output = array(
+                    'code' => $response->errorMessage->errorCode,
+                    'message' => $response->errorMessage->briefMessage,
+                    'results' => null);
+            }
+            if ($response->standardHeader->status == "A") {
+
+                foreach ($response as $key => $value) {
+                    if (count($value) > 0) {
+                        foreach ($value as $subfield => $subvalue) {
+                            $results[$subfield] = $subvalue;
+                        }
+                    } else {
+                        $results[] = $value;
+                    }
+                }
+
+                $output = array(
+                    'code' => 200,
+                    'message' => 'sucess',
+                    'cardid' => $giftlatestId,
+                    'results' => $results);
+                //$giftcards[$u]->flag=1;
+                //drupal_write_record('giftcard', $giftcards[$u], array('id'));
+            }
+
+            $res[] = $output;
+            $_SESSION['respone'] = $res; //set the response in a session.
+            //update the Cardid Over here
+        }
+        
+        
+       
+       return $res;
+    } catch (SoapFault $soapFault) {
+        //Remove full path of script to avoid disclosing web-server config
+//  $fault = str_replace($_SERVER['DOCUMENT_ROOT'], '', $soapFault);
+        return $soapFault;
+    }
+}
+
+
+
+/**
+ * Using for Card Balance Checking
+ * 
+ * 
+*/
+function profitpointapi_balancechecker() {
+
+    $cardNumber = $_POST['giftcardid'];
+    $entryType = $_POST['entryType'];
+    $pin = $_POST['pin'];
+    $requestType = $_POST['callmethod'];
+
+    try {
+
+//         if ($requestType == "Inquiry") {
+//             $inqurydata = array();
+//             $inqurydata['accountId'] = $cardNumber;
+//             $inqurydata['entryType'] = $entryType;
+//             $inqurydata['pin'] = $pin;
+//             $request = CreateRequest('Inquiry', $inqurydata);
+//         }
+        
+        if ($requestType == "Inquiry") {
+        	$inqurydata = array();
+        	$inqurydata['accountId'] = $cardNumber;
+        	$inqurydata['entryType'] = $entryType;
+        	$inqurydata['pin'] = $pin;
+        
+        	$request = CreateRequest('Inquiry', $inqurydata);
+        }
+        
+        
+        
+
+        //Define body of SOAP with method name and parameter names and values to be passed.
+        //Send the request to the server
+//         $response = SendRequest($request, $requestType);
+       
+//         if ($response->standardHeader->status == "E") {
+//             $output = array(
+//                 'code' => $response->errorMessage->errorCode,
+//                 'message' => $response->errorMessage->briefMessage,
+//                 'results' => null);
+//         }
+        
+        $response = SendRequest($request, $requestType);
+        if ($response->status == "E") {
+        	$output = array(
+        			'code' => $response->errorMessage->errorCode,
+        			'message' => $response->errorMessage->briefMessage,
+        			'results' => null);
+        }
+        
+        
+//         if ($response->standardHeader->status == "A") {
+
+//             foreach ($response as $key => $value) {
+//                 if (count($value) > 0) {
+//                     foreach ($value as $subfield => $subvalue) {
+//                         $results[$subfield] = $subvalue;
+//                     }
+//                 } else {
+//                     $results[] = $value;
+//                 }
+//             }
+
+//             $output = array(
+//                 'code' => 200,
+//                 'message' => 'sucess',
+//                 'results' => $results);
+//         }
+
+        if ($response->status == "A") {
+        
+        	foreach ($response as $key => $value) {
+        		if (count($value) > 0) {
+        			foreach ($value as $subfield => $subvalue) {
+        				$results[$subfield] = $subvalue;
+        			}
+        		} else {
+        			$results[] = $value;
+        		}
+        	}
+        
+        	$output = array(
+        			'code' => 200,
+        			'message' => 'success',
+        			'results' => $results);
+        }
+        drupal_json_output($output);
+    } catch (SoapFault $soapFault) {
+        //Remove full path of script to avoid disclosing web-server config
+//      $fault = str_replace($_SERVER['DOCUMENT_ROOT'], '', $soapFault);
+        drupal_json_output($soapFault);
+    }
+}
+
+
+/**
+ * 
+ * This is the function which is used for
+ * ajaxcallback function checking giftcard balance api
+ * callmethod	GiftRedemption
+  entryType	K
+  giftcardid	4101000000000001
+ * giftcaramount 
+ * 
+ */
+function giftcard_profitpointapi_giftredemption($requestType,$inputdata,$giftCardObject){
+    
+   
+    
+    
+  
+    /*
+     * If Request is GiftRedemption 
+     * If is success it return giftcardredemption account details 
+     * If it is fail it retrun Null and message : balance exceeded
+     */
+
+    try {
+//checking the requestType
+        if ($requestType == "GiftRedemption") {
+            //passing inputdata into createrequest if request type is GiftRedemption
+            $request = CreateRequest("GiftRedemption", $inputdata);
+            $giftCardObject->status = "Request";
+            $giftCardObject->created = REQUEST_TIME;
+            $giftCardObject->data = serialize($request);
+            BookingLog::logGiftCard($giftCardObject);
+        }
+
+        //Define body of SOAP with method name and parameter names and values to be passed.
+        //Send the request to the server
+        //if request is successfull pass the $request to sendRequest
+        $response = SendRequest($request, $requestType);
+        
+        
+
+        //If enterbalance is greter than available balance raise an error
+        if ($response->standardHeader->status == "E") {
+            $giftCardObject->status = "Failed";
+            $giftCardObject->created = REQUEST_TIME;
+            $giftCardObject->data = serialize($response);
+            BookingLog::logGiftCard($giftCardObject);
+        }
+        //call this function if it is successfull redemption
+        if ($response->standardHeader->status == "A") {
+            $giftCardObject->status = "Success";
+            $giftCardObject->created = REQUEST_TIME;
+            $giftCardObject->data = serialize($response);
+            BookingLog::logGiftCard($giftCardObject);
+        }
+
+        //if it is successfull it return giftcardredemption details
+        //drupal_json_output($output);
+    } catch (SoapFault $soapFault) {
+        //If request is fail
+        // drupal_json_output($soapFault);
+    }
+}
+/**
+ * 
+ * This is the function which is used for
+ * ajaxcallback function checking giftcard balance api
+ * callmethod	Inquiry
+  entryType	K
+  giftcardid	4101000000000001
+ * 
+ */
+function giftcard_profitpointapi_balancechecker($requestType, $entryType, $cardNumber) {
+
+//    $cardNumber=$_POST['giftcardid'];
+//    $entryType=$_POST['entryType'];
+////    $pin=$_POST['pin'];
+//    $requestType=$_POST['callmethod'];
+
+    try {
+
+        if ($requestType == "Inquiry") {
+            $inqurydata = array();
+            $inqurydata['accountId'] = $cardNumber;
+            $inqurydata['entryType'] = $entryType;
+            $inqurydata['pin'] = isset($pin)  ? $pin : '';
+
+            $request = CreateRequest('Inquiry', $inqurydata);
+        }
+
+
+
+        //Define body of SOAP with method name and parameter names and values to be passed.
+        //Send the request to the server
+        $response = SendRequest($request, $requestType);
+        if ($response->status == "E") {
+            $output = array(
+                'code' => $response->errorMessage->errorCode,
+                'message' => $response->errorMessage->briefMessage,
+                'results' => null);
+        }
+        if ($response->status == "A") {
+
+            foreach ($response as $key => $value) {
+                if (count($value) > 0) {
+                    foreach ($value as $subfield => $subvalue) {
+                        $results[$subfield] = $subvalue;
+                    }
+                } else {
+                    $results[] = $value;
+                }
+            }
+         
+            $output = array(
+                'code' => 200,
+                'message' => 'sucess',
+                'results' => $results);
+        }
+        
+        return $output;
+    } catch (SoapFault $soapFault) {
+        //Remove full path of script to avoid disclosing web-server config
+//      $fault = str_replace($_SERVER['DOCUMENT_ROOT'], '', $soapFault);
+        return $soapFault;
+    }
+}
+
+
+function profitpointapi_page() {
+
+    //creating the profit point 
+//  CreateRequest
+//  if (!empty($_POST)) {
+//    try {
+//      //Define body of SOAP with method name and parameter names and values to be passed.
+//      $request = CreateRequest('Inquiry');
+//      //Send the request to the server
+//      $response = SendRequest($request,'Inquiry');  
+//      var_dump($response);exit();
+//    }
+//    catch(SoapFault $soapFault) { 
+//      //Remove full path of script to avoid disclosing web-server config
+//      $fault = str_replace($_SERVER['DOCUMENT_ROOT'], '', $soapFault);
+//    }
+}
+
+//}
+//Creates File with sequential request id
+function ReadsRequestFile() {
+    $filename = "wsRequestid.txt";
+    $init_value = "0";
+    if (!file_exists($filename) || filesize($filename) == 0) {
+        $file = fopen($filename, 'w') or exit('Unable to open/create file. Please check permissions.');
+        fwrite($file, $init_value);
+        fclose($file);
+        IncrementsRequestFile($file, $filename);
+    } else {
+        $file = fopen($filename, "r") or exit('Unable to open file. Please check permissions.');
+        IncrementsRequestFile($file, $filename);
+    }
+}
+
+//Reads file and increments variable
+function IncrementsRequestFile($file, $filename) {
+    $data = fread($file, 6);
+    fclose($file);
+    if (strlen($data) > 6) {
+        $data = 0;
+    }
+    $data_dec = base_convert($data, 36, 10);
+    $data_dec ++;
+    $data = base_convert($data_dec, 10, 36);
+    $file = fopen($filename, "w") or exit('Unable to open file. Please check permissions.');
+    fwrite($file, $data);
+    fclose($file);
+    //Setting REQUEST_ID constant
+    define('REQUEST_ID', strtoupper($data));
+}
+
+//Request Methods
+function CreateRequest($requesttype, $inputdata) {
+    ReadsRequestFile();
+    if ($requesttype == "Inquiry") {
+
+        return CreateInquiry($inputdata);
+    } else if ($requesttype == "AccountHistory") {
+        return CreateAccountHistory();
+    } else if ($requesttype == "EmployeeReport") {
+        return CreateEmployeeReport();
+    } else if ($requesttype == "TerminalReport") {
+        return CreateTerminalReport();
+    } else if ($requesttype == "GiftIssuance") {
+        return CreateGiftIssuance($inputdata);
+    } else if ($requesttype == "GiftRedemption") {
+        return CreateGiftRedemption($inputdata);
+    } else if ($requesttype == "Enrollment") {
+        return CreateEnrollment();
+    } else if ($requesttype == "LoyaltyIssuance") {
+        return CreateLoyaltyIssuance();
+    } else if ($requesttype == "LoyaltyRedemption") {
+        return CreateLoyaltyRedemption();
+    } else if ($requesttype == "PromotionIssuance") {
+        return CreatePromotionIssuance();
+    } else if ($requesttype == "PromotionRedemption") {
+        return CreatePromotionRedemption();
+    } else if ($requesttype == "MerchandiseReturn") {
+        return CreateMerchandiseReturn();
+    } else if ($requesttype == "MultipleIssuance") {
+        return CreateMultipleIssuance();
+    } else if ($requesttype == "QuickTransaction") {
+        return CreateQuickTransaction();
+    } else if ($requesttype == "Transfer") {
+        return CreateTransfer();
+    } else if ($requesttype == "Renew") {
+        return CreateRenew();
+    } else if ($requesttype == "Tip") {
+        return CreateTip();
+    } else if ($requesttype == "VoidTransaction") {
+        return CreateVoidTransaction();
+    }
+}
+
+//Create elements
+function CreateInquiry($inputdata) {
+    $request = new Inquiry();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount($inputdata);
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers($inputdata);
+    return $request;
+}
+
+function CreateAccountHistory() {
+    $request = new AccountHistory();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->report = CreateReport();
+    return $request;
+}
+
+function CreateEmployeeReport() {
+    $request = new EmployeeReport();
+    $request->standardHeader = CreateStandardHeader();
+    $request->reportOnEmployeeId = CreateReportOnEmployee();
+    $request->report = CreateReport();
+    return $request;
+}
+
+function CreateTerminalReport() {
+    $request = new TerminalReport();
+    $request->standardHeader = CreateStandardHeader();
+    $request->report = CreateReport();
+    return $request;
+}
+
+function CreateGiftIssuance($inputdata) {
+    $request = new GiftIssuance();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount($inputdata);
+    $request->activating = CreateActivating($inputdata);
+    $request->amount = CreateAmount($inputdata);
+    $request->promotionCodes = null; //CreatePromotionCodes($inputdata);
+    $request->questionsAndAnswers = null; //CreateQuestionsAndAnswers($inputdata);
+
+    $request->customerInfo = CreateCustomerInfo($inputdata);
+    return $request;
+}
+
+function CreateGiftRedemption($inputdata) {
+    $request = new GiftRedemption();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount($inputdata);
+    $request->activating = CreateActivating($inputdata);
+    $request->amount = CreateAmount($inputdata);
+   $request->includeTip = CreateIncludeTip();
+    $request->promotionCodes =CreatePromotionCodes();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo($inputdata);
+    return $request;
+}
+
+function CreateEnrollment() {
+    $request = new Enrollment();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->activating = CreateActivating();
+    $request->amount = CreateAmount();
+    $request->promotionCodes = CreatePromotionCodes();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo();
+
+    return $request;
+}
+
+function CreateLoyaltyIssuance() {
+    $request = new LoyaltyIssuance();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->activating = CreateActivating();
+    $request->amount = CreateAmount();
+    $request->promotionCodes = CreatePromotionCodes();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo();
+    return $request;
+}
+
+function CreateLoyaltyRedemption() {
+    $request = new LoyaltyRedemption();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->activating = CreateActivating();
+    $request->amount = CreateAmount();
+    $request->promotionCodes = CreatePromotionCodes();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo();
+    return $request;
+}
+
+function CreatePromotionIssuance() {
+    $request = new PromotionIssuance();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->activating = CreateActivating();
+    $request->amount = CreateAmount();
+    $request->promotionCodes = CreatePromotionCodes();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo();
+    return $request;
+}
+
+function CreatePromotionRedemption() {
+    $request = new PromotionRedemption();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->activating = CreateActivating();
+    $request->amount = CreateAmount();
+    $request->promotionCodes = CreatePromotionCodes();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo();
+    return $request;
+}
+
+function CreateMerchandiseReturn() {
+    $request = new MerchandiseReturn();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->activating = CreateActivating();
+    $request->amount = CreateAmount();
+    $request->promotionCodes = CreatePromotionCodes();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo();
+    return $request;
+}
+
+function CreateMultipleIssuance() {
+    $request = new MultipleIssuance();
+    $request->standardHeader = CreateStandardHeader();
+    $request->multipleIssuance = CreateMultipleIssuanceComponent();
+    $request->amount = CreateAmount();
+    $request->activating = CreateActivating();
+    $request->promotionCodes = CreatePromotionCodes();
+    return $request;
+}
+
+function CreateQuickTransaction() {
+    $request = new QuickTransaction();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->quickCode = CreateQuickCode();
+    return $request;
+}
+
+function CreateTransfer() {
+    $request = new Transfer();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->activating = CreateActivating();
+    $request->transfer = CreateTransferComponent();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo();
+    return $request;
+}
+
+function CreateRenew() {
+    $request = new Renew();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->newExpirationDate = CreateNewExpirationDate();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    $request->customerInfo = CreateCustomerInfo();
+    return $request;
+}
+
+function CreateTip() {
+    $request = new Tip();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->search = CreateSearch();
+    $request->amount = CreateAmount();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    return $request;
+}
+
+function CreateVoidTransaction() {
+    $request = new VoidTransaction();
+    $request->standardHeader = CreateStandardHeader();
+    $request->account = CreateAccount();
+    $request->search = CreateSearch();
+    $request->questionsAndAnswers = CreateQuestionsAndAnswers();
+    return $request;
+}
+
+//Create Parts
+function CreateStandardHeader() {
+    $part = new StandardHeader();
+    $part->requestId = REQUEST_ID;
+    $part->localeId = LOCALE_ID;
+    $part->systemId = SYSTEM_ID;
+    $part->clientId = CLIENT_ID;
+    $part->locationId = LOCATION_ID;
+    $part->terminalId = TERMINAL_ID;
+    $part->terminalDateTime = date("YmdHis");
+    $part->initiatorType = INITIATOR_TYPE;
+    $part->initiatorId = INITIATOR_ID;
+    $part->initiatorPassword = INITIATOR_PASSWORD;
+    $part->externalId = EXTERNAL_ID;
+    $part->batchId = BATCH_ID;
+    $part->batchReference = BATCH_REFERENCE;
+    return $part;
+}
+
+function CreateAccount($inputdata) {
+    $part = new Account();
+
+
+
+
+    $part->accountId = $inputdata['accountId']; //$_POST["accountId"];
+    $part->pin = $inputdata['pin']; //$_POST["pin"];
+    $part->entryType = $inputdata['entryType']; //$_POST["entryType"];
+    return $part;
+}
+
+function CreateCustomerInfo($inputdata) {
+
+
+    $part = new CustomerInfo();
+
+    $part->customerType = $inputdata['customerType'];
+    $part->firstName = $inputdata["firstName"];
+    $part->middleName = $inputdata["middleName"];
+    $part->lastName = $inputdata["lastName"];
+    $part->address1 = $inputdata["address1"];
+    $part->address2 = $inputdata["address2"];
+    $part->city = $inputdata["city"];
+    $part->state = $inputdata["state"];
+    $part->postal = $inputdata["postal"];
+    $part->country = $inputdata["country"];
+    $part->mailPref = $inputdata["mailPref"];
+    $part->phone = $inputdata["phone"];
+    $part->isMobile = $inputdata["isMobile"];
+    $part->phonePref = $inputdata["phonePref"];
+    $part->email = $inputdata["email"];
+    $part->emailPref = $inputdata["emailPref"];
+    $part->birthday = $inputdata["birthday"];
+    $part->anniversary = $inputdata["anniversary"];
+    $part->gender = $inputdata["gender"];
+    return $part;
+}
+
+function CreateMultipleIssuanceComponent() {
+    $part = new MultipleIssuanceComponent();
+    $part->specifiedBy = $_POST["specified"];
+    $accounts;
+    $count = $_POST["MultipleIssuanceAccountCount"];
+    for ($i = 0; $i < $count; $i++) {
+        if ($_POST["multipleIssuanceAccountId" . $i] != "") {
+            $account = array("accountId" => $_POST["multipleIssuanceAccountId" . $i],
+                "pin" => $_POST["multipleIssuancePin" . $i],
+                "entryType" => $_POST["multipleIssuanceEntryType" . $i]);
+            $accounts[] = $account;
+        }
+    }
+    $part->accounts = $accounts;
+    return $part;
+}
+
+function CreateReport() {
+    $part = new Report();
+    $part->type = $_POST["reportType"];
+    $part->minimumDate = $_POST["minimumDate"];
+    $part->maximumDate = $_POST["maximumDate"];
+    $part->offset = $_POST["offset"];
+    $part->maxRecords = $_POST["maxRecords"];
+    return $part;
+}
+
+function CreateSearch() {
+    $part = new Search();
+    $part->batchId = $_POST["batchId"];
+    $part->batchReference = $_POST["batchReference"];
+    $part->transactionId = $_POST["transactionId"];
+    $part->approvalCode = $_POST["approvalCode"];
+    return $part;
+}
+
+function CreateTransferComponent() {
+    $part = new TransferComponent();
+    $part->destAccountId = $_POST["destAccountId"];
+    $part->destPin = $_POST["destPin"];
+    $part->destEntryType = $_POST["destEntryType"];
+    $part->closeReason = $_POST["closeReason"];
+    $part->valueCode = $_POST["transferValueCode"];
+    $part->enteredAmount = $_POST["transferEnteredAmount"];
+    return $part;
+}
+
+function CreateAmount($inputdata) {
+    $part = new Amount();
+    $part->valueCode = $inputdata["valueCode"];
+    $part->enteredAmount = $inputdata["enteredAmount"];
+    $part->nsfAllowed = $inputdata["nsfAllowed"];
+
+    return $part;
+}
+
+function CreateQuickCode() {
+    return $_POST["quickCode"];
+}
+
+function CreateNewExpirationDate() {
+    return $_POST["newExpirationDate"];
+}
+
+function CreateReportOnEmployee() {
+    return $_POST["employeeId"];
+}
+
+function CreateActivating($inputdata) {
+    return $inputdata["activating"];
+}
+
+function CreateIncludeTip() {
+    return $_POST["includeTip"];
+}
+
+function CreatePromotionCodes($inputdata) {
+    $promotionCodes;
+    $count = $inputdata['promotionCodes'];
+    for ($i = 0; $i < $count; $i++) {
+        if ($_POST["promotionCode" . $i] != "") {
+            $promotionCode = array("code" => $_POST["promotionCode" . $i], "quantity" => $_POST["quantity" . $i]);
+            $promotionCodes[] = $promotionCode;
+        }
+    }
+
+    return $promotionCodes;
+}
+
+function CreateQuestionsAndAnswers($inputdata) {
+    $questionsAndAnswers='';
+    $count = isset($inputdata['questionsAndAnswers']) ? $inputdata['questionsAndAnswers']: 0;
+    for ($i = 0; $i < $count; $i++) {
+        if ($_POST["questionCode" . $i] != "") {
+            $questionAndAnswer = array("code" => $inputdata["questionCode" . $i], "answer" => $inputdata["answer" . $i]);
+            $questionCodes[] = $questionAndAnswer;
+        }
+    }
+
+    return $questionsAndAnswers;
+}
+
+//Transaction Methods
+function SendRequest($request, $methodtype) {
+    //Consider: use class map option to map the data to a useable form
+    $options = array('trace' => true,
+        'login' => INTEGRATION_USER_NAME,
+        'password' => INTEGRATION_PASSWORD);
+    $uri = TRANSACTION_WSDL;
+    $client = new SoapClient($uri, $options);
+    $client->$methodtype($request);
+    $response = ParseResponse(htmlentities($client->__getLastResponse()));
+    return $response;
+}
+
+//Hack: Because PHP does not support document literal wrapped style 
+//the response string must be manually parsed
+function ParseResponse($responseEntities) {
+    //Split the response in to an array
+    $resArrayWrapped = explode("&gt;&lt;", $responseEntities);
+
+    //The offset of 5 removes the envolope, header, body and wrapper from the begining
+    //The 3 remove envolope, body and wrapper from the end
+    for ($i = 5; $i < count($resArrayWrapped) - 3; $i++) {
+        $resArray[] = "&lt;" . $resArrayWrapped[$i] . "&gt;";
+    }
+
+    $response;
+    $component = "";
+    $repeating = "";
+    $repeatingCount = 0;
+    foreach ($resArray as $item) {
+        // Break the item in to readable parts
+        $itemArray = BreakIntoArray($item);
+        if (count($itemArray) == 1) {
+            if ($component == "") {
+                $component = $itemArray[0];
+            } else if ($component == $itemArray[0]) {
+                $component = "";
+                $repeatingCount = 0;
+            } else if ($repeating == "") {
+                $repeating = $itemArray[0];
+            } else if ($repeating == $itemArray[0]) {
+                $repeating = "";
+                $repeatingCount++;
+            } else {
+                
+            }
+        } else if (count($itemArray) == 3) {
+            if ($repeating != "") {
+                $repeatingConcate = $component . "[" . $repeatingCount . "]";
+                @$response->$repeatingConcate->$itemArray[0] = $itemArray[1];
+            } else if ($component != "") {
+                $response->$component->$itemArray[0] = $itemArray[1];
+            } else {
+            	if(!empty($itemArray[1])){
+            		@$response->$itemArray[0] = $itemArray[1];
+            	}
+               
+            }
+        }
+    }
+
+    return $response;
+}
+
+function BreakIntoArray($item) {
+    $item = str_replace(" xmlns=&quot;&quot;", "", $item);
+    $item = str_replace("&lt;/", "|", $item);
+    $item = str_replace("&gt;", "|", $item);
+    $item = str_replace("&lt;", "|", $item);
+    $item = substr($item, 1, strlen($item) - 2);
+    $itemArray = explode("|", $item);
+    return $itemArray;
+}
+
+//Response Methods    
+function WriteResponse($response) {
+    foreach ($response as $field => $value) {
+        if ($field == "hello" || $field == "hostMessage" || $field == "expirationDate" || $field == "amountRemaining") {
+            //Write any parts that are not a component
+            echo($field);
+            echo(" = ");
+            echo($value);
+            echo("</BR>");
+        } else if ($field == "printableData") {
+            echo($field);
+            echo("</BR>");
+            echo($value);
+        } else {
+            //Write the name of the component
+            echo($field);
+            echo("</BR>");
+            //Get the parts of the component        
+            foreach ($value as $subfield => $subvalue) {
+                //Write the parts of that component
+                echo($subfield);
+                echo(" = ");
+                echo($subvalue);
+                echo("</BR>");
+            }
+        }
+    }
+}

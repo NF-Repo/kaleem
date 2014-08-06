@@ -1,0 +1,6 @@
+; $Id$
+name = Departure Ports
+description = "Ports and Directions"
+core = 7.x
+version = VERSION
+package = WWC

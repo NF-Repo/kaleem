@@ -1,0 +1,5 @@
+name = Fees and Cruise Fee Overriding
+description = "Fee Items"
+core = 7.x
+version = VERSION
+package = wwc_fee

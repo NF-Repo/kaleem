@@ -1,0 +1,90 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function emailtemplates_schema() {
+    $schema = array();
+
+    $schema['emailtemplates'] = array(
+        'description' => 'The base table for Email Template.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the Email Template.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'name' => array(
+                'type' => 'varchar',
+                'length' => '64',
+                'not null' => TRUE,
+                'description' => 'The machine name of the template.',
+            ),
+            'subject' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'description' => 'The template subject.',
+                'default' => '',
+            ),
+            'mail_body' => array(
+                'type' => 'text',
+                'not null' => FALSE,
+                'size' => 'big',
+                'description' => 'The template body.',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+    $schema['cruise_event_emailtemplates'] = array(
+        'description' => 'The base table for Email Template.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the cruise event Email Template.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'cruise_templateid' => array(
+                'type' => 'varchar',
+                'length' => '64',
+                'not null' => TRUE,
+                'description' => 'The cruise template Id.',
+            ),
+            'eventid' => array(
+                'type' => 'varchar',
+                'length' => '64',
+                'not null' => FALSE,
+                'description' => 'The cruise template Id.',
+            ),
+            'templateid' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'description' => 'The selected template id.',
+                'default' => '',
+            ),
+            'type' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'description' => 'The template type prior or after.',
+                'default' => '',
+            ),
+            'period' => array(
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => FALSE,
+                'description' => 'The time period.',
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+    return $schema;
+}

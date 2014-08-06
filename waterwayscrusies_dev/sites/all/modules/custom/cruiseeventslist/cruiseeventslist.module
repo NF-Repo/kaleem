@@ -1,0 +1,20 @@
+<?php 
+/*
+ * Implements hook_menu()
+*/
+function cruiseeventslist_menu() {
+	$items = array ();
+	$items ['cruiseeventlist'] = array (
+			'title' => 'Cruise Events List',
+			'page callback' => 'events_list_page',
+			'access arguments' => array ( 'access content' ),
+			'file'=>'eventslist.page.inc',
+	);
+
+	return $items;
+}
+
+
+
+
+?>

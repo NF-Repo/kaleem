@@ -1,0 +1,79 @@
+<?php
+
+
+
+/* $filename : name of the file to download
+ * $header :  Header to display in excel download shet 
+ *           (Ex : $header = array(0 => 'FIRST NAME', 1 => 'LASTNAME', 2 => 'AGE');)
+ * $result :  data to display in excel download under headers
+ *            (EX : array([0]=> object(stdClass)#1 (3) { ["firstname"]=> string(4) "Mary" ["lastname"]=> string(7) "Johnson" ["age"]=> string(2) "21" } ) )
+ */
+
+function excel_export_data($filename, $header, $result) {
+    $data = array();
+    foreach ($result as $row) {
+        $rr = array();
+        $data[] = $row;
+//        $data[] = objectToArray($row);
+    }
+    $export_file = $filename . ".xls";
+//    header("Content-Disposition: attachment; filename=\"$filename\"");
+////    header("Content-Type: application/vnd.ms-excel");
+////    header("Content-Type:   application/x-msexcel; charset=utf-8");
+//    header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+//header("Content-type:   application/x-msexcel; charset=utf-8");
+////header("Content-Disposition: attachment; filename=abc.xsl"); 
+//header("Expires: 0");
+//header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+//header("Cache-Control: private",false);
+//     $export_file = "my_name.xls";
+    ob_end_clean();
+    ini_set('zlib.output_compression','Off');
+    
+    header('Pragma: public');
+    header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');  // Date in the past    
+    header('Last-Modified: '.gmdate('D, d M Y H:i:s') . ' GMT');
+    header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1 
+    header('Cache-Control: pre-check=0, post-check=0, max-age=0'); // HTTP/1.1
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    header('Content-Transfer-Encoding: none');
+    header('Content-Type: application/vnd.ms-excel;'); // This should work for IE & Opera
+    header('Content-type: application/x-msexcel'); // This should work for the rest
+    header('Content-Disposition: attachment; filename="' . basename($export_file) . '"');
+
+
+    $flag = false;
+    foreach ($data as $row) {
+        if (!$flag) {
+            // display field/column names as first row
+//      echo implode("\t", array_keys($row)) . "\r\n";
+            echo implode("\t", $header) . "\r\n";
+            $flag = true;
+        }
+        array_walk($row, 'cleanData');
+        echo implode("\t", array_values($row)) . "\r\n";
+    }
+    if(count($data)==0){
+        echo implode("\t", $header) . "\r\n";
+        echo 'No Records Available' . "\r\n";
+    }
+    exit;
+}
+
+
+/*  clean the data for export    */
+function cleanData(&$str) {
+    $str = preg_replace("/\t/", "\\t", $str);
+    $str = preg_replace("/\r?\n/", "\\n", $str);
+    if (strstr($str, '"'))
+        $str = '"' . str_replace('"', '""', $str) . '"';
+}
+
+/*   convert the object to array   */
+function objectToArray($object) {
+    if (!is_object($object) && !is_array($object))
+        return $object;
+
+    return array_map('objectToArray', (array) $object);
+}

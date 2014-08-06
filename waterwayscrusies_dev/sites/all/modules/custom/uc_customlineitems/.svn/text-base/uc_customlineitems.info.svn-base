@@ -1,0 +1,14 @@
+; $Id$
+name = Ubercart Custom line Items adding
+description = "Adding Custom line items for ubercart"
+dependencies[] = uc_taxes
+dependencies[] = uc_store
+dependencies[] = uc_order
+package = "Ubercart - extra"
+core = 7.x
+
+; Information added by drupal.org packaging script on 2011-06-22
+version = "7.x-1.0"
+core = "7.x"
+project = "uc_customlineitems"
+datestamp = "1308713520"

@@ -1,0 +1,24 @@
+
+#corporategivingstart_date label, #corporategivingstart_date .help-block{
+	display: none;
+}
+
+#corporategivingend_date label, #corporategivingend_date .help-block{
+	display: none;
+}
+
+.form-type-item .controls{
+    padding-left:20%;
+    padding-top: 5px;
+      padding-bottom: 1px;
+      
+}
+
+.form-type-item .control-label{
+    position:absolute;
+}
+
+.backlinkclass{
+    margin-left: -25%;
+    
+}

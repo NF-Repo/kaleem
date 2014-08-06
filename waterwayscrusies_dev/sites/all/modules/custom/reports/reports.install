@@ -1,0 +1,87 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function reports_schema() {
+    $schema = array();
+
+    $schema['user_logs'] = array(
+        'description' => 'The base table for User Log activities.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the User logs.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'uid' => array(
+                'description' => 'User Id',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'location' => array(
+                'description' => 'Url path',
+                'type' => 'varchar',
+                'length' => 1024,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'message' => array(
+                'description' => 'Message related to log',
+                'type' => 'varchar',
+                'length' => 1024,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'referer' => array(
+                'description' => 'Module name',
+                'type' => 'varchar',
+                'length' => 1024,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'type' => array(
+                'description' => 'Error or Logged..',
+                'type' => 'varchar',
+                'length' => 128,
+                'not null' => FALSE,
+                'default' => '',
+            ),
+            'ipaddress' => array(
+                'description' => 'User Ip Address',
+                'type' => 'varchar',
+                'length' => 128,
+                'null' => TRUE,
+                'default' => '',
+            ),
+            'timestamp' => array(
+                'description' => 'Created Date ',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'data' => array(
+                'type' => 'blob',
+                'not null' => FALSE,
+                'size' => 'big',
+                'serialize' => TRUE,
+                'description' => 'A serialized object contains of Booking user inputs information',
+            ),
+            'status' => array(
+                'description' => 'Status of the gift card', //1 used or 0 unused 
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => FALSE,
+                'default' => 0,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    return $schema;
+}

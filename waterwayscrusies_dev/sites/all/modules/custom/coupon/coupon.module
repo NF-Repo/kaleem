@@ -1,0 +1,1377 @@
+<?php
+
+module_load_include('inc', 'coupon', 'includes/coupon.validate');
+
+function coupon_entity_info() {
+    $info['coupon'] = array(
+        // A human readable label to identify our entity.
+        'label' => t('Coupon Entity'),
+        // The controller for our Entity, extending the Drupal core controller.
+        'controller class' => 'EntityCouponController',
+        // The table for this entity defined in hook_schema()
+        'base table' => 'coupon',
+        // Returns the uri elements of an entity
+        'uri callback' => 'coupon_uri',
+        // IF fieldable == FALSE, we can't attach fields.
+        'fieldable' => TRUE,
+        // entity_keys tells the controller what database fields are used for key
+        // functions. It is not required if we don't have bundles or revisions.
+        // Here we do not support a revision, so that entity key is omitted.
+        'entity keys' => array(
+            'id' => 'id', // The 'id' (id here) is the unique id.
+        ),
+        // FALSE disables caching. Caching functionality is handled by Drupal core.
+        'static cache' => TRUE,
+        // Bundles are alternative groups of fields or configuration
+        // associated with a base entity type.
+        'bundles' => array(
+            'coupon_bundle' => array(
+                'label' => 'coupon bundle',
+                // 'admin' key is used by the Field UI to provide field and
+                // display UI pages.
+                'admin' => array(
+                    'path' => 'admin/structure/coupon/manage',
+                    'access arguments' => array('administer coupon entities'),
+                ),
+            ),
+        ),
+        // View modes allow entities to be displayed differently based on context.
+        // As a demonstration we'll support "Tweaky", but we could have and support
+        // multiple display modes.
+        'view modes' => array(
+            'tweaky' => array(
+                'label' => t('Tweaky'),
+                'custom settings' => FALSE,
+            ),
+        )
+    );
+
+    return $info;
+}
+
+/**
+ * Fetch a basic object.
+ *
+ * This function ends up being a shim between the menu system and
+ * coupon_load_multiple().
+ *
+ * This function gets its name from the menu system's wildcard
+ * naming conventions. For example, /path/%wildcard would end
+ * up calling wildcard_load(%wildcard value). In our case defining
+ * the path: examples/coupon/basic/%coupon in
+ * hook_menu() tells Drupal to call coupon_load().
+ *
+ * @param $id
+ *   Integer specifying the basic entity id.
+ * @param $reset
+ *   A boolean indicating that the internal cache should be reset.
+ * @return
+ *   A fully-loaded $basic object or FALSE if it cannot be loaded.
+ *
+ * @see coupon_load_multiple()
+ * @see coupon_menu()
+ */
+function coupon_load($id = NULL, $reset = FALSE) {
+    $ids = (isset($id) ? array($id) : array());
+    $coupon = coupon_load_multiple($ids, array(), $reset);
+    return $coupon ? reset($coupon) : FALSE;
+}
+
+/**
+ * Loads multiple basic entities.
+ *
+ * We only need to pass this request along to entity_load(), which
+ * will in turn call the load() method of our entity controller class.
+ */
+function coupon_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
+    return entity_load('coupon', $ids, $conditions, $reset);
+}
+
+/**
+ * Implements the uri callback.
+ */
+function coupon_uri($coupon) {
+    return array(
+        'path' => 'coupon/' . $coupon->id,
+    );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function coupon_menu() {
+    $items['coupon'] = array(
+        'title' => 'Create New Discount',
+        'page callback' => 'coupon_list_view',
+        'access arguments' => array('view any coupon entity'),
+    );
+
+    // This provides a place for Field API to hang its own
+    // interface and has to be the same as what was defined
+    // in basic_entity_info() above.
+    $items['admin/structure/coupon/manage'] = array(
+        'title' => 'Administer coupon entity type',
+        'page callback' => 'coupon_admin_page',
+        'access arguments' => array('administer coupon entities'),
+    );
+
+    // Add example entities.
+    $items['admin/structure/coupon/manage/add/%'] = array(
+        'title' => 'Create New Discount',
+        'title arguments' => array(5),
+        'page callback' => 'coupon_add',
+        'page arguments' => array(5),
+        'access arguments' => array('create coupon entities'),
+//        'type' => MENU_LOCAL_ACTION,
+        'file' => 'coupon.form.inc'
+    );
+    // Add example entities.
+    $items['groupon/%/view'] = array(
+        'title' => 'Deal View',
+        'page callback' => 'groupon_deal_view',
+        'page arguments' => array(1),
+        'access arguments' => array('groupon deal view'),
+//        'type' => MENU_LOCAL_ACTION,
+        'file' => 'coupon.form.inc'
+    );
+
+    // List of all coupon entities.
+    $items['admin/structure/coupon/manage/list'] = array(
+        'title' => 'List',
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+    );
+//    
+    $items['admin/structure/voucher/manage/list'] = array(
+        'title' => 'Vouchures',
+        'page callback' => 'voucher_list_view',
+        'access arguments' => array('vouchure list view'),
+    );
+    $items['admin/structure/groupon/manage/list'] = array(
+        'title' => 'Groupons',
+        'page callback' => 'groupons_list_view',
+        'access arguments' => array('groupons list view'),
+    );
+
+    // The page to view our entities - needs to follow what
+    // is defined in basic_uri and will use load_basic to retrieve
+    // the necessary entity info.
+    $items['coupon/%coupon'] = array(
+        'title callback' => 'coupon_title',
+        'title arguments' => array(3),
+        'page callback' => 'coupon_view',
+        'page arguments' => array(3),
+        'access arguments' => array('view any coupon entity'),
+    );
+
+    // 'View' tab for an individual entity page.
+    $items['coupon/%coupon/view'] = array(
+        'title' => 'View',
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'weight' => -10,
+    );
+
+    // 'Edit' tab for an individual entity page.
+    $items['coupon/%coupon/edit'] = array(
+        'load arguments' => array('coupon'),
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => 'coupon_item_edit',
+        'access arguments' => array('edit any coupon entity'),
+        'page arguments' => array(1),
+        'file' => 'coupon.form.inc'
+    );
+
+    // Add example entities.
+    $items['coupon/add'] = array(
+        'title' => 'Create New Discount',
+        'page callback' => 'coupon_add',
+        'file' => 'coupon.form.inc',
+        'access arguments' => array('create coupon entities'),
+    );
+
+    // Delete Cruise
+    $items ['coupon/%/delete'] = array(
+        'page callback' => 'coupon_item_delete',
+        'access arguments' => array('delete coupon entities'),
+        'page arguments' => array(1),
+        'file' => 'coupon.form.inc'
+    );
+    // Delete Cruise
+    $items ['updatestatus'] = array(
+        'page callback' => 'update_coupon_status',
+        'access arguments' => array('create coupon entities'),
+        'page arguments' => array(1),
+        'file' => 'coupon.form.inc'
+    );
+
+    // Delete Cruise
+    $items ['validatecoupon'] = array(
+        'page callback' => 'coupon_forms_validate',
+        'access arguments' => array('validate coupon entities'),
+        'file' => 'includes/coupon.validate.inc'
+    );
+// Bulk Uploads
+    //giftcard bulkuploads
+    $items ['bulkuploads/%'] = array(
+//        'title' => 'Upload a File',
+        'type' => MENU_CALLBACK,
+        'description' => 'Import a Excel File',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('coupon_bulkupload_import_form', 1),
+        'access arguments' => array('bulkupload coupon entities'),
+        'access callback' => TRUE,
+        'file' => 'coupon.form.inc',
+    );
+    $items ['grouponcodechangestatus'] = array(
+        'description' => 'Import a Excel File',
+        'page callback' => 'grouponcode_changestatus',        
+        'access callback' => TRUE,
+        'file' => 'coupon.form.inc',
+    );
+
+
+
+
+    return $items;
+}
+
+/**
+ * Basic information for the page.
+ */
+function coupon_admin_page() {
+    // $output = 'Admin page for cruise entities.<br/>';
+
+    $output = '';
+
+    $output .= coupon_list_view();
+    return $output;
+}
+
+function coupon_list_view() {
+
+    return drupal_render(drupal_get_form('coupon_list_form'));
+}
+
+/**
+ * Implements hook_permission().
+ */
+function coupon_permission() {
+    $permissions = array(
+        'administer coupon entities' => array(
+            'title' => t('administer coupon entities'),
+        ),
+        'view any coupon entity' => array(
+            'title' => t('view any coupon entity'),
+        ),
+        'edit any coupon entity' => array(
+            'title' => t('edit any coupon entity'),
+        ),
+        'create coupon entities' => array(
+            'title' => t('create coupon entities'),
+        ),
+        'delete coupon entities' => array(
+            'title' => t('delete coupon entities'),
+        ),
+        'validate coupon entities' => array(
+            'title' => t('validate coupon entities')
+        ),
+        'bulkupload coupon entities' => array(
+            'title' => t('bulkupload coupon entities')
+        ),
+        'vouchure list view' => array(
+            'title' => t('vouchure list view')
+        ),
+        'groupons list view' => array(
+            'title' => t('groupons list view')
+        ),
+        'groupon deal view' => array(
+            'title' => t('groupon deal view')
+        )
+    );
+    return $permissions;
+}
+
+/**
+ * Returns a render array with all coupon entities.
+ *
+ * In this basic example we know that there won't be many entities,
+ * so we'll just load them all for display. See pager_example.module
+ * to implement a pager. Most implementations would probably do this
+ * with the contrib Entity API module, or a view using views module,
+ * but we avoid using non-core features in the Examples project.
+ *
+ * @see pager_example.module
+ */
+function coupon_list_form_validate($form, &$form_state) {
+    if ($form_state['triggering_element']['#value'] == 'Go') {
+        $form_state['rebuild'] = TRUE;
+        return;
+    }
+}
+
+function coupon_list_form($form, &$form_state) {
+    global $base_url;
+    drupal_add_css(drupal_get_path('module', 'coupon') . '/coupon.css');
+    $option = '';
+    if (isset($_GET['option'])) {
+//    if (isset($form_state['values']['option'])) {
+//        $option = $form_state['values']['option'];
+        $option = $_GET['option'];
+    }
+
+    drupal_set_title('Discounts', $output = CHECK_PLAIN);
+    $html = '<div class="row-fluid"><div class="span12">'
+            . '<a style="color:#0088CC;text-decoration:none;" href="' . $base_url . '/admin/structure/coupon/manage/add/coupon">Create New Discount</a>'
+            . '<a style="color:#0088CC;text-decoration:none;margin-left:15px;" href="' . $base_url . '/bulkuploads/coupon">Import Discount</a>'
+            . '</div></div>';
+    $form['#method'] = 'get';
+    $form['option'] = array(
+        '#type' => 'select',
+        '#options' => drupal_map_assoc(array('All', 'Active', 'Inactive')),
+        '#default_value' => $option,
+        '#prefix' => $html . '<div class="row-fluid"><div class="span2">',
+        '#suffix' => '</div>',
+        '#attributes' => array('class' => array('input-medium')),
+    );
+
+    $form['btn'] = array(
+        '#type' => 'submit',
+        '#value' => 'Go',
+        '#prefix' => '<div class="span10" style="margin-left: 0px;">',
+        '#suffix' => '</div></div>',
+    );
+
+    $output = '';
+
+    $header = array(
+        array(
+            'data' => 'Id',
+            'field' => 'id'
+        ),
+        array(
+            'data' => 'Coupon code',
+            'field' => 'coupon_code'
+        ),
+        array(
+            'data' => 'Coupon Type',
+            'field' => 'coupontype'
+        ),
+        array(
+            'data' => 'Coupon StartDate',
+            'field' => 'promo_startdate'
+        ),
+        array(
+            'data' => 'Coupon EndDate',
+            'field' => 'promo_enddate'
+        ),
+        array(
+            'data' => 'Cruise StartDate',
+            'field' => 'crusie_startdate'
+        ),
+        array(
+            'data' => 'Cruise EndDate',
+            'field' => 'crusie_enddate'
+        ),
+        array(
+            'data' => 'Rate',
+            'field' => 'rate'
+        ),
+        array(
+            'data' => 'Operations'
+        ),
+        array(
+            'data' => 'Active',
+        )
+    );
+    if (isset($_GET ['sort']) && isset($_GET ['order'])) {
+        if ($_GET ['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET ['order']) {
+
+          case 'Id':
+                $order = 'id';
+                break;
+            case 'Coupon code':
+                $order = 'coupon_code';
+                break;
+            case 'Coupon Type':
+                $order='coupontype';
+                break;
+             case 'Coupon StartDate':
+                $order='promo_startdate';
+                break;
+             case 'Coupon EndDate':
+                $order='promo_enddate';
+                break;
+             case 'Cruise StartDate':
+                $order='crusie_startdate';
+                break;
+             case 'Cruise EndDate':
+                $order='crusie_enddate';
+                break;
+             case 'Rate':
+                $order='rate';
+                break;
+        }
+    } else {
+         $sort = 'ASC';
+         $order = 'id';
+    }
+
+
+    $query = db_select("coupon", "c");
+    $query->fields('c', array(
+        'id',
+        'coupon_code',
+        'coupontype',
+        'promo_startdate',
+        'promo_enddate',
+        'crusie_startdate',
+        'crusie_enddate',
+        'rate',
+        'couponactive',
+        'created'
+    ));
+    $query->condition('type', 'coupon', '=');
+    if ($option == 'Active') {
+        $query->condition('couponactive', '1', '=');
+    } else if ($option == 'Inactive') {
+        $query->condition('couponactive', '0', '=');
+    }
+    $query->orderBy($order, $sort);
+
+
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
+    $result = $query->execute()->fetchAll();
+
+    global $base_url;
+    $rows = array();
+    if (count($result) > 0) {
+        for ($i = 0; $i < count($result); $i ++) {
+//            $cruisetypeObject = cruisetypes_load($result [$i]->cruise_type);
+//            $cruisetype = $cruisetypeObject->name;
+            $status = ($result [$i]->couponactive == 1) ? "checked" : "unchecked";
+            $rows [] = array(
+                $result [$i]->id,
+                $result [$i]->coupon_code,
+                $result [$i]->coupontype,
+                $result [$i]->promo_startdate,
+                $result [$i]->promo_enddate,
+                $result [$i]->crusie_startdate,
+                $result [$i]->crusie_enddate,
+                $result [$i]->rate,
+                '<a href="' . $base_url . '/coupon/' . $result [$i]->id . '/edit">edit  </a>
+                	<a href="' . $base_url . '/coupon/' . $result [$i]->id . '/delete">delete  </a>',
+                '<input type="checkbox"' . $status . ' disabled="disabled">',
+            );
+        }
+    }
+
+    $output .= '<div class="">';
+    $output .= '<div class="">';
+
+    $output .= '</div>';
+    $output .= theme_table(array(
+                'header' => $header,
+                'rows' => $rows,
+                'attributes' => array(
+                    'class' => array(
+                        ''
+                    )
+                ),
+                'sticky' => true,
+                'caption' => '',
+                'colgroups' => array(),
+                'empty' => t("No Records!")
+            )) . theme('pager');
+
+    $output .= '</div>';
+
+
+    $form['outputmarkup'] = array(
+        '#type' => 'markup',
+        '#markup' => $output
+    );
+    return $form;
+}
+
+function voucher_list_view() {
+
+    return drupal_render(drupal_get_form('voucher_list_form'));
+}
+
+function voucher_list_form($form, &$form_state) {
+    global $base_url;
+    drupal_add_css(drupal_get_path('module', 'coupon') . '/coupon.css');
+//    if (isset($form_state['values']['option'])) {
+    if (isset($_GET['option'])) {
+//        $option = $form_state['values']['option'];
+        $option = $_GET['option'];
+    }
+    $option = isset($_GET['option']) ? $_GET['option'] : '';
+    drupal_set_title('Vouchers', $output = CHECK_PLAIN);
+    $html = '<div class="row-fluid"><div class="span12">'
+            . '<a style="color:#0088CC;text-decoration:none;" href="' . $base_url . '/admin/structure/coupon/manage/add/voucher">Create New Voucher</a>'
+            . '<a style="color:#0088CC;text-decoration:none;margin-left:15px;" href="' . $base_url . '/bulkuploads/voucher">Import Vouchers</a>'
+            . '</div></div>';
+    $form['#method'] = 'get';
+    $form['option'] = array(
+        '#type' => 'select',
+        '#options' => drupal_map_assoc(array('All', 'Active', 'Inactive')),
+        '#default_value' => $option,
+        '#prefix' => $html . '<div class="row-fluid"><div class="span2">',
+        '#suffix' => '</div>',
+        '#attributes' => array('class' => array('input-medium')),
+    );
+
+    $form['btn'] = array(
+        '#type' => 'submit',
+        '#value' => 'Go',
+        '#prefix' => '<div class="span10" style="margin-left: 0px;margin-top:14px;">',
+        '#suffix' => '</div></div>',
+    );
+
+    $output = '';
+
+    $header = array(
+        array(
+            'data' => 'Id',
+            'field' => 'id'
+        ),
+        array(
+            'data' => 'Voucher code',
+            'field' => 'coupon_code'
+        ),
+        array(
+            'data' => 'Voucher StartDate',
+            'field' => 'promo_startdate'
+        ),
+        array(
+            'data' => 'Voucher EndDate',
+            'field' => 'promo_enddate'
+        ),
+        array(
+            'data' => 'Cruise StartDate',
+            'field' => 'crusie_startdate'
+        ),
+        array(
+            'data' => 'Cruise EndDate',
+            'field' => 'crusie_enddate'
+        ),
+        array(
+            'data' => 'Rate',
+            'field' => 'rate'
+        ),
+        array(
+            'data' => 'Operations'
+        ),
+        array(
+            'data' => 'Active',
+        )
+    );
+    if (isset($_GET ['sort']) && isset($_GET ['order'])) {
+        if ($_GET ['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET ['order']) {
+            case 'Id' :
+                $order = 'id';
+                break;
+            case 'Coupon Code' :
+                $order = 'coupon_code';
+                break;
+        }
+    } else {
+        $sort = 'ASC';
+        $order = 'id';
+    }
+
+    $query = db_select("coupon", "c");
+    $query->fields('c', array(
+        'id',
+        'coupon_code',
+        'coupontype',
+        'promo_startdate',
+        'promo_enddate',
+        'crusie_startdate',
+        'crusie_enddate',
+        'rate',
+        'couponactive',
+        'created'
+    ));
+    $query->condition('type', 'voucher', '=');
+    if ($option == 'Active') {
+        $query->condition('couponactive', '1', '=');
+    } else if ($option == 'Inactive') {
+        $query->condition('couponactive', '0', '=');
+    }
+    $query->orderBy($order, $sort);
+
+
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
+    $result = $query->execute()->fetchAll();
+
+    global $base_url;
+    $rows = array();
+    if (count($result) > 0) {
+        for ($i = 0; $i < count($result); $i ++) {
+//            $cruisetypeObject = cruisetypes_load($result [$i]->cruise_type);
+//            $cruisetype = $cruisetypeObject->name;
+            $status = ($result [$i]->couponactive == 1) ? "checked" : "unchecked";
+            $rows [] = array(
+                $result [$i]->id,
+                $result [$i]->coupon_code,
+                $result [$i]->promo_startdate,
+                $result [$i]->promo_enddate,
+                $result [$i]->crusie_startdate,
+                $result [$i]->crusie_enddate,
+                $result [$i]->rate,
+                '<a href="' . $base_url . '/coupon/' . $result [$i]->id . '/edit">edit  </a>
+                	<a href="' . $base_url . '/coupon/' . $result [$i]->id . '/delete">delete  </a>',
+                '<input type="checkbox"' . $status . ' disabled="disabled">',
+            );
+        }
+    }
+
+    $output .= '<div class="">';
+    $output .= '<div class="">';
+
+    $output .= '</div>';
+    $output .= theme_table(array(
+                'header' => $header,
+                'rows' => $rows,
+                'attributes' => array(
+                    'class' => array(
+                        ''
+                    )
+                ),
+                'sticky' => true,
+                'caption' => '',
+                'colgroups' => array(),
+                'empty' => t("No Records!")
+            )) . theme('pager');
+
+    $output .= '</div>';
+
+
+    $form['outputmarkup'] = array(
+        '#type' => 'markup',
+        '#markup' => $output
+    );
+    return $form;
+}
+
+function voucher_list_form_validate($form, &$form_state) {
+    if ($form_state['triggering_element']['#value'] == 'Go') {
+        $form_state['rebuild'] = TRUE;
+        return;
+    }
+}
+
+function groupons_list_view() {
+
+    return drupal_render(drupal_get_form('groupons_list_form'));
+}
+
+function groupons_list_form($form, &$form_state) {
+    global $base_url;
+    drupal_add_css(drupal_get_path('module', 'coupon') . '/coupon.css');
+    if (isset($_GET['option'])) {
+//    if (isset($form_state['values']['option'])) {
+//        $option = $form_state['values']['option'];
+        $option = $_GET['option'];
+    }
+
+    drupal_set_title('Groupons', $output = CHECK_PLAIN);
+    $html = '<div class="row-fluid"><div class="span12">'
+            . '<a style="color:#0088CC;text-decoration:none;" href="' . $base_url . '/admin/structure/coupon/manage/add/groupon">Create New Groupon</a>'
+            . '</div></div>';
+    $form['#method'] = 'get';
+    $form['option'] = array(
+        '#type' => 'select',
+        '#options' => drupal_map_assoc(array('All', 'Active', 'Inactive')),
+        '#default_value' => $option,
+        '#prefix' => $html . '<div class="row-fluid"><div class="span2">',
+        '#suffix' => '</div>',
+        '#attributes' => array('class' => array('input-medium')),
+    );
+
+    $form['btn'] = array(
+        '#type' => 'submit',
+        '#value' => 'Go',
+        '#prefix' => '<div class="span10" style="margin-left: 0px;margin-top:14px;">',
+        '#suffix' => '</div></div>',
+    );
+
+    $output = '';
+
+    $header = array(
+//        array(
+//            'data' => 'Id',
+//            'field' => 'id'
+//        ),
+        array(
+            'data' => 'Deal Name',
+            'field' => 'deal_name'
+        ),
+        array(
+            'data' => 'Deal Type',
+            'field' => 'type'
+        ),
+        array(
+            'data' => 'Deal Price',
+//            'field' => 'deal_sell_price'
+        ),
+        array(
+            'data' => 'Deal StartDate',
+//            'field' => 'promo_startdate'
+        ),
+        array(
+            'data' => 'Deal EndDate',
+//            'field' => 'promo_enddate'
+        ),
+        array(
+            'data' => 'Count',
+//            'field' => 'crusie_startdate'
+        ),
+        array(
+            'data' => 'Redeemed',
+//            'field' => 'crusie_enddate'
+        ),
+        array(
+            'data' => 'Active',
+        ),
+        array(
+            'data' => 'Actions'
+        ),
+    );
+    if (isset($_GET ['sort']) && isset($_GET ['order'])) {
+        if ($_GET ['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET ['order']) {
+
+            case 'Deal Name' :
+                $order = 'deal_name';
+                break;
+            case 'Deal Type' :
+                $order = 'type';
+                break;
+        }
+    } else {
+        $sort = 'ASC';
+        $order = 'deal_name';
+    }
+
+    $query = db_select("coupon", "c");
+    $query->fields('c', array(
+        'id',
+        'deal_name',
+        'type',
+        'deal_sell_price',
+        'promo_startdate',
+        'promo_enddate',
+        'crusie_startdate',
+        'crusie_enddate',
+        'couponactive'
+    ));
+    
+    
+   // $query->condition('type', 'groupon', '=');
+    $or = db_or()->condition('type', 'groupon')->condition('type', 'web')->condition('type', 'livingsocial');
+    $query->condition($or);
+    if ($option == 'Active') {
+        $query->condition('couponactive', '1', '=');
+    } else if ($option == 'Inactive') {
+        $query->condition('couponactive', '0', '=');
+    }
+    $query->orderBy($order, $sort);
+
+
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
+    $result = $query->execute()->fetchAll();
+
+    global $base_url;
+    $rows = array();
+    if (count($result) > 0) {
+        for ($i = 0; $i < count($result); $i ++) {
+//            $activegrouponstbydeal=array();
+//            $redeemedgrouponsbydeal=array();
+//            $activegrouponstbydeal = getgrouponcodescountbydealid($result[$i]->id,'active');
+//            $redeemedgrouponsbydeal = getgrouponcodescountbydealid($result[$i]->id,'redeemed');
+            $status = ($result [$i]->couponactive == 1) ? "checked" : "unchecked";
+            $grouponcodes = array();
+            $grouponcodes = getgrouponcodesbydealid($result [$i]->id);
+            $grouponhtml = '';
+            $redeemedcount=0;
+            foreach ($grouponcodes as $grouponcode) {
+                if ($grouponcode->is_used == '0') {
+                    $grouponhtml.='<input type="checkbox" disabled="disabled" class="pull-left">';
+                } else {
+                    $grouponhtml.='<input type="checkbox" checked="checked" class="pull-left" disabled="disabled">';
+                    $redeemedcount++;
+                }
+                $grouponhtml.='<span class="pull-left grouponodelabel">' . $grouponcode->groupon_code . '</span><br/>';
+            }
+            $rows [] = array(
+//                $result [$i]->id,
+                $result [$i]->deal_name,
+                $result [$i]->type,
+                $result [$i]->deal_sell_price,
+                $result [$i]->promo_startdate,
+                $result [$i]->promo_enddate,
+                count($grouponcodes),
+                $redeemedcount,
+//                $grouponhtml,
+//                '<a href="' . $base_url . '/coupon/' . $result [$i]->id . '/edit">View  </a>',
+                '<input type="checkbox"' . $status . ' disabled="disabled">',
+                '<a href="' . $base_url . '/groupon/' . $result [$i]->id . '/view">View Codes  </a> | <a href="' . $base_url . '/coupon/' . $result [$i]->id . '/edit">Edit</a>',
+            );
+        }
+    }
+
+    $output .= '<div class="">';
+    $output .= '<div class="">';
+
+    $output .= '</div>';
+    $output .= theme_table(array(
+                'header' => $header,
+                'rows' => $rows,
+                'attributes' => array(
+                    'class' => array(
+                        ''
+                    )
+                ),
+                'sticky' => true,
+                'caption' => '',
+                'colgroups' => array(),
+                'empty' => t("No Records!")
+            )) . theme('pager');
+
+    $output .= '</div>';
+
+
+    $form['outputmarkup'] = array(
+        '#type' => 'markup',
+        '#markup' => $output
+    );
+    return $form;
+}
+
+function groupons_list_form_validate($form, &$form_state) {
+    if ($form_state['triggering_element']['#value'] == 'Go') {
+        $form_state['rebuild'] = TRUE;
+        return;
+    }
+}
+
+/**
+ * Callback for a page title when this entity is displayed.
+ */
+function coupon_title($coupon) {
+    return t('Coupon');
+}
+
+/**
+ * Menu callback to display an entity.
+ *
+ * As we load the entity for display, we're responsible for invoking a number
+ * of hooks in their proper order.
+ *
+ * @see hook_entity_prepare_view()
+ * @see hook_entity_view()
+ * @see hook_entity_view_alter()
+ */
+function coupon_view($coupon, $view_mode = 'tweaky') {
+    // Our entity type, for convenience.
+    $coupon_type = 'coupon';
+    // Start setting up the content.
+    $coupon->content = array(
+        '#view_mode' => $view_mode,
+    );
+    // Build fields content - this is where the Field API really comes in to play.
+    // The task has very little code here because it all gets taken care of by
+    // field module.
+    // field_attach_prepare_view() lets the fields load any data they need
+    // before viewing.
+    field_attach_prepare_view($coupon_type, array($coupon->id => $coupon), $view_mode);
+    // We call entity_prepare_view() so it can invoke hook_entity_prepare_view()
+    // for us.
+    entity_prepare_view($coupon_type, array($coupon->id => $coupon));
+    // Now field_attach_view() generates the content for the fields.
+    $coupon->content += field_attach_view($coupon_type, $coupon, $view_mode);
+
+    // OK, Field API done, now we can set up some of our own data.
+    $coupon->content['created'] = array(
+        '#type' => 'item',
+        '#title' => t('Created date'),
+        '#markup' => format_date($coupon->created),
+    );
+
+
+    // Now to invoke some hooks. We need the language code for
+    // hook_entity_view(), so let's get that.
+    global $language;
+    $langcode = $language->language;
+    // And now invoke hook_entity_view().
+    module_invoke_all('entity_view', $coupon, $coupon_type, $view_mode, $langcode);
+    // Now invoke hook_entity_view_alter().
+    drupal_alter(array('coupon_view', 'entity_view'), $coupon->content, $coupon_type);
+
+    // And finally return the content.
+    return $coupon->content;
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ *
+ * This exposes the "extra fields" (usually properties that can be configured
+ * as if they were fields) of the entity as pseudo-fields
+ * so that they get handled by the Entity and Field core functionality.
+ * Node titles get treated in a similar manner.
+ */
+function coupon_field_extra_fields() {
+
+	$form_elements['coupon_code'] = array(
+        'label' => t('coupon code'),
+        'description' => t('coupon code (an extra form field)'),
+        'weight' => -5,
+    );
+    $display_elements['created'] = array(
+        'label' => t('Creation date'),
+        'description' => t('Creation date (an extra display field)'),
+        'weight' => 0,
+    );
+    $display_elements['coupon_code'] = array(
+        'label' => t('coupon code'),
+        'description' => t('Just like title, but trying to point out that it is a separate property'),
+        'weight' => 0,
+    );
+
+    // Since we have only one bundle type, we'll just provide the extra_fields
+    // for it here.
+
+
+    return '';
+}
+
+/**
+ * Form deletion handler.
+ *
+ * @todo: 'Are you sure?' message.
+ */
+function coupon_item_delete($id) {
+    $msg = '';
+    $path = '';
+
+    $coupon = coupon_load($id);
+    if ($coupon->type == 'coupon') {
+        $msg = 'Coupon Deleted Successfully.';
+        $path = 'admin/structure/coupon/manage/list';
+    }
+    if ($coupon->type == 'voucher') {
+        $msg = 'Voucher Deleted Successfully.';
+        $path = 'admin/structure/voucher/manage/list';
+    }
+    try {
+        coupon_delete($id);
+    } catch (Exception $e) {
+        $msg = 'Operation Failed.';
+    }
+    drupal_set_message($msg);
+    drupal_goto($path);
+}
+
+/**
+ * We save the entity by calling the controller.
+ */
+function coupon_save(&$coupon) {
+    return entity_get_controller('coupon')->save($coupon);
+}
+
+/**
+ * Use the controller to delete the entity.
+ */
+function coupon_delete($coupon) {
+
+    entity_get_controller('coupon')->delete($coupon);
+}
+
+function coupon_item_edit($coupon) {
+    drupal_set_title(t('<em>Edit coupon</em> @title', array('@title' => '')), PASS_THROUGH);
+    if ($coupon->type == 'groupon' || $coupon->type == 'web' || $coupon->type == 'livingsocial') {
+        return drupal_get_form('groupon_form', $coupon);
+    } else {
+        return drupal_get_form('coupon_form', $coupon);
+    }
+}
+
+function coupon_used_list() {
+    return coupon_load_multiple($ids = array(), $conditions = array('used' => 1));
+}
+
+function coupon_unused_list() {
+    return coupon_load_multiple($ids = array(), $conditions = array('used' => 0));
+}
+
+function update_coupon_status($coupon) {
+
+    return entity_get_controller('coupon')->updatecouponstatus($coupon);
+}
+
+function coupon_status($coupon_id) {
+    return coupon_load_multiple($ids = array(), $conditions = array('coupon_id' => $coupon_id));
+}
+
+function apply_coupon_for_order($couponid, $orderid) {
+    return entity_get_controller('coupon')->applycoupon($couponid, $orderid);
+}
+
+function validate_couponid_item($couponid) {
+    return entity_get_controller('coupon')->validatecoupon($couponid);
+}
+
+function search_coupon_filter() {
+    return entity_get_controller('coupon')->searchcouponfilter();
+}
+
+function getCouponAppliedEventlist($couponid) {
+    return entity_get_controller('coupon')->couponappliedeventlist($couponid);
+}
+
+function couponBulkUpload($input) {
+    return entity_get_controller('coupon')->couponBulkupload($input);
+}
+
+function loadAvaliablepromocodesByCategory($categoryid) {
+    return entity_get_controller('coupon')->AvaliablepromocodesByCategory($categoryid);
+}
+
+function RedeemedCouponsByCategory($categoryid) {
+    return entity_get_controller('coupon')->RedeemedcouponsCategory($categoryid);
+}
+
+function couponexists($couponcode) {
+    $query = db_select('coupon', 'c');
+
+    $query->fields('c', array('id', 'coupon_code'));
+//     $query->condition('e.name', $evntname, '=');
+    $query->condition('c.coupon_code', $couponcode, '=');
+    $results = $query->execute()
+            ->fetchAll();
+
+    $duplicatedcoupons = array();
+    foreach ($results as $row) {
+        $duplicatedcoupons[] = $row;
+    }
+
+    return $duplicatedcoupons;
+}
+
+function events_load() {
+//    $crusievents = entity_load('scheduledevents');
+//    $crusieevnts = array();
+//    foreach ($crusievents as $evnts) {
+////        $crusieevnts[$evnts->name] = t($evnts->name);
+//        $crusieevnts[$evnts->id] = t($evnts->name);
+//    }
+//
+//    return $crusieevnts;
+    $query = db_select('scheduledevents', 's');
+    $query->join('scheduledevent_dates', 'd', 's.id = d.scheduledevent_id');
+    $query->fields('s');
+    $query->fields('d');
+    $result = $query->execute();
+    $cruise_events = array();
+    foreach ($result as $cruiseevent) {
+        $cruise_events[] = $cruiseevent;
+    }
+    return $cruise_events;
+}
+
+function events_load_byname($evntname) {
+
+    $query = db_select('scheduledevents', 'e');
+
+    $query->fields('e', array('id', 'name'));
+//     $query->condition('e.name', $evntname, '=');
+    $query->condition('e.name', $evntname, 'IN');
+    $results = $query->execute()
+            ->fetchAll();
+    $scheduledevents = array();
+    foreach ($results as $row) {
+        $scheduledevents[] = $row;
+    }
+    return $scheduledevents;
+}
+
+function events_load_byid($evntids) {
+
+    $query = db_select('scheduledevents', 'e');
+
+    $query->fields('e', array('id', 'name'));
+//     $query->condition('e.name', $evntname, '=');
+    $query->condition('e.id', $evntids, 'IN');
+    $results = $query->execute()
+            ->fetchAll();
+    $scheduledevents = array();
+    foreach ($results as $row) {
+        $scheduledevents[$row->name] = $row->name;
+    }
+    return $scheduledevents;
+}
+
+/*  @params :$evntid=array()  */
+
+function evntdate_load($evntid) {
+
+    $query = db_select('scheduledevent_dates', 's');
+    $query->condition('s.scheduledevent_id', $evntid, 'IN');
+//          $query->condition('s.scheduledevent_id', $evntid, '=');
+    $query->fields('s', array('scheduleddate'));
+
+    $results = $query->execute()
+            ->fetchAll();
+    $schedulededate = array();
+    foreach ($results as $row) {
+        $schedulededate[] = $row;
+    }
+    return $schedulededate;
+}
+
+function geteventscheduledate($evntid) {
+
+    $query = db_select('scheduledevent_dates', 's');
+    $query->condition('s.scheduledevent_id', $evntid, '=');
+    $query->fields('s', array('scheduleddate'));
+
+    $results = $query->execute()
+            ->fetchAll();
+    $schedulededate = array();
+    foreach ($results as $row) {
+        $schedulededate[] = $row;
+    }
+    return $schedulededate;
+}
+
+/*  get the selected events based on the coupon id   */
+
+function getcouponevents($couponid) {
+
+    $query = db_select('coupon_event', 'c');
+    $query->condition('c.coupon_id', $couponid, '=');
+    $query->fields('c', array('coupon_id', 'Event_id', 'coupon_eventtype'));
+
+    $results = $query->execute()
+            ->fetchAll();
+    $couponevents = array();
+    foreach ($results as $row) {
+        $couponevents[] = $row;
+    }
+    return $couponevents;
+}
+
+function coupon_exist_check($couponid) {
+
+    $result = db_select('coupon', 'c')
+            ->fields('c')
+            ->condition('coupon_code', $couponid, '=')
+            ->execute();
+    $duplicatecoupons = array();
+    foreach ($result as $record) {
+        // Do something with each $record
+        $duplicatecoupons[] = $record;
+    }
+
+    return $duplicatecoupons;
+}
+
+/*  get all the cruise details    */
+
+function getallcruisedetails() {
+    $query = db_select("cruise", "c");
+    // Adding fields
+    $query->fields('c');
+    $result = $query->execute();
+    $data = array();
+    foreach ($result as $row) {
+        $data[] = $row;
+    }
+    return $data;
+}
+
+/*  get the cruise based events list  */
+
+function getcruise_eventsbycruiseid($cruiseid) {
+    $query = db_select('scheduledevents', 's');
+    $query->join('cruise', 'c', 'c.id = s.cruisetemplate_id');
+    $query->join('scheduledevent_dates', 'd', 's.id = d.scheduledevent_id');
+    $query->fields('s');
+    $query->fields('c', array('cruise_title'));
+    $query->fields('d');
+    $query->condition('s.cruisetemplate_id', $cruiseid, '=');
+    $result = $query->execute();
+    $cruise_events = array();
+    foreach ($result as $cruiseevent) {
+        $cruise_events[] = $cruiseevent;
+    }
+    return $cruise_events;
+}
+
+/*  get the cruise based events list  */
+
+function getcruise_eventsbysearch($cruiseid, $portid, $vesselid, $cruisestartdatetime, $cruiseenddatetime) {
+    $query = db_select('scheduledevents', 's');
+    $query->join('cruise', 'c', 'c.id = s.cruisetemplate_id');
+    $query->join('scheduledevent_dates', 'd', 's.id = d.scheduledevent_id');
+    $query->fields('s');
+    $query->fields('c', array('cruise_title'));
+    $query->fields('d');
+    $query->condition('d.scheduleddate', time(), '>=');
+
+    if (isset($cruiseid) && $cruiseid != '') {
+        $query->condition('s.cruisetemplate_id', $cruiseid, '=');
+    }
+    if (isset($portid) && $portid != '') {
+        $query->condition('s.port_id', $portid, '=');
+    }
+    if (isset($vesselid) && $vesselid != '') {
+        $query->condition('s.vessel_id', $vesselid, '=');
+    }
+    if (isset($cruisestartdatetime) && $cruisestartdatetime != '') {
+        $query->condition('d.scheduleddate', $cruisestartdatetime, '>=');
+    }
+    if (isset($cruiseenddatetime) && $cruiseenddatetime != '') {
+        $query->condition('d.scheduleddate', $cruiseenddatetime, '<=');
+    }
+
+    $result = $query->execute();
+//    var_dump($result);
+//    exit();
+    $cruise_events = array();
+    foreach ($result as $cruiseevent) {
+        $cruise_events[] = $cruiseevent;
+    }
+    return $cruise_events;
+}
+
+//getportswithcruise
+function getPortslist() {
+    $waterwaystree = taxonomy_get_tree(5);
+    $protdetails = array();
+    $totalresult = array();
+    foreach ($waterwaystree as $waterwaystree) {
+        if ($waterwaystree->parents[0] == 0) {
+            $categories[] = $waterwaystree;
+            $children = taxonomy_get_children($waterwaystree->tid);
+            foreach ($children as $key => $portvalue) {
+                $portsitems = getArrayloop($portvalue->field_itemid);
+                if (isset($portsitems) && $portsitems != null) {
+                    $ports = explode(',', $portsitems);
+                    $protdetails['name'] = $portvalue->name;
+                    $protdetails['id'] = $portvalue->tid;
+                    $totalresult[$portvalue->tid] = $portvalue->name;
+                }
+            }
+        }
+    }
+    return ($totalresult);
+}
+
+function getallcruise_events() {
+    $query = db_select('scheduledevents', 's');
+    $query->join('cruise', 'c', 'c.id = s.cruisetemplate_id');
+    $query->join('scheduledevent_dates', 'd', 's.id = d.scheduledevent_id');
+    $query->fields('s');
+    $query->fields('c', array('cruise_title'));
+    $query->fields('d');
+    $query->condition('d.scheduleddate', time(), '>=');
+    $result = $query->execute();
+    $cruise_events = array();
+    foreach ($result as $cruiseevent) {
+        $cruise_events[] = $cruiseevent;
+    }
+    return $cruise_events;
+}
+
+/*
+ * Get the groupon cede data by groupon code
+ */
+
+function getgroupondatabycode($grouponcode) {
+    
+	$query = db_select('deal_grouponcodes', 's');
+    $query->join('coupon', 'c', 'c.id = s.deal_coupon_id');
+    $query->fields('s');
+    $query->fields('c');
+    $query->condition('s.groupon_code', $grouponcode, '=');
+    $result = $query->execute();
+    $groupondata = array();
+    foreach ($result as $grouponrow) {
+        $groupondata[] = $grouponrow;
+    }
+    return $groupondata;
+}
+
+/*
+ * Get the groupon cedes by Deal id
+ */
+
+function getgrouponcodesbydealid($dealid) {
+    $query = db_select('deal_grouponcodes', 's');
+    $query->fields('s');
+    $query->condition('s.deal_coupon_id', $dealid, '=');
+    $result = $query->execute();
+    $grouponcodes = array();
+    foreach ($result as $grouponrow) {
+        $grouponcodes[] = $grouponrow;
+    }
+    return $grouponcodes;
+}
+/*
+ * Get the groupon cedes by Deal id
+ */
+
+function getgroupondatabyid($grouponcodeid){
+    $query = db_select('deal_grouponcodes', 's');
+    $query->fields('s');
+    $query->condition('s.id', $grouponcodeid, '=');
+    $result = $query->execute();
+    $grouponcodes = array();
+    foreach ($result as $grouponrow) {
+        $grouponcodes[] = $grouponrow;
+    }
+    return $grouponcodes;
+}
+/*
+ * Get the groupon cedes by Deal id
+ */
+
+function getgrouponcodescountbydealid($dealid,$status) {
+    $query = db_select('deal_grouponcodes', 's');
+    $query->fields('s');
+    $query->condition('s.deal_coupon_id', $dealid, '=');
+    $result = $query->execute();
+    $activegrouponcodes = array();
+    $redeemedgrouponcodes = array();
+    foreach ($result as $grouponrow) {
+        if($grouponrow->is_used == '0'){
+            $activegrouponcodes[] = $grouponrow;
+        }else{            
+            $redeemedgrouponcodes[]=$grouponrow;
+        }        
+    }
+    if($status == 'active'){
+        return $activegrouponcodes;
+    }
+    else{
+        return $redeemedgrouponcodes;
+    }
+    
+}

@@ -1,0 +1,7 @@
+name = Cruise Category
+description = Cruise category names
+core = 7.x
+files[] = cruisecategory.module
+files[] = cruisecategory.install
+;Date 12Dec2013
+

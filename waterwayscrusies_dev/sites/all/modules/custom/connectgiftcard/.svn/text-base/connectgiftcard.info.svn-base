@@ -1,0 +1,6 @@
+; $Id$
+name = connectgiftcard
+description = "Connect Gift card"
+core = 7.x
+version = VERSION
+package = WWC

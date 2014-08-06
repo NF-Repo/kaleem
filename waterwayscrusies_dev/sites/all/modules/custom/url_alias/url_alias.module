@@ -1,0 +1,102 @@
+<?php
+class UrlAlias{
+	public $pid;
+	public $source;
+	public $alias;
+	public $uid;
+	
+	
+	
+	public function createUrlAlias(){
+		//if replicate
+		UrlAlias::deleteUrlAlias($this->source);
+		
+		$id = db_insert('url_alias') 
+		->fields(array(
+				'source' => $this->source,
+				'alias' => $this->alias,
+				'language' => 'und',
+		))
+		->execute();
+		return $id;
+		
+	}
+	
+	
+	public static function deleteUrlAlias($source){
+		$num_deleted = db_delete('url_alias')
+  			->condition('source', $source,'=')
+  			->execute();
+	}
+
+	
+	
+	
+	public function updateUrlAlias(){
+		$num_updated = db_update('url_alias') 
+		->fields(array(
+				//'source' => $this->source,
+				'alias' => $this->alias,
+		))
+		->condition('pid', $this->pid, '=')
+		->execute();
+	}
+	
+	
+	
+	public static function checkUrlAlias($name){
+		try{
+			$result = db_select('url_alias', 'u')
+			->fields('u',array('pid'))
+			->condition('alias', $name, '=')
+			->execute()->fetchField();
+		}catch(Exception $e){
+			//error handling
+		
+		}
+		return $result;
+	}
+	
+	
+	public static function getUrlAlias($pid){
+		try{
+			$result = db_select('url_alias', 'u')
+			->fields('u',array('pid'))
+			->condition('pid', $name, '=')
+			->execute()->fetchField();
+		}catch(Exception $e){
+			//error handling
+	
+		}
+		return $result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static function getUrlAliasPid($name){
+		return UrlAlias::checkUrlAlias($name);
+	}
+	
+	
+	public static function getUrlAliasDetailsBySource($urlaliassource){
+		try{
+			$result = db_select('url_alias', 'u')
+			->fields('u')
+			->condition('source', $urlaliassource, '=')
+			->execute()->fetchObject();
+		}catch(Exception $e){
+			//error handling
+	
+		}
+		return $result;
+	}
+	
+	
+	
+}

@@ -1,0 +1,6 @@
+; $Id$
+name = foodandbar
+description = "Waterways Food and Bar View Page"
+core = 7.x
+version = VERSION
+package = WWC

@@ -1,0 +1,192 @@
+#store-reports-products-form .form-item{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#salescommission-order-reports-form .form-item-option, #salesbycruise-reports-form .form-item-option, #store-salesagentreports-products-form .form-item-option,
+#salesbymonth-reports-form .form-item-option, #salesbydayofweek-reports-form .form-item-option, #store-customer-orders-form .form-item-option, 
+#store-coupon-reports-form .form-item-option,#store-salesagent-orders-form .form-item-option, #salesbypier-order-reports-form .form-item-option,
+#salesbytickets-reports-form .form-item-option, #salesbyenhancements-reports-form .form-item-option
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-right: 10px;
+}
+
+#order_start_date{
+	padding: 0px;
+}
+
+#order_end_date{
+	padding: 0px;
+}
+
+#order_start_date label, #order_start_date .help-block{
+	display: none;
+}
+
+#order_end_date label, #order_end_date .help-block{
+	display: none;
+}
+
+
+.customerdetails{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    max-width: 450px;
+    border: solid 1px #ddd;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.customerdetails h3{
+    font-family:arial;
+    font-size: 20px;
+    color: #000;
+    font-style: italic;
+    text-decoration: underline;
+    padding:5px 0px 0px 10px;
+}
+.customheading{
+    font-family: arial;
+    font-size: 14px;
+    font-weight: bold;
+    color:#000;
+    padding:5px 0px 0px 10px;
+}
+.custompara{
+    font-family: arial;
+    font-size: 14px;
+    font-weight: normal;
+    color:#000;
+    padding:5px 0px 0px 10px;
+    line-height: 18px;
+}
+
+.specialmain{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.specialdetails{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    max-width: 450px;
+    border: solid 1px #ddd;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.specialdetails h3{
+    font-family:arial;
+    font-size: 20px;
+    color: #000;
+    font-style: italic;
+    text-decoration: underline;
+    padding:5px 0px 0px 10px;
+}
+
+.specialemail{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    max-width: 450px;
+    border: solid 1px #ddd;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.sunsetdinner{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    max-width: 450px;
+    border: solid 1px #ddd;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.sunsetdinner h3{
+    font-family:arial;
+    font-size: 20px;
+    color: #000;
+    font-style: italic;
+    text-decoration: underline;
+    padding:5px 0px 0px 10px;
+}
+.sunsetdinner h4{
+    font-family:arial;
+    font-size: 16px;
+    color: #000;
+    font-weight: normal;
+    padding:5px 0px 0px 10px;
+}
+.innerheading{
+    font-family:arial;
+    font-size: 14px;
+    color: #000;
+    font-style: italic;
+    font-weight: bold;
+    padding:5px 0px 0px 10px;
+}
+
+
+
+/*   naresh css   */
+.contentborder{
+    border:1px solid #DDDDDD;
+}
+.content{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    max-width: 450px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.fullcontent{
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    max-width: 900px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+
+@media (max-width: 767px) {
+    .sunsetdinner .span6{
+        float: left;
+        width: 50%;
+    }
+    .customerdetails .span3{
+        float: left;
+        width: 30%;
+    }
+    .customerdetails .span7{
+        float: left;
+        width: 70%;
+    }
+    .specialmain .span7{
+        float: left;
+        width: 70%;
+    }
+    .specialmain .span5{
+        float: left;
+        width: 30%;
+    }
+    .specialmain{
+        margin-top: 10px;
+    }
+}
+
+

@@ -1,0 +1,89 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function emailtemplate_notification_schema() {
+	$schema = array ();
+	
+	$schema ['emailtemplate_notification'] = array (
+			'description' => '',
+			'fields' => array (
+					'id' => array (
+							'description' => '',
+							'type' => 'serial',
+							'unsigned' => TRUE,
+							'not null' => TRUE 
+					),
+					'user_id' => array (
+							'type' => 'varchar',
+							'length' => '255',
+							'default' => '' 
+					),
+					'cruise_template_id' => array (
+							'type' => 'varchar',
+							'length' => '255',
+							'default' => '' 
+					),
+					'cruise_email_template_id' => array (
+							'type' => 'varchar',
+							'length' => '255',
+							'default' => '' 
+					),
+					'schedule_event_id' => array (
+							'type' => 'varchar',
+							'length' => '255',
+							'default' => '' 
+					),
+					'schedule_event_date' => array (
+							'type' => 'varchar',
+							'length' => '255',
+							'default' => '' 
+					),
+					'order_id' => array (
+							'type' => 'varchar',
+							'length' => '255',
+							'default' => '' 
+					) 
+			)
+			,
+			'primary key' => array (
+					'id' 
+			) 
+	);
+	
+	
+	$schema ['emailtemplate_notifications_sent'] = array (
+			'description' => '',
+			'fields' => array (
+					'id' => array (
+							'description' => '',
+							'type' => 'serial',
+							'unsigned' => TRUE,
+							'not null' => TRUE
+					),
+					'en_id' => array (
+							   'type' => 'int',
+       						   'unsigned' => TRUE,
+        					   'not null' => TRUE,
+					),
+					'sent_date' => array (
+							'type' => 'varchar',
+							'length' => '255',
+							'default' => ''
+					),
+					'status' => array (
+							'type' => 'varchar',
+							'length' => '255',
+							'default' => ''
+					)
+			)
+			,
+			'primary key' => array (
+					'id'
+			)
+	);
+	
+	return $schema;
+}

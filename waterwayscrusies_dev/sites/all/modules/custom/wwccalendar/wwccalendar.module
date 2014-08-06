@@ -1,0 +1,40 @@
+<?php
+
+function wwccalendar_permission() {
+    return array(
+        'access wwccalendar content' => array(
+            'title' => t('Access content for the wwccalendar module')
+        )
+    );
+}
+
+function wwccalendar_menu() {
+    $items = array();
+    $items['wwccalendar'] = array(
+        'title' => 'Cruise Calendar',
+        'page callback' => '_wwccalendar_page',
+        'access arguments' => array('access wwccalendar content'),
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+
+function wwccalendar_theme() {
+    $items['wwccalendar'] = array(
+        'template' => 'wwccalendar',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+
+
+function _wwccalendar_page() {
+   drupal_add_css(drupal_get_path('module', 'wwccalendar') . '/wwccalendar.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+   
+     return theme('wwccalendar');
+    
+}
+
+

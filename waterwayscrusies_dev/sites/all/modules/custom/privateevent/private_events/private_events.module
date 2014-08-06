@@ -1,0 +1,74 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+function private_events_menu() {
+    $items = array();
+    $items['private_events'] = array(
+        'title' => 'Private Events',
+        'page callback' => 'private_events_list_page',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    	'file'=>'views/private_events_list_view.inc',
+    );
+
+    
+     $items['private_events/category/%'] = array(
+        'title' => 'Private Events Category',
+        'page callback' => 'private_events_category',
+        'page arguments' => array(2),
+        'access arguments' => array('access content'),
+     	'file'=>'views/private_events_view.inc'
+    );
+     
+     //Event ID, Package Category
+     $items['private_events/packages/%/%'] = array(
+     		'title' => 'Private Event packages',
+     		'page callback' => 'private_events_packages',
+     		'page arguments' => array(2,3),
+     		'access arguments' => array('access content'),
+     		'file'=>'views/private_event_packages_view.inc'
+     );
+     
+     
+
+    return $items;
+}
+
+    function private_events_theme() {
+        $items['private_events'] = array(
+            'template' => 'private_events', // here comes your template name
+            'render element' => 'content'
+        );
+
+        $items['private_events_Category'] = array(
+            'template' => 'private_events_Category', // here comes your template name
+            'render element' => 'content'
+        );
+        
+        $items['private_events_packages'] = array(
+        		'template' => 'private_events_packages', // here comes your template name
+        		'render element' => 'content'
+        );
+
+        return $items;
+    }
+
+   
+    
+
+    function template_preprocess_private_events(&$variables) {
+    	drupal_add_css(drupal_get_path('module', 'private_events') . '/css/privateevents.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+    	drupal_add_css(drupal_get_path('module', 'private_events') . '/css/wedding.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+    }
+    function template_preprocess_private_events_Category(&$variables){
+    	drupal_add_css(drupal_get_path('module', 'private_events') . '/css/wedding.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+    }
+    
+    function template_preprocess_private_events_packages(&$variables) {
+    	drupal_add_css(drupal_get_path('module', 'private_events') . '/css/privateevents_packages.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+    }

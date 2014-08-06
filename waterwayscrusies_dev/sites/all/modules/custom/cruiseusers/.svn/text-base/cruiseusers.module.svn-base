@@ -1,0 +1,103 @@
+<?php
+
+define('DRUPAL_ROOT', $_SERVER['DOCUMENT_ROOT']);
+chdir(DRUPAL_ROOT);
+include_once './includes/bootstrap.inc';
+drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+
+/**
+ * Implements hook_menu().
+ */
+function cruiseusers_menu() {
+    $items = array();
+    $items['cruiseusers'] = array(
+        'title' => 'Cruise Users Account',
+        'page callback' => 'cruiseusers_page',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function cruiseusers_page() {
+    $name = 'lakshmi';
+    $pass = 'lucky';
+    $emial = 'abc@abcddd.com';
+
+
+
+
+    $userresults = cruiseuser_account($name, $pass, $emial);
+    var_dump($userresults);
+}
+
+function cruiseuser_account($name, $pass, $emial) {
+
+
+    //Set up your variables used below - $name, $pass etc
+    //First Checking the User availability by name and email
+    $useremailload = user_load_by_mail($emial);
+    if ($useremailload) {
+        
+    }
+    return $useremailload;
+
+
+
+// New user creation
+    $account = new stdClass();
+    $account->is_new = true;
+    $newUserData = array(
+        'name' => $name,
+        'pass' => $pass, // note: do not md5 the password
+        'mail' => $email,
+        'status' => 1,
+        'timezone' => variable_get('date_default_timezone'),
+        'init' => $email,
+        'roles' => array(
+            DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+        ),
+    );
+
+    try {
+        $new_user = user_save($account, $newUserData);
+        return $new_user;
+    } catch (Exception $e) {
+        echo 'Caught exception: ', $e->getMessage(), "\n";
+    }
+}
+
+function createnewuseraccount($userobject) {
+    $account = new stdClass();
+    $account->is_new = true;
+    $data = array(
+        array(
+            'guest_dob' => $userobject->guest_dob,
+            'guest_aniverssary' => $userobject->guest_aniverssary,
+        ),
+    );
+    $serzData = serialize($data);
+    $newUserData = array(
+        'name' => $userobject->name . '' . time(),
+        'pass' => user_password(), // note: do not md5 the password
+        'mail' => $userobject->mail,
+        'status' => 1,
+        'timezone' => variable_get('date_default_timezone'),
+        'init' => $userobject->mail,
+        'roles' => array(
+            DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+        ),
+        'data' => $serzData,
+    );
+
+    $new_user = user_save($account, $newUserData);
+    return $new_user->uid;
+}
+

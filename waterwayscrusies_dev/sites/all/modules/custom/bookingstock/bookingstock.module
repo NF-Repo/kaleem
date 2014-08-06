@@ -1,0 +1,460 @@
+<?php 
+
+/**
+ * Implements hook_permission().
+ */
+function bookingstock_permission() {
+  return array(
+    'edit own cruise availability' => array(
+      'title' => t('Edit own cruise availability.'),
+      'description' => t('Edit the availability of cruise type nodes they own.')
+    ),
+    'edit any cruise availability' => array(
+      'title' => t('Edit any cruise availability.'),
+      'description' => t('Edit the availablity of any cruise type node.')
+    ),
+    'administer hotel booking settings' => array(
+      'title' => t('Administer hotel booking settings'),
+      'description' => t('Administer the cruise booking settings')
+    ),
+    'view hotel search results' => array(
+      'title' => t('View hotel booking search results'),
+      'description' => t('View results of cruise booking searches.')
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function bookingstock_menu() {
+  $items = array();
+
+  
+  $items['node/%node/availability'] = array(
+    'title'           => 'Cruise Availability Calendar',
+    'page callback'   => 'drupal_get_form',
+    'page arguments'  => array('bookingstock_availability_form', 1),
+    'file'            => 'bookingstock.calendars.inc',
+    'access arguments'=> array(1),
+    'access callback' => 'bookingstock_availability_edit_access',
+    'type'            => MENU_LOCAL_TASK,
+  );
+ 
+  return $items;
+}
+
+
+
+
+
+
+
+
+
+function bookingstock_availability_edit_access($node) {
+  if ($node->type == 'product') {
+    return TRUE;
+  }
+  return FALSE;
+}
+/**
+ * Implements hook_theme().
+ */
+function bookingstock_theme() {
+  return array(
+    'bookingstock_availability_form' => array(
+      'file' => 'bookingstock.theme.inc',
+      'render element' => 'form',
+    ),
+   
+  );
+}
+
+
+
+/**
+ * Implements hook_cron().
+ */
+function bookingstock_cron() {
+  
+  
+  /**
+   * This Cron get executes based the 
+   * exiprdates of their availability
+   * checking the event expirdate and update the stock and other operations
+   * 
+   * 
+   * 
+   * 
+   * 
+   */
+  
+}
+
+
+
+/**
+ * Implements hook_views_api().
+ */
+function bookingstock_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'bookingstock'),
+  );
+}
+
+
+
+/**Stock service funcitons***/
+
+
+/***
+ * 
+ * Implementing the stock updateds
+ * whenever we are creating the Order we need to update the stock information
+ * which as to implement the Order save hook system.
+ * And also need to update this information at the dates adjustment section also
+ * once the cruise event exipiry date reached then the stock will zero for past dates
+ * 
+ * Stock thersold system would has to link this system .instead of ubercart default stock system.
+ * and also on tickets cancellation we need to update the stock system.
+ * 
+ * 
+ */
+
+
+
+function getstockcalendarrows($nid,$first_day,$end_day)
+{
+  $days = db_query(
+    "SELECT *
+    FROM {bookingstock}
+    WHERE nid = :nid
+    AND calendar_dt BETWEEN :start AND :end",
+    array(
+      ':nid' => $nid,
+      ':start' => date(DATE_FORMAT_ISO, $first_day),
+      ':end' => date(DATE_FORMAT_ISO, $end_day)
+    )
+  );
+  
+  if($days->rowCount()>0)
+  {
+    $results=array(
+      'rowcount'=>$days->rowCount(),
+      'results'=>$days->fetchAll()
+  );
+  }
+  else
+  {
+    $results=array(
+      'rowcount'=>$days->rowCount(),
+      'results'=>array()
+  );
+  }
+  
+  return $results;
+}
+
+/**
+ * Load stock by day date
+ * format::2013-10-05 00:00:00
+ * 
+ * 
+ */
+function getStockbydate($stockdate)
+{
+  
+  $stocksmaterials=getCalendar_availablestocks(125,'S1002',10,2013);
+foreach ($stocksmaterials as $availablestock) {
+  if($availablestock->calendar_dt==$stockdate)
+  {
+    return $availablestock->available;
+    break;
+  }
+}
+}
+
+/**
+ * 
+ * @param type $nodeObj
+ * @param type $calendarday format (2013-10-03 03:08:14)
+ * @return type
+ * 
+ * 
+ * 
+ */
+
+
+
+function getCalendar_availablestocks($nid,$nodesku,$month,$year)
+{
+  //params
+  
+  
+//  $month=9;
+//  $year=13;
+  
+  $first_day = mktime(0, 0, 0, $month, 1, $year);
+  $break = mktime(0, 0, 0, $month + 1, 1, $year);//break the month for end day
+  $end_day = mktime(0, 0, 0, $month + 1, 0, $year); //last day of previous month
+  $days_in_month = date('j', $end_day);
+  
+  
+  
+
+  $calendarrowresults=getstockcalendarrows($nid,$first_day,$end_day);
+
+ 
+
+//checking for the row count
+
+$existingstock=array();
+if($calendarrowresults['rowcount'] > 0 && count($calendarrowresults['rowcount']) > 0)
+{
+  return $calendarrowresults['results'];
+  }
+else
+{
+  //insert query gets starts here
+
+//  $currentstock=uc_stock_level($nodesku);
+  
+  $stocksettings=cruisesettings_load(1);
+
+  $currentstock=$stocksettings->stock;
+  $counter = new DateObject(date(DATE_FORMAT_ISO, $first_day), date_default_timezone(), DATE_FORMAT_ISO);
+ 
+   while ((int)$counter->format('U') < $break) {
+  
+  
+//    var_dump((int)$counter->format('j'));
+//    var_dump((int)$days_in_month);
+//    var_dump($end_day);
+//    var_dump($currentday);
+   $calendardt=$counter->format('Y-m-d H:i:s');
+   $stockinput=array(
+     'nid'=>$nid,
+      'calendar_dt'=>$calendardt,
+      'available'=>$currentstock,
+      'totalstockavailability'=>$currentstock,
+      'cruisesold'=>0,
+      'created'=>REQUEST_TIME
+  );
+  $results=drupal_write_record('bookingstock', $stockinput);
+  $counter->modify('+ 1 day');
+  }
+  
+ //load the created objects and return the results
+  
+   $calendarrowresults=getstockcalendarrows($nid,$first_day,$end_day);
+  return $calendarrowresults['results'];
+  exit();
+    
+  }
+  
+}
+
+
+
+
+function getCalendarcurrentstock($nid,$timestamp)
+{
+ 
+//  getCalendarstocks($month,$year);
+  
+    $startdate = (date('Y-m-d 00:00:00', $timestamp));
+  
+ 
+  $result = db_select('bookingstock', 'b')
+    ->fields('b')
+->condition('b.nid',$nid,'=')
+->condition('calendar_dt',$startdate,'=')
+    ->execute();
+foreach ($result as $nodesvalue) {
+  return $nodesvalue;
+}
+}
+
+
+function getCalendarstocks($month,$year)
+{
+//  $month=10;
+//  $year=2013;
+  
+    $first_minute = mktime(0, 0, 0, $month, 1);
+    $startdate = (date('Y-m-d 00:00:00', $first_minute));
+    $last_minute = mktime(23, 59, 0, $month, date('t', $first_minute));
+    $enddate = (date('Y-m-d 00:00:00', $last_minute));
+  
+  $query = db_select('node','n');
+ $query->join('bookingstock','b','b.nid = n.nid');
+ $query->join('field_data_field_eventstartdate','fe','fe.entity_id=n.nid');
+// $query->join('field_eventstartdate','fe','fe.value<='.$first_minute);
+ $query->fields('n',array('nid'));
+ $query->fields('b',array('nid'));
+ $query->condition('fe.field_eventstartdate_value',$first_minute,'<=');
+ $query->condition('fe.field_eventstartdate_value2',$last_minute,'>=');
+ $result = $query->execute();
+ 
+ $resultsetnode=array();
+ foreach ($result as $record)
+ {
+ 
+   if(!in_array($record->nid, $resultsetnode))
+   $resultsetnode[]=$record->nid;//node ids which are stored for month
+ }
+ 
+ 
+ //Now getting the event nodeid list and checkingwith eventnodeid is available 
+ //in stocknodes array if not then call the monthly insert node
+ //The id's which are written here is available in bookingstock and cruise nodes
+ //load all cruise nodesid
+ $query = new EntityFieldQuery();
+  $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+  $query->entityCondition('bundle', 'catalog');
+  $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+  $query->execute();
+ 
+$cruisenodes=array();
+  if (count($catalogs->ordered_results) > 0) {
+    $totalcruiseitems=array();
+    foreach ($catalogs->ordered_results as $noderesults) {
+      
+    $catalogid=$noderesults->entity_id;
+    }
+  }
+  $nodeQuery = new EntityFieldQuery();
+  $entities = $nodeQuery->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'product') 
+
+ ->fieldCondition('taxonomy_catalog', 'tid', $catalogid)
+  
+//  ->pager(10)
+  ->execute();
+ 
+  $entitiesnodes=array();
+  foreach ($entities as $key => $nodesvalue) {
+    $nodes=array_keys($nodesvalue);
+  }
+  
+  $unavailablenodes=array_diff($nodes, $resultsetnode);
+ //performing the calendar stockinsertion for unavailablenode for that month
+ 
+ $bulknodelists=node_load_multiple($unavailablenodes);
+//  var_dump($bulknodelists);
+ if(count($bulknodelists) > 0)
+ {
+  
+  foreach ($bulknodelists as $insertstocknode) {
+    getCalendar_availablestocks($insertstocknode->nid,$insertstocknode->model,$month,$year);
+  }
+ }
+}
+
+
+/***stock upadtes**/
+
+
+/**
+ * 
+ * @param type $order Object
+ * 
+ * 
+ */
+function getStockUpdateByOrder($order)
+{
+  $nodeids=array();
+  foreach ($order->products as $bookey => $bookvalue) {
+    $nodeids[]=$bookvalue->nid;
+  }
+  watchdog('bookingstock',$bookvalue->nid);
+ 
+$query = new EntityFieldQuery();
+  $catalogs = $query->entityCondition('entity_type', 'taxonomy_term');
+  $query->entityCondition('bundle', 'catalog');
+  $query->propertyCondition('name', 'Cruise'); //change 2 to any vocabulary ID
+  $query->execute();
+  
+
+  if (count($catalogs->ordered_results) > 0) {
+    $totalcruiseitems=array();
+    foreach ($catalogs->ordered_results as $noderesults) {
+      
+    $catalogid=$noderesults->entity_id;
+    }
+  }
+
+   $nodeQuery = new EntityFieldQuery();
+  $entities = $nodeQuery->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'product') 
+  ->fieldCondition('taxonomy_catalog', 'tid', $catalogid)
+//  ->pager(10)
+  ->execute();
+ 
+  $entitiesnodes=array();
+  foreach ($entities as $key => $nodesvalue) {
+    $nodes=array_keys($nodesvalue);
+  }
+  $resultsnode=array();
+  foreach ($nodeids as $nodevalue) {
+    if(in_array($nodevalue, $nodes))
+    {
+      $resultsnode[]=$nodevalue;
+    }
+  }
+  $bookingdates=getBookingdatebyorderId($order->order_id);
+  watchdog('bookingstock','orderid'.$order->order_id);
+  watchdog('bookingstock','upadte'.$resultsnode[0]);
+  watchdog('bookingstock','upadtetime'.$bookingdates);
+   $resultsstock=UpdateStockbydaynid($order,$resultsnode[0],$bookingdates);
+  return $resultsstock;
+}
+
+
+
+function UpdateStockbydaynid($order,$nodeid,$timestamp)
+{
+   watchdog('bookingstock','nodeid'.$nodeid);
+    watchdog('bookingstock','timestamp'.$timestamp);
+    
+    //gettting the selected ticked quantity of order
+     $tickets=getTicketsbyorderId($order->order_id);
+ 
+//  array(2) { [8]=> string(1) "1" [4]=> string(1) "3" } //aid=>qty
+  //calcualte tickets
+      $totalqty=0;
+  foreach ($tickets as $qty) {
+     $totalqty+=(int)$qty;
+  }
+  watchdog('bookinstock', 'current qty'. $totalqty);
+  $currentstock=getCalendarcurrentstock($nodeid,$timestamp);
+  
+  
+  $availablestock=(int)$currentstock->available-$totalqty;
+  $cruisesold=(int)$currentstock->cruisesold+$totalqty;
+  $daydate = (date('Y-m-d 00:00:00', $timestamp));
+  $num_updated = db_update('bookingstock') // Table name no longer needs {}
+  ->fields(array(
+    'available' =>$availablestock,
+    'cruisesold'=>$cruisesold,
+  ))
+  ->condition('calendar_dt', $daydate ,'=')
+ ->condition('nid', $nodeid ,'=')
+  ->execute();
+  
+  return $num_updated;
+  
+}
+function getBookingdatebyorderId($orderid)
+{
+  $result = db_select('reservation', 'c')
+            ->fields('c',array('bookingdate'))
+            ->condition('orderid', $orderid, '=')
+            ->execute();
+  $bookingdate=$result->fetchObject();
+  watchdog('bookingstock', 'bookingdate'.$bookingdate->bookingdate);
+  return $bookingdate->bookingdate;
+  
+}

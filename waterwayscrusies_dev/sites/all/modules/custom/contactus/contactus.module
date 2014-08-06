@@ -1,0 +1,455 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function contactus_menu() {
+
+  //contact us Add
+  $items['contactus'] = array(
+      'title' => 'Contact us',
+      'page callback' => 'contactus_add',
+     // 'access arguments' => array('create contactus entities'),
+       'access callback' => 'user_access',
+       'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+function contactus_theme() {
+     return array(
+        'contactus_add_form' => array(
+            'render element' => 'form',
+            // In this one the rendering will be done by a template file
+            // (theming-example-text-form.tpl.php) instead of being rendered by a
+            // function. Note the use of dashes to separate words in place of
+            // underscores. The template file's extension is also left out so that
+            // it may be determined automatically depending on the template engine
+            // the site is using.
+            'template' => 'contactus',
+        ),
+    );
+   
+}
+function contactus_func() {
+    
+  try {
+    
+    global $user;
+    //get the product load 
+    return theme('contactus');
+    
+  } catch (Exception $ex) {
+      
+    drupal_json_output('The exception ' . $ex);
+    
+  }
+  
+}
+
+/**
+ * Implements hook_permission().
+ */
+function contactus_permission() {
+  return array(
+      'administer contactus entities' => array(
+          'title' => t('Administer contactus entities'),
+          'restrict access' => TRUE,
+      ),
+      'view contactus entities' => array(
+          'title' => t('View contactus Entities'),
+      ),
+      'create contactus entities' => array(
+          'title' => t('Create contactus Entities'),
+      ),
+  );
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function contactus_entity_info() {
+  $contactus_info['contactus'] = array(
+      'label' => t('contactus Entity'),
+      'controller class' => 'contactusController',
+      'base table' => 'contactus',
+      'uri callback' => 'contactus_uri',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+          'id' => 'id',
+      ),
+      'static cache' => TRUE,
+      'bundles' => array(
+          'contactus_bundle' => array(
+              'label' => 'contactus',
+              'admin' => array(
+                  'path' => 'admin/structure/contactus/manage',
+                  'access arguments' => array('administer contactus entities'),
+              ),
+          ),
+      ),
+      'view modes' => array(
+          'full' => array(
+              'label' => t('Full'),
+              'custom settings' => FALSE,
+          ),
+      )
+  );
+  return $contactus_info;
+}
+
+function contactus_page_title($contactus) {
+  return 'Contactus';
+}
+
+function contactus_load($id = NULL, $reset = FALSE) {
+  $ids = (isset($id) ? array($id) : array());
+  $contactus = contactus_load_multiple($ids, array(), $reset);
+  return $contactus ? reset($contactus) : FALSE;
+}
+
+function contactus_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+  return entity_load('contactus', $ids, $conditions, $reset);
+}
+
+function contactus_uri($basic) {
+  return array(
+      'path' => 'contactus/' . $contactus->id,
+  );
+}
+
+function contactus_admin_page() {
+  $output = 'Admin page for contactus entities.<br/>';
+  $output .= '<a href="/community/add">Add contactus entity</a>';
+
+  return $output;
+}
+
+
+
+
+function contactus_add() {
+    
+    drupal_add_css(drupal_get_path('module', 'contactus') . '/contactus.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+//    drupal_add_js(drupal_get_path('module', 'contactus') . '/js/contactus.js');
+    
+    
+  $contactus = (object) array(
+              'type' => '', //Values which are in saparated by comma.
+              'organising_requsting_donation' => '',
+      //date_event,description_event,goal_event,first_name,last_name,address1,address2,city,state,zipcode,phone_number,mail,confirmmail,captcha,captcha_confirm
+              'date_event' => '',
+               'description_event' => '',
+               'goal_event' => '',
+              'first_name' => '',
+              'last_name' => '',
+              'address1' => '',
+              'address2' => '',
+              'city' => '',
+              'state' => '',
+              'zipcode' => '',
+              'phone_number' => '',
+              'mail' => '',
+              'confirmmail' => '',
+              'captcha' => '',
+              'captcha_confirm' => '',
+              'created' => REQUEST_TIME
+  );
+
+  return drupal_get_form('contactus_add_form', $contactus);
+}
+
+function contactus_add_form($form, &$form_state, $contactus) {
+     
+//    echo "<pre>";
+//    print_r($corporategiving);
+//    stdClass Object
+//(
+//    [type] => 
+//    [organising_requsting_donation] => 
+//    [date_event] => 
+//    [description_event] => 
+//    [goal_event] => 
+//    [first_name] => 
+//    [last_name] => 
+//    [address1] => 
+//    [address2] => 
+//    [city] => 
+//    [state] => 
+//    [zipcode] => 
+//    [phone_number] => 
+//    [mail] => 
+//    [confirmmail] => 
+//    [captcha] => 
+//    [captcha_confirm] => 
+//    [created] => 1374651738
+//)
+//    exit();
+     
+      $form['#id'] = 'contactus-form';
+    $form['#contactus'] = $contactus;
+    $form_state['contactus'] = $contactus;
+
+    $form['form_token'] = array
+        (
+        '#id' => 'contactus-form-token',
+        '#type' => 'token',
+        '#default_value' => '6b5b86507df2307bf063c52d871a0d95',
+        '#post' => Array(),
+        '#programmed' => '',
+        '#tree' => '',
+        '#parents' => Array('0' => 'form_token'),
+        '#array_parents' => Array('0' => 'form_token'),
+        '#weight' => '0.006',
+        '#processed' => '',
+        '#description' => '',
+        '#attributes' => Array(),
+        '#required' => '',
+        '#input' => '1',
+        '#name' => 'form_token',
+        '#value' => '6b5b86507df2307bf062c52d871a0d95',
+        '#defaults_loaded' => '1',
+        '#sorted' => '1',
+        '#title' => '',
+        '#printed' => '1',
+    );
+
+    $form['form_id'] = Array
+        (
+        '#type' => 'hidden',
+        '#value' => 'contactus_form',
+        '#id' => 'contactusfrm',
+        '#post' => Array(),
+        '#programmed' => '',
+        '#tree' => '',
+        '#parents' => Array(0 => 'form_id'),
+        '#array_parents' => Array(0 => 'form_id'),
+        '#weight' => 0.007,
+        '#processed' => 1,
+        '#description' => '',
+        '#attributes' => Array(),
+        '#required' => '',
+        '#input' => 1,
+        '#process' => Array(0 => 'form_expand_ahah'),
+        '#name' => 'form_id',
+        '#defaults_loaded' => 1,
+        '#sorted' => 1,
+        '#title' => '',
+        '#printed' => 1
+    );
+
+  if (isset($contactus->id) && ($contactus->id != null)) {
+    $form['id'] = array(
+        '#type' => 'hidden',
+        '#title' => t('id'),
+        '#default_value' => $contactus->id,
+        '#required' => TRUE,
+    );
+  }
+  else {
+    $form['created'] = array(
+        '#type' => 'hidden',
+        '#title' => t('created'),
+        '#default_value' => $contactus->created,
+    );
+  }
+
+  
+  $form['first_name'] = array(
+      '#type' => 'textfield',
+      '#title' => t('First Name'),
+      '#title_display' => 'invisible',
+      '#default_value' => $contactus->first_name,
+      '#required' => TRUE,
+      '#attributes' => array('placeholder' => array('*First Name')),
+  );
+
+  $form['last_name'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Last Name'),
+      '#title_display' => 'invisible',
+      '#default_value' => $contactus->last_name,
+      '#required' => TRUE,
+      '#attributes' => array('placeholder' => array('*Last Name')),
+  );
+
+
+//date_event,description_event,goal_event,first_name,last_name,address1,address2,city,state,zipcode,phone_number,mail,confirmmail,captcha,captcha_confirm
+$form['phone_number']['field1'] = array(
+      '#type' => 'textfield',
+    '#title_display' => 'invisible',
+        '#id' => 'phonenumberfield1',
+      '#title' => t('*Phone Number'),
+      '#default_value' => $contactus->phone_number,
+//      '#required' => TRUE,
+        '#maxlength' => 3,
+      '#attributes' => array('placeholder' => array('(  )')),
+  );
+$form['phone_number']['field2'] = array(
+      '#type' => 'textfield',
+        '#id' => 'phonenumberfield2',
+    '#title_display' => 'invisible',
+      '#title' => t('Phone Number'),
+      '#default_value' => $contactus->phone_number,
+        '#maxlength' => 3,
+//      '#required' => TRUE,
+  );
+$form['phone_number']['field3'] = array(
+      '#type' => 'textfield',
+        '#id' => 'phonenumberfield3',
+    '#title_display' => 'invisible',
+      '#title' => t('Phone Number'),
+      '#default_value' => $contactus->phone_number,
+        '#maxlength' => 4,
+//      '#required' => TRUE,
+  );
+//    $form['phone_number']['field4'] = array(
+//        '#type' => 'markup',
+//        '#title' => t('(555-555-5555)'),
+//    );
+//
+//    $form['phone_number']['field4'] = array(
+//        '#type' => 'markup',
+//        '#markup' => '<div class="row-fluid phonenumberfield4"  style="font-size:medium;">(555-555-5555)</div>',
+////           '#attributes' => array('attributes' => array('class' => 'phonenumberfield4')),
+////           '#attributes' => array('attributes' => array('class' => 'phonenumberfield4')),
+////        '#markup' => '<div class="row-fluid"  style="float:left;display:' . $displayoption . '"><div class="span12 purchaseTicketDetails">'
+//    );
+
+$form['mail'] = array(
+      '#type' => 'textfield',
+    '#title_display' => 'invisible',
+      '#title' => t('Email'),
+      '#default_value' => $contactus->mail,
+      '#required' => TRUE,
+      '#attributes' => array('placeholder' => array('*Email Address')),
+  );
+
+  $form['confirmmail'] = array(
+      '#type' => 'textfield',
+      '#title_display' => 'invisible',
+      '#title' => t('Confirm Email'),
+     '#default_value' => $contactus->confirmmail,
+      '#required' => TRUE,
+      '#attributes' => array('placeholder' => array('*Confirm Email Address')),
+  );
+  $form['comments'] = array(
+      '#type' => 'textarea',
+      '#title_display' => 'invisible',
+      '#title' => t('Comments'),
+      '#required' => TRUE,
+      '#attributes' => array('placeholder' => array('*Comments')),
+  );
+  
+  
+  field_attach_form('contactus', $contactus, $form, $form_state);
+  $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Submit'),
+      '#weight' => 100,
+      '#attributes' => array('class' => array('pressbtn')),
+  );
+    $form['submit']['#validate'][] = 'contactus_add_form_validate';
+  return $form;
+}
+
+function contactus_add_form_validate($form, &$form_state) {
+
+    $customerfirstname = $form_state['values']['first_name'];
+    if (!is_valid_name($customerfirstname)) {
+        $statusKey = false;
+        form_set_error('first_name', 'please Enter A valid First Name');
+    }
+
+    $customerlastname = $form_state['values']['last_name'];
+    if (!is_valid_name($customerlastname)) {
+        $statusKey = false;
+        form_set_error('last_name', 'please Enter A valid Last Name');
+    }
+
+    $customer_email = $form_state['values']['mail'];
+    $customer_confirmemail = $form_state['values']['confirmmail'];
+
+    if (!is_valid_email($customer_email)) {
+        form_set_error('mail', 'please Enter valid EmailId');
+
+        $statusKey = false;
+    }
+    if (!is_both_are_same($customer_email, $customer_confirmemail)) {
+
+        form_set_error('confirmmail', 'Email and Confirmation Email not matches');
+        $statusKey = false;
+    }
+
+
+    $phonenumberfield1 = $form_state['values']['field1'];
+     $phonenumberfield2 = $form_state['values']['field2'];
+      $phonenumberfield3 = $form_state['values']['field3'];
+      
+       $Phonenumber = $phonenumberfield1 . '-' . $phonenumberfield2 . '-' . $phonenumberfield3;
+     
+    if (!is_valid_us_phone($Phonenumber)) {
+         $statusKey = false;
+        form_set_error('field1', 'Please Enter A valid Phone Number');
+         form_set_error('field2', '');
+          form_set_error('field3', '');
+      
+    }
+  
+    $comments=$form_state['values']['comments'];
+    if ($form_state['values']['comments']=="") {
+        $statusKey = false;
+        form_set_error('comments', 'Please Enter Comments');
+    }
+    
+}
+
+function contactus_add_form_submit($form, &$form_state) {
+//    
+//    var_dump($form_state['values']['phone_number']);
+//    var_dump($form_state['values']['field2']);
+    $form_state['values']['phone_number'] = $form_state['values']['field1'] . '-' . $form_state['values']['field2'] . '-' . $form_state['values']['field3'];
+//    exit();
+    
+  $contactus_submission = (object) $form_state['values'];
+  field_attach_submit('contactus', $contactus, $form, $form_state);
+  $contactus = contactus_save($contactus_submission);
+  
+}
+
+function contactus_save(&$contactus) {
+
+  return entity_get_controller('contactus')->save($contactus);
+}
+
+class contactusController extends DrupalDefaultEntityController {
+
+  public function save($contactus) {
+    if (isset($contactus->id) && ($contactus->id != null)) {
+      drupal_write_record('contactus', $contactus, array('id'));
+      field_attach_update('contactus', $contactus);
+    }
+    else {
+      drupal_write_record('contactus', $contactus);
+      field_attach_insert('contactus', $contactus);
+    }
+    module_invoke_all('entity_insert', $contactus, 'contactus');
+ 
+      //Sending Email the RequestQuote Details
+        $to = SiteConfiguration::getContactUs();
+        $params = array(
+            'subject' => t('WWC Contactus'),
+            'body' => t("Data"),
+            'formdata' => $contactus,
+        );
+        drupal_mail("email_system", "wwc_contactus", $to, language_default(), $params, $to);
+        drupal_set_message('Thankyou for contacting us.
+                             We have received your enquiry and will respond to you within 24 hours.  For urgent enquiries please call us on 206-223-2060');
+    return $contactus;
+  }
+
+}
+
+//function template_preprocess_contactus(&$variables) {
+//    drupal_add_css(drupal_get_path('module', 'contactus') . '/contactus.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+//}

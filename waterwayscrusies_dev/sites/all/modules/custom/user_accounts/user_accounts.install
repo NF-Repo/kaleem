@@ -1,0 +1,43 @@
+<?php
+function user_accounts_schema() {
+	$schema ['user_accounts'] = array (
+			'description' => 'User details Table',
+			'fields' => array (
+					'uid' => array (
+							'type' => 'serial',
+							'description' => 'User ID' 
+					),
+					'first_name' => array (
+							'type' => 'varchar',
+							'length' => '60',
+							'description' => 'Users firstname' 
+					),
+					'last_name' => array (
+							'type' => 'varchar',
+							'length' => '60',
+							'description' => 'Users lastname' 
+					),
+					'company_name' => array (
+							'type' => 'varchar',
+							'length' => '60',
+							'description' => 'Company name' 
+					),
+					'phone' => array (
+							'type' => 'varchar',
+							'length' => '20',
+							'description' => 'Users phone' 
+					),
+					'address' => array (
+							'type' => 'text',
+							'size' => 'big',
+							'description' => 'Users Address' 
+					) 
+			)
+			,
+			'primary key' => array (
+					'uid' 
+			) 
+	);
+	
+	return $schema;
+}

@@ -1,0 +1,35 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function cruisetypes_schema() {
+	$schema = array ();
+	
+	$schema ['cruisetypes'] = array (
+			'description' => 'The base table for cruisetypes.',
+			'fields' => array (
+					'id' => array (
+							'description' => 'Primary key.',
+							'type' => 'serial',
+							'unsigned' => TRUE,
+							'not null' => TRUE 
+					),
+					
+					'name' => array (
+							'description' => 'Name of the Cruise',
+							'type' => 'varchar',
+							'length' => 255,
+							'not null' => TRUE,
+							'default' => '' 
+					) 
+			),
+			'primary key' => array (
+					'id' 
+			) 
+	);
+	
+	return $schema;
+}
+

@@ -1,0 +1,182 @@
+/* 
+    Document   : Departure Ports
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.contentbox-inner
+{
+    width:85% !important;
+    margin:auto;
+    padding-top:5%;
+    padding-bottom:5%;
+}
+
+.eventTitle a
+{
+    font-size: 46px;
+    font-family:georgia;
+    color:#00529b;
+    line-height:60px;
+    font-weight: normal;
+    padding-left: 0%;
+}
+
+.eventrequest
+{
+    width: 16%;
+    background-color: #ab323b;
+    float: right;
+    height: 27px;
+    padding: 2px;
+    margin-right: 3%;
+    margin-top: 1.5%;
+}
+.eventrequestInner
+{
+    width: 98%;
+    background-color: #ab323b;
+    margin: 0px;
+    line-height: 25px;
+    color: #ffffff;
+    font-family: georgia;
+    font-size: 15px;
+    text-align: center;
+    border: #f1dddf 1px dotted;
+}
+.eventrequest a {
+    text-decoration: none;
+    font-size:15px;
+    font-family:georgia;
+    color:#ffffff;
+    line-height:25px;
+    font-weight: normal;
+    padding-left: 0%;
+}
+.eventTitle a:hover
+{
+    text-decoration: none;
+}
+
+.SunsetBoxFirst
+{
+    background:url(../images/sunsetdinner-img.png) no-repeat;
+    margin:5%;
+    /*	width:250px;
+            height:250px;*/
+    border:#fff 10px solid;
+    -moz-box-shadow: 0 0 10px 0px #999;
+    -webkit-box-shadow: 0 0 10px 0px#999;
+    box-shadow: 0 0 10px 0px #999;
+    height: 250px;
+}
+.SunsetBoxFirstInner
+{
+    margin-top:30%;
+    font-family:georgia;
+    font-size:34px;
+    color:#fff;
+    line-height:35px;
+    margin-left: 15px;
+    margin-right: 13px;
+    text-align:center;
+}
+.SunsetBoxFirstInner a
+{
+    font-size:19px;
+    font-family:georgia;
+    text-shadow:none;
+    text-decoration:none;
+    color:#4596de;
+}
+
+.diningBoxFirst
+{
+    background:rgba(1,65,122,0.5);
+    margin:5%;
+    /*	width:250px;
+            height:250px;*/
+    border:#fff 10px solid;
+    -moz-box-shadow: 0 0 10px 0px #999;
+    -webkit-box-shadow: 0 0 10px 0px#999;
+    box-shadow: 0 0 10px 0px #999;
+    height: 250px;
+}
+.diningBoxFirstInner
+{
+    margin-top:30%;
+    font-size:29px;
+    font-family:georgia;
+    color:#fff;
+    line-height:35px;
+    margin-left: 15px;
+    margin-right: 13px;
+    text-align:center;
+}
+.diningBoxFirstInner a
+{
+    font-size:19px;
+    font-family:georgia;
+    text-shadow:none;
+    text-decoration:none;
+}
+
+.slider a.carousel-control, .slider .carousel-indicators, #content, .sliderBottomMobile{
+    display: block !important;
+}
+.bx-wrapper{
+    margin:0 0 60px !Important;
+    margin-left: 30px !important;
+}
+.weddingcategory{
+    margin-top: 10px;
+}
+
+@media (max-width: 480px){
+
+    .diningTitle{
+        font-size: 30px;
+    }
+    
+    .eventTitle{
+        padding-left: 10px;
+    }
+    
+    .eventTitle a{
+        padding-left: 3px;
+        font-size: 24px;
+    }
+    
+    .privateEventTitle{
+        height: 43px;
+    }
+    
+    .bx-wrapper{
+        margin: 0px !Important;
+    }
+
+    .bx-wrapper .bx-viewport{
+        width: 95% !important;
+        margin-left: 4%;
+    }
+    
+    ul.departurePorts li{
+        float: none !important;
+    }
+    
+    ul.kirklandDeparture li{
+        float: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+/*    .bx-wrapper{
+        margin: 0 auto 60px !Important;
+    }*/
+    .eventrequest
+    {
+        display: none;
+    }
+}

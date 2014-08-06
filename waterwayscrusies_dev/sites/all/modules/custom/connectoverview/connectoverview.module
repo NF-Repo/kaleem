@@ -1,0 +1,196 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function connectoverview_menu() {
+  $items = array();
+  $items['connectoverview'] = array(
+      'title' => 'Connect Overview',
+      'page callback' => 'connect_overview',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+function connectoverview_theme() {
+    $items['connectoverview'] = array(
+        'template' => 'connectoverview',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function connect_overview() {
+    
+  try {
+    
+    global $user;
+    $menulist=getConnectMenu('OVERVIEW');
+    
+    //connect Overview data 
+    //Loading the About us Overview concepts
+     $connectOverview=  taxonomy_vocabulary_machine_name_load('connect_overview');
+     $overview_elements=taxonomy_get_tree($connectOverview->vid);
+     
+      foreach ($overview_elements as $element) {
+            $overviewload=taxonomy_term_load($element->tid);
+            $overname=$overviewload->name;
+            
+           
+           $facebookcontent=getArrayloop($overviewload->field_facebook_content);
+$twittercontent=getArrayloop($overviewload->field_twitter_content);
+$pinterestcontent=getArrayloop($overviewload->field_pinterest_content);
+$youtubecontent=getArrayloop($overviewload->field_youtube_content);
+$socialcontent=getArrayloop($overviewload->field_get_social_content);
+      }
+    
+    //connect overview data
+    
+//    
+//    
+//    
+//    $overviewload=taxonomy_term_load(137);
+//   $facebookcontent=$overviewload->field_facebook_content['und'][0]['value'];
+//$twittercontent=$overviewload->field_twitter_content['und'][0]['value'];
+//$pinterestcontent=$overviewload->field_pinterest_content['und'][0]['value'];
+//$youtubecontent=$overviewload->field_youtube_content['und'][0]['value'];
+//$socialcontent=$overviewload->field_get_social_content['und'][0]['value'];
+
+
+    $gettweets=  getWWCTweets();
+    $connectresources=array(
+        'facebookfeeds'=>getFacebookfeeds(),
+        'yourtwitterfeeds'=>  $gettweets['yourtweets'],
+        'ourtwitterfeeds'=>  $gettweets['ourtweets'],
+        'youtubevideo'=>  latestYoutubevideo(),
+       'menu'=>$menulist['connectmenu'],
+        'mobilemenu'=>$menulist['mobilemenu'],
+        'facebookcontent'=>$facebookcontent,
+        'twittercontent'=>$twittercontent,
+        'pinterestcontent'=>$pinterestcontent,
+        'youtubecontent'=>$youtubecontent,
+        'socialcontent'=>$socialcontent,
+        'instagramloadmedia'=>  instagramgetImages()
+    );
+    //get the product load 
+    return theme('connectoverview',$connectresources);
+    
+  } catch (Exception $ex) {
+      
+    drupal_json_output('The exception ' . $ex);
+    
+  }
+  
+}
+
+
+function instagramgetImages()
+{
+
+  //Instagram cruises
+  $url='https://api.instagram.com/v1/users/self/feed?access_token=466436308.1e482ac.d771ae4bcb114495b27c78b38f4c561f';
+
+$result = drupal_http_request($url);
+
+//var_dump($result->code);
+//var_dump($result->status_message);
+if($result->code==200)
+{
+  $instagram=json_decode($result->data);
+  if($instagram->meta->code==200)
+  {
+    
+    
+//    var_dump($instagram->data);
+    $listhtml='';
+    
+    
+
+    
+    
+    foreach ($instagram->data as $resources) {
+      
+//      var_dump($resources->type);
+      //Comments Objects of array
+      $commentscount=$resources->comments->count;
+      foreach($resources->comments->data as $commentsvalues)
+      {
+//        var_dump($commentsvalues->text);
+//        var_dump($commentsvalues->from->username);
+      }
+      //end of comments section
+//      var_dump($resources->created_time);
+//      var_dump($resources->link);
+      //We have three type of images 
+      //1.low resolution 360*360
+      //2.thumbnail
+      //3.standard.resolution
+      
+      //images code gets here
+      foreach ($resources->images as $key =>$imagesvalue) {
+        
+        
+//        var_dump($key);
+        if($key=='standard_resolution')
+        {
+          $imageurl=$imagesvalue->url;
+        }
+//        var_dump($imagesvalue->url);
+//        var_dump($imagesvalue->width);
+//        var_dump($imagesvalue->height);
+      }
+      
+      //end of images gets here
+      //likes code gets starts here
+//      var_dump($resources->likes->count);
+     
+      
+      //end of likes code here
+     
+//      var_dump($resources->caption);
+      
+      //html code
+      
+      $listhtml.='<li>';
+        $listhtml.='<div class="sliderBox">';
+          $listhtml.='<div class="sliderBoxout">';
+            $listhtml.='<img src="'.$imageurl.'" />';
+          $listhtml.='</div>';
+          $listhtml.='<div class="sliderBoxover">';
+            $listhtml.='<a href="'.$resources->link.'" target="_blank"><div class="sliderBox-first-inner">';
+             $listhtml.='<div class="poweredby">Powered by Instagram </div>';
+               $listhtml.='<div class="profiledetails">';
+                 
+              $listhtml.='<div class="profilepic"><img src="'.$resources->user->profile_picture.'"/></div>';
+                $listhtml.='<div class="profileinfo">'.$resources->user->username.'<br/>'.$resources->user->full_name.'</div>';
+                $listhtml.='<div class="profilelikes"><img src="'.base_path().'sites/all/themes/waterways/assets/img/like_icon.png"><div class="numberlikes">'.$resources->likes->count.' Likes</div></div>';
+                $listhtml.='<div class="profilecomments"><img src="'.base_path().'sites/all/themes/waterways/assets/img/comment_icon.png"><div class="numbercomments">'.$commentscount.' Comments</div></div>';
+              $listhtml.='</div>';
+            $listhtml.='</div></a>';
+          $listhtml.='</div>';
+        $listhtml.='</div>';
+      $listhtml.='</li>';
+      //end of html code
+      
+    }
+    
+  }
+}
+else if($result->code==503)
+{
+  //$listhtml='<li> Instagram Error: 503 '.$result->status_message.'</li>';
+}
+
+return $listhtml;
+}
+function template_preprocess_connectoverview(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'connectoverview') . '/css/connectoverview.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+

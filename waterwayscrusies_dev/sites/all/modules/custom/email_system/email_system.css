@@ -1,0 +1,312 @@
+/* communityorder selft registration starts here */
+
+#cammemself_content{
+    margin:15px auto;
+    text-align:center;
+    width:900px;
+    position:relative;
+    height:100%;
+    display: block;
+}
+#cammemself_wrapper{
+    -moz-box-shadow:0px 0px 3px #aaa;
+    -webkit-box-shadow:0px 0px 3px #aaa;
+    box-shadow:0px 0px 3px #aaa;
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    border-radius:10px;
+    border:2px solid #fff;
+    background-color:#f9f9f9;
+    width:900px;
+    height: auto;
+    margin-bottom: 75px;
+    overflow:hidden;
+    padding-top: 15px;
+}
+#cammemself_wrapper form div.scroll_view{
+        width: 900px;
+        height:auto;
+        overflow:hidden;
+}
+#cammemself_wrapper form p{
+    float:left;
+    clear:both;
+    color: #666;
+    text-align: justify;
+    margin:5px 0px 5px 15px;
+    background-color:#f4f4f4;
+    border:1px solid #fff;
+    width:400px;
+    padding:10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow:0px 0px 3px #aaa;
+    -webkit-box-shadow:0px 0px 3px #aaa;
+    box-shadow:0px 0px 3px #aaa;
+}
+#cammemself_wrapper form p label{
+    width:160px;
+    float:left;
+    text-align:right;
+    margin-right:15px;
+    line-height:26px;
+    color:#666;
+    text-shadow:1px 1px 1px #fff;
+    font-weight:bold;
+}
+#cammemself_wrapper form input,
+#cammemself_wrapper form textarea,
+#cammemself_wrapper form select{
+    background: #ffffff;
+    border: 1px solid #ddd;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    outline: none;
+    padding: 5px;
+    width: 200px;
+    float:left;
+}
+#cammemself_wrapper form input:focus{
+    -moz-box-shadow:0px 0px 3px #aaa;
+    -webkit-box-shadow:0px 0px 3px #aaa;
+    box-shadow:0px 0px 3px #aaa;
+    background-color:#FFFEEF;
+}
+#cammemself_wrapper form input.survey_chk{
+    background: #ffffff;
+    border: 1px solid #ddd;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    outline: none;
+    padding: 5px;
+    width: 100px;
+    float:left;
+}
+#cammemself_wrapper form p label.survey_txt{
+    width:160px;
+    text-align:left;
+    margin-right:0px;
+    line-height:19px;
+    color:#666;
+    text-shadow:1px 1px 1px #fff;
+    font-weight:bold;
+}
+#cammemself_wrapper form h2{
+    color: #BCDC53;
+    font-family: "Century Gothic";
+    font-size: 22px;
+    margin: 0px 0px 0px 0px;
+    padding-left: 30px;
+    text-align: left;
+}
+#cammemself_wrapper form p input.add_chk_cl{
+    width:30px;
+    float:left;
+    text-align:right;
+    margin-right:15px;
+    line-height:26px;
+    color:#666;
+    text-shadow:1px 1px 1px #fff;
+    font-weight:bold;
+}
+.cammemself_footer{
+/*    -moz-box-shadow:0px 0px 2px #aaa;
+    -webkit-box-shadow:0px 0px 2px #aaa;
+    box-shadow:0px 0px 3px #aaa;*/
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    width:870px;
+    height: auto;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    margin-left: 8px;
+    overflow:hidden;
+}
+#cammemself_wrapper form .cammemself_footer input.acc_rdo_cl{
+    width:20px;
+    float:left;
+    text-align:right;
+    margin-right:15px;
+    line-height:26px;
+    color:#666;
+    text-shadow:1px 1px 1px #fff;
+    font-weight:bold;
+}
+h6.acc_btn_holder{
+    width:880px;
+    height:auto;
+    margin: 20px 0 0;
+    padding-right: 20px;
+    overflow: hidden;
+}
+h6.acc_btn_holder .cancel{
+    width: auto;
+    height: 30px;
+    margin-right: 10px;
+    float: right;
+}
+h6.acc_btn_holder .continue{
+    width: 111px;
+    height: 40px;
+    float: right;
+}
+
+/* Payments css styles */
+
+#cammemself_wrapper form #comm_mem_paydiv p input.acc_rdo_cl{
+    width:20px;
+    float:left;
+    text-align:right;
+    margin-right:15px;
+    line-height:26px;
+    color:#666;
+    text-shadow:1px 1px 1px #fff;
+    font-weight:bold;
+}
+#cammemself_wrapper form #comm_mem_paydiv p input.acc_rdo_cl_second{
+    width:20px;
+    float:left;
+    text-align:right;
+    margin-left: 180px;
+    margin-right:15px;
+    line-height:26px;
+    color:#666;
+    text-shadow:1px 1px 1px #fff;
+    font-weight:bold;
+}
+h6.acc_btn_holder_paymenttab{
+    width:810px;
+    height:auto;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    padding-right: 250px;
+    width: 605px;
+}
+#cammemself_wrapper form #comm_mem_paydiv button {
+    border:none;
+    outline:none;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    color: #ffffff;
+    display: block;
+    cursor:pointer;
+    margin-top: 10px;
+    clear:both;
+    padding: 7px 25px;
+    text-shadow: 0 1px 1px #777;
+    font-weight:bold;
+    font-family:"Century Gothic", Helvetica, sans-serif;
+    font-size:22px;
+    -moz-box-shadow:0px 0px 3px #aaa;
+    -webkit-box-shadow:0px 0px 3px #aaa;
+    box-shadow:0px 0px 3px #aaa;
+    background:#4797ED;
+    float: right;
+}
+#cammemself_wrapper form #comm_mem_paydiv button:hover {
+    background:#d8d8d8;
+    color:#666;
+    text-shadow:1px 1px 1px #fff;
+}
+#cammemself_wrapper form p.payment_cl{
+    float:left;
+    clear:both;
+    color: #666;
+    text-align: justify;
+    margin:5px 0px 5px 9px;
+    background-color:#f4f4f4;
+    border:1px solid #fff;
+    width:572px;
+    padding:10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow:0px 0px 3px #aaa;
+    -webkit-box-shadow:0px 0px 3px #aaa;
+    box-shadow:0px 0px 3px #aaa;
+}
+#cammemself_wrapper form p.payment_cl label.lbl_cl_pay{
+    float:left;
+    text-align:left;
+    margin-right:0px;
+    line-height:18px;
+    color:#666;
+    font-weight: normal;
+}
+
+#cammemself_wrapper form select.cc_exp_month{
+    background: #ffffff;
+    border: 1px solid #ddd;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    outline: none;
+    padding: 5px;
+    width: 130px;
+    float:left;
+}
+#cammemself_wrapper form select.cc_exp_year{
+    background: #ffffff;
+    border: 1px solid #ddd;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    outline: none;
+    padding: 5px;
+    width: 75px;
+    float:left;
+}
+
+#cammemself_wrapper form fieldset.multi_step_acc{
+    float:left;
+    width:850px;
+    /*height:320px;*/
+    padding:0px;
+    height: 500px;
+}
+#cammemself_wrapper form fieldset.multi_step_add{
+    float:left;
+    width:850px;
+    /*height:320px;*/
+    padding:0px;
+    height: 500px;
+}
+#cammemself_wrapper form fieldset.multi_step_syrvey{
+    float:left;
+    width:850px;
+    /*height:320px;*/
+    padding:0px;
+    height: 500px;
+}
+#cammemself_wrapper form fieldset.multi_step_orders{
+    float:left;
+    width:850px;
+    /*height:320px;*/
+    padding:0px;
+    height: 500px;
+}
+#cammemself_wrapper form fieldset.multi_step_payments{
+    float:left;
+    width:850px;
+    /*height:320px;*/
+    padding:0px;
+    height: 500px;
+}
+#cammemself_wrapper form fieldset.multi_step_orderreview{
+    float:left;
+    width:850px;
+    /*height:320px;*/
+    padding:0px;
+    height: 500px;
+}
+
+
+
+/* communityorder selft registration ends here */

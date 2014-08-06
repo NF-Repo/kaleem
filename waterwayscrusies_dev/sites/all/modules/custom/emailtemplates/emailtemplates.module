@@ -1,0 +1,700 @@
+<?php
+
+module_load_include('inc', 'emailtemplates', 'includes/emailtemplates.validate');
+include_once 'emailtemplates.form.inc';
+
+function emailtemplates_entity_info() {
+    $info['emailtemplates'] = array(
+        // A human readable label to identify our entity.
+        'label' => t('emailtemplates Entity'),
+        // The controller for our Entity, extending the Drupal core controller.
+        'controller class' => 'EntityEmailTemplatesController',
+        // The table for this entity defined in hook_schema()
+        'base table' => 'emailtemplates',
+        // Returns the uri elements of an entity
+        'uri callback' => 'emailtemplates_uri',
+        // IF fieldable == FALSE, we can't attach fields.
+        'fieldable' => TRUE,
+        // entity_keys tells the controller what database fields are used for key
+        // functions. It is not required if we don't have bundles or revisions.
+        // Here we do not support a revision, so that entity key is omitted.
+        'entity keys' => array(
+            'id' => 'id', // The 'id' (id here) is the unique id.
+        ),
+        // FALSE disables caching. Caching functionality is handled by Drupal core.
+        'static cache' => TRUE,
+        // Bundles are alternative groups of fields or configuration
+        // associated with a base entity type.
+        'bundles' => array(
+            'emailtemplates_bundle' => array(
+                'label' => 'emailtemplates bundle',
+                // 'admin' key is used by the Field UI to provide field and
+                // display UI pages.
+                'admin' => array(
+                    'path' => 'admin/structure/emailtemplates/manage',
+                    'access arguments' => array('administer emailtemplates entities'),
+                ),
+            ),
+        ),
+        // View modes allow entities to be displayed differently based on context.
+        // As a demonstration we'll support "Tweaky", but we could have and support
+        // multiple display modes.
+        'view modes' => array(
+            'tweaky' => array(
+                'label' => t('Tweaky'),
+                'custom settings' => FALSE,
+            ),
+        )
+    );
+
+    return $info;
+}
+
+/**
+ * Fetch a basic object.
+ *
+ * This function ends up being a shim between the menu system and
+ * emailtemplates_load_multiple().
+ *
+ * This function gets its name from the menu system's wildcard
+ * naming conventions. For example, /path/%wildcard would end
+ * up calling wildcard_load(%wildcard value). In our case defining
+ * the path: examples/emailtemplates/basic/%emailtemplates in
+ * hook_menu() tells Drupal to call emailtemplates_load().
+ *
+ * @param $id
+ *   Integer specifying the basic entity id.
+ * @param $reset
+ *   A boolean indicating that the internal cache should be reset.
+ * @return
+ *   A fully-loaded $basic object or FALSE if it cannot be loaded.
+ *
+ * @see emailtemplates_load_multiple()
+ * @see emailtemplates_menu()
+ */
+function emailtemplates_load($id = NULL, $reset = FALSE) {
+    $ids = (isset($id) ? array($id) : array());
+    $emailtemplates = emailtemplates_load_multiple($ids, array(), $reset);
+    return $emailtemplates ? reset($emailtemplates) : FALSE;
+}
+
+/**
+ * Loads multiple basic entities.
+ *
+ * We only need to pass this request along to entity_load(), which
+ * will in turn call the load() method of our entity controller class.
+ */
+function emailtemplates_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
+    return entity_load('emailtemplates', $ids, $conditions, $reset);
+}
+
+/**
+ * Implements the uri callback.
+ */
+function emailtemplates_uri($emailtemplates) {
+    return array(
+        'path' => 'emailtemplates/' . $emailtemplates->id,
+    );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function emailtemplates_menu() {
+    $items['emailtemplates'] = array(
+        'title' => 'Create New Email Template',
+        'page callback' => 'emailtemplates_list_view',
+        'access arguments' => array('view any emailtemplates entity'),
+    );
+
+    // This provides a place for Field API to hang its own
+    // interface and has to be the same as what was defined
+    // in basic_entity_info() above.
+    $items['admin/structure/emailtemplates/manage'] = array(
+        'title' => 'Administer emailtemplates entity type',
+        'page callback' => 'emailtemplates_admin_page',
+        'access arguments' => array('administer emailtemplates entities'),
+    );
+
+    // Add example entities.
+    $items['admin/structure/emailtemplates/manage/add'] = array(
+        'title' => 'Create New Email Template',
+        'page callback' => 'emailtemplates_add',
+        'access arguments' => array('create emailtemplates entities'),
+        'type' => MENU_LOCAL_ACTION,
+        'file' => 'emailtemplates.form.inc'
+    );
+
+    // List of all emailtemplates entities.
+    $items['admin/structure/emailtemplates/manage/list'] = array(
+        'title' => 'List',
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+    );
+
+    // The page to view our entities - needs to follow what
+    // is defined in basic_uri and will use load_basic to retrieve
+    // the necessary entity info.
+    $items['emailtemplates/%emailtemplates/view'] = array(
+        'title callback' => 'emailtemplates_title',
+        'title arguments' => array(3),
+        'page callback' => 'emailtemplates_view',
+        'page arguments' => array(3),
+        'access arguments' => array('view any emailtemplates entity'),
+    );
+
+//    // 'View' tab for an individual entity page.
+//    $items['emailtemplates/%emailtemplates/view'] = array(
+//        'title' => 'View',
+//        'type' => MENU_DEFAULT_LOCAL_TASK,
+//        'weight' => -10,
+//    );
+    // 'Edit' tab for an individual entity page.
+    $items['emailtemplates/%emailtemplates/edit'] = array(
+        'load arguments' => array('emailtemplates'),
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => 'emailtemplates_item_edit',
+        'access arguments' => array('edit any emailtemplates entity'),
+        'page arguments' => array(1),
+        'file' => 'emailtemplates.form.inc'
+    );
+
+    // Add example entities.
+    $items['emailtemplates/add'] = array(
+        'title' => 'Create New Email Template',
+        'page callback' => 'emailtemplates_add',
+        'file' => 'emailtemplates.form.inc',
+        'access arguments' => array('create emailtemplates entities'),
+    );
+
+    // Delete Cruise
+    $items ['emailtemplates/%/delete'] = array(
+        'page callback' => 'emailtemplates_item_delete',
+        'access arguments' => array('delete emailtemplates entities'),
+        'page arguments' => array(1),
+        'file' => 'emailtemplates.form.inc'
+    );
+
+    /* send the selected email template to the given emails @params : $templateId  */
+    $items['emailtemplates/%emailtemplates'] = array(
+//    'title callback' => 'pet_page_title',
+//    'title arguments' => array(1),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('emailtemplates_user_form', 1),
+        'access callback' => 'user_access',
+        'access arguments' => array('use emailtemplates entities'),
+        'file' => 'emailtemplates.form.inc',
+        'type' => MENU_CALLBACK,
+    );
+
+
+
+
+    /* Selected users for sending the email template by using ctool popup */
+    $items['users/sendemailtemplates'] = array(
+        'page callback' => 'sendemailtemplates_page',
+        'access callback' => 'user_access',
+        'access arguments' => array('send emailtemplates to users'),
+        'type' => MENU_CALLBACK,
+        'file' => 'emailtemplate_sendusers.form.inc',
+    );
+
+
+    /* Ctool popup callback menu for the emailtemplates sending for selected users */
+    $items['sendemailtemplates/%ctools_js'] = array(
+        'page callback' => 'sendemailtemplates_callback',
+        'page arguments' => array(1),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+        'file' => 'emailtemplate_sendusers.form.inc',
+    );
+
+
+    /* Selected users for sending the email template by using ctool popup */
+    $items['cruiseevent/emailtemplates'] = array(
+        'page callback' => 'cruise_event_emailtemplates',
+//        'access callback' => TRUE,
+        'access callback' => 'user_access',
+        'access arguments' => array('Cruise event Email template assign'),
+        'type' => MENU_CALLBACK,
+        'file' => 'emailtemplate_sendusers.form.inc',
+    );
+    /* Selected users for sending the email template by using ctool popup */
+    $items['cruisetemplate/emailtemplates'] = array(
+        'page callback' => 'cruise_template_emailtemplates',
+//        'access callback' => TRUE,
+        'access callback' => 'user_access',
+        'access arguments' => array('Cruise template Email template assigned list'),
+        'type' => MENU_CALLBACK,
+        'file' => 'emailtemplate_sendusers.form.inc',
+    );
+//    $items['cruise/%cruise/edit/emailtemplates'] = array(
+//        'page callback' => 'add_emailtemplates_tocruise',
+////        'access callback' => TRUE,
+//        'access callback' => 'user_access',
+//        'access arguments' => array('add Email template to selected cruise'),
+//        'type' => MENU_CALLBACK,
+//        'file' => 'emailtemplate_sendusers.form.inc',
+//    );
+
+    $items['cruise/%cruise/edit/emailtemplates'] = array(
+        'title' => 'Email Templates',
+        'page callback' => 'add_emailtemplates_tocruise',
+        'page arguments' => array('add Email template to selected cruise', 1),
+        'access callback' => TRUE,
+        'access arguments' => array(1),
+        'weight' =>1,
+        'type' => MENU_LOCAL_TASK,
+        'file' => 'emailtemplate_sendusers.form.inc',
+    );
+
+
+    return $items;
+}
+
+/**
+ * Basic information for the page.
+ */
+function emailtemplates_admin_page() {
+    // $output = 'Admin page for cruise entities.<br/>';
+
+    $output = '';
+
+    $output .= emailtemplates_list_view();
+    return $output;
+}
+
+function emailtemplates_list_view() {
+
+    return drupal_render(drupal_get_form('emailtemplates_list_form'));
+}
+
+/**
+ * Implements hook_permission().
+ */
+function emailtemplates_permission() {
+    $permissions = array(
+        'administer emailtemplates entities' => array(
+            'title' => t('administer emailtemplates entities'),
+        ),
+        'view any emailtemplates entity' => array(
+            'title' => t('view any emailtemplates entity'),
+        ),
+        'edit any emailtemplates entity' => array(
+            'title' => t('edit any emailtemplates entity'),
+        ),
+        'create emailtemplates entities' => array(
+            'title' => t('create emailtemplates entities'),
+        ),
+        'delete emailtemplates entities' => array(
+            'title' => t('delete emailtemplates entities'),
+        ),
+        'validate emailtemplates entities' => array(
+            'title' => t('validate emailtemplates entities')
+        ),
+        'use emailtemplates entities' => array(
+            'title' => t('use emailtemplates entities')
+        ),
+        'send emailtemplates to users' => array(
+            'title' => t('send emailtemplates to users')
+        ),
+        'Cruise event Email template assign' => array(
+            'title' => t('Cruise event Email template assign')
+        ),
+        'Cruise template Email template assigned list' => array(
+            'title' => t('Cruise template Email template assigned list')
+        ),
+        'add Email template to selected cruise' => array(
+            'title' => t('add Email template to selected cruise')
+        ),
+    );
+    return $permissions;
+}
+
+/**
+ * Returns a render array with all emailtemplates entities.
+ *
+ * In this basic example we know that there won't be many entities,
+ * so we'll just load them all for display. See pager_example.module
+ * to implement a pager. Most implementations would probably do this
+ * with the contrib Entity API module, or a view using views module,
+ * but we avoid using non-core features in the Examples project.
+ *
+ * @see pager_example.module
+ */
+function emailtemplates_list_form_validate($form, &$form_state) {
+    if ($form_state['triggering_element']['#value'] == 'Go') {
+        $form_state['rebuild'] = TRUE;
+        return;
+    }
+}
+
+function emailtemplates_list_form($form, &$form_state) {
+    global $base_url;
+    $title = ucwords('Email templates');
+    drupal_set_title($title, $output = CHECK_PLAIN);
+    drupal_add_css(drupal_get_path('module', 'emailtemplates') . '/emailtemplates.css');
+
+    $html = '<div class="row-fluid"><div class="span12"><div class="pull-left">'
+            . '<a style="color:#0088CC;text-decoration:none;" href="' . $base_url . '/emailtemplates/add">Create New Email Template</a>'
+            . '</div>'
+            . '</div></div>';
+//    $html = '<div class="row-fluid"><div class="span12"><div class="pull-left">'
+//            . '<a style="color:#0088CC;text-decoration:none;" href="' . $base_url . '/emailtemplates/add">Create New Email Template</a>'
+//            . '</div>'
+//            . '<div class="pull-left">'
+//            . '<a style="color:#0088CC;text-decoration:none;margin-left:15px;" href="' . $base_url . '/users/sendemailtemplates">Send Email Template</a>'
+//            . '</div>'
+//            . '<div class="pull-left">'
+//            . '<a style="color:#0088CC;text-decoration:none;margin-left:15px;" href="' . $base_url . '/cruiseevent/emailtemplates">Assign Email Template To Cruise</a>'
+//            . '</div>'
+//            . '</div></div>';
+    $output = '';
+
+    $header = array(
+        array(
+            'data' => 'Id',
+            'field' => 'id'
+        ),
+        array(
+            'data' => 'Name',
+            'field' => 'name'
+        ),
+        array(
+            'data' => 'Subject',
+            'field' => 'subject'
+        ),
+//        array(
+//            'data' => 'Mail body',
+//            'field' => 'mail_body'
+//        ),
+        array(
+            'data' => 'Actions',
+        ),
+    );
+    if (isset($_GET ['sort']) && isset($_GET ['order'])) {
+        if ($_GET ['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET ['order']) {
+            case 'Id' :
+                $order = 'id';
+                break;
+            case 'Name' :
+                $order = 'name';
+                break;
+            case 'Subject' :
+                $order = 'subject';
+                break;
+        }
+    } else {
+        $sort = 'ASC';
+        $order = 'id';
+    }
+
+    $query = db_select("emailtemplates", "e");
+    $query->fields('e', array(
+        'id',
+        'name',
+        'subject',
+        'mail_body',
+    ));
+
+    $query->orderBy($order, $sort);
+
+
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
+    $result = $query->execute()->fetchAll();
+
+    global $base_url;
+    $rows = array();
+    if (count($result) > 0) {
+        for ($i = 0; $i < count($result); $i ++) {
+
+            $rows [] = array(
+                $result [$i]->id,
+//                '<a href="' . $base_url . '/emailtemplates/' . $result [$i]->id . '"> ' . $result [$i]->name . ' </a>',
+                $result [$i]->name,
+                $result [$i]->subject,
+//                $result [$i]->mail_body,
+                '<a href="' . $base_url . '/emailtemplates/' . $result [$i]->id . '/edit">edit  </a>
+                	<a href="' . $base_url . '/emailtemplates/' . $result [$i]->id . '/delete">delete  </a>',
+            );
+        }
+    }
+
+    $output .= '<div class="">';
+    $output .= '<div class="">';
+
+    $output .= '</div>';
+    $output .= theme_table(array(
+                'header' => $header,
+                'rows' => $rows,
+                'attributes' => array(
+                    'class' => array(
+                        ''
+                    )
+                ),
+                'sticky' => true,
+                'caption' => '',
+                'colgroups' => array(),
+                'empty' => t("No Records!")
+            )) . theme('pager');
+
+    $output .= '</div>';
+
+
+    $form['outputmarkup'] = array(
+        '#type' => 'markup',
+        '#markup' => $html . $output
+    );
+    return $form;
+}
+
+/**
+ * Callback for a page title when this entity is displayed.
+ */
+function emailtemplates_title($emailtemplates) {
+    return t('emailtemplates');
+}
+
+/**
+ * Menu callback to display an entity.
+ *
+ * As we load the entity for display, we're responsible for invoking a number
+ * of hooks in their proper order.
+ *
+ * @see hook_entity_prepare_view()
+ * @see hook_entity_view()
+ * @see hook_entity_view_alter()
+ */
+function emailtemplates_view($emailtemplates, $view_mode = 'tweaky') {
+    // Our entity type, for convenience.
+    $emailtemplates_type = 'emailtemplates';
+    // Start setting up the content.
+    $emailtemplates->content = array(
+        '#view_mode' => $view_mode,
+    );
+    // Build fields content - this is where the Field API really comes in to play.
+    // The task has very little code here because it all gets taken care of by
+    // field module.
+    // field_attach_prepare_view() lets the fields load any data they need
+    // before viewing.
+    field_attach_prepare_view($emailtemplates_type, array($emailtemplates->id => $emailtemplates), $view_mode);
+    // We call entity_prepare_view() so it can invoke hook_entity_prepare_view()
+    // for us.
+    entity_prepare_view($emailtemplates_type, array($emailtemplates->id => $emailtemplates));
+    // Now field_attach_view() generates the content for the fields.
+    $emailtemplates->content += field_attach_view($emailtemplates_type, $emailtemplates, $view_mode);
+
+    // OK, Field API done, now we can set up some of our own data.
+    $emailtemplates->content['created'] = array(
+        '#type' => 'item',
+        '#title' => t('Created date'),
+        '#markup' => format_date($emailtemplates->created),
+    );
+
+
+    // Now to invoke some hooks. We need the language code for
+    // hook_entity_view(), so let's get that.
+    global $language;
+    $langcode = $language->language;
+    // And now invoke hook_entity_view().
+    module_invoke_all('entity_view', $emailtemplates, $emailtemplates_type, $view_mode, $langcode);
+    // Now invoke hook_entity_view_alter().
+    drupal_alter(array('emailtemplates_view', 'entity_view'), $emailtemplates->content, $emailtemplates_type);
+
+    // And finally return the content.
+    return $emailtemplates->content;
+}
+
+/**
+ * Form deletion handler.
+ *
+ * @todo: 'Are you sure?' message.
+ */
+//function emailtemplates_item_delete($id) {
+//    $msg = '';
+//
+//    try {
+//
+//        emailtemplates_delete($id);
+//        $msg = 'emailtemplates Deleted Successfully.';
+//    } catch (Exception $e) {
+//        $msg = 'Operation Failed.';
+//    }
+//    drupal_set_message($msg);
+//    drupal_goto('admin/structure/emailtemplates/manage');
+//}
+
+/**
+ * We save the entity by calling the controller.
+ */
+function emailtemplates_save(&$emailtemplates) {
+    return entity_get_controller('emailtemplates')->save($emailtemplates);
+}
+
+/**
+ * Use the controller to delete the entity.
+ */
+function emailtemplates_delete($emailtemplates) {
+
+    entity_get_controller('emailtemplates')->delete($emailtemplates);
+}
+
+function emailtemplates_item_edit($emailtemplates) {
+    drupal_set_title(t('<em>Edit emailtemplates</em> @title', array('@title' =>
+        '')), PASS_THROUGH);
+    return drupal_get_form('emailtemplates_form', $emailtemplates);
+}
+
+/* Function called in the rule of "Send Booking Email templates" */
+/* get the cruise events data
+ * compare the event date-time and current date-time 
+ * if current date is less than event date, that means we need to send event prior email-templates
+ *      in this 2 conditions to check 
+ *              1. 48-72Hrs diff from event date to current date
+ *              2. 0-24Hrs diff from event date to current date
+ *      if any one condition satisfies then get the booked userslist and send them prior emailtemplate
+ * if current date is greater than event dae, that means we need to send event after emails-templates(thanks)
+ *      in this we will check a condition of " 0-24Hrs diff from current date to event date "
+ *      if the condition satisfies then get the booked userslist and send them after emailtemplate(thanks)
+ * 
+ *  Rule :
+ *      { "rules_send_booking_email_templates" : {
+  "LABEL" : "Send Booking Email templates",
+  "PLUGIN" : "reaction rule",
+  "TAGS" : [ "Send Booking Email templates" ],
+  "REQUIRES" : [ "php", "rules" ],
+  "ON" : [ "cron" ],
+  "DO" : [ { "php_eval" : { "code" : "send_booking_emailtemplates();" } } ]
+  }
+  }
+ * 
+ */
+
+function send_booking_emailtemplates() {
+    $cruise_events = array();
+    /*   get the all cruise events for email template sending   */
+    $cruise_events = getcruise_events_for_booking_emailtemplates();
+    foreach ($cruise_events as $cruise_event) {
+        $eventid = $cruise_event->scheduledevent_id;
+        $recipients = array();
+        $mailtype = '';
+        $period = '';
+        $istemplateapplicable = FALSE;
+        $datediff = 0;
+//        var_dump($cruise_event);
+        /*  Event prior emails   */
+        if ($cruise_event->currentdate < $cruise_event->eventdate) {
+            $mailtype = 'prior';
+            $datediff = $cruise_event->eventdate - $cruise_event->currentdate;
+            if ($datediff > 0 && $datediff < 24 * 60 * 60) {
+                $istemplateapplicable = TRUE;
+                $period=24;
+            }
+            if ($datediff > 2 * 24 * 60 * 60 && $datediff < 3 * 24 * 60 * 60) {
+                $istemplateapplicable = TRUE;
+                $period=72;
+            }
+        }
+        /*  Event after emails  */
+        if ($cruise_event->currentdate > $cruise_event->eventdate) {
+            $mailtype = 'post';
+            $datediff = $cruise_event->currentdate - $cruise_event->eventdate;
+            if ($datediff > 0 && $datediff < 24 * 60 * 60) {
+                $istemplateapplicable = TRUE;
+                $period=24;
+            }
+        }
+
+        /*   check whether the email template for event is applicable or not   */
+        if ($istemplateapplicable) {
+            if ($mailtype != '') {
+                /*    get the booked users list and theiremails by cruise event Id  */
+                $reserveusers = array();
+                $reserveusers = entity_load('reservation', $ids = FALSE, $conditions = array('eventid' => $eventid));
+                foreach ($reserveusers as $reserveuser) {
+                    $userdata = user_load($reserveuser->uid);
+                    $recipients[] = $userdata->mail;
+                }
+                $event_templates = array();
+
+//                $event_templates = getcruise_event_templates($eventid); 
+                $cruisetemplate_id = $cruise_event->cruisetemplate_id;
+                $event_templates = getcruise_event_sent_templates($cruisetemplate_id,$mailtype,$period);
+                $templateid = isset($event_templates[0]->templateid) ? $event_templates[0]->templateid : '';
+                
+                if ($templateid != '') {
+                    /* call the email template function for sending templates */
+                    emailtemplates_send_mail_bytempid($templateid, $recipients, $options = array());
+                }
+            }
+        }
+    }
+}
+
+/* get the events and event date  
+ * to do add the event based template id(not yet have been done. 
+ *                  Need to maintain by create and assign the email template to an event)
+ */
+
+function getcruise_events_for_booking_emailtemplates() {
+    $query = db_select('scheduledevents', 's');
+    $query->join('scheduledevent_dates', 'd', 's.id = d.scheduledevent_id');
+    $query->fields('s');
+    $query->fields('d');
+    $query->addExpression("unix_timestamp(concat(date(from_unixtime(d.scheduleddate)),' ',s.boardingtime))", 'eventdate');
+    $query->addExpression("unix_timestamp()", 'currentdate');
+    $query->where("unix_timestamp()<(unix_timestamp(concat(date(from_unixtime(d.scheduleddate)),' ',s.boardingtime))+(24*60*60)) "
+            . "and unix_timestamp()>(unix_timestamp(concat(date(from_unixtime(d.scheduleddate)),' ',s.boardingtime))-(3*24*60*60))");
+    $result = $query->execute();
+    $cruise_events = array();
+    foreach ($result as $cruiseevent) {
+        $cruise_events[] = $cruiseevent;
+    }
+    return $cruise_events;
+}
+
+/* get the All cruise events and their scheduled dates */
+
+function getcruise_events() {
+    $query = db_select('scheduledevents', 's');
+    $query->join('scheduledevent_dates', 'd', 's.id = d.scheduledevent_id');
+    $query->fields('s');
+    $query->fields('d');
+    $result = $query->execute();
+    $cruise_events = array();
+    foreach ($result as $cruiseevent) {
+        $cruise_events[] = $cruiseevent;
+    }
+    return $cruise_events;
+}
+
+/* get the cruise event mail templates */
+
+function getcruise_event_templates($templateid) {
+    $query = db_select('cruise_event_emailtemplates', 's');
+    $query->fields('s');
+    $query->condition('cruise_templateid', $templateid);
+    $result = $query->execute();
+    $cruise_events = array();
+    foreach ($result as $cruiseevent) {
+        $cruise_events[] = $cruiseevent;
+    }
+    return $cruise_events;
+}
+function getcruise_event_sent_templates($cruisetemplate_id,$mailtype,$period) {
+    $query = db_select('cruise_event_emailtemplates', 's');
+    $query->fields('s');
+    $query->condition('cruise_templateid', $cruisetemplate_id);
+    $query->condition('type', $mailtype);
+    $query->condition('period', $period);
+    $result = $query->execute();
+    $cruise_events = array();
+    foreach ($result as $cruiseevent) {
+        $cruise_events[] = $cruiseevent;
+    }
+    return $cruise_events;
+}

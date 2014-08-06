@@ -1,0 +1,6 @@
+; $Id$
+name = connect blog
+description = "Connect Blog Page"
+core = 7.x
+version = VERSION
+package = WWC

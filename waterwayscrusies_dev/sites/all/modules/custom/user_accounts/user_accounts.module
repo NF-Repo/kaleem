@@ -1,0 +1,329 @@
+<?php
+
+class UserAccount{
+	public $uid;
+	public $user_name;
+	public $firstname;
+	public $last_name;
+	public $mail;
+	public $role_id;
+	public $phone;
+	public $company_name;
+	public $address;
+	public $password;
+	public $status;
+	
+	
+	/*
+	 * Create New User
+	 */
+	public function createNewUser(){
+		$result=true;
+		try{
+			$roles = user_roles();
+			
+			$selectedRole=array();
+			foreach($roles as $key => $value){
+				if($key==$this->role_id){
+					$selectedRole[$key]=$value;
+				}
+			}
+			
+			
+			$newUserData = array(
+					'name' => $this->user_name,
+					'pass' => $this->password, // note: do not md5 the password
+					'mail' => $this->mail,
+					'status' => $this->status,
+					'timezone' => variable_get('date_default_timezone'),
+					'init' => $this->mail,
+// 					'roles' => array(
+// 							DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+// 							$this->role_id='tess',
+// 					),
+					'roles'=>$selectedRole,
+					'data' => '',
+			);
+			//Step 1 : Save the User Details in Drupal built in function user_save
+			//The Data stored in users and user_roles table
+			$new_user = user_save(@$account, $newUserData);
+			
+			//Success
+			if($new_user){
+				//Step 2 : Save the User Details in user_details Table
+				try {
+					$query=db_insert('user_accounts');
+					$query->fields(array(
+							'uid'=>$new_user->uid,
+							'first_name'=>$this->firstname,
+							'last_name'=>$this->last_name,
+							'company_name'=>$this->company_name,
+							'phone'=>$this->phone,
+							'address'=>$this->address,
+					));
+					$userid=$query->execute();
+					
+					if($userid){
+						$result=$new_user->uid;
+						//return $userid;
+						//success
+					}else{
+						$result=false;
+						//failed
+						watchdog("userdetails", 'userdetails record insertion failed');
+					}
+				}catch (Exception $e){
+					$result=false;
+					watchdog("userdetails", $e);
+				}
+			}
+		}catch(Exception $e){
+			$result=false;
+			watchdog("userdetails", $e);
+		}
+		
+		return $result;
+	}
+	
+	
+	/*
+	 * Update New User
+	 */
+	public function updateUser(){
+		$result=true;
+		try{
+			$roles = user_roles();
+				
+			$selectedRole=array();
+			foreach($roles as $key => $value){
+				if($key==$this->role_id){
+					$selectedRole[$key]=$value;
+				}
+			}
+			
+			
+			$account = user_load($this->uid); // Loading account
+			$editData = array(
+					'uid'=>$account->uid,
+					'status'=>$this->status,
+					//'name' => $this->user_name,
+					'pass' => $this->password,
+					//'mail' => $this->mail,
+					//'status' => 1,
+					//'timezone' => variable_get('date_default_timezone'),
+					//'init' => $this->mail,
+					'roles'=>$selectedRole,
+					'data' => '',
+			);
+		
+			$existing_user=user_save($account, $editData);
+			if($existing_user){
+				//Step 2 : Save the User Details in user_details Table
+				try {
+					
+					$num_updated=db_update('user_accounts')
+					->fields(array(
+							//'uid'=>$new_user->uid,
+							'first_name'=>$this->firstname,
+							'last_name'=>$this->last_name,
+							'company_name'=>$this->company_name,
+							'phone'=>$this->phone,
+							'address'=>$this->address,
+					))
+					->condition('uid',$this->uid,'=')
+					->execute();
+					
+						
+					if($num_updated>0){
+						//success
+					}else{
+						$result=false;
+						//failed
+						watchdog("userdetails", 'userdetails record insertion failed');
+					}
+				}catch (Exception $e){
+					$result=false;
+					watchdog("userdetails", $e);
+				}
+			}
+			
+				
+		}catch(Exception $e){
+			$result=false;
+			watchdog("userdetails", $e);
+		}
+		
+		return $result;
+	}
+	
+	/*
+	 * Get User Details
+	 */
+	public static function getUserDetails($uid){
+		$query = db_select('users', 'u');
+		$query->join('user_accounts', 'ua', 'u.uid = ua.uid');
+		$query->join('users_roles', 'ur', 'ur.uid = u.uid');
+		$query->join('role', 'r', 'ur.rid = r.rid');
+		$query->condition('u.uid',$uid,'=');
+		$query->fields('u', array('name', 'pass', 'mail', 'status', 'uid','access'));
+		$query->fields('ua', array('first_name', 'last_name', 'company_name', 'phone', 'address'));
+		$query->fields('ur', array('rid'));
+		$query->addField('r', 'name', 'role_name');
+		$result = $query->execute()->fetchObject();
+		
+		
+		return $result;
+		
+		
+		//TODO
+	}
+	
+	
+	/*
+	 * Get all user details
+	 */
+	public static function getAllUserDetails(){
+		//TODO
+	}
+	
+	/*
+	 * Delete User
+	 */
+	public static function deleteUser($uid){
+		
+		$result=false;
+		
+		try{
+			
+			user_delete($uid);
+			$num_deleted=db_delete('user_accounts')
+			->condition('uid',$uid,'=')
+			->execute();
+			
+			if($num_deleted>0){
+				$result=true;
+			}else{
+				
+			}
+		}catch(Exception $e){
+			watchdog("userdetails", 'userdetails record deletion failed');
+		}
+		
+		return $result;
+		
+		
+		
+	}
+	
+	
+	/*
+	 * Check User Existence
+	 */
+	public static function checkUserExistence($username){
+		$result=false;
+		$record= user_load_multiple($ids = array(), $conditions = array('name' => $username));
+		
+		if(count($record)>0){
+			$result=true;
+		}
+		
+		return $result;
+	}
+	
+}
+
+
+/*
+ * Implements hook_menu()
+ */
+
+function user_accounts_menu(){
+	$menus=array();
+	$menus['register-new-user'] = array(
+			'type' => MENU_CALLBACK,
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('useraccount_form'),
+			'access arguments' => array('create new user account'),
+			'file'=>'user_accounts.form.inc',
+			'title' => t('Add User'),
+	);
+	
+	
+	$menus['useraccounts'] = array(
+			'type' => MENU_CALLBACK,
+			'page callback' => 'useraccounts_page',
+			'access arguments' => array('view user accounts'),
+			'file'=>'view_accounts.form.inc',
+			'title' => t('People'),
+	);
+	
+	
+	$menus['useraccount/%/edit'] = array(
+			'type' => MENU_CALLBACK,
+			'page callback' => 'useraccount_edit_page',
+			'access arguments' => array('edit user account'),
+			'file'=>'user_accounts.form.inc',
+			'title' => t('Edit User'),
+			'page arguments' => array (1),
+	);
+	
+	
+	$menus['useraccount/%/delete'] = array(
+			//'type' => MENU_CALLBACK,
+			'page callback' => 'useraccount_delete_page',
+			'access arguments' => array('edit user account'),
+			'file'=>'user_accounts.form.inc',
+			//'title' => t('Edit User'),
+			'page arguments' => array (1),
+	);
+	
+	
+	$menus['changepassword'] = array(
+			//'type' => MENU_CALLBACK,
+			'page callback' => 'useraccount_changepassword_page',
+			'access arguments' => array('change password'),
+			'file'=>'change_password.form.inc',
+			//'title' => t('Edit User'),
+			//'page arguments' => array (1),
+	);
+	
+	
+	
+	
+	
+	
+	return $menus;
+}
+
+
+/*
+ * Implements hook_permission
+ */
+
+function user_accounts_permission() {
+	return array(
+			'create new user account' => array(
+					'title' => t('Create New User Account'),
+					'restrict access' => TRUE,
+			),
+			'edit user account' => array(
+					'title' => t('Edit User Account Details'),
+			),
+			'delete user account' => array(
+					'title' => t('Delete User Account'),
+			),
+			'view user accounts' => array(
+					'title' => t('View User Account'),
+			),
+			'change password' => array(
+					'title' => t('Change Password'),
+			),
+			
+			
+			
+	);
+}
+
+
+
+

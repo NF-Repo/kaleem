@@ -1,0 +1,366 @@
+/* 
+    Document   : connectblog
+    Created on : 12 July, 2013, 10:00:00 AM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+#content{
+    display: block  !important;
+}
+
+
+#menu
+{
+    position: static !important;
+}
+.connectMain
+{
+    width: 73.5% !important;
+    margin: 0px auto;
+}
+.connectTitle
+{
+    font-size: 46px;
+    font-family:georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 1.5%;
+    margin-top: 8%;
+}
+
+
+/* submenu css start here */
+
+.subMenu
+{
+    width:auto;
+    position:absolute;
+    border: #bc9b6a 1px solid;
+
+}
+.subMenu ul
+{
+    list-style:none;
+    margin:0px;
+}
+.subMenu ul li
+{
+    float: left;
+}
+.subMenu ul li a
+{
+    background:rgba(252,251,249,0.8);
+    color:#454444;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+}
+
+.subMenu ul li a:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+}
+
+.subMenu ul li a.active
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+}
+
+.overviewMain
+{
+    margin-top: 10%;
+    margin-bottom: 2%;
+}
+
+.galleryHolder{
+    margin: 4% 0 0;
+}
+
+.socialWidgetTitle{
+    font-size:16px;
+    font-weight: bold;
+}
+
+.carousel-inner{
+    margin-top: 12px;
+}
+.carousel-indicators{
+    right: 40% !important;
+    margin-top: 6px;
+}
+ul{
+    list-style-type: none;
+}
+.review-title{
+    width:60%;
+    float:left;
+    font-size: 25px;
+    font-weight: bold;
+    color: #00529b;
+    text-transform: uppercase;
+}
+.review-title h2{
+    font-size: 23px;
+    margin: 0px;
+    line-height: 1.2em;
+}
+.review-title span{
+    font-size: 16px;
+    color: #000;
+    text-transform: capitalize;
+}
+.review-desc{
+    clear:both;
+    color: #00529b;
+    padding-top:2%;
+}
+.review-share{
+    float:right !important;
+    width:18% !important;
+}
+.reviews-list {
+
+    padding-bottom: 7%;
+}
+.reviews-list li{
+    border-bottom: #bc9b6a 1px solid;
+    margin-right: 6%;
+    padding-top: 3%;
+    padding-bottom: 6%;
+}
+.reviewbox-list{
+    width: 100%;
+    margin-top: 8%;
+}
+.reviewbox-list li{
+    width:285px;
+    margin:auto;
+}
+.reviewbox-list .sliderBoxout,.reviewbox-list .sliderBoxover{
+    height: 235px !important;
+}
+.reviewbox-list .sliderBoxout{
+    background:#fff !important;
+    border:#bc9b6a 10px solid;
+}
+
+.reviewbox-list .sliderBoxover{
+    width: 237px;
+}
+.reviewbox-list .sliderBoxInner{
+    width: 200px;
+    margin-top:8%;
+}
+.reviewbox-list .sliderBox-first-inner{
+    padding-top:12%;
+}
+.reviewbox-list .sliderBoxInner span,.reviewbox-list .title {
+    color: #00529b;
+}
+
+.more-reviews {
+    border: #ba9969 1px solid;
+    width: 55%;
+    margin: auto;
+    padding: 7px;
+    margin-top: 50px;
+    z-index: 1;
+    text-align: center;
+}
+.more-reviews-inner {
+    width: 100%;
+    margin: auto;
+    opacity: 0.8;
+    background-color: #fff;
+    height: 60px;
+    color: #00529b;
+    padding-top: 3%;
+    box-shadow: 0px 0px 20px #d1d1d1;
+    -moz-box-shadow: 0 0 20px 1px #d1d1d1;
+    -webkit-box-shadow: 0px 0px 20px 1px #d1d1d1;
+}
+.more-reviews-inner a{
+    font-weight: bold;
+}
+.more-reviews-inner a:hover,.more-reviews-inner a:focus{
+    text-decoration: none;
+    cursor: pointer;
+}
+.more-reviews-content{
+    width:100%;
+    margin-bottom: 50px;
+}
+.overviewMain .span4{
+    width:45% !important;
+    float:right !important;
+}
+.overviewMain .span8{
+    width:55% !important;
+    margin-left:0 !important;
+}
+.responsiveMobile {
+    display: none !important;
+}
+@media (min-width: 979px) and (max-width: 1160px) { 
+  .more-reviews {
+        width: 67%;
+    }
+}
+@media (max-width: 979px){
+    .more-reviews {
+        width: 68%;
+    }
+ .connectMain{
+        width:90% !important;
+    }
+    .review-title{
+        width:72%;
+    }
+    .reviewbox-list{
+        margin-top:0;
+    }
+    .reviewbox-list li {
+        float: left;
+    }
+}
+
+@media (max-width: 767px){
+    .responsiveWeb {
+        display: none !important;
+    }
+    .responsiveMobile {
+        display: block !important;
+    }
+    .container {
+        width: 100% !important;
+    }
+    .connectMain{
+        width: 100% !important;
+        margin:0;
+    }
+    .review-share{
+        margin-top: 2%;
+
+        float: left !important;
+    }
+    .overviewMain{
+        width:98% !important;
+        padding-left:2%;
+    }
+    .connectTitle{
+        padding-left:2%;
+        padding-right:2%;
+    }
+    .subMenu {
+        width: 100%;
+        position: static;
+        border-left: 0px;
+        border-right: 0px;
+        margin-bottom: 30px;
+    }
+    .subMenu select {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;
+        border: 0px;
+    }
+    .reviews-list li{
+        margin-left: 2%;
+        padding-bottom:15%;
+    }
+    .overviewMain .span4{
+        float:none !important;
+    }
+    .overviewMain .span4,.overviewMain .span8{
+        width:100% !important;
+    }
+
+    .reviewbox-list{
+        margin-top:0;
+    }
+}
+@media (max-width: 480px){
+
+    .more-reviews {
+        width: 70%;
+    }
+    .responsiveWeb {
+        display: none !important;
+    }
+    .responsiveMobile {
+        display: block !important;
+    }
+    .reviewbox-list li{
+        float:none !important;
+    }
+    .reviewbox-list{
+        margin-left:0;
+    }
+    .review-title{
+        width:100%;
+    }
+}
+.more-reviews-list{
+    display:none;
+}
+.stLarge{
+    display:none !important;
+}
+.sharethisbt{
+    background-color: #AB323B;
+    border: 1px dotted #F1DDDF;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: block;
+    font-family: georgia;
+    font-size: 16px;
+    line-height: 25px;
+    margin: 0;
+    padding: 0 1%;
+    text-align: center;
+    width: 97%;
+    text-transform: capitalize;
+}
+.sharethisbtdiv
+{
+    width: 98%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px 3px 2px 2px;
+}

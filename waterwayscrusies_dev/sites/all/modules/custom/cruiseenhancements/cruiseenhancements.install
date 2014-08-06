@@ -1,0 +1,181 @@
+<?php
+
+/**
+ * @file
+ * Install for a basic Request Quote Form entity - need to create 
+ * the base table for RequestQuote entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * 
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function cruiseenhancements_schema() {
+    $schema = array();
+
+    // The name of the table can be any name we choose. However, namespacing the
+    // table with the module name is best practice.
+
+
+    /**
+      Table fields ::
+      id,
+      title,
+      price
+      description
+      caption
+      hoursoffsale
+      status
+      productnodeid
+
+      //note for enhancment image we will use the default ubercart prouct image
+
+     */
+    $schema['cruiseenhancements'] = array(
+        'description' => 'The base table for cruiseenhancements Entity.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the cruiseenhancements Entity.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'title' => array(
+                'description' => 'The Enhancement title',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'price' => array(
+                'description' => 'The amount the store pays to sell the product.',
+                'type' => 'numeric',
+                'precision' => 16,
+                'scale' => 5,
+                'not null' => TRUE,
+                'default' => 0.0,
+            ),
+            'description' => array(
+                'description' => 'Enhancement Description',
+                'type' => 'text',
+                'size' => 'big',
+                'not null' => TRUE
+            ),
+            'caption' => array(
+                'description' => 'The Enhancement caption',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'hoursoffsale' => array(
+                'description' => 'The Enhancement sales prior to hours',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'nid' => array(
+                'description' => 'The Enhancement product nid',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'status' => array(
+                'description' => 'The Enhancement status',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'categoryid' => array(
+                'description' => 'The Enhancement category term id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'created' => array(
+                'description' => 'The Object created date and time',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'enhancements_img_fid' => array(
+                'description' => 'Enhancements Image',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => ''
+            ),
+            'is_comment_required' => array(
+                'description' => 'Comment Box Status , if it is 1 required ',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'default' => 0,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+    //cruise template enhancments
+    $schema['cruise_template_enhancements'] = array(
+        'description' => 'The base table for cruiseenhancements Entity.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the Cruise Templates.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'cruisetemplateid' => array(
+                'description' => 'The cruise template id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            /**
+             * format:
+             * array(productenhancements=>array(enhancmentid,enhancementid,enhancmentid));
+             */
+            'templateenhancements' => array(
+                'type' => 'blob',
+                'not null' => FALSE,
+                'size' => 'big',
+                'serialize' => TRUE,
+                'description' => 'A serialized object contains of Cruise template enhancements Enhancements.',
+            ),
+            'created' => array(
+                'description' => 'The Object created date and time',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+
+    return $schema;
+}
+
+/*
+ * Implements hook_uninstall().
+ *
+ * At uninstall time we'll notify field.module that the entity was deleted
+ * so that attached fields can be cleaned up.
+ */
+
+function cruiseenhancements_uninstall() {
+//field_attach_delete_bundle('userdocuments_basic', 'first_example_bundle');
+}

@@ -1,0 +1,481 @@
+<?php
+
+/*
+ * Class : CruiseCategory
+ */
+class CruiseCategory {
+	public $cruiseCategoryId;
+	public $cruiseCategoryName;
+	public static $tablename = 'cruisecategory';
+	
+	
+	
+	// Create New Cruise Cagtegory Name
+	public function createCruiseCategory() {
+		$id = '';
+		try {
+			//$query = db_insert ( 'cruisecategory' );
+			$id = db_insert ( 'cruisecategory' )->fields ( array (
+					'cruise_category_name' => $this->cruiseCategoryName 
+			) )->execute ();
+		} catch ( Exception $e ) {
+			watchdog ( "Cruise Category Creation Failed (tablename : cruisecategory", $e );
+		}
+		return $id;
+	}
+	
+	
+	
+	
+	// Delete category
+	public static function deleteCruiseCategory($id) {
+		$num_rows_deleted = '';
+		try {
+			$num_rows_deleted = db_delete ( 'cruisecategory' )->condition ( 'cruise_category_id', $id )->execute ();
+		} catch ( Exception $e ) {
+			watchdog ( "Cruise Category Deletion Failed (tablename : cruisecategory", $e );
+		}
+		
+		return $num_rows_deleted;
+	}
+	
+	
+	
+	
+	
+	// Update category
+	public function updateCruiseCategory() {
+		$num_rows_updated = '';
+		try {
+			$num_rows_updated = db_update ( 'cruisecategory' )->			// Table name no longer needs {}
+			fields ( array (
+					'cruise_category_name' => $this->cruiseCategoryName 
+			) )->condition ( 'cruise_category_id', $this->cruiseCategoryId, '=' )->execute ();
+		} catch ( Exception $e ) {
+			watchdog ( "Cruise Category updation Failed (tablename : cruisecategory", $e );
+		}
+		return $num_rows_updated;
+	}
+	
+	
+	
+	//get category name by cat id
+	public static function getCategoryName($id) {
+		$catname = '';
+		try {
+			
+			$query = db_select ( 'cruisecategory', 'c' );
+			$query->fields ( 'c', array (
+					'cruise_category_name' 
+			) );
+			$query->condition ( 'cruise_category_id', $id, '=' );
+			$catname = $query->execute ()->fetchField ();
+		} catch ( Exception $e ) {
+			watchdog ( "Cruise Category ", $e );
+		}
+		return $catname;
+	}
+	
+	
+	
+	
+	
+	// Get All Cruist Cateog
+	public static function getAllCategoriesList() {
+		$result = '';
+		$catList='';
+		try {
+			$query = db_select ( 'cruisecategory', 'c' );
+			$query->fields ( 'c' );
+			$result = $query->execute ()->fetchAll ();
+			
+			$catList=array();
+			for($i = 0; $i < count ( $result ); $i ++) {
+				$id=$result [$i]->cruise_category_id;
+				$name= $result [$i]->cruise_category_name;
+				$catList[$id]=$name;
+			
+			}
+			
+		} catch ( Exception $e ) {
+			watchdog ( "Cruise Category ", $e );
+		} 
+		return $catList;
+	}
+	
+	
+	//get all categories 
+	public static function getAllCategories(){
+		$query = db_select ( 'cruisecategory', 'c' );
+		$query->fields ( 'c' );
+		$result = $query->execute ()->fetchAll ();
+		
+		return $result;
+	}
+	
+	
+	
+	//get cruises by group using cat id
+	public static function getCruiseListByGroup(){
+		$query = db_select('cruise', 't');
+		$query->join('cruisecategory', 'n', 'n.cruise_category_id = t.template_category');
+		$query->condition('t.cruise_status','1','=');
+		$query->orderBy('n.cruise_category_id', 'ASC');
+		$result = $query
+		->fields('t')
+		->fields('n')
+		
+		->execute()->fetchAll();
+		
+		
+		$arr=array();
+		foreach($result as $res){
+			if(in_array($res->cruise_category_id, $arr)){
+				$arr[$res->cruise_category_id][]=$res;
+			}else{
+				$arr[$res->cruise_category_id][]=$res;
+			}
+		}
+		
+		return $arr;
+	}
+	
+	
+	
+	
+	//check category existency
+	public static function checkCategoryexistenceinCruises($id){
+		try{
+			$query = db_select('cruise','n');
+			$query->condition('n.template_category',$id,'=' );
+			$query->fields('n');
+			$result = $query->execute()->fetchAll();
+		}catch (Exception $e){
+			
+		}
+		
+		if(count($result)>0){
+			return true;
+		}else{
+			return false;
+		}
+
+	}
+}
+
+
+
+
+
+/*
+ * Implements hook_menu().
+ */
+function cruisecategory_menu() {
+	// Cruise Table List View
+	$items ['cruisecategories'] = array (
+			'title' => 'Cruise Category',
+			'page callback' => 'view_cruise_categories',
+			'access arguments' => array (
+					'view cruise category' 
+			) 
+	);
+	
+	/*
+	 * Params Category ID Action : Add , Delete , Edit
+	 */
+	$items ['cruisecategory/add'] = array (
+			'title' => 'Add New Category',
+			'page callback' => 'add_cruise_category',
+			'access arguments' => array (
+					'add cruise category' 
+			) 
+	);
+	
+	$items ['cruisecategory/%/edit'] = array (
+			'title' => 'Edit Category',
+			'page callback' => 'edit_cruise_category',
+			'page arguments' => array (
+					1 
+			),
+			'access arguments' => array (
+					'edit cruise category' 
+			) 
+	)
+	;
+	
+	$items ['cruisecategory/%/delete'] = array (
+			'title' => 'Delete Category',
+			'page callback' => 'delete_cruise_category',
+			'page arguments' => array (
+					1 
+			),
+			'access arguments' => array (
+					'delete cruise category' 
+			) 
+	);
+	
+	return $items;
+}
+
+
+
+
+
+
+/*
+ * Implements hook_permission().
+ */
+function cruisecategory_permission() {
+	return array (
+			'add cruise category' => array (
+					'title' => t ( 'View Cruise Categories' ) 
+			),
+			'edit cruise category' => array (
+					'title' => t ( 'Edit Cruise Categories' ) 
+			),
+			'delete cruise category' => array (
+					'title' => t ( 'Delete Cruise Categories' ) 
+			),
+			'view cruise category' => array (
+					'title' => t ( 'View Cruise Categories' ) 
+			) 
+	);
+}
+
+
+
+
+function add_cruise_category() {
+	return drupal_get_form ( 'cruise_category_form' );
+}
+
+
+
+
+function edit_cruise_category($id) {
+	return drupal_get_form ( 'cruise_category_form', $id );
+}
+
+
+
+
+function delete_cruise_category($id) {
+	$msg = '';
+	$result=CruiseCategory::checkCategoryexistenceinCruises($id);
+	//true
+	if($result){
+		return drupal_get_form('cruisecategory_delete_confirm',$id);
+	}else{
+		$rowsdeleted = CruiseCategory::deleteCruiseCategory ( $id );
+		if ($rowsdeleted > 0) {
+			$msg = 'Category deleted successfully';
+		} else {
+			$msg = 'Deletion failed ';
+		}
+		
+		$path = 'cruisecategories';
+		drupal_set_message ( $msg );
+		drupal_goto ( $path );
+	}
+}
+
+
+
+
+function cruisecategory_delete_confirm($form, &$form_state,$id) {
+
+	$form['cat_id'] = array('#type' => 'value', '#value' => $id);
+	$form['#submit'] = array('cruise_category_delete_confirm_submit');
+	return confirm_form($form,
+			t('<h6>Current Category already used in cruises (this cruise template related information is also get deleted). Are you sure want to delete this category? .'),
+			'cruisecategories</h6>',
+			NULL,
+			t('Delete'));
+}
+
+
+
+
+function cruise_category_delete_confirm_submit($form, &$form_state) {
+	$msg = '';
+	$id=$form_state ['values'] ['cat_id'];
+	$rowsdeleted = CruiseCategory::deleteCruiseCategory ( $id );
+	if ($rowsdeleted > 0) {
+		$msg = 'Category deleted successfully';
+	} else {
+		$msg = 'Deletion failed ';
+	}
+	
+	$path = 'cruisecategories';
+	drupal_set_message ( $msg );
+	drupal_goto ( $path );
+}
+
+
+
+
+function view_cruise_categories() {
+	$output = '';
+	$output .= '<a href="' . base_path () . 'cruisecategory/add">Add Category</a>';
+	$header = array (
+			array (
+					'data' => 'Id',
+					'field' => 'cruise_category_id' 
+			),
+			array (
+					'data' => 'Name',
+					'field' => 'cruise_category_name' 
+			),
+			array (
+					'data' => 'Actions' 
+			) 
+	);
+	if (isset ( $_GET ['sort'] ) && isset ( $_GET ['order'] )) {
+		if ($_GET ['sort'] == 'asc')
+			$sort = 'ASC';
+		else
+			$sort = 'DESC';
+		
+		switch ($_GET ['order']) {
+			case 'Id' :
+				$order = 'cruise_category_id';
+				break;
+			case 'Name' :
+				$order = 'cruise_category_name';
+				break;
+		}
+	} else {
+		$sort = 'ASC';
+		$order = 'cruise_category_id';
+	}
+	
+	$query = db_select ( "cruisecategory", "n" );
+	$query->fields ( 'n', array (
+			'cruise_category_id',
+			'cruise_category_name' 
+	) );
+	$query->orderBy ( $order, $sort );
+	$query = $query->extend ( 'TableSort' )->extend ( 'PagerDefault' )->limit ( 10 );
+	$result = $query->execute ()->fetchAll ();
+
+	global $base_url;
+	$rows = array ();
+	if (count ( $result ) > 0) {
+		for($i = 0; $i < count ( $result ); $i ++) {
+			$rows [] = array (
+					$result [$i]->cruise_category_id,
+					$result [$i]->cruise_category_name,
+					
+					'<a href="' . $base_url . '/cruisecategory/' . $result [$i]->cruise_category_id . '/edit">Edit |</a>
+                <a href="' . $base_url . '/cruisecategory/' . $result [$i]->cruise_category_id . '/delete">Delete</a>' 
+			);
+		}
+	}
+	
+	$output .= '<div class="">';
+	$output .= '<div class="">';
+	
+	$output .= '</div>';
+	$output .= theme_table ( array (
+			'header' => $header,
+			'rows' => $rows,
+			'attributes' => array (
+					'class' => array (
+							'' 
+					) 
+			),
+			'sticky' => true,
+			'caption' => '',
+			'colgroups' => array (),
+			'empty' => t ( "No Records!" ) 
+	) ) . theme ( 'pager' );
+	
+	$output .= '</div>';
+	
+	return $output;
+}
+
+
+
+
+
+
+/*
+ * Cruise Category Form
+ */
+function cruise_category_form($form, &$form_state, $cat_id = '') {
+	$form = array ();
+	$form ['cruisecategoryid'] = array (
+			'#type' => 'hidden',
+			'#value' => $cat_id 
+	);
+	$catname = '';
+	$catname = CruiseCategory::getCategoryName ( $cat_id );
+	
+	$form ['cruisecategoryname'] = array (
+			'#type' => 'textfield',
+			'#title' => 'Cruise Category Name',
+			'#default_value' => $catname ,
+			'#required'=>TRUE,
+	)
+	;
+	
+	$form ['submit'] = array (
+			'#type' => 'submit',
+			'#value' => 'Submit' 
+	);
+	
+// 	$form['cancel'] = array(
+//         '#type' => 'button',
+//         '#value' => t('Cancel'),
+//         '#attributes' => array('onClick' => 'history.go(-1); return true;'),
+//         '#post_render' => array('change_button_type'),
+//     );
+	
+	$form['cancel'] = array(
+			'#type'   => 'submit',
+			'#value'  => t('Cancel'),
+			'#submit' => array('cruisecategory_cancel_button'),
+			'#limit_validation_errors' => array(),
+	);
+	
+	
+	
+	
+	return $form;
+}
+
+
+function cruisecategory_cancel_button($form, &$form_state) {
+	$url = 'cruisecategories';
+	drupal_goto($url);
+}
+
+
+
+
+/*
+ * Submit
+ */
+function cruise_category_form_submit($form, &$form_state) {
+	$msg = 'the current operation failed ';
+	$id = $form_state ['values'] ['cruisecategoryid'];
+	$name = $form_state ['values'] ['cruisecategoryname'];
+	
+	$cruiseCategoryObject = new CruiseCategory ();
+	$cruiseCategoryObject->cruiseCategoryId = $id;
+	$cruiseCategoryObject->cruiseCategoryName = $name;
+	
+	// Insert Operation
+	if ($id == '' || empty ( $id )) {
+		$msg = 'Category created successfully';
+		$cruiseCategoryObject->createCruiseCategory ();
+	} else {
+		$msg = 'Category updated successfully';
+		$cruiseCategoryObject->updateCruiseCategory ();
+	}
+	
+	$path = 'cruisecategories';
+	drupal_set_message ( $msg );
+	drupal_goto ( $path );
+}

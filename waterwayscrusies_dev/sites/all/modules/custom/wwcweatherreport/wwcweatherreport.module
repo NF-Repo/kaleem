@@ -1,0 +1,377 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+
+
+class WwcWeatherReport{
+	
+	public $id;
+	public $portid;
+	public $forcast;
+	public $weathercondition;
+	public $createdtime;
+	public $updatedtime;
+	public static $cachetime=1800;
+	
+	public static function getWeatherForeCast(){
+		
+	}
+	
+	
+	public function setWeatherForeCast(){
+		
+	}
+	
+	public function setWeather(){
+		
+	}
+	
+	public static function getPortWeatherConditions($portId){
+		$result=db_select('weatherunderground','w')
+		->fields('w')
+		->condition('portid',$portId,'=')
+		->execute()->fetchObject();
+		
+		return $result;
+	}
+
+}
+
+
+
+function wwcweatherreport_menu() {
+    $items = array();
+    $items['wwcweatherreport'] = array(
+        'title' => 'Weather Report',
+        'page callback' => 'wwc_waether_report',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    return $items;
+}
+
+/**
+ * Service which is using for checking the provided username existence
+ * checking the provided username with in the user entity
+ * @param type $username username column filed in the drupal core user table
+ * @return json Object true /false
+ * @see user_existence 
+ * 
+ * 
+ * 
+ * Simple to use
+ * 
+ * 
+ * 
+ * 
+ */
+function wwc_waether_report() {
+
+  
+  $reports=  getCurrentDayReport($lat,$lon);
+ return $reports;
+  
+//  $location = $parsed_json->{'location'}->{'city'};
+//  $temp_f = $parsed_json->{'current_observation'}->{'temp_f'};
+//  echo "Current temperature in ${location} is: ${temp_f}\n";
+
+
+}
+
+
+
+
+
+
+
+function getFullWeatherReport($jsonstring)
+{
+  
+  /*
+   * //Real data getting form api*/
+//  $json_string = file_get_contents("http://api.wunderground.com/api/e8576427dabcb504/forecast/q/$lat,$lon.json");
+  
+  //data loading from local server
+//  $json_string = file_get_contents("http://localhost/waether.json");
+  $parsed_json = $jsonstring;
+  
+//  var_dump($parsed_json->forecast->simpleforecast->forecastday);
+  $weatherresults=array();
+  $dayweather=array();
+  $currentdayweather=array();
+  $currenttime= strtotime(date('d-m-Y'));
+  
+  //right now we are comparing using cureent date timestamp not current time
+  
+  
+  foreach ($parsed_json->forecast->simpleforecast->forecastday as $weather) 
+  {
+  $weathercureentday=$weather->date->day.'-'.$weather->date->month.'-'.$weather->date->year;
+  $weathercurrenttimestamp=strtotime($weathercureentday);
+  if($weathercurrenttimestamp==$currenttime)
+  {
+   
+    $currentdayweather['high']=$weather->high;
+    $currentdayweather['low']=$weather->low;
+    $currentdayweather['url']=$weather->icon_url;
+    
+  }
+  else
+  {
+    
+    
+    $dayweather[]=$weather->high;
+    $dayweather[]=$weather->low;
+    $dayweather[]=$weather->icon_url;
+    $dayresults['day']=$dayweather;
+    $weatherresults[]=$dayresults;
+    unset($dayresults);
+    unset($dayweather);
+    
+  
+  }
+  }
+  
+  
+  $resultoutput=array('currentday'=>$currentdayweather,'otherdays'=>$weatherresults);
+  return $resultoutput;
+}
+
+
+
+
+
+
+function getCurrentDayReport($portId)
+{
+   $response=array();
+// $result = db_query('SELECT *
+// FROM {weatherunderground} w WHERE w.portid = :portid', array(':portid' => $portId));
+// foreach ($result as $value) {
+//   $response['forecast']=json_decode(unserialize($value->forcast));
+//   $response['conditions']=json_decode(unserialize($value->weathercondition));
+// }
+
+   
+   $wwcweatherobject=new WwcWeatherReport();
+   $cacheTime=WwcWeatherReport::$cachetime;
+   
+   //Check record exist or not
+   $data=WwcWeatherReport::getPortWeatherConditions($portId);
+   $unxtmst= strtotime($data->updatedtime)+$cacheTime;
+   $currentTime=time();
+   
+   $fdata='';
+   $wdata='';
+   if($unxtmst>=$currentTime){
+   	//echo "cached";
+   	$fdata=unserialize($data->forcast);
+   	$wdata=unserialize($data->weathercondition);
+   }else{
+   	//echo "nocache";
+   	if (isset ( $data->portid )) {
+   		$ports=  taxonomy_term_load($portId);
+   		$latitude=getArrayloop($ports->field_latitude);
+   		$longititude=  getArrayloop($ports->field_longitude);
+   		$forecasturl = "http://api.wunderground.com/api/e8576427dabcb504/forecast/q/$latitude,$longititude.json";
+   		$forecastjson_string = file_get_contents($forecasturl);
+   		$weatherconditionurl = "http://api.wunderground.com/api/e8576427dabcb504/conditions/q/$latitude,$longititude.json";
+   		$weatherconditionjson_string = file_get_contents($weatherconditionurl);
+   		
+   		$wdata = json_decode ( $weatherconditionjson_string );
+   		$fdata = json_decode ( $forecastjson_string );
+     	$weather = new stdClass ();
+   		$weather->id = $data->id;
+   		$weather->forcast = $fdata;
+   		$weather->weathercondition = $wdata;
+   		$weather->portid = $portId; // portid
+   		$weather->updatedtime = date ( "Y-m-d h:i a", time () );
+   		$results = drupal_write_record ( 'weatherunderground', $weather,'id' );
+   	} else {
+   		
+   		$ports=  taxonomy_term_load($portId);
+   		$latitude=getArrayloop($ports->field_latitude);
+   		$longititude=  getArrayloop($ports->field_longitude);
+   		$forecasturl = "http://api.wunderground.com/api/e8576427dabcb504/forecast/q/$latitude,$longititude.json";
+   		$forecastjson_string = file_get_contents($forecasturl);
+   		$weatherconditionurl = "http://api.wunderground.com/api/e8576427dabcb504/conditions/q/$latitude,$longititude.json";
+   		$weatherconditionjson_string = file_get_contents($weatherconditionurl);
+   		
+   		$wdata = json_decode ( $weatherconditionjson_string );
+   		$fdata = json_decode ( $forecastjson_string );
+   		
+   		$weather = new stdClass ();
+   		$weather->forcast = $fdata;
+   		$weather->weathercondition = $wdata;
+   		$weather->portid = $portId; 
+   		$weather->updatedtime = date ( "Y-m-d h:i a", time () );
+   		$results = drupal_write_record ( 'weatherunderground', $weather );
+   	}
+   }
+     
+   $currentdayweatherreport=getFullWeatherReport($fdata);
+   $currentconditoin=  getCurrentweatherCondition($wdata);  
+   
+   $results=array(
+      'currentdayhigh'=>$currentdayweatherreport['currentday']['high'],
+      'currentdaylow'=>$currentdayweatherreport['currentday']['low'],
+      'currentdayicon'=>$currentdayweatherreport['currentday']['url'],
+      'currentdaycondition'=>$currentconditoin);
+  return $results;
+}
+
+
+
+function getCurrentweatherCondition($jsonstring)
+{
+//  $json_string = file_get_contents("http://localhost/waetherconditions.json");
+//  $json_string = file_get_contents("http://api.wunderground.com/api/e8576427dabcb504/conditions/q/$lat,$lon.json");
+  
+  
+  
+  $parsed_json =$jsonstring;
+  
+  $results=array(
+      'imagesurl'=>$parsed_json->current_observation->image->url,
+      'imagestitle'=>$parsed_json->current_observation->image->title,
+      'weblink'=>$parsed_json->current_observation->image->link,
+      'temperature'=>$parsed_json->current_observation->temperature_string,
+      'temperaturefarenhit'=>$parsed_json->current_observation->temp_f,
+      'temperatureceluis'=>$parsed_json->current_observation->temp_c,
+      'currentwaether'=>$parsed_json->current_observation->weather
+  );
+  return $results;
+  
+}
+
+
+function getweatherforcastjsonstring($lat,$lon)
+{
+  $key="e8576427dabcb504";
+  $url="http://api.wunderground.com/api/$key/forecast/q/$lat,$lon.json";
+  $json_string = file_get_contents($url);
+  return $json_string;
+}
+function getweatherconditionjsonstring($lat,$lon)
+{
+  $key="e8576427dabcb504";
+  $url="http://api.wunderground.com/api/$key/conditions/q/$lat,$lon.json";
+  $json_string = file_get_contents($url);
+  return $json_string;
+  
+}
+function getPortslatlon($portid)
+{
+  $ports=  taxonomy_term_load($portid);
+  $latitude=getArrayloop($ports->field_latitude);
+  $longititude=  getArrayloop($ports->field_longitude);
+  $results=array(
+      'lat'=>$latitude,
+      'lon'=>$longititude
+  );
+  return $results;
+}
+
+
+function portsWeather_insertion($portid)
+{
+  $weather=new stdClass();
+  $portslatlon=  getPortslatlon($portid);
+ 
+ $weather->forcast=getweatherforcastjsonstring($portslatlon['lat'], $portslatlon['lon']);
+ $weather->weathercondition=getweatherconditionjsonstring($portslatlon['lat'], $portslatlon['lon']);
+ $weather->portid=$portid;//portid
+
+ 
+  $portlist=  getWeatherDetailsByPortId($portid);
+ if(!$portlist['results'])
+ {
+ $weather->createdtime=time();
+ $weather->updatedtime=time();
+ $results=drupal_write_record('weatherunderground', $weather);
+ return $results;
+  }
+ else
+ {
+   //Update the Port
+   $weather->updatedtime=time();
+   $weather->id=$portlist['resultset']->id;
+   $updateresults=drupal_write_record('weatherunderground', $weather,'id');
+   return $updateresults;
+ }
+
+}
+
+//Getting the Weather Details using PortId
+function getWeatherDetailsByPortId($portId)
+{
+  $result = db_query('SELECT *
+FROM {weatherunderground} w WHERE w.portid = :portid', array(':portid' => $portId));
+  
+  if($result->rowCount() > 0)
+  {
+    return array('results'=>true,'resultset'=>$result->fetchObject());
+  }
+  else
+  {
+   return array('results'=>false,'resultset'=>$result->fetchObject());
+  }
+  
+  
+ 
+
+}
+
+
+//Getting Full Forecast Details
+function getExtendForcastview($portId)
+{
+  $html='';
+  $fullforecasthtml='';
+//   $result = db_query('SELECT *
+// FROM {weatherunderground} w WHERE w.portid = :portid', array(':portid' => 30));
+  
+  $data=WwcWeatherReport::getPortWeatherConditions($portId);
+  $forcast=unserialize($data->forcast);
+  $weathercondition=unserialize($data->weathercondition);
+  
+  //showing the Day wise and nght wise description
+  foreach ($forcast->forecast->txt_forecast->forecastday as $extendforcast) {
+    $html.='<div><h4><img src="'.$extendforcast->icon_url.'"/>';
+    $html.=''.$extendforcast->title.'</h4></div>';
+    $html.='<div><p>'.$extendforcast->fcttext_metric.'</p></div>';
+  }
+  
+  $fullforecasthtml.='<h3>Conditions</h3>';
+  $fullforecasthtml.='<div>Pressure:'.$weathercondition->current_observation->pressure_mb.'&nbsp;hpa</div>';
+  $fullforecasthtml.='<div>Visiblity:'.$weathercondition->current_observation->visibility_km.'&nbsp;kilometers</div>';
+  $fullforecasthtml.='<div>Clouds:'.$weathercondition->current_observation->weather.'</div>';
+  
+  $fullforecasthtml.='<h3>Moisture</h3>';
+  $fullforecasthtml.='<div>Humidity:'.$weathercondition->current_observation->relative_humidity.'</div>';
+  
+  
+  $fullforecasthtml.='<h3>Temperature</h3>';
+  $fullforecasthtml.='<div>Temperature:'.$weathercondition->current_observation->temperature_string.'</div>';
+  $fullforecasthtml.='<div>Dew Point:'.$weathercondition->current_observation->dewpoint_string.'</div>';
+  
+  
+  
+  
+  $fullforecasthtml.='<h3>Wind</h3>';
+  $fullforecasthtml.='<div>Wind:'.$weathercondition->current_observation->wind_string.'</div>';
+  
+//  var_dump($weathercondition->current_observation->pressure_mb);
+//  var_dump($weathercondition->current_observation->visibility_km);
+//  var_dump($weathercondition->current_observation->weather);
+//  var_dump($weathercondition->current_observation->relative_humidity);
+//  var_dump($weathercondition->current_observation->temperature_string);
+//  var_dump($weathercondition->current_observation->dewpoint_string);
+//  var_dump($weathercondition->current_observation->wind_string);
+  //end of showing the day wise and night wise description
+  
+//}
+  return array('extendedforcast'=>$html,'dayfullforecast'=>$fullforecasthtml);
+}

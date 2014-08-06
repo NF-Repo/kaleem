@@ -1,0 +1,51 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function ticketorderentrees_schema() {
+    $schema = array();
+
+    $schema['ticketorderentrees'] = array(
+        'description' => 'The base table for ticketorderentrees.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'ticket_id' => array(
+                'description' => 'Ticket ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'order_id' => array(
+                'description' => 'Ubercart Order ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'entree_id' => array(
+                'description' => 'Entree ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'dietary_text' => array(
+                'type' => 'text',
+                'size' => 'big',
+                'not null' => TRUE
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    return $schema;
+}
+

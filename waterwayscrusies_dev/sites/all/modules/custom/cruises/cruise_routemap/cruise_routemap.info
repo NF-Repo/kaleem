@@ -1,0 +1,6 @@
+name = Cruise Route Map Uploads
+description = Waterways Cruises
+core = 7.x
+version = VERSION
+package = WWC_CRUISES
+;Date 10May2014

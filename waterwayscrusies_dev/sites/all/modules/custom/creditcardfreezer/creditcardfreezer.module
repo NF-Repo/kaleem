@@ -1,0 +1,159 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function creditcardfreezer_menu() {
+
+    $items = array();
+    $items['creditcardfreezer'] = array(
+        'title' => 'Creditcard',
+        'page callback' => 'creditcardfreezer_access',
+        'access arguments' => array('access content'),
+        'file' => 'includes/creditcardfreezer.form.inc',
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function creditcard_permission() {
+    return array(
+        'administer creditcardfreezer' => array(
+            'title' => t('Administer creditcardfreezer'),
+            'restrict access' => TRUE,
+        ),
+        'view creditcardfreezer' => array(
+            'title' => t('View creditcardfreezer'),
+        ),
+    );
+}
+
+class CreditCardFreezer {
+    /*
+     * Here we can encrypt the credit card details by using mcrypt format and base64
+     */
+    public static function order_ccdata_create($orderobj) {
+    	
+        $ivs = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($ivs, MCRYPT_RAND);
+        $key = mcrypt_create_iv($ivs, MCRYPT_RAND); //not sure what best way to generate this is!
+        /*   Mcrypt the credit card details   */
+        $enc_cc = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->ccnum, MCRYPT_MODE_CBC, $iv);
+        $enc_cvv = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->cvv, MCRYPT_MODE_CBC, $iv);
+        $enc_cctype = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->cctype, MCRYPT_MODE_CBC, $iv);
+        $enc_ccname = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->ccname, MCRYPT_MODE_CBC, $iv);
+        $enc_ccexpirationdate = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->ccexpirationdate, MCRYPT_MODE_CBC, $iv);
+
+        /*  Base64 encode the mcrypted values and store into db */
+        $enc_cc = base64_encode($enc_cc);
+        $enc_cvv = base64_encode($enc_cvv);
+        $enc_cctype = base64_encode($enc_cctype);
+        $enc_ccname = base64_encode($enc_ccname);
+        $enc_ccexpirationdate = base64_encode($enc_ccexpirationdate);
+
+        $order_id = $orderobj->order_id;
+        $enciv = base64_encode($iv);
+        $key = base64_encode($key);
+
+        $query1 = db_insert('order_ccdata')
+                ->fields(array('order_id' => $order_id, 'order_cc' => $enc_cc,
+            'order_cvv' => $enc_cvv, 'order_ccname' => $enc_ccname,
+                		'order_ccexpirationdate'=>$enc_ccexpirationdate,
+            'order_cctype' => $enc_cctype));
+        $query1->execute();
+        
+        $query2 = db_insert('order_ivdata');
+        $query2->fields(array('order_id' => $order_id, 'order_iv' => $enciv,
+            'order_ivkey' => $key));
+        $result2 = $query2->execute();
+return $query1;
+    }
+
+    public static function getorderccdata($order_id) {
+
+        $query = db_select('order_ccdata', 'c');
+        $query->join('order_ivdata', 'n', 'n.order_id=c.order_id');
+        $query->condition('c.order_id', $order_id, '=');
+        $query->fields('c', array('id', 'order_cc', 'order_cvv', 'order_ccname', 'order_cctype','order_ccexpirationdate'));
+        $query->fields('n', array('order_iv', 'order_ivkey'));
+        $results = $query->execute()
+                ->fetchAll();
+        $orderccdata = array();
+        foreach ($results as $row) {
+            $record = new stdClass();
+            /*   decrypt the values from base64   */
+            $order_iv = base64_decode($row->order_iv);
+            $order_ivkey = base64_decode($row->order_ivkey);
+            $enc_ccnum = base64_decode($row->order_cc);
+            $enc_cvv = base64_decode($row->order_cvv);
+            $enc_ccname = base64_decode($row->order_ccname);
+            $enc_cctype = base64_decode($row->order_cctype);
+            $enc_ccexpirationdate = base64_decode($row->order_ccexpirationdate);
+
+            /* again decrypt the base64 decrypted values by mcryption */
+            $ccnumber = mcrypt_decrypt(MCRYPT_DES, $order_ivkey, $enc_ccnum, MCRYPT_MODE_CBC, $order_iv);
+            $ccname = mcrypt_decrypt(MCRYPT_DES, $order_ivkey, $enc_ccname, MCRYPT_MODE_CBC, $order_iv);
+            $cvv = mcrypt_decrypt(MCRYPT_DES, $order_ivkey, $enc_cvv, MCRYPT_MODE_CBC, $order_iv);
+            $cctype = mcrypt_decrypt(MCRYPT_DES, $order_ivkey, $enc_cctype, MCRYPT_MODE_CBC, $order_iv);
+            $ccexpirationdate = mcrypt_decrypt(MCRYPT_DES, $order_ivkey, $enc_ccexpirationdate, MCRYPT_MODE_CBC, $order_iv);
+            
+            
+            $record->ccnum = $ccnumber;
+            $record->cvv = $cvv;
+            $record->cctype = $cctype;
+            $record->ccname = $ccname;
+            $record->ccexpirationdate = $ccexpirationdate;
+            $orderccdata[] = $record;
+        }
+
+        return $orderccdata;
+    }
+    
+    
+    
+    public static function updateorder_ccdata_create($orderobj) {
+    	 
+    	$ivs = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+    	$iv = mcrypt_create_iv($ivs, MCRYPT_RAND);
+    	$key = mcrypt_create_iv($ivs, MCRYPT_RAND); //not sure what best way to generate this is!
+    	/*   Mcrypt the credit card details   */
+    	$enc_cc = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->ccnum, MCRYPT_MODE_CBC, $iv);
+    	$enc_cvv = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->cvv, MCRYPT_MODE_CBC, $iv);
+    	$enc_cctype = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->cctype, MCRYPT_MODE_CBC, $iv);
+    	$enc_ccname = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->ccname, MCRYPT_MODE_CBC, $iv);
+    	$enc_ccexpirationdate = mcrypt_encrypt(MCRYPT_DES, $key, $orderobj->ccexpirationdate, MCRYPT_MODE_CBC, $iv);
+    
+    	/*  Base64 encode the mcrypted values and store into db */
+    	$enc_cc = base64_encode($enc_cc);
+    	$enc_cvv = base64_encode($enc_cvv);
+    	$enc_cctype = base64_encode($enc_cctype);
+    	$enc_ccname = base64_encode($enc_ccname);
+    	$enc_ccexpirationdate = base64_encode($enc_ccexpirationdate);
+    
+    	$order_id = $orderobj->order_id;
+    	$enciv = base64_encode($iv);
+    	$key = base64_encode($key);
+    
+    	$query1 = db_update('order_ccdata')
+    	->fields(array('order_id' => $order_id, 'order_cc' => $enc_cc,
+    			'order_cvv' => $enc_cvv, 'order_ccname' => $enc_ccname,
+    			'order_ccexpirationdate'=>$enc_ccexpirationdate,
+    			'order_cctype' => $enc_cctype))
+    	->condition('order_id', $order_id);
+    	$query1->execute();
+    
+    	$query2 = db_update('order_ivdata');
+    	$query2->fields(array('order_id' => $order_id, 'order_iv' => $enciv,
+    			'order_ivkey' => $key))
+    	->condition('order_id', $order_id);
+    	$result2 = $query2->execute();
+    	return $query1;
+    }
+    
+    
+
+}

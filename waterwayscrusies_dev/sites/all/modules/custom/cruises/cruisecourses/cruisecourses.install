@@ -1,0 +1,100 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function cruisecourses_schema() {
+    $schema = array();
+
+    $schema['cruise_course_list'] = array(
+        'description' => 'Cruise Course List.',
+        'fields' => array(
+            'id' => array(
+                'description' => '',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'course_name' => array(
+                'description' => 'course_name',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+            'column_name' => array(
+                'description' => 'column_name',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+            'courselabel_show' => array(
+                'description' => 'courselabel show or hidden',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+            'cruise_id' => array(
+                'description' => 'cruise_id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+            'temp_id' => array(
+                'description' => 'temp_id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+            'status' => array(
+                'description' => 'status',
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+    //schema table for Course Menu Name and caption
+      $schema['cruise_menu_name_template'] = array(
+        'description' => 'Cruise Menu Label and Caption.',
+        'fields' => array(
+            'id' => array(
+                'description' => '',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'menu_lable' => array(
+                'description' => 'course_name',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+            'menu_caption' => array(
+                'description' => 'column_name',
+                'type' => 'varchar',
+                'length' => 255,
+                'default' => '',
+            ),
+           
+            'cruise_id' => array(
+                'description' => 'cruise_id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+            'temp_id' => array(
+                'description' => 'temp_id',
+                'type' => 'int',
+                'unsigned' => TRUE,
+            ),
+            
+        ),
+        'primary key' => array('id'),
+    );
+    //end of schema table for Course Menu Name and Caption
+    
+    
+    
+    
+    return $schema;
+}

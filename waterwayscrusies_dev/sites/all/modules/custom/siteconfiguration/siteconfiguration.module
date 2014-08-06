@@ -1,0 +1,93 @@
+<?php
+class SiteConfiguration{
+	
+
+	
+
+	
+	//Contact Us Form Email
+	public function setContactUs($email){
+		variable_set("CONTACTUSEMAIL", $email);
+	}
+	
+	public static function getContactUs(){
+		return variable_get("CONTACTUSEMAIL", 'site_mail');
+	}
+	
+	
+    //Request A Proposal To Address
+     public function setRfp($email){
+		variable_set("REQUESTAPROPOSALEMAIL", $email);
+	}
+	
+	public static function getRfp(){
+		return variable_get("REQUESTAPROPOSALEMAIL", 'site_mail');
+	}
+        
+    //Feedback From TO Address
+	 public function setFeedback($email){
+		variable_set("FEEDBACKEMAIL", $email);
+	}
+	
+	public static function getFeedback(){
+		return variable_get("FEEDBACKEMAIL", 'site_mail');
+	}
+        
+    //Corporate Giving TO Addres starts here
+    public function setCorporatGiving($email){
+		variable_set("CORPORATEGIVINGEMAIL",$email);
+	}
+	
+	public static function getCorporatGiving(){
+		return variable_get("CORPORATEGIVINGEMAIL", 'site_mail');
+	}
+        
+        
+        //Corporate Giving To address Ends here
+        
+	//Booking Confirmation Email
+	public function setConfirmationEmail($email){
+		variable_set("CONFIRMATIONEMAIL", $email);
+		
+	}
+	
+	
+	public static function getConfirmationEmail(){
+		return variable_get("CONFIRMATIONEMAIL", 'site_mail');
+	}
+	
+	
+}
+
+
+function siteconfiguration_menu(){
+	$items=array();
+	$items['siteemailconfiguration'] = array(
+			'title' => 'Site Email Configuration',
+			'page callback' => 'sitecontactmailpage',
+			'file'=>'inc/sitecontactemail.inc',
+			'access arguments' => array('siteemailconfiguration'),
+	);
+			
+			return $items;
+}
+
+
+
+function siteconfiguration_permission() {
+	return array(
+			'siteemailconfiguration' => array(
+					'title' => t('Site Email Configuration'),
+			),
+	);
+}
+
+
+
+
+
+
+
+
+
+

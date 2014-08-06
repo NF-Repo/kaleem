@@ -1,0 +1,9 @@
+name = Cruise Types
+core = 7.x
+description = Storing the Cruise Names
+files[] = cruisetypes.controller.inc
+files[] = cruisetypes.module
+files[] = cruisetypes.form.inc
+files[] = cruisetypes.install
+;Date 28Oct2013
+

@@ -1,0 +1,425 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function  discountcodes_menu() {
+	$items = array ();
+	$items ['discountcodes'] = array (
+			'title' => 'Discount codes',
+			'page callback' => 'discountcodes_listview',
+			'access callback' => 'user_access',
+			'access arguments' => array (
+					'view  discountcodes'
+			)
+	);
+	$items ['discountcodes/add'] = array (
+			'title' => ' Create New Discount',
+			'page callback' => 'add_discountcodes',
+			'access callback' => 'user_access',
+			'access arguments' => array (
+					'create  discountcodes'
+			)
+	);
+
+	$items ['discountcodes/%/edit'] = array (
+			'title' => 'Edit  Discountcodes',
+			'page callback' => 'edit_discountcodes',
+			'access callback' => 'user_access',
+			'access arguments' => array (
+					'edit  discountcodes'
+			),
+			'page arguments' => array (
+					1
+			)
+	);
+
+	$items [' discountcodes/%/delete'] = array (
+			'title' => 'Delete  Discountcodes',
+			'page callback' => 'delete_ Discountcodes',
+			'access callback' => 'user_access',
+			'access arguments' => array (
+					'delete  discountcodes'
+			),
+			'page arguments' => array (
+					1
+			)
+	);
+
+	return $items;
+}
+function discountcodes_theme() {
+	$items ['discountcodes'] = array (
+			'template' => 'discountcodes', // here comes your template name
+			'render element' => 'content'
+	);
+	
+	
+
+	return $items;
+}
+
+
+
+/**
+ * Implements hook_permission().
+ */
+function  discountcodes_permission() {
+	return array (
+			'view  discountcodes' => array (
+					'title' => t ('View   discountcodes' )
+			),
+			'edit  discountcodes' => array (
+					'title' => t ('Edit  discountcodes' )
+			),
+			'create  discountcodes' => array (
+					'title' => t ('Create discountcodes' )
+			),
+				
+			'delete  discountcodes' => array (
+					'title' => t ('Delete discountcodes' )
+			)
+	)
+	;
+}
+
+
+
+/**
+ * Theme list view
+ * 
+ * 
+ * 
+ */
+
+function discountcodes_list_form($form,&$form_state)
+{
+	
+	$promolistview=array();
+	$query = db_select("discountcodes", "d");
+	// Adding fields
+	$query->fields('d');
+	
+	$result = $query->execute();
+	
+	
+	foreach ($result as $code)
+	{
+	$promolistview[$code->id]=array(
+			$code->code,
+			$code->rate,
+			$code->type,
+			$code->validfrom.'/'.$code->validuntil,
+	);
+	
+	}
+	
+	
+	
+// 	$disputes = array(
+// 			1 => array('Joe', 'Smith'),//row1
+// 			2 => array('Susan', 'Doe'),
+// 			3 => array('John', 'Doe'),
+// 			4 => array('John', 'Doe')
+// 	);
+	
+	
+	$header = array(
+			
+			t('Promo Code'),
+			t('Rate'),
+			t('Type'),
+			t('Start /End dates'),
+	);
+	
+	$form['checkboxes'] = array(
+			'#type' => 'tableselect',
+			'#header' => $header,
+			'#options' => $promolistview,
+			'#empty' => 'No users were found.',
+			'#title'=>t('Select')
+	);
+	
+	
+	
+	
+
+	$form ['actions'] = array (
+			'#type' => 'actions'
+	);
+	
+	$form ['actions'] ['submit'] = array (
+			'#type' => 'submit',
+			'#value' => t ( 'Save' )
+	);
+	
+	$form ['actions'] ['cancel'] = array (
+			'#type' => 'submit',
+			'#value' => t ( 'Cancel' ),
+			'#submit' => array (
+					'enhancementcategories_form_cancel'
+			)
+	);
+	return $form;
+}
+ 
+
+
+
+function discountcodes_list_form_submit($form,&$form_state)
+{
+	var_dump($form_state['values']);exit();
+}
+
+
+
+function discountcodes_listview()
+{
+	
+	return drupal_get_form('discountcodes_list_form');
+}
+
+
+/**
+ * 
+ * Create Discount  
+ * 
+ * 
+ * 
+ */
+	
+function add_discountcodes()
+{
+	return drupal_get_form('discount_form');
+}
+/**
+ * edit discount code
+ * 
+ * 
+ */
+function edit_discountcodes()
+{
+	
+}
+
+
+
+/***
+ * 
+ * Adsd form implementation
+ * 
+ * 
+ * 
+ */
+
+function discount_form($form,&$form_state)
+{
+
+
+
+$form = array ();
+
+$form['title'] = array(
+  '#type' => 'textfield', 
+  '#title' => t('Title'), 
+  '#default_value' => '', 
+  '#size' => 60, 
+  '#maxlength' => 128, 
+  '#required' => TRUE,
+
+);
+
+
+$form['code'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Code'),
+		'#default_value' => '',
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+
+);
+
+
+$form['rate'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Rate'),
+		'#default_value' => '',
+		'#size' => 60,
+		'#maxlength' => 128,
+		'#required' => TRUE,
+
+);
+
+$active = array(0 => t('Percentage'), 1 => t('faltfee'),2=>t('2 or 1'));
+$form['type'] = array(
+		'#type' => 'radios',
+		'#title' => t('Type'),
+		'#default_value' =>'',
+		'#options' => $active,
+		
+);
+
+//promo code start date and end date
+$form['discount_start_date'] = array(
+		'#title' => t('start(first day active)'),
+		'#type' => 'date_popup', // Provided by the date_popup module
+		'#date_format' => 'j F Y', // Uses the PHP date() format - http://php.net/manual/en/function.date.php
+		'#date_year_range' => '0:+2', // Limits the year range to the next two upcoming years
+		'#required' => TRUE,
+		'#default_value' => date('Y-m-d', time()), // Default value must be in 'Y-m-d' format.
+// 		'#title_display' => 'invisible'
+);
+
+$form['discount_end_date'] = array(
+		'#title' => t('End(first day inactive)'),
+		'#type' => 'date_popup', // Provided by the date_popup module
+		'#date_format' => 'j F Y', // Uses the PHP date() format - http://php.net/manual/en/function.date.php
+		'#date_year_range' => '0:+2', // Limits the year range to the next two upcoming years
+		'#required' => TRUE,
+		'#default_value' => date('Y-m-d', time()), // Default value must be in 'Y-m-d' format.
+// 		'#title_display' => 'invisible'
+);
+
+
+
+$form['discount_status'] = array(
+		'#type' => 'checkbox',
+		'#title' => t('Active'),
+		'#default_value' => ''
+);
+
+
+
+$form ['actions'] = array (
+		'#type' => 'actions'
+);
+
+$form ['actions'] ['submit'] = array (
+		'#type' => 'submit',
+		'#value' => t ( 'Save' )
+);
+
+$form ['actions'] ['cancel'] = array (
+		'#type' => 'submit',
+		'#value' => t ( 'Cancel' ),
+		'#submit' => array (
+				'enhancementcategories_form_cancel'
+		)
+);
+
+// $form ['actions'] ['cancel'] = array (
+// '#markup' => l ( t ( 'Cancel' ), 'foo/bar' )
+// );
+return $form;
+}
+
+
+/**
+ * form validate funciton implementation
+ * 
+ */
+
+function discount_form_validate($form,&$form_state)
+{
+}
+
+/***
+ * discount form submission
+ * 
+ */
+
+function discount_form_submit($form,&$form_state)
+{
+	$title=$form_state['values']['title'];
+	$rate=$form_state['values']['rate'];
+	$type=$form_state['values']['type'];
+	$validfrom=$form_state['values']['discount_start_date'];
+	$validfrom=strtotime($validfrom);
+	$validuntil=$form_state['values']['discount_end_date'];
+	$validuntil=strtotime($validuntil);
+	$active=$form_state['values']['discount_status'];
+	$code=$form_state['values']['code'];
+	//creating the cupon Object
+	
+	$discountcouponObj=new stdClass();
+	$discountcouponObj->title=$title;
+	$discountcouponObj->rate=$rate;
+	$discountcouponObj->type=$type;
+	$discountcouponObj->validfrom=$validfrom;
+	$discountcouponObj->validuntil=$validuntil;
+	$discountcouponObj->active=$active;
+	$discountcouponObj->code=$code;
+	$discountcouponObj->created=REQUEST_TIME;
+	
+	
+	//creating the discount code 
+	try {
+		
+		
+		//creating the discount code using ubecart cupon api
+		
+		
+		//dataformat
+		
+// 		public 'name' => string 'lamxicouponw' (length=12)
+// 		public 'code' => string 'L8521W' (length=6)
+// 		public 'type' => string 'price' (length=5)
+// 		public 'value' => string '520' (length=3)
+// 		public 'status' => string '1' (length=1)
+// 		public 'max_uses' => string '1' (length=1)
+// 		public 'minimum_order' => string '500' (length=3)
+// 		public 'valid_from' => string '0' (length=1)
+// 		public 'valid_until' => string '0' (length=1)
+// 		public 'data' =>
+// 		array (size=4)
+// 		'minimum_qty' => string '' (length=0)
+// 		'apply_to' => string 'subtotal' (length=8)
+// 		'products' =>
+// 		array (size=8)
+// 		3 => string '3' (length=1)
+// 		4 => string '4' (length=1)
+// 		2 => null
+// 		5 => null
+// 		6 => null
+// 		7 => null
+// 		8 => null
+// 		764 => null
+// 		'roles' =>
+// 		array (size=6)
+// 		'community master' => string 'community master' (length=16)
+// 		'community owner' => string 'community owner' (length=15)
+// 		'community leader' => null
+// 		'community member' => null
+// 		'community guest' => null
+// 		'sales representative' => null
+		//end of dataformat
+		
+		
+		$cuponobject=new stdClass();
+		$cuponobject->name =$title;
+		$cuponobject->code=$title;
+		$cuponobject->type='price';
+		$cuponobject->value=$rate;
+		$cuponobject->status=$active;
+// 		$cuponobject->max_uses='1';
+// 		$cuponobject->minimum_order='500';
+		$cuponobject->valid_from=$validfrom;
+		$cuponobject->valid_until=$validuntil;
+		$cuponobject->data =array(
+				'minimum_qty' =>'',
+				'apply_to' => 'subtotal',
+				);
+				
+		uc_coupon_save($cuponobject);
+		$record=drupal_write_record('discountcodes', $discountcouponObj);
+		//end creating the coupon cart creation
+			
+		
+	drupal_set_message('Discount record inserted sucessfully');
+	} catch (Exception $e) {
+		watchdog('discountcodes', $e);
+	}
+	
+	
+}

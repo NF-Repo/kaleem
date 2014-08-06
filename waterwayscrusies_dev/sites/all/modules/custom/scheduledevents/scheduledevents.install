@@ -1,0 +1,177 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function scheduledevents_schema() {
+    $schema = array();
+
+    /**
+     * creating multiple scheduledevents for available cruise
+     */
+    $schema ['scheduledevents'] = array(
+        'description' => 'The base table for scheduledevents.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE
+            ),
+            'name' => array(
+                'type' => 'varchar',
+                'description' => 'creating the unique event name.',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => ''
+            ),
+            'cruisetemplate_id' => array(
+                'type' => 'int',
+                'description' => 'Cruise template id for identifying the rendering template',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'vessel_id' => array(
+                'type' => 'int',
+                'description' => 'The Vessel id for the event occurs',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'port_id' => array(
+                'type' => 'int',
+                'description' => 'The port id for the event occurs',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'departuretime' => array(
+                'type' => 'varchar',
+                'description' => 'The departure time of the event occurs',
+                'length' => 255,
+                'not null' => TRUE
+            )
+            ,
+            'returntime' => array(
+                'type' => 'varchar',
+                'description' => 'The departure time of the event occurs',
+                'length' => 255,
+                'not null' => TRUE
+            )
+            ,
+            'boardingtime' => array(
+                'type' => 'varchar',
+                'description' => 'The borading time of the event occurs',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'ticketinventory' => array(
+                'type' => 'int',
+                'description' => 'The total ticket quantity for cruise',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'availabletickets' => array(
+                'type' => 'int',
+                'description' => 'The available tickets for the event',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'soldtickets' => array(
+                'type' => 'int',
+                'description' => 'The sold tickets count for the event',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'windowseatinventory' => array(
+                'type' => 'int',
+                'description' => 'The total windowseat quantity for cruise',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'availablewindowseats' => array(
+                'type' => 'int',
+                'description' => 'The available window seats for the event',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'windowseatssold' => array(
+                'type' => 'int',
+                'description' => 'The sold windowseats count for the event',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'onsalesdaysprior' => array(
+                'type' => 'int',
+                'description' => 'The ticket sales on or before the days priorty',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'onsaleshoursprior' => array(
+                'type' => 'int',
+                'description' => 'The ticket sales on or before the hours priorty',
+                'size' => 'big',
+                'not null' => TRUE,
+                'default' => 1
+            ),
+            'nid' => array(
+                'description' => 'The Event product nid',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'status' => array(
+                'description' => 'The Event status active or inactive',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 1,
+            ),
+        )
+        ,
+        'primary key' => array(
+            'id'
+        )
+    );
+
+    // schduledevent dates db instance
+    $schema ['scheduledevent_dates'] = array(
+        'description' => 'Ubercart Coupons used on Orders',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE
+            ),
+            'scheduledevent_id' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0
+            ),
+            'scheduleddate' => array(
+                'description' => 'The scheduled date for events event .',
+                'type' => 'int',
+                'not null' => TRUE,
+                'default' => 0
+            )
+        ),
+        'primary key' => array(
+            'id'
+        )
+    );
+
+    return $schema;
+}

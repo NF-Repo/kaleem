@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function commondb_menu() {
+  $items = array();
+  $items['commondb'] = array(
+      'title' => 'Brochure',
+      'page callback' => 'commondb_page',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+function commondb_theme() {
+    $items['commondb'] = array(
+        'template' => 'commondb',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function commondb_page() {
+    
+    return theme('commondb');
+  
+}
+
+function template_preprocess_commondb(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'commondb') . '/commondb.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+

@@ -1,0 +1,277 @@
+/* 
+    Document   : Contact Us
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+.mailcontactus,.confirmmail,.comments-contactus,.phoneTitle
+{
+    margin-top:20px;
+}
+#content{
+    display: block  !important;
+}
+.contactus-content{
+    width: 74% !important;
+    padding-top: 6%;
+}
+.contactTitle
+{
+    font-size: 46px;
+    font-family: georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom:3%;
+    margin-top: 6%;
+}
+
+#contactus-form{
+    margin: 0px;
+}
+
+#contactus-form input.error, textfield.error {
+    border: 1px solid #FF0000 !important;
+}
+
+
+#contactus-form input.error, textarea.error {
+    border: 1px solid #FF0000 !important;
+}
+.booknowMain{
+    width: 76%;
+    margin: 15px auto 0 auto;
+}
+.booknowMaincontactus{
+    width: 76%;
+    margin: 15px auto 0 auto;
+    padding-left:14px;
+}
+.formContainer input, .formContainer textArea 
+{
+    width: 80%;
+    border: #c9ae87 1px solid !important;
+    margin-bottom: 0px !important;
+}
+
+.formContainer textArea 
+{
+    width: 85%;
+    border: #c9ae87 1px solid !important;
+    margin-bottom: 0px !important;
+}
+
+.presssubmitContainer{
+    width: 68% !important;
+    margin: 4% auto 0 auto;
+    padding-bottom: 5%;
+}
+
+.formContainer .booknow{
+    height: 36px;
+}
+
+.formContainer .booknow .booknow-inner{
+    
+width:100%;
+    background-color:#ab323b;
+    border:#f1dddf 1px dotted;
+    line-height:25px;
+    color:#ffffff;
+    text-align: center;
+}
+.bookhere{
+    background-color: #AB323B;
+    float: right;
+    height: 27px;
+    padding: 2px 6px 2px 2px;
+    width: 108%;
+}
+
+.bookhere .booknow-request-proposal
+{
+    width:101.5%;
+    background-color:#ab323b;
+    border:#f1dddf 1px dotted;
+    line-height:25px;
+    color:#ffffff;
+}
+.formContainer .booknow .booknow-inner .pressbtn{
+    background: transparent !important;
+    border: 0 none !important;
+    color: #fff;
+    height: 30px;
+    vertical-align: middle;
+    border-radius: none;
+    box-shadow: none;
+    width: auto;
+}
+
+
+
+.phoneContainer .form-item{
+    width: 26%;
+    float: left;
+    margin-right: 1%;
+}
+.form-item-field3{
+    width: 32% !important;
+}
+.formContainer .grippie{
+    display: none;
+}
+
+.phoneContainer .phoneTitle{
+    width: 100%;
+}
+
+.formContainer .form-item{
+    margin-top: 0px;
+}
+
+ul.contactBox-list{
+    list-style: none;
+}
+
+.contactBox-list{
+    width: 100%;
+    margin-top: 38%;
+}
+.contactBox-list li{
+    width:285px;
+    margin:auto;
+}
+.contactBox-list .sliderBoxout,.contactBox-list .sliderBoxover{
+    height: 235px !important;
+}
+.contactBox-list .sliderBoxout{
+    background:#fff !important;
+    border:#bc9b6a 10px solid;
+}
+
+.contactBox-list .sliderBoxover{
+    width: 237px;
+}
+.contactBox-list .sliderBoxInner{
+    width: 200px;
+    margin-top:8%;
+}
+.contactBox-list .sliderBox-first-inner{
+    padding-top:12%;
+}
+.contactBox-list .sliderBoxInner span,.contactBox-list .title {
+    color: #00529b;
+}
+
+.contactGroup h3{
+    font-size: 32px;
+    font-weight: normal;
+    margin-top: 0px;
+}
+
+.contactGroup .fillForm{
+    font-size: 16px;
+    color: #00529B;
+    font-weight: bold;
+}
+
+.formContainer h3{
+    font-weight: normal;
+    font-size: 32px;
+    padding-top: 20px;
+}
+
+.title{
+    font-size: 26px;
+}
+.presssubmitContainer .line{
+    margin-top: 12%;
+}
+.footer-address .fax{
+   float: left;
+   color: #606060;
+}
+.footer-address img{
+   float: left;
+   padding-top: 4px;
+   padding-right: 2px;
+
+}
+.footer-address .fax-number{
+    width:80%;
+}
+@media (max-width: 979px) {
+
+    .contentbox-inner.contactus-content{
+        width: 93% !important;
+        margin-left: 5% !important;
+    }
+
+    .title{
+        font-size: 25px;
+    }
+    .tiles-content{
+        margin-left: 0 !important;
+    }
+    .contactus-content .span6{
+        width:100% !Important;
+        margin-left: 0 !important;
+        float:none;
+    }
+    .contactGroup{
+        margin-top: 5%;
+    }
+    .presssubmitContainer{
+        width: 85% !important;
+        margin: 0;
+    }
+    .contactus-content .footer-address a{
+        width:80%;
+    }
+}
+
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+    .title{
+        font-size: 25px;
+    }
+}
+
+
+@media screen and (max-width: 767px) {
+    .contentbox-inner.contactus-content{
+         padding-top: 0%;
+    }
+   
+.contactus-content .footer-address{
+    width: 100%;
+}
+.presssubmitContainer .span4{
+    width:33.3% !important;
+    float: left !important;
+}
+.contactBox-list{
+    width:98%;
+    margin: 0;
+    margin-top: 5%;
+    
+}
+.contactBox-list .reqMain{
+        width:85% !important;
+    }
+    .contactus-content .booknow-inner{
+        width: 99%;
+    }
+}
+
+@media (max-width: 480px){
+    .presssubmitContainer .line{
+       margin-top: 20%; 
+    }
+    .contactBox-list .reqMain{
+        width:85% !important;
+    }
+
+
+}

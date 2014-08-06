@@ -1,0 +1,6 @@
+; $Id$
+name = Ticket Entrees
+description = "Ticket Entrees by Cartsession"
+core = 7.x
+version = VERSION
+package = WWC

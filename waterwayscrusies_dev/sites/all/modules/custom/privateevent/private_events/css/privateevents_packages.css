@@ -1,0 +1,1921 @@
+/* 
+    Document   : cruisesdetailview
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content{
+    display: block  !important;
+}
+
+#menu
+{
+    position: static !important;
+}
+
+.deparText span sup{
+    font-size: 13px !important;
+    top: -0.8em !important;
+}
+
+.priceText span{
+    font-size: 16px !important;
+}
+
+.priceText sup{
+    font-size: 13px !important;
+    top: -0.5em !important;
+}
+
+.sunset-slider-buttons #downArrow
+{
+    position:absolute;
+    left:-7%;
+    bottom:5%;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.requesttablet{
+    width:50% !important;
+}
+
+.requesttablet .span4{
+    width:29% !important;
+}
+.requesttablet .requestmobile{
+      width:auto !important;
+}
+
+.bx-wrapper .bx-prev {
+    top: 35% !important;
+    left:-5% !important;
+    background: url(../images/arrows.png) no-repeat 0px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+.bx-wrapper .bx-next {
+    top: 35% !important;
+    right:-5% !important;
+    background: url(../images/arrows.png) no-repeat -74px 0px !important;
+    width: 74px !important;
+    height: 144px !important;
+}
+.sunsetMapView #upArrow
+{
+    position:absolute;
+    left: 52%;
+    bottom: 3%;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.carousel-indicators .active{
+    background-color:  inherit !important;
+    background-image:url("../images/Indicators-active.png") !important;
+    background-repeat: no-repeat !important;
+    width: 12px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.carousel-indicators li{
+    background-color: inherit !important;
+    border-radius:0px !important;
+    background-image: url("../images/Indicators-inactive.png") !important;
+    background-repeat: no-repeat !important;
+    width: 11px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.sunsetDownslider a.carousel-control{
+    background: inherit !important;
+    border: solid 0px !important;
+}
+
+.sunsetDownslider .carousel-control{
+    width: auto !important;
+    height: auto !important;
+}
+
+.sunsetDownslider .carousel-indicators {
+    bottom: 20%;
+    left: 50%;
+    top: inherit;
+}
+.share-mobile {
+    position: absolute;
+    top: 5%;
+    height: 35px !important;
+    width: 70% !important;
+    margin-left: 18%;
+}
+.twitter-share {
+    position: absolute;
+    padding-left: 35%;
+    padding-top: 1.5%;
+}
+.share-text {
+    position: absolute;
+    margin-left: 70%;
+}
+.addthis_toolbox {
+    height:32px;
+}
+/* Map Overlay css Styles */
+
+.mapOverlay{
+    width: 100%;
+    margin: 0; 
+    padding: 50px 0; 
+    position: absolute;
+    z-index: 1;
+    top: 0%;
+
+    /* "transparent" only works here because == rgba(0,0,0,0) */ 
+    background: -moz-linear-gradient(top, rgba(242,235,225,1) 0%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(242,235,225,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2ebe1', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+}
+
+/* Route Map Directions Pop Up styles */
+
+.mapDownsliderbox{
+    display:none;
+}
+#parkingDirectionsModal{
+    width: 88%;
+    margin-left: -40%;
+    position: fixed;
+}
+
+.reoutemapDirectionsbox
+{
+    background:#fff;
+    min-width:100%;
+    min-height:500px;
+    border:10px #bc9b6a solid;
+}
+
+.reoutemapDirectionsboxInner
+{
+    width:100%;
+    min-height:500px;
+}
+
+.reoutemapDirectionsboxInnerleft{
+    background: #fff;
+    min-height:500px;
+    padding: 2%;
+}
+
+.reoutemapDirectionsboxInnerright{
+    background: #bebebe;
+    min-height:500px !important;
+    /*    margin-left: 0% !important;
+        width: 100% !important;*/
+}
+
+.routemapContent{
+    color: #000;
+    height: 500px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 30px 0 0 30px;
+}
+
+
+.routemapContent .item{
+    margin-bottom: 10px;
+}
+
+.reoutemapDirectionsboxInnerleft .sliderCaption
+{
+    font-family:georgia;
+    font-weight:600;
+    font-size:20px;
+    text-align:center;
+}
+.reoutemapDirectionsboxInnerleft ul
+{
+    list-style: none;
+    margin-top: 12px;
+}
+
+.reoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 9px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+.reoutemapDirectionsclosebutton a{
+    text-decoration:none;
+}
+.reoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+
+.radioLine
+{
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    margin-top: 12px;
+    background: #bc9b6a;
+}
+.choose
+{
+    float: left;
+    width: 100%;
+    font-family:georgia;
+    font-size: 19px;
+    color: #818181;
+    margin-bottom:6px;
+}
+.choosePortRadio
+{
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 65px;
+}
+.calendarRadio
+{
+    width: 40%;
+    float: left;
+    margin-left: 3%;
+    text-align: center;
+    line-height: 20px;
+}
+.calendarPortRadio{
+    position: absolute;
+    left: 25%;
+}
+.calendarRadio .portRadio
+{ 
+    width: 100%;
+
+}
+
+#parkingDirectionsPorts li a{
+    cursor: pointer;
+    line-height: 28px;
+}
+/* Route Map Directions Pop Up styles */
+
+
+.detailport {
+    font-family: georgia;
+    font-size: 19px;
+    color: #818181;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.contentDetail .carousel
+{
+    margin-bottom: 0px;
+}
+#cruiseBookNowDate.input-append{
+    margin-bottom:6px;
+}
+
+.sliderInnercontent img{
+    float: left;
+    margin-top: 7px;  
+}
+.sliderInnercontent .clickMapLink
+{
+    float: left;
+    width: 90%;
+}
+.sliderInnercontent span
+{
+    color:#00529b;
+    cursor: pointer;
+    font-size: 15px !important;
+}
+.departurePortsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.departurePortsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+#cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+    display: none;
+}
+
+
+
+/* wedding packages css start here */
+
+.weddingPackagesTitle
+{
+    font-size: 46px;
+    font-family:georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 3%;
+    margin-top: 5%;
+}
+
+.weddingPackagesSubTitle
+{
+    font-size: 29px;
+    font-family:georgia;
+    color: #818181;
+    line-height: 40px;
+    margin-top: 18%;
+}
+.weddingPackagesSubTitle span
+{
+    font-size: 29px;
+    font-family:georgia;
+    color: #454444;
+    line-height: 40px;
+    margin-top: 15%;
+}
+.weddingPackagesDescription
+{
+    font-size: 15px;
+    font-family:georgia;
+    color: #454444;
+    margin-bottom: 5%;
+}
+.weddingLinePadding .line
+{
+    margin-top:15px; 
+}
+
+
+/* submenu css start here */
+
+.subMenu
+{
+    width:auto;
+    position: absolute;
+    border: #bc9b6a 1px solid;
+    z-index: 10;
+
+
+}
+.subMenu ul
+{
+    list-style:none;
+    margin:0px;
+}
+.subMenu ul li
+{
+    float: left;
+}
+.subMenu ul li a
+{
+    background:rgba(252,251,249,0.8);
+    color:#454444;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+    transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+}
+
+.subMenu ul li a:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+}
+
+.subMenu ul li a.active
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+}
+
+
+.weddingDownslider {
+    position: relative;
+}
+.share{
+    left: 50% !important;
+}
+.weddingDownsliderbox {
+/*    position: absolute;
+    background: #fff;
+    top: 50px;
+    left: 15.5%;
+    max-width: 31%;
+    height: auto;
+    border: 10px #bc9b6a solid;*/
+position: absolute;
+background: #fff;
+top: 50px;
+left: 15.5%;
+max-width: 500px;
+height: 446px;
+border: 10px #bc9b6a solid;
+overflow-y: auto;
+}
+.weddingDownsliderInner {
+    margin: 10% 8%;
+}
+
+.rightslider
+{
+    margin-left: 37%;
+}
+.sliderInnercontent{
+    margin: 0 2%;
+}
+
+
+.Reviews
+{
+    display: none;
+}
+
+.weddingdownloadlink
+{
+    margin-bottom: 5%;  
+}
+.carousel-control{
+    background: none !important;
+    border: none !important;
+}
+
+/* price table css start here */
+
+
+#pricingTable
+{
+    width: 80%;
+    margin: 0px auto;
+    margin-top: 5%;
+}
+.pricetitle
+{
+    font-family: georgia;
+    font-size: 30px;
+    color:#454444;
+    margin-bottom: 10px;
+    line-height: 30px;
+}
+.pricetitle span{
+    font-family: georgia;
+    font-size: 20px;
+    color:#818181;
+}
+
+#pricingTable .sticky-enabled
+{
+    width: 100%;
+}
+
+#pricingTable .sticky-enabled tbody tr.even, #pricingTable .sticky-enabled tbody tr.odd
+{
+    background-color: transparent;
+    border-bottom: none;
+    /*border-bottom-color: #c7ab82;*/
+
+}
+#pricingTable .sticky-enabled tbody tr.even td, #pricingTable .sticky-enabled tbody tr.odd td
+{
+    border-bottom: #c7ab82 1px solid;
+    height: 50px;
+    line-height: 50px;
+    text-align: left;
+    padding-left: 25px;
+}
+#pricingTable .sticky-enabled tbody tr.even td:first-child, #pricingTable .sticky-enabled tbody tr.odd td:first-child
+{
+    border-bottom: none;
+    width: 20%;
+    font-family: georgia;
+    font-size: 16px;
+    color:#818181;
+    font-weight: normal;
+    line-height: 20px;
+    text-align: left;
+    padding-left: 0px;
+}   
+
+#pricingTable .sticky-enabled thead tr th
+{
+    border-bottom: none;
+    font-family: georgia;
+    font-size: 25px;
+    color:#454444;
+    font-weight: normal;
+    height: 50px;
+    text-align: left;
+    padding-left: 25px;
+}
+#pricingTable .sticky-enabled thead tr th:first-child{
+    text-align: left;
+    padding-left: 0px;
+}
+
+#pricingTable .sticky-enabled tbody
+{
+    border-top:none;
+    font-family: georgia;
+    font-size: 29.34px;
+    color:#818181;
+    font-weight: bold;
+}
+.pricetableNote
+{
+    margin-bottom: 8%;
+    margin-top:5%;
+    font-size: 14px;
+    font-family:georgia;
+    color: #818181;
+}
+
+
+/* weddingmenu css start here */
+.weddingmenu {
+    width: 80%;
+    padding-top: 8%;
+    padding-bottom: 8%;
+    margin: auto;
+}
+.weddingmenu .title
+{
+    font-family: georgia;
+    font-size: 28px;
+    line-height: 30px;
+    font-weight: 600;
+    color: #454444;
+}
+.weddingmenu .title a {
+    font-family: georgia;
+    font-size: 17px;
+    font-weight: 600;
+    color: #00529b;
+    text-decoration: none;
+}
+
+.weddingmenu .title a:hover{
+    color: #133659;
+}
+
+.weddingmenuItem{
+    float: left;
+    margin-top: 20%;
+    /*    margin-bottom: 20%;*/
+}
+.weddingmenu .weddingmenuItem .menuItemTitle
+{
+    font-size: 22px;
+    line-height: 24px;
+    color: #454444;
+    font-weight: 600;
+    margin-bottom: 0px;
+    text-transform: uppercase;
+    width: 75%;
+}
+.weddingmenuItem .itemImgText {
+    width: 61%;
+    float: left;
+    padding-left: 3%;
+}
+
+.weddingmenuItem img {
+    width: auto;
+    float: left;
+}
+
+#upArrow {
+    position: relative;
+    left: 52%;
+    bottom: 3%;
+    z-index: 1;
+    cursor: pointer;
+    margin: 30px 0;
+    width: 100px;
+    }
+
+
+    
+    
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+    /* Force table to not be like tables anymore */
+/*    table, thead, tbody, th, td, tr { 
+        display: block; 
+    }*/
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr { 
+        position: relative;
+        top: -9999px;
+        left: -9999px;
+    }
+
+/*checkinh*/
+/*    .priceMobiletbl td.guestTitle{
+        border-bottom: none;
+        font-family: georgia;
+        font-size: 19px;
+        color: #454444;
+        font-weight: normal;
+        height: 50px;
+        width: 50%;
+        padding: 0px;
+    }
+    
+    .priceMobiletbl td.guestTitlepadg{
+        padding-left: 10px;
+    }
+    
+    .priceMobiletbl td{
+        border-bottom: none;
+        font-family: georgia;
+        font-size: 14px;
+        color: #818181;
+        font-weight: normal;
+        line-height: 20px;
+        text-align: left;
+        padding-right: 10px;
+        padding-top: 10px;
+    }
+    
+    .priceMobiletbl td.pricestyle{
+        border-bottom: #c7ab82 1px solid;
+        font-family: georgia;
+        font-size: 26px;
+        color:#818181;
+        font-weight: bold;
+        height: 40px;
+        padding: 0px 0px 0px 10px;
+        vertical-align: middle;
+    }
+
+    tr { border: 1px solid #ccc; }
+
+    td { 
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+    }
+
+    td:before { 
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+    }
+
+    /*
+    Label the data
+    */
+/*    td:nth-of-type(1):before { content: "TIME"; 
+                               border-bottom: none;
+                               font-family: georgia;
+                               font-size: 16px;
+                               color:#454444;
+                               font-weight: bold;
+                               height: 50px;
+    }
+    td:nth-of-type(2):before { content: "40-60 GUESTS"; 
+                               border-bottom: none;
+                               font-family: georgia;
+                               font-size: 16px;
+                               color:#454444;
+                               font-weight: bold;
+                               height: 50px;
+    }
+    td:nth-of-type(3):before { content: "61-90GUESTS"; 
+                               border-bottom: none;
+                               font-family: georgia;
+                               font-size: 16px;
+                               color:#454444;
+                               font-weight: bold;
+                               height: 50px;
+    }
+    td:nth-of-type(4):before { content: "91-130GUESTS"; 
+                               border-bottom: none;
+                               font-family: georgia;
+                               font-size: 16px;
+                               color:#454444;
+                               font-weight: bold;
+                               height: 50px;
+    }*/
+
+/*}*/
+
+
+.bx-controls-direction a{
+    opacity:1;
+        transition: opacity;
+-moz-transition: opacity;
+-webkit-transition: opacity;
+}
+
+.requesttablet .sunsetBooknowMobile{
+ margin-left: 12% !important;
+    width: 100% !important;
+}
+
+.contentDetail #rightsliderImages .item img{
+    height: 650px;
+    width: 100%;
+}
+.contentDetail #rightsliderImages{
+    max-height: 650px;
+}
+.reoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.reoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+#seeparkingDirectionsModal
+{
+    width: 700px;
+    left:46%;
+}
+.seereoutemapDirectionsclosebutton
+{
+
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.seereoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+.requestmobile{
+    width:auto !important;
+}
+
+
+#cateringSelectionMenu .bx-wrapper{
+    max-width: 100% !important;
+}
+.cateringSelectionMenu li{
+    margin-right: 0.5%;
+    float: left;
+list-style: none;
+position: relative;
+width: 300px;
+min-height: 200px; 
+}
+#cateringSelectionMenu .bx-wrapper .bx-viewport{
+    left:0;
+    height: auto !important;
+}
+.req-proposal{
+    margin-bottom:4%;
+}
+.clickMapLink{
+    font-size: 21px;
+}
+.clickMapLink img{
+    float: left;
+    margin-right: 5px;
+    vertical-align: bottom;
+    margin-top: 4px;
+}
+.sunsetBooknowMobile{
+    /*margin-top: 48%;*/
+}
+#mydownCarousel .carousel-indicators{
+    top: 95%;
+    right: 50%;
+}
+.sunset-slider-buttons ol.carousel-indicators{
+    top: 95%;
+    right: 50%;
+}
+
+@media (max-width: 979px) {
+
+    .weddingPackagesTitle, .weddingPackagesSubTitle, .weddingPackagesDescription{
+        padding-left: 10px;
+    }
+    .weddingDownsliderInner{
+        margin: 8% 8%;
+
+    }
+    #eventmydownCarousel .eventmydownIndicators{
+        bottom: 4%;
+    }
+    .weddingPackagesSubTitle{
+        margin-top: 8%;
+    }
+    #middlesliderscarousel{
+        margin-top: 8%;
+    }
+    .sunsetBooknowMobile{
+   width: 60% !important;
+margin-left: 17% !important;
+}
+    .sliderCaption{
+        font-size: 25px !important;
+    }
+    /* wedding css start here */
+
+    .subMenu ul li a
+    {
+        font-size:13px;
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .subMenu ul li a:hover
+    {
+        font-size:13px;
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .subMenu ul li a.active
+    {
+        font-size:13px;
+        padding-left:10px;
+        padding-right:10px;
+    }
+    .weddingDownsliderbox{
+        left: 0%;
+        position: static;
+        width: 46%;
+        max-width: 46%;
+        float: left;
+    }
+    .rightslider{
+        margin-left:2%;
+    }
+
+
+
+    .requesttablet
+    {
+        width: 80% !important;
+    }
+
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 22% !important;
+        float: left !important;
+        padding-top: 0px;
+    }
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 50% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 24px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 36%;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 22%;
+        float: left;
+    }
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+        max-width: 100% !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: block;
+    }
+    .map{
+        height: 360px !important;
+    }
+    .contentDetail .span6{
+        float: none !important;
+        width: 100% !important;
+        margin-left: 0px !important;
+    }
+    .sunsetBannerBooknow .row-fluid .span6{
+        margin-left: 0px !important;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span2{
+        display: none;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span10{
+        width: 100%;
+        margin-left: 0px;
+    }
+    .contentDetail #rightsliderImages .item img{
+        width: 100%;
+
+    }
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+    .bx-wrapper .bx-next{
+
+        left: 90% !important;
+    }
+
+    .bx-wrapper .bx-prev{
+
+        left: -10% !important;
+    }
+}
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+
+
+    .weddingPackagesTitle, .weddingPackagesSubTitle, .weddingPackagesDescription{
+        padding-left: 10px;
+    }
+    /*wedding css start here*/ 
+
+    .subMenu ul li a
+    {
+        font-size:16px;
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .subMenu ul li a:hover
+    {
+        font-size:16px;
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .subMenu ul li a.active
+    {
+        font-size:16px;
+        padding-left:10px;
+        padding-right:10px;
+    }
+    .weddingDownsliderbox{
+        max-width: 425px;
+        left:5%;
+        top:20px;
+    }
+    .rightslider{
+        margin-left: 47%;
+    }
+
+    .deparText{
+        font-size: 22px !important;
+    }
+
+    .sunsetBannerBooknow{
+        padding-bottom: 10px !important;
+        padding-top: 10px !important;
+    }
+
+    .sunsetBannerBooknow .row-fluid .span6{
+        float: none;
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    .carousel{
+        margin-bottom: 0px !important;
+    }
+
+    .sunsetDownsliderbox{
+        top: 4% !important;
+    }
+
+    .groupResNote{
+        margin-top: 12px;
+        margin-bottom: 10px;
+    }
+
+    .sunsetDownslider .carousel-indicators{
+        bottom: 6%;
+    }
+
+    .sliderCaption{
+        font-size: 26px !important;;
+    }
+
+    .contentDetail{
+        padding-left: 0% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 32% !important;
+    }
+
+    .detailTitle {
+        font-size: 35px !important;
+    }
+    .contentDetail #rightsliderImages .item img{
+        height: 530px;
+
+    }
+
+}
+
+@media (min-width: 1160px) and (max-width: 1200px) {
+
+
+
+    .weddingDownsliderbox{
+        max-width: 425px;
+    }
+
+
+    .contentDetail #rightsliderImages .item img{
+        height: 560px;
+    }
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+
+}
+
+
+
+@media screen and (max-width: 767px) { 
+
+    .weddingPackagesTitle, .weddingPackagesSubTitle, .weddingPackagesDescription{
+        padding-left: 10px;
+    }
+    .weddingPackagesTitle
+    {
+        font-size: 40px;
+    }
+    /* wedding css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+        margin-bottom: 30px;
+    }
+    #cateringSelectionMenu .bx-wrapper .bx-controls-direction a{
+        opacity:1;
+        transition: opacity;
+        -moz-transition: opacity;
+        -webkit-transition: opacity;
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 40px;
+        font-size: 17px;     
+        border:0px; 
+    }
+    .weddingDownsliderbox
+    {
+        position: static;
+        min-width: 100%;
+        border-left:0px; 
+        border-right:0px;
+        margin-top: 20px;
+    }
+
+    #cateringSelectionMenu .bx-wrapper .bx-viewport{
+        height: inherit !important;
+    }
+    
+    .cruisebuffet {
+        float: left !important;
+    }
+
+
+    .contentDetail #rightsliderImages
+    {
+        height:auto !important;
+    }
+    .rightslider{
+        margin-left: 0px !important;
+    }
+
+    #pricingTable .sticky-enabled tbody tr.even td:first-child, #pricingTable .sticky-enabled tbody tr.odd td:first-child{
+        width: 50%;
+        height: 60px;
+        margin-bottom: 10px;
+        border-bottom: #c7ab82 1px solid;
+    }
+
+
+    tr {
+        border: none; 
+        margin-bottom: 40px;
+    }
+
+    tr.even, tr.odd
+    {
+        padding: 0px;
+    }
+    #pricingTable
+    {
+        width: 95%;
+        margin-top: 10%;
+    }
+    .weddingDownsliderInner .row-fluid .span2
+    {
+        width: 20%;
+        float:left;
+    }
+    .weddingDownsliderInner .row-fluid .span8
+    {
+        width: 60%;
+        float:left;
+    }
+    .weddingDownsliderInner
+    {
+        margin-left: 1%;
+        margin-right: 1%;
+    }
+    .weddingDownsliderInner ul
+    {
+        margin: 0 0 10px 25px
+    }
+    .sunsetBooknowMobile .requestmobile
+    {
+        float: left !important;
+        width: 60% !important;
+    }
+    .sunsetBooknowMobile .weddingLinePadding
+    {
+        float: left !important;
+        width: 20% !important;
+    }
+
+    .weddingLinePadding .line
+    {
+        margin-top:15px; 
+    }
+    .sliderCaption{
+        line-height: 28px;
+    }
+
+
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 25% !important;
+        float: left !important;
+        padding-top: 0px;
+    }
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 50% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 36%;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 28%;
+        float: left;
+    }
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+        max-width: 100% !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: block;
+    }
+    .map{
+        height: 360px !important;
+    }
+    .sliderInnercontent img{
+        margin-top: 6px;
+        float: left;
+        margin-right: 6px;
+    }
+    .sliderInnercontent .clickMapLink
+    {
+        font-size: 14px !important;
+    }
+    .contentDetail #rightsliderImages .item img{
+        height: auto !important;
+        width: 100%;
+    }
+
+    #parkingDirectionsModal
+    {
+        margin-left:0px;
+        position: absolute;
+    }
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+    .bx-wrapper .bx-next{
+
+        left: 90% !important;
+    }
+
+    .bx-wrapper .bx-prev{
+
+        left: -10% !important;
+    }
+}
+
+@media (max-width: 480px){
+ .sunsetBooknowMobile{
+        width:95% !important;
+        padding-left: 2%;
+        padding-right: 3%;
+        margin-left:0% !important;
+    }
+    #upArrow{
+        display: none;
+    }
+    .weddingmenu{
+        width:94% !Important;  
+        margin-left: 3% !important;
+        margin-right: 3% !important;
+    }
+    .weddingPackagesTitle, .weddingPackagesSubTitle, .weddingPackagesDescription,.weddingdownloadlink .clickMapLink{
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+  .bx-wrapper .bx-next{
+        left: 76% !important;
+    }
+    .bx-wrapper .bx-prev {
+        left: 0% !important;
+    }
+      .package-heading{
+        width:96% !important;
+        margin-left: 2% !important;
+        margin-right: 2% !important;
+    }
+
+    /* wedding css start here */
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+        margin-bottom: 30px;
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 40px;
+        font-size: 17px;     
+        border:0px; 
+    }
+
+    #eventmydownCarousel{
+        display: none;
+    }
+
+    #eventsmyCarousel .carousel-control{
+        display: none;
+    }
+
+    #eventsmyCarousel .eventIndicators{
+        display: none;
+    }
+.weddingDownsliderInner .sunsetLinePadding .line{
+        margin-top: 28%;
+    }
+    .weddingDownsliderbox
+    {
+        position: static;
+        min-width: 100%;
+        border-left:0px; 
+        border-right:0px;
+        margin-top: 20px;
+    }
+
+    .contentDetail #rightsliderImages
+    {
+        height:auto !important;
+    }
+    .rightslider{
+        margin-left: 0px;
+    }
+
+    #pricingTable .sticky-enabled tbody tr.even td:first-child, #pricingTable .sticky-enabled tbody tr.odd td:first-child{
+        width: 50%;
+        height: 60px;
+        margin-bottom: 10px;
+        border-bottom: #c7ab82 1px solid;
+        line-height: 20px;
+    }
+
+
+    tr {
+        border: none; 
+        margin-bottom: 40px;
+    }
+
+    tr.even, tr.odd
+    {
+        padding: 0px;
+    }
+    #pricingTable
+    {
+        width: 95%;
+    }
+    .weddingDownsliderInner .row-fluid .span2
+    {
+        width: 10%;
+        float:left;
+    }
+    .weddingDownsliderInner .row-fluid .span8
+    {
+        width: 80%;
+        float:left;
+    }
+    .weddingDownsliderInner
+    {
+        margin-left: 1%;
+        margin-right: 1%;
+    }
+    .weddingDownsliderInner ul
+    {
+        margin: 0 0 10px 25px
+    }
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .detailTitle{
+        font-size: 35px !important;
+        line-height: 48px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .deparText{
+
+        font-size: 22px !important;
+        width:90%;
+        margin: 0px auto;
+    }
+
+    .priceText{
+        margin-top: 5px;
+        width:90%;
+        margin: 0px auto;
+        line-height: 34px;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .requestmobile
+    {
+        float: left !important;
+        width: 68% !important;
+    }
+    .sunsetBooknowMobile .weddingLinePadding
+    {
+        float: left !important;
+        width: 16% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .sunsetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+    }
+
+    .sunsetDownsliderInner .span2{
+        width: 10% !important;
+        float: left !important;
+    }
+    .sunsetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        width: 80% !important;
+    }
+    .sunsetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+    #routeMaplinesholder .span5{
+        width: 45%;
+        float: left;
+    }
+    #routeMaplinesholder .span2{
+        width: 10%;
+        float: left;
+    }
+    .dinnermenu .title{
+        font-size: 23px !important;
+    }
+    .dinnermenu .pull-right{
+        display: none;
+    }
+    .dinnermenu .subtitle{
+        line-height: 28px !important;
+    }
+    .mapDownsliderbox{
+        position: static !important;
+    }
+    .mapOverlay{
+        display: none;
+    }
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: none;
+    }
+    .map{
+        height: 360px !important;
+    }
+
+    .dinnerCruiseMenu li{
+        /*        float: none !important;*/
+        /*width: 100% !important;*/
+    }
+
+    .bx-controls .bx-controls-direction{
+        display: block !important;
+    }
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+
+}
+.cruisebuffet
+{
+    float:none !important;
+}
+
+.priceMobiletbl table{
+        width: 100%;
+    }
+
+    .priceMobiletbl tbody{
+        border-top: none;
+    }
+
+.priceMobiletbl td.pricelistheader{
+    width:50%;
+   font-size:21px;
+   color:black;
+}
+
+.priceMobiletbl td.pricelistheader2{
+padding-left:5%;
+font-size:21px;
+color:black;
+}
+
+
+.priceMobiletbl td.pricelist{
+    border-bottom:#c7ab82 1px solid;
+    padding-left:10px;
+    font-size:20px;
+}
+/*.facebook .stButton .stLarge {
+    background-image:url("../images/fb-share.png") no-repeat !important;
+    background: url("../images/fb-share.png") no-repeat !important;
+    margin: 5px 0 0 8px;
+    padding: 10px;
+    cursor: pointer;
+}
+.twitter .stButton .stLarge {
+.twitsharebtnimg {
+    background-image:url("../images/fb-share.png") no-repeat !important;
+    background: url("../images/tweet.png") no-repeat !important;
+    margin-top: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+.twitter .stButton .stLarge {
+    background-image:url("../images/fb-share.png") no-repeat !important;
+    background: url("../images/tweet.png") no-repeat !important;
+    margin-top: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+  .priceMobiletbl td{
+        border-bottom: none;
+        font-family: georgia;
+        font-size: 14px;
+        color: #818181;
+        font-weight: normal;
+        line-height: 20px;
+        text-align: left;
+        padding-right: 10px;
+        padding-top: 10px;
+}
+.share-text {
+    color:#ffffff;
+    position: absolute;
+    margin-left: 70%;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.imgLink {
+    display:none;
+}
+#stwrapper{
+    left:5%;
+}
+#stLframe{
+    width:310px; 
+    height:460px;
+    overflow:auto;
+}
+#stwrapper{
+    width:64%;
+}
+#stLframe html body #outerContainer{
+    width:270px !important;
+}*/
+/*#stLframe #outerContainer{
+    width:75%;
+}*/
+
+
+
+
+/*.facebook .stButton .stLarge {*/
+ .fbsharebtnimg {
+    /*background-image:url("../images/fb-share.png") no-repeat !important;*/
+    background: url("../images/fb-share.png") no-repeat !important;
+    margin: 5px 0 0 8px;
+    padding: 10px;
+    cursor: pointer;
+}
+/*.facebook .stButton .stLarge {*/
+.fb-like.facebook {
+    /*background: url("../images/fb-share.png") no-repeat !important;*/
+    cursor: pointer;
+    /*margin: 5px 0 0 8px;*/
+    /*padding: 0 20px 0 10px;*/
+    padding: 5px 1%;
+    width: 50px;
+    /*width: 62px;*/
+}
+/*.twitter .stButton .stLarge {*/
+.twitsharebtnimg {
+    /*background-image:url("../images/fb-share.png") no-repeat !important;*/
+    background: url("../images/tweet.png") no-repeat !important;
+    margin-top: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+/*.twitter .stButton .stLarge {*/
+.twitter{
+    /*background: url("../images/tweet.png") no-repeat !important;*/
+    /*margin-top: 5px;*/
+    /*padding-top: 5px;*/
+    padding: 5px 4% 0px 2%;
+    /*padding: 10px;*/
+    cursor: pointer;
+    width:22%;
+}
+.pinterest{
+    width:20%;
+    /*padding-top: 5px;*/
+    padding:5px 1% 0px 1%;
+}
+.sharetext {
+    color:#ffffff;
+    padding: 5px 3px 0px 5px;
+    width: 20%;
+    text-align:center;
+    cursor: pointer;
+}
+
+.buttonsdiv{
+    border: 1px dotted #F1DDDF;
+    height: 82%;
+    margin: 2px;
+    width: 98%;
+}
+.share-text {
+    color:#ffffff;
+    position: absolute;
+    /*margin-left: 70%;*/
+    /*margin-top: 5px;*/
+    padding: 5px 5px 0px 5px;
+    /*width: 25%;*/
+    text-align:center;
+    cursor: pointer;
+}
+
+.imgLink {
+    display:none;
+}
+#stwrapper{
+    left:5%;
+}
+
+
+
+
+/*
+Make the Facebook Like box responsive (fluid width)
+https://developers.facebook.com/docs/reference/plugins/like-box/
+*/
+ 
+/* This element holds injected scripts inside iframes that in some cases may stretch layouts. So, we're just hiding it. */
+#fb-root {
+display: none;
+}
+ 
+/* To fill the container and nothing else */
+.fb_iframe_widget {
+width: 50px !important;
+}
+.fb_iframe_widget span,.fb_iframe_widget span iframe[style]{
+width: 100% !important;
+}

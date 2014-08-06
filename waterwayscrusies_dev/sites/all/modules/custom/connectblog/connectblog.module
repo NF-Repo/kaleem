@@ -1,0 +1,1062 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function connectblog_menu() {
+    $items = array();
+    $items['connectblog'] = array(
+        'title' => 'Connect Blog',
+        'page callback' => 'connect_blog',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    $items['connectblog/blogid/%'] = array(
+        'title' => 'Waterways Blog',
+        'page callback' => 'connectblog_pagecategory',
+        'page arguments' => array(2),
+//        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+    $items['connectblog/year/%/month/%'] = array(
+        'title' => 'Waterways Blog',
+        'page callback' => 'connectblog_yearmonthpagecategory',
+        'page arguments' => array(2, 4),
+//        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+
+
+    //comments Posting
+    $items['commentspost'] = array(
+        'title' => 'Waterways Blog Post',
+        'page callback' => 'connectblog_postcomments',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    //Subscribe Blog
+    $items['subscribeBlog'] = array(
+        'title' => 'Waterways Subscribe Blog Post',
+        'page callback' => 'connectblog_subscribeblog',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    $items['bloglist'] = array(
+        'title' => 'Blog Content',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('blog_list_view'),
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    return $items;
+}
+
+function connectblog_theme() {
+    $items['connectblog'] = array(
+        'template' => 'connectblog', // here comes your template name
+        'render element' => 'content'
+    );
+
+    $items['connectblog_pagecategory'] = array(
+        'template' => 'connectblog_pagecategory', // here comes your template name
+        'render element' => 'content'
+    );
+    $items['connectblog_yearmonthpagecategory'] = array(
+        'template' => 'connectblog_yearmonthpagecategory', // here comes your template name
+        'render element' => 'content'
+    );
+
+
+    return $items;
+}
+
+/**
+ * 
+ * @global type $user
+ * @param type $year
+ * @param type $month
+ * @return type
+ * 
+ * 
+ * 
+ */
+function getArchivecalendar($currentmonth, $currentyear) {
+
+    $month_names = array(
+        '',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec');
+    $archivehtml = '<select class="selectpicker" id="archives">';
+    $type = 'blog';
+    $date = _archive_date($type, $year, $month, $day);
+    foreach ($date->years as $key => $value) {
+        $slectedcurrentyear = $key;
+        $archivehtml.='<optgroup label="' . $slectedcurrentyear . '">';
+        //Get Months Posts count
+        $monthlist = _archive_date($type, $key, $month, $day);
+        foreach ($monthlist->months as $monthkey => $posts) {
+            $monthlabel = $month_names[$monthkey] . "(" . $posts . ")";
+            if ($monthkey == $currentmonth && $slectedcurrentyear == $currentyear) {
+                $archivehtml.='<option value="' . $monthkey . '" selected="selected">' . $monthlabel . '</option>';
+            } else {
+                $archivehtml.='<option value=' . $monthkey . '>' . $monthlabel . '</option>';
+            }
+        }
+    }
+    $archivehtml.='</optgroup></select>';
+    return $archivehtml;
+}
+
+/* * *********blogs list view******* */
+
+function blog_list_view($form, &$form_state) {
+    global $base_url;
+    if (isset($form_state['values']['option'])) {
+        $option = $form_state['values']['option'];
+    }
+
+    $html = '<div class="row-fluid"><div class="span12">'
+            . '<a style="color:#0088CC;text-decoration:none;" href="' . $base_url . '/node/add/blog">Create New Blog</a>'
+            . '<a style="color:#0088CC;text-decoration:none; padding-left:20px;" href="' . $base_url . '/admin/content/comment">Manage Comments</a>' .
+            '</div></div>';
+    $form['option'] = array(
+        '#type' => 'markup',
+        '#default_value' => $option,
+        '#prefix' => $html,
+//        '#suffix' => '</div>',
+        '#attributes' => array('class' => array('input-medium')),
+    );
+
+    $header = array(
+        array(
+            'data' => 'Title',
+            'field' => 'title'
+        ),
+        array(
+            'data' => 'Author',
+            'field' => 'uid'
+        ),
+        array(
+            'data' => 'Updated',
+            'field' => 'created'
+        ),
+        array(
+            'data' => 'operations',
+        ),
+    );
+    if (isset($_GET ['sort']) && isset($_GET ['order'])) {
+        if ($_GET ['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET ['order']) {
+            case 'Id' :
+                $order = 'nid';
+                break;
+            case 'Title' :
+                $order = 'title';
+                break;
+            case 'Author' :
+                $order = 'uid';
+                break;
+            case 'Updated' :
+                $order = 'changed';
+                break;
+        }
+    } else {
+        $sort = 'ASC';
+        $order = 'nid';
+    }
+
+
+    $query = db_select('node', 'n');
+    $query->join('users', 'u', 'u.uid=n.uid');
+    $query->fields('n', array('title', 'nid', 'uid', 'changed'));
+    $query->fields('u', array('name'));
+    $query->condition('n.status', 1);
+    $query->condition('n.type', array(blog), 'IN');
+   
+    if(!isset($_GET ['order'])){
+              $query->orderBy('n.created', 'DESC');
+    }else{
+//    $query->range(0, 10);
+    $query->orderBy($order, $sort);
+    }
+
+
+
+
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
+    $result = $query->execute()->fetchAll();
+
+    global $base_url;
+    $rows = array();
+    if (count($result) > 0) {
+        for ($i = 0; $i < count($result); $i ++) {
+            $updated = $result[$i]->changed;
+            $rows [] = array(
+                $result [$i]->title,
+                $result [$i]->name,
+                date("Y-m-d H:i", $updated),
+                '<a href="' . $base_url . '/node/' . $result [$i]->nid . '/edit">edit  </a>
+                	<a href="' . $base_url . '/node/' . $result [$i]->nid . '/delete?destination=bloglist">delete  </a>',
+            );
+        }
+    }
+
+    $output .= '<div class="">';
+    $output .= '<div class="">';
+
+    $output .= '</div>';
+    $output .= theme_table(array(
+                'header' => $header,
+                'rows' => $rows,
+                'attributes' => array(
+                    'class' => array(
+                        ''
+                    )
+                ),
+                'sticky' => true,
+                'caption' => '',
+                'colgroups' => array(),
+                'empty' => t("No Records!")
+            )) . theme('pager');
+
+    $output .= '</div>';
+
+
+    $form['outputmarkup'] = array(
+        '#type' => 'markup',
+        '#markup' => $output
+    );
+    return $form;
+}
+
+function connectblog_form_alter(&$form, &$form_state, $form_id) {
+    if ($form_id == 'blog_node_form') {
+
+        $form['actions']['submit']['#submit'][] = 'connectblog_redirect_callback';
+    }
+
+
+//    if ($form_id == 'node_delete_confirm') {
+//        
+//
+//        $form['actions']['submit']['#submit'][] = 'connectblog_redirect_callback';
+//    }
+}
+
+function connectblog_redirect_callback($form, &$form_state) {
+    $form_state['redirect'] = 'bloglist';
+}
+
+function connectblog_yearmonthpagecategory($year, $month) {
+    global $user;
+    //get the product load 
+    $menulist = getConnectMenu('BLOG');
+
+    $blogresources = getBlogsArchivescontent($year, $month);
+    $facebookappcontent = app_exits_check('facebook');
+
+        foreach ($facebookappcontent as $res) {
+            $content = $res->data;
+        }
+
+        $resp = unserialize($content);
+        $facebookid = $resp->Appid;
+
+    $connectresources = array(
+        'menu' => $menulist['connectmenu'],
+        'mobilemenu' => $menulist['mobilemenu'],
+        'blogpage' => $blogresources['pagecontent'],
+        'blogimage' => $blogresources['blogimage'],
+        'blogthumpage' => $blogresources['thumbnailresultset'],
+        'blogid' => $blogresources['currentblogid'],
+        'comments' => $blogresources['blogcomments'],
+        'blogtitle' => $blogresources['blogtitle'],
+        'blogcreated' => $blogresources['createddate'],
+        'expandcomments' => $blogresources['blogcommentsdataview'],
+        'archivecalendar' => getArchivecalendar($month, $year),
+        'mustreadposts' => renderReadPost('readpost'),
+        'likereadposts' => renderReadPost('likepost'),
+        'yearselected' => $year,
+        'monthselected' => $month,
+        'facebookappid' => $facebookid
+    );
+
+//     var_dump($connectresources);
+//     exit();
+
+
+    return theme('connectblog_yearmonthpagecategory', $connectresources);
+}
+
+function connectblog_postcomments() {
+
+    //Before cmments posting we need to authenticate user
+    //then after we are allowing to comment posts
+    //for user registration we are using user_save hook function
+//disabled
+    $blogid = $_POST['blogid'];
+    $blogComments = $_POST['blogcomments'];
+    $blogUserEmail = $_POST['bloguseremail'];
+    $blogUserName = $_POST['blogusername'];
+    $bloguserWebsite = $_POST['bloguserwebsite'];
+    $blogusernotificationComment = $_POST['commentnotify'];
+    $blogusernotificationpost = $_POST['postnotify'];
+
+
+    if ($blogusernotificationComment == 'disabled') {
+        $commentnotify = 0;
+    }
+
+    if ($blogusernotificationComment == 'enabled') {
+        $commentnotify = 1;
+    }
+
+    if ($blogusernotificationpost == 'disabled') {
+        $postnotify = 0;
+    }
+
+    if ($blogusernotificationpost == 'enabled') {
+        $postnotify = 1;
+    }
+
+
+
+//    user_password(8);
+    //user save
+    $new_user = array(
+        'name' => $blogUserName,
+        'pass' => user_password(8), // note: do not md5 the password
+        'mail' => $blogUserEmail,
+        'status' => 1,
+        'init' => $blogUserEmail,
+        'roles' => array(
+            DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+        ),
+    );
+
+
+//    drupal_json_output($new_user);
+//    exit();
+//case :new user
+//    rowCount
+
+    $query = db_select('users', 'u');
+    $query->fields('u');
+    $query->Condition('u.name', $blogUserName, '=');
+    $query->Condition('u.mail', $blogUserEmail, '=');
+    $results = $query->execute();
+    if ($results->rowCount() > 0) {
+        //old user
+        while ($userdata = $results->fetchObject()) {
+            $userid = $userdata->uid;
+        }
+    } else {
+        //new user
+        $useracc = user_save('', $new_user);
+        $userid = $useracc->uid;
+        $account = user_load($userid->uid);
+        _subscriptions_get_setting($blogUserName, $account);
+    }
+
+    $query = db_select('connectblog', 'c');
+    $query->fields('c');
+    $query->Condition('c.subscription_user_id', $userid, '=');
+    $postnotifycomnt = $query->execute()->fetchAll();
+
+
+    if (count($postnotifycomnt) < 1) {
+        $postnotification = db_insert('connectblog')
+                ->fields(array(
+                    'post_notify' => $postnotify,
+                    'subscription_user_id' => $userid,
+                ))
+                ->execute();
+    }
+
+    //user login
+    //user save
+    //end of user subscription
+    $blogcommentvalues = array(array(
+            'value' => $blogComments,
+            'format' => 'filtered_html',
+            'safe_value' => '<p>' . $blogComments . '</p>'
+    ));
+
+    /* IN THE comment_notify UID IS NOT GETTING STORED CORRECTLY */
+    if (isset($blogComments) && $blogComments != null) {
+        $comment = (object) array(
+                    'cid' => NULL,
+                    'nid' => $blogid,
+                    'name' => $blogUserName,
+                    'node_type' => 'comment_node_blog',
+                    'pid' => 0,
+                    'uid' => $userid,
+//                    'status' => COMMENT_PUBLISHED,
+                    'status' => 0,
+                    'subject' => 'Comments',
+                    'hostname' => ip_address(),
+                    'language' => LANGUAGE_NONE,
+                    'notify' => $commentnotify, //used for comments notifications
+                    'notify_type' => $commentnotify, //used for comments notfications
+                    'comment_body' => array(LANGUAGE_NONE => $blogcommentvalues),
+        );
+
+        comment_save($comment);
+        drupal_json_output('your comment will be posted After Approval of Site Administartor.');
+        watchdog('commentnotyi', $commentnotify);
+    }
+
+
+    if ($comment->cid) {
+        drupal_json_output('success');
+    } else {
+        drupal_json_output('failure');
+    }
+
+
+    //end of building Comments Object
+}
+
+function connectblog_subscribeblog() {
+
+    //Before cmments posting we need to authenticate user
+    //then after we are allowing to comment posts
+    //for user registration we are using user_save hook function
+
+    $blogid = $_POST['blogid'];
+    $blogUserEmail = $_POST['bloguseremail'];
+    $blogUserName = $_POST['blogusername'];
+    $bloguserWebsite = $_POST['bloguserwebsite'];
+    $blogusernotificationComment = $_POST['commentnotify'];
+    $blogusernotificationpost = $_POST['commentnotify'];
+
+
+    $query = db_select('users', 'u')
+            ->fields('u')
+//            ->fieldCondition('u.name', $blogUserName)
+//            ->fieldCondition('u.mail', $blogUserEmail)
+            ->execute();
+//    $total = count($query);
+//    var_dump($total);
+//    exit();
+
+
+    while ($result = $query->fetchAssoc()) {
+        $result['name'];
+        $result['mail'];
+    }
+
+    if ($result['name'] != $blogUserEmail && $result['mail'] != $blogUserName) {
+
+        //user save
+        $new_user = array(
+            'name' => $blogUserName,
+            'pass' => user_password(8), // note: do not md5 the password
+            'mail' => $blogUserEmail,
+            'status' => 1,
+            'init' => $blogUserEmail,
+            'roles' => array(
+                DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+            ),
+        );
+
+        // The first parameter is sent blank so a new user is created.
+        $useracc = user_save('', $new_user);
+
+        $user_obj = user_load_by_name($blogUserName);
+
+        $form_state = array();
+        $form_state['uid'] = $user_obj->uid;
+        user_login_submit(array(), $form_state);
+
+        $account = user_load($user_obj->uid);
+        _subscriptions_get_setting($blogUserName, $account);
+
+
+        drupal_json_output('success');
+    } else {
+
+        drupal_json_output('failure');
+    }
+
+
+//    var_dump($useracc);
+//    $user_email = user_load_by_mail($blogUserEmail);
+//    
+//    var_dump($user_email);
+//    exit();
+    //user login
+    //user save
+    //end of user subscription
+    $blogcommentvalues = array(array(
+            'value' => $blogComments,
+            'format' => 'filtered_html',
+            'safe_value' => '<p>' . $blogComments . '</p>'
+    ));
+
+    /* IN THE comment_notify UID IS NOT GETTING STORED CORRECTLY */
+    $comment = (object) array(
+                'cid' => NULL,
+                'nid' => $blogid,
+                'node_type' => 'comment_node_blog',
+                'pid' => 0,
+                'uid' => $user_obj->uid,
+                'status' => COMMENT_PUBLISHED,
+                'subject' => 'Comments',
+                'hostname' => ip_address(),
+                'language' => LANGUAGE_NONE,
+                'notify' => 1, //used for comments notifications
+                'notify_type' => 1, //used for comments notfications
+                'comment_body' => array(LANGUAGE_NONE => $blogcommentvalues),
+    );
+    comment_save($comment);
+
+
+    if ($comment->cid) {
+        drupal_json_output('success');
+    } else {
+        drupal_json_output('failure');
+    }
+
+
+    //end of building Comments Object
+}
+
+function connectblog_pagecategory($blogid) {
+    $blogpageresources = getBlogPageByblogid($blogid);
+
+
+    $currentmonth = date('m');
+    $currentyear = date('Y');
+ 
+    $facebookappcontent = app_exits_check('facebook');
+
+        foreach ($facebookappcontent as $res) {
+            $content = $res->data;
+        }
+
+        $resp = unserialize($content);
+        $facebookid = $resp->Appid;
+        
+    $templateresources = array(
+        'pagecontent' => $blogpageresources['blogcontent'],
+        'pageblogtitle' => $blogpageresources['blogtitle'],
+        'pageblogcreated' => $blogpageresources['blogcreated'],
+        'pageblogcomments' => $blogpageresources['blogcomments'],
+        'pageexpandcomments' => $blogpageresources['blogcommentsdataview'],
+        'archivecalendar' => getArchivecalendar($currentmonth, $currentyear),
+        'mustreadposts' => renderReadPost('readpost'),
+        'likereadposts' => renderReadPost('likepost'),
+        'blogid' => $blogid,
+        'facebookappid' => $facebookid
+      
+    );
+    return theme('connectblog_pagecategory', $templateresources);
+}
+
+function getBlogPageByblogid($blogid) {
+
+    $blogdetails = node_load($blogid);
+//    var_dump($blogdetails);exit();
+    $blogimage = getArrayloop($blogdetails->field_blogimage);
+    $imagesrc = file_create_url($blogimage);
+    foreach ($blogdetails->body as $blogvalues) {
+        $blogcomments = getblogPostComments($blogid);
+
+        $blogcommentsview = getblogPostCommentsview($blogid);
+        $blogcontent = $blogvalues[0]['safe_value'];
+        $blogimages = '<img src="' . $imagesrc . '"/>';
+    }
+
+    $results = array(
+        'blogcontent' => $blogcontent,
+        'blogimage' => $blogimages,
+        'blogcomments' => $blogcomments,
+        'blogtitle' => $blogdetails->title,
+        'blogcommentsdataview' => $blogcommentsview,
+        'blogcreated' => date("F d, Y", $blogdetails->created)
+    );
+
+    return $results;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function connect_blog() {
+
+    try {
+
+        global $user;
+        //get the product load 
+        $menulist = getConnectMenu('BLOG');
+        $blogresources = getBlogspagecontent();
+
+        $currentmonth = date('m');
+        $currentyear = date('Y');
+        $facebookappcontent = app_exits_check('facebook');
+
+        foreach ($facebookappcontent as $res) {
+            $content = $res->data;
+        }
+
+        $resp = unserialize($content);
+        $facebookid = $resp->Appid;
+       
+        $connectresources = array(
+            'menu' => $menulist['connectmenu'],
+            'mobilemenu' => $menulist['mobilemenu'],
+            'blogpage' => $blogresources['pagecontent'],
+            'blogimage' => $blogresources['blogimage'],
+            'blogthumpage' => $blogresources['thumbnailresultset'],
+            'blogid' => $blogresources['currentblogid'],
+            'comments' => $blogresources['blogcomments'],
+            'blogtitle' => $blogresources['blogtitle'],
+            'blogcreated' => $blogresources['createddate'],
+            'expandcomments' => $blogresources['blogcommentsdataview'],
+            'archivecalendar' => getArchivecalendar($currentmonth, $currentyear),
+            'mustreadposts' => renderReadPost('readpost'),
+            'likereadposts' => renderReadPost('likepost'),
+            'facebookappid' => $facebookid,
+        );
+
+        return theme('connectblog', $connectresources);
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+//Getting Blog Archive based
+
+function getBlogsArchivescontent($year, $month) {
+    global $base_url;
+    $getmodulepath = drupal_get_path('module', 'connectblog');
+    $thumbbloghtml = '';
+    $resultset = array();
+
+    //  yyyy-mm-dd
+    $startdate = $year . '-' . $month . '-1';
+
+    $query = db_select('node', 'n');
+    $query = $query->condition('n.type', 'blog', '=');
+    $query->where("n.created BETWEEN UNIX_TIMESTAMP('$startdate') and (SELECT UNIX_TIMESTAMP( LAST_DAY( DATE_ADD( '$startdate', INTERVAL 0 MONTH ) ) ) )");
+    $query->fields('n', array('nid'))//SELECT the fields from node
+            ->orderBy('created', 'DESC'); //ORDER BY created
+//  $query = db_select('node', 'n');
+//  $query->condition('n.type', 'blog', '=');
+//$query->fields('n',array('nid'))//SELECT the fields from node
+//->orderBy('created', 'DESC');//ORDER BY created
+    $result = $query->execute();
+
+    if ($result->rowCount() > 0) {
+
+
+
+        $imageset = 1;
+        $getloopcount = 1;
+//var_dump($result->rowCount());
+
+        $pagehtml = '<div class="row-fluid blogsthumbnails">';
+        $html = '';
+        while ($data = $result->fetchObject()) {
+            $testter = node_load($data->nid);
+
+            $dd = getArrayloop($testter->field_blogimage);
+            if ($testter->field_blogimage['und'][0]['fid'] != NULL) {
+                $imagesrc = file_create_url($dd);
+            } else if ($testter->field_blogimage['und'][0]['fid'] == NULL) {
+                $imagesrc = $base_url . '/sites/default/files/default_waterways.png';
+            }
+//            $imagesrc = file_create_url($dd);
+            foreach ($testter->body as $blog) {
+                if ($getloopcount == 1) {
+                    $blogid = $data->nid;
+                    $blogcontent = $blog[0]['safe_value'];
+                    $blogimages = '<img src="' . $imagesrc . '"/>';
+                    $blogcomments = getblogPostComments($blogid);
+                    $blogpagetitle = $testter->title;
+                    $blogcreated = date("M d, Y", $testter->created);
+                    $blogcommentsview = getblogPostCommentsview($blogid);
+                }
+            }
+
+            if ($getloopcount != 1) {
+
+                $blogthumprehtml = '<div class="span6 blogInner">';
+
+                $blogidurl = base_path() . "connectblog/blogid/" . $testter->nid;
+
+                $blogthumprehtml.='<div class="blogTitle"><a href="' . $blogidurl . '">' . $testter->title . '</a><br>';
+                $blogthumprehtml.='<span>' . date("M d, Y", $testter->created) . '</span>';
+                $blogthumprehtml.='</div>';
+                $blogthumprehtml.='<a href="' . $blogidurl . '"><img src="' . $imagesrc . '"/></a>';
+                $blogthumprehtml.='</div>';
+
+                $html.=$blogthumprehtml;
+
+
+                if ($imageset == 2) {
+                    $blogdatahtml = $pagehtml . $html;
+                    $html = '';
+                    $pagehtmlend = '</div>';
+
+                    $pagehtml = '<div class="row-fluid blogsthumbnails">';
+                    $imageset = 0;
+                    $resultset[] = $blogdatahtml . $pagehtmlend;
+                }
+                if ($getloopcount == $result->rowCount()) {
+                    $blogdatahtml = $pagehtml . $html;
+                    $pagehtmlend = '</div>';
+                    $resultset[] = $blogdatahtml . $pagehtmlend;
+                }
+
+                //end of getting the title images data
+//  var_dump($imageset);
+                $imageset++;
+            }
+            $getloopcount++;
+        }
+        $results = array(
+            'pagecontent' => $blogcontent,
+            'blogimage' => $blogimages,
+            'currentblogid' => $blogid,
+            'blogcomments' => $blogcomments,
+            'blogtitle' => $blogpagetitle,
+            'createddate' => $blogcreated,
+            'thumbnailresultset' => $resultset,
+            'blogcommentsdataview' => $blogcommentsview
+        );
+    } else {
+        $results = array(
+            'pagecontent' => 'norecords'
+        );
+    }
+    return $results;
+}
+
+//End of getting blogs archive based
+
+
+
+
+
+/*
+ * Get Blogs
+ * 
+ * 
+ * 
+ */
+
+function getBlogspagecontent() {
+    global $base_url;
+    $getmodulepath = drupal_get_path('module', 'connectblog');
+    $thumbbloghtml = '';
+    $resultset = array();
+    $query = db_select('node', 'n');
+    $query->condition('n.type', 'blog', '=');
+    $query->fields('n', array('nid'))//SELECT the fields from node
+            ->orderBy('created', 'DESC'); //ORDER BY created
+    $result = $query->execute();
+    $imageset = 1;
+    $getloopcount = 1;
+
+    $pagehtml = '<div class="row-fluid blogsthumbnails">';
+    $html = '';
+    while ($data = $result->fetchObject()) {
+        $testter = node_load($data->nid);
+
+        $dd = getArrayloop($testter->field_blogimage);
+
+        if ($testter->field_blogimage['und'][0]['fid'] != NULL) {
+            $imagesrc = file_create_url($dd);
+        } else {
+            $imagesrc = $base_url . '/sites/default/files/default_waterways.png';
+        }
+
+        foreach ($testter->body as $blog) {
+            if ($getloopcount == 1) {
+                $blogid = $data->nid;
+                $blogcontent = $blog[0]['safe_value'];
+                $blogimages = '<img src="' . $imagesrc . '"/>';
+                $blogcomments = getblogPostComments($blogid);
+                $blogpagetitle = $testter->title;
+                $blogcreated = date("F d, Y", $testter->created);
+                $blogcommentsview = getblogPostCommentsview($blogid);
+            }
+        }
+
+        if ($getloopcount == 1) {
+            $firstblogthumprehtml = '<div class="span6 blogInner firstblogthump">';
+
+            $blogidurl = base_path() . "connectblog/blogid/" . $testter->nid;
+
+            $firstblogthumprehtml.='<div class="blogTitle"><a href="' . $blogidurl . '">' . $testter->title . '</a><br>';
+            $firstblogthumprehtml.='<span>' . date("M d, Y", $testter->created) . '</span>';
+            $firstblogthumprehtml.='</div>';
+            $firstblogthumprehtml.='<a href="' . $blogidurl . '"><img src="' . $imagesrc . '"/></a>';
+            $firstblogthumprehtml.='</div></div>';
+//            $firstblogthumprehtml.='<div class="row-fluid blogsthumbnails">';
+
+            $resultset[]=$pagehtml.$firstblogthumprehtml;
+        }
+        if ($getloopcount != 1) {
+
+            $blogthumprehtml = '<div class="span6 blogInner">';
+
+            $blogidurl = base_path() . "connectblog/blogid/" . $testter->nid;
+
+            $blogthumprehtml.='<div class="blogTitle"><a href="' . $blogidurl . '">' . $testter->title . '</a><br>';
+            $blogthumprehtml.='<span>' . date("M d, Y", $testter->created) . '</span>';
+            $blogthumprehtml.='</div>';
+            $blogthumprehtml.='<a href="' . $blogidurl . '"><img src="' . $imagesrc . '"/></a>';
+            $blogthumprehtml.='</div>';
+
+            $html.=$blogthumprehtml;
+
+
+            if ($imageset == 2) {
+                $blogdatahtml = $pagehtml . $html;
+                $html = '';
+                $pagehtmlend = '</div>';
+
+                $pagehtml = '<div class="row-fluid blogsthumbnails">';
+                $imageset = 0;
+
+                $resultset[] = $blogdatahtml . $pagehtmlend;
+            }
+
+            if ($getloopcount == $result->rowCount()) {
+                $blogdatahtml = $pagehtml . $html;
+                $pagehtmlend = '</div>';
+                $resultset[] = $blogdatahtml . $pagehtmlend;
+            }
+
+            //end of getting the title images data
+//  var_dump($imageset);
+            $imageset++;
+        }
+        $getloopcount++;
+    }
+    $results = array(
+        'pagecontent' => $blogcontent,
+        'blogimage' => $blogimages,
+        'currentblogid' => $blogid,
+        'blogcomments' => $blogcomments,
+        'blogtitle' => $blogpagetitle,
+        'createddate' => $blogcreated,
+        'thumbnailresultset' => $resultset,
+        'blogcommentsdataview' => $blogcommentsview
+    );
+
+    return $results;
+}
+
+function renderReadPost($type) {
+
+    //laxmi
+    $htmlweb = '';
+    $htmlmobile = '';
+    $query = new EntityFieldQuery;
+    $query = $query->entityCondition('entity_type', 'node');
+    $query->entityCondition('bundle', 'blog');
+    if ($type == 'readpost') {
+        $query->fieldCondition('field_must_read_post', 'value', 1);
+    }
+    if ($type == 'likepost') {
+        $query->fieldCondition('field_blogs_we_like', 'value', 1);
+    }
+    $query->range(0, 5);
+    $entities = $query->execute();
+
+    $nodes = node_load_multiple(array_keys($entities['node']));
+
+    foreach ($nodes as $nodevalue) {
+        $nid = $nodevalue->nid;
+        $ntitle = $nodevalue->title;
+        $nodelink = base_path() . 'connectblog/blogid/' . $nid;
+        $postsURL = 'connectblog/blogid/' . $nid;
+        $htmlweb .= '<a href="' . $nodelink . '">' . $ntitle . '</a>';
+        $htmlmobile .= '<option value="' . $postsURL . '" style="width:50%;">' . $ntitle . '</option>';
+    }
+
+    return array('htmlweb' => $htmlweb, 'htmlmobile' => $htmlmobile);
+
+    //laxmi
+}
+
+function getblogPostCommentsview($nid) {
+    $modulepath = drupal_get_path('module', 'connectblog');
+    global $base_url;
+    try {
+        if (isset($nid)) {
+            $blogid = $nid;
+
+            $query = db_select('comment', 'c');
+            $query->condition('c.nid', $blogid, '=');
+            $query->condition('c.status', 1, '=');
+            $query->fields('c', array('cid'))//SELECT the fields from node
+                    ->orderBy('created', 'DESC');
+
+            $result = $query->execute();
+            $cids = array();
+            while ($data = $result->fetchObject()) {
+                $cids[] = $data->cid;
+            }
+
+
+
+            $commentshtml = '';
+            $comments = comment_load_multiple($cids);
+
+//            var_dump($comments);
+//            exit();
+
+            foreach ($comments as $commentvalue) {
+//    var_dump($commentvalue->subject);
+//    var_dump($commentvalue->name);
+                $posteddate = date("F j, Y", $commentvalue->created);
+                $postedtime = date("g:i a", $commentvalue->created);
+                $posttime = $posteddate . ' at ' . $postedtime;
+//    var_dump($posttime);
+//    var_dump(getArrayloop($commentvalue->comment_body));
+//    
+
+                $commentshtml.='<div class="blogcommentslist"><img src="' . $base_url . '/sites/default/files/postplaceholder.jpg"
+                     width="80" height="50"/>';
+                $commentshtml.='<span>' . $posttime . '</span><br/>';
+                $commentshtml.='<span class="postcomment">' . getArrayloop($commentvalue->comment_body) . '</span></div>';
+            }
+            return $commentshtml;
+        } else {
+            return 'Please Insert nodeid for comments';
+        }
+    } catch (Exception $ex) {
+        throw new Exception($ex);
+    }
+}
+
+/**
+ * Getting the Comment Count by node of blog type
+ * @param type $nodeObject
+ * 
+ * 
+ */
+function getblogPostComments($nid) {
+    try {
+
+        if (isset($nid)) {
+            $node = node_load($nid);
+            $commentscount = comment_node_search_result($node);
+            return $commentscount['comment'];
+        } else {
+            return 'Please Insert nodeid for comments';
+        }
+    } catch (Exception $ex) {
+        throw new Exception($ex);
+    }
+}
+
+/* * *
+ * 
+ * Automate Emial sending for Blog Suibscribers using 
+ * drupal rule for blog entry posts
+ * when evere blog is created we just call this funciton in the
+ * drupal rules.
+ * 
+ * 
+ * 
+ * 
+ */
+
+function getsubscribeduserlist() {
+
+
+
+
+
+    $query = db_select('subscriptions_user', 's');
+    $query->join('connectblog', 'b', 'b.subscription_user_id = s.uid');
+    $query->condition('s.uid', '-2', '!=');
+    $query->condition('s.uid', '1', '!=');
+    $query->condition('b.post_notify', '1', '=');
+
+    $query->fields('s', array('uid'));
+    $results = $query->execute()
+            ->fetchAll();
+
+    $subscribeduserdata = array();
+    foreach ($results as $row) {
+        $subscribeduserdata[] = $row;
+    }
+
+    return $subscribeduserdata;
+}
+
+function sendEmailforSubscribedUsers($node) {
+    //getting the List of Subscribed Users formt the 
+    //subscriptions_user
+
+    $subscribeduserlist = getsubscribeduserlist();
+
+
+    foreach ($subscribeduserlist as $userlist) {
+        $userid = $userlist->uid;
+
+        $account = user_load($userid);
+        $newblogpost = array(
+            'blogname' => $node->title,
+            'blogurl' => $node->title,
+            'username' => $account->name
+        );
+
+
+        $to = $account->mail;
+        $params = array(
+            'subject' => t('WaterwaysCruises New Blog Post'),
+            'body' => t("Data"),
+            'formdata' => $newblogpost,
+        );
+        $from=SiteConfiguration::getConfirmationEmail();
+
+        drupal_mail("email_system", "wwc_blogsubscribesmail", $to, language_default(), $params, $from);
+        watchdog('Blog Creation mails sent', $to);
+    }
+}
+
+function template_preprocess_connectblog(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'connectblog') . '/css/connectblog.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function template_preprocess_connectblog_pagecategory(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'connectblog') . '/css/connectblog.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function template_preprocess_connectblog_yearmonthpagecategory(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'connectblog') . '/css/connectblog.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}

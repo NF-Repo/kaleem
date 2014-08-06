@@ -1,0 +1,174 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function diningcruises_menu() {
+  $items = array();
+  $items['diningcruises'] = array(
+      'title' => 'Dining Cruises',
+      'page callback' => 'diningcruises',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+function diningcruises_theme() {
+    $items['diningcruises'] = array(
+        'template' => 'diningcruises',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function diningcruises() {
+    
+  try {
+    
+    global $user;
+    //get the product load 
+    return theme('diningcruises');
+    
+  } catch (Exception $ex) {
+      
+    drupal_json_output('The exception ' . $ex);
+    
+  }
+  
+}
+
+function template_preprocess_diningcruises(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'diningcruises') . '/css/diningcruises.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+
+     
+    //drupal_add_js(drupal_get_path('module', 'diningcruises') . '/js/jquery.carouFredSel-6.2.1-packed.js');
+    
+//    drupal_add_css(drupal_get_path('module', 'diningcruises') . '/css/elastislide.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+//    
+//   
+//    
+//    drupal_add_js(drupal_get_path('module', 'diningcruises') . '/js/modernizr.custom.17475.js');
+//    
+//     drupal_add_js(drupal_get_path('module', 'diningcruises') . '/js/jquery.elastislide.js');
+//    
+//    drupal_add_js(drupal_get_path('module', 'diningcruises') . '/js/scripts.js');
+    
+    
+}
+
+
+
+
+
+
+
+
+function AvilableCruiseItems()
+{
+//get portslist by cruise name
+//Load waterways Cruise tree
+    $waterwaystree = taxonomy_get_tree(4);
+
+    $cruiseArray = array();
+    $cruiseList = array();
+    $categoryArray = array();
+    foreach ($waterwaystree as $waterwaystree) {
+        $cruiseArray = array();
+
+        if ($waterwaystree->parents[0] == 0) {
+            $categories[] = $waterwaystree;
+            $children = taxonomy_get_children($waterwaystree->tid);
+
+            foreach ($children as $value) {
+
+
+                $portsList['name'] = $value->name;
+
+
+                $cruiseitemsdata = taxonomy_get_children($value->tid);
+
+                foreach ($cruiseitemsdata as $cruisedatavalues) {
+
+                    foreach ($cruisedatavalues->field_short_description as $cruiseShortDesc) {
+                        $cruiseList['shortDesc'] = $cruiseShortDesc[0]['value'];
+                    }
+
+                    $cruiseList['id'] = $cruisedatavalues->tid;
+                    foreach ($cruisedatavalues->field_title as $cruiseTitle) {
+                        $cruiseList['title'] = $cruiseTitle[0]['value'];
+                    }
+                    $cruiseImges = $cruisedatavalues->field_cruiseimage;
+                    foreach ($cruisedatavalues->field_cruisenodeid as $cruisenodevalues) {
+
+                        foreach ($cruisenodevalues as $nodevalues) {
+                            $cruiseList['nid'] = $nodevalues['value'];
+                        }
+                    }
+                    foreach ($cruiseImges as $cruiseImage) {
+                        $cruiseList['image'] = $cruiseImage[0]["filename"];
+                    }
+
+                    $cruiseList['name'] = $cruisedatavalues->name;
+                    $cruiseArray[] = $cruiseList;
+                }
+            }
+            $categoryArray[$waterwaystree->name] = $cruiseArray;
+        }
+    }
+
+
+    return $categoryArray;
+}
+
+
+//filter cruise Items
+
+function cruiseItemdropdownvalues()
+{
+  $nods=  AvilableCruiseItems();
+  
+  $results=array();
+  foreach ($nods as $key => $nodsvalue) {
+//    var_dump($key);
+    foreach ($nodsvalue as $value) {
+      $results[$value['id']]=$value['name'].'('.$key.')';
+    }
+  }
+  return $results;
+          
+}
+
+//Get CruiseTypes
+function getCruiseTypes($rendertype)
+{
+ $waterwaystree = taxonomy_get_tree(4);
+
+    $cruiseArray = array();
+   
+    foreach ($waterwaystree as $waterwaystree) {
+      if ($waterwaystree->parents[0] == 0) {
+           
+      $cruiseArray[$waterwaystree->tid]=$waterwaystree->name;
+      }
+    }
+    
+    switch ($rendertype) {
+    case 'tplbased':
+      drupal_json_output($cruiseArray);exit();
+        break;
+       case 'modulebased':
+      return $cruiseArray;
+
+        break;
+
+    default:
+        break;
+    }
+    return $cruiseArray;
+}

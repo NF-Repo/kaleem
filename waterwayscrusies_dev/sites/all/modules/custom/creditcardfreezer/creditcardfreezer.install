@@ -1,0 +1,122 @@
+
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function creditcardfreezer_schema() {
+    $schema = array();
+
+    $schema['order_ccdata'] = array(
+        'description' => 'The base table for creditcard.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the credit card.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'order_id' => array(
+                'description' => 'Order Id',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'order_cc' => array(
+                'description' => 'CreditCard Number', //1 used or 0 unused 
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'order_cvv' => array(
+                'description' => 'CreditCard Cvv', //1 used or 0 unused 
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'order_cctype' => array(
+                'description' => 'CreditCard Type', //1 used or 0 unused 
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'order_ccname' => array(
+                'description' => 'Name on the CreditCard', //1 used or 0 unused 
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+        		
+        	'order_ccexpirationdate' => array(
+        		'description' => 'Expiration Date', //1 used or 0 unused
+        		'type' => 'varchar',
+        		'length' => 255,
+        	),
+        ),
+        'primary key' => array('id'),
+    );
+
+    $schema['order_ivdata'] = array(
+        'description' => 'The base table for creditcard.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the credit card.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'order_id' => array(
+                'description' => 'Order Id',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'order_iv' => array(
+                'description' => 'CreditCard Iv', //1 used or 0 unused 
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'order_ivkey' => array(
+                'description' => 'CreditCard Iv', //1 used or 0 unused 
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+    $schema['order_transactions'] = array(
+        'description' => 'The base table for creditcard transactions.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key of the credit card transaction.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'order_id' => array(
+                'description' => 'Order Id',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'transaction_id' => array(
+                'description' => 'Order Transaction id', //1 used or 0 unused 
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'created' => array(
+                'description' => 'The order transaction Created Date and time',
+                'type' => 'int',
+                'size' => 'big',
+            ),
+            'data' => array(
+                'type' => 'blob',
+                'not null' => FALSE,
+                'size' => 'big',
+                'serialize' => TRUE,
+                'description' => 'A serialized object contains of order transaction information',
+            ),
+            'status' => array(
+                'description' => 'Order Transaction status', //1 used or 0 unused 
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+    return $schema;
+}

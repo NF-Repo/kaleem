@@ -1,0 +1,772 @@
+/* 
+    Document   : cruisesdetailview
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content{
+    display: block  !important;
+    margin-top:2% !important;
+}
+
+#menu
+{
+    position: absolute !important;
+}
+
+.detailBackLink {
+margin-top: 1%;
+}
+
+.sunset-slider-buttons ol.carousel-indicators{
+    display: none;
+}
+.LinePadding .line
+{
+    margin-top:16% !important; 
+}
+#directionsContentHeader{
+    
+width: 50% !important;
+margin: auto !important;
+}
+
+.directionsHeader{
+font-size: 17px;
+margin: 3% 0 2% 0;
+font-weight: bold;
+}
+#directionsContentRender{
+    padding: 5%;
+}
+
+#directionsContentRender .sunsetLinePadding, .linepadding{
+    padding-top:2px !important;
+}
+#parkingDirectionsModal,#directionsModal{
+    border:none;
+    border-radius: none;
+    box-shadow: none;
+}
+.portAddressDetails{
+    padding: 4% 0% 0% 4%;
+}
+
+.portAddressDetails .seeParkingDirection{
+    padding: 2% 0% 0% 0%;
+    font-size: 14px !important;
+}
+
+.portAddresslinesholder .span5
+{
+    float: left !important;
+    width: 43.42553191489362% !important;
+}
+.portAddresslinesholder .span2{
+    float: left !important;
+    width: 9% !important;
+}
+
+.departureMapView #upArrow
+{
+    position:absolute;
+    left: 52%;
+    bottom: 3%;
+    z-index: 1;
+    cursor: pointer;
+}
+.departureMapView
+{
+    position: relative;
+}
+.departureMapboxInner
+{
+    margin: 10%;
+}
+
+.portAddressDetails h1
+{
+    font-size: 34px;
+    font-family:georgia;
+    line-height: 34px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom:3%;
+    margin-top: 6%;
+}
+
+.portAddressDetails h4
+{
+    margin: 12px 0px 0px 0px;
+    line-height: 1.3em;
+}
+
+/* Map Overlay css Styles */
+
+.mapOverlay{
+    width: 100%;
+    margin: 0; 
+    padding: 50px 0; 
+    position: absolute;
+    z-index: 1;
+    top: 0%;
+
+    /* "transparent" only works here because == rgba(0,0,0,0) */ 
+    background: -moz-linear-gradient(top, rgba(242,235,225,1) 0%, rgba(255,255,255,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(242,235,225,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(242,235,225,1) 0%,rgba(255,255,255,0) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2ebe1', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
+}
+
+/* Route Map Directions Pop Up styles */
+
+#parkingDirectionsModal{
+    width: 80%;
+    margin-left: -40%;
+    position: fixed;
+    border-radius: 0px;
+    box-shadow: transparent;
+    top: 12% !important;
+}
+ #directionsModal{
+    width: 70%;
+    margin-left: -35%;
+    position: fixed;
+    border-radius: 0px;
+    box-shadow: transparent;
+    top: 12% !important;
+}
+#directionsContentRender{
+    padding: 5%;
+}
+.directionsContentRenderHeader{
+    margin-top:3%;
+}
+.reoutemapDirectionsbox
+{
+    background:#fff;
+    //min-width:100%;
+    //min-height:500px;
+    border:10px #bc9b6a solid;
+}
+
+.reoutemapDirectionsboxInner
+{
+    width:100%;
+    /*min-height:500px;*/
+}
+
+.reoutemapDirectionsboxInnerleft{
+    background: #fff;
+    /*min-height:500px;*/
+    padding: 2%;
+}
+
+.reoutemapDirectionsboxInnerright{
+    background: #bebebe;
+    min-height:500px !important;
+    /*    margin-left: 0% !important;
+        width: 100% !important;*/
+}
+#directionsModal .reoutemapDirectionsboxInnerright{
+     background: #fff;
+}
+
+.routemapContent{
+    color: #000;
+      height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 30px 0 0 30px;
+}
+
+
+.routemapContent .item{
+    margin-bottom: 10px;
+}
+
+.reoutemapDirectionsboxInnerleft .sliderCaption
+{
+    font-family:georgia;
+    font-weight:600;
+    font-size:19px;
+    text-align:center;
+    margin: 15px 0px;
+}
+.reoutemapDirectionsboxInnerleft ul
+{
+    list-style: none;
+    margin-top: 12px;
+}
+
+.reoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: -10px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+.reoutemapDirectionsclosebutton a{
+    text-decoration:none;
+}
+.reoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+
+
+#parkingDirectionsPorts li a{
+    cursor: pointer;
+    line-height: 28px;
+}
+/* Route Map Directions Pop Up styles */
+
+
+.detailport {
+    font-family: georgia;
+    font-size: 19px;
+    color: #818181;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.contentDetail .carousel
+{
+    margin-bottom: 0px;
+}
+#cruiseBookNowDate.input-append{
+    margin-bottom:6px;
+}
+
+.sliderInnercontent img{
+    float: left;
+    margin-top: 7px;  
+}
+.sliderInnercontent .clickMapLink
+{
+    float: left;
+}
+
+.departurePortsclosebutton
+{
+    position: absolute;
+    display:none;
+    top: 0px;
+    right: 0px;
+    width:15%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.departurePortsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+#cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+    display: none;
+}
+
+.contentDetail #rightsliderImages .item img{
+    height: 560px;
+    width: 100%;
+}
+
+.reoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 9px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.reoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-size:16px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+#seeparkingDirectionsModal
+{
+    width: 707px;
+    left:46%;
+}
+.seereoutemapDirectionsclosebutton, .fullforcastclosebutton
+{
+
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.seereoutemapDirectionsclosebuttoninner, .fullforcastclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+.detailBackLink 
+{
+    font-size:13px !important;
+    padding:10px;
+    font-family:georgia;
+    position: absolute;
+    top: 0%;
+    left: 9%;
+    z-index: 1;
+}
+.detailBackLink a
+{
+    color:#454444;
+    text-decoration:none;
+    font-size: 16px;
+}
+.detailShareLink{
+     font-size:13px !important;
+    padding:10px;
+    font-family:georgia;
+    position: absolute;
+    top: 5%;
+    right: 10%;
+    z-index: 1;
+    width:10%;
+}
+
+.whetherHolder{
+    width: 75%;
+    margin: 0 auto;
+     margin-top: 60px;
+     margin-bottom: 50px;
+}
+.whetherHolder img
+{
+  float: left;
+  margin-right: 20px;
+}
+ 
+.whetherHolder .whetherimgplace .span4
+{
+  float: left;
+  margin: 0px;
+  width: 30%;
+}
+
+.whetherHolder .whetherimgplace .span8
+{
+  float: right;
+  margin: 0px;
+  padding-left: 5%;
+  width: 68%;
+}
+
+.whetherHolder .whetherimgplace .whetherTitle span
+{
+  font-size: 32px;
+  line-height: 1em;
+}
+
+.whetherHolder .whetherimgplace .whetherTitle
+{
+  font-size: 18px;
+}
+
+.whetherHolder .whetherhighplace .whetherTitle
+{
+  font-size: 18px;
+  padding-left: 20%;
+}
+
+.whetherHolder .whetherhighplace .whetherTitle span
+{
+  font-size: 32px;
+}
+
+.whetherHolder .whetherimgplace .whetherTitle a
+{
+  font-size: 12px;
+}
+
+.linedotted{
+    height: 5px;
+    margin: 10px auto;
+    border-bottom: 1px dotted #bc9b6a; 
+}
+
+.whetherTitle
+{
+    font-size:22px;
+    color:#454444;
+    font-family:georgia;
+    line-height:40px;
+    float: left;
+}
+.whetherTitle span
+{
+    color:#818181;
+    font-size: 38px;
+}
+.whetherTitle a
+{
+    color:#00529b;
+    font-size: 15px;
+    font-weight: bold;
+}
+.whetherTitle a:hover
+{
+    color:#00529b;
+    font-size: 15px;
+    font-weight: bold;
+}
+.whetherTitle sup{
+    font-size: 24px;
+    top: -0.8em;
+}
+
+.mapDownsliderbox{
+    width:450px;
+    top: 19% !important;
+    left: 10% !important;
+}
+    
+.sliderInnercontent
+{
+    color:#454444 !important;
+    font-size: 14px !important;
+}
+
+.portTitle
+{
+    font-family:georgia;
+    font-weight:bold;
+    font-size:29px;
+    text-align:center;
+    line-height: 1em;
+    text-transform: uppercase;
+}
+
+.portAddress h3{
+    line-height: 33px;
+    margin-bottom: 0px;
+    font-size: 20px;
+}
+
+.rightangleQuote{
+    color: #0080FF;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.portDirectionTitle{
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.image-align img
+{
+    vertical-align: top !important;
+}
+.departureMapView #downArrow {
+position: absolute;
+left: 50%;
+z-index: 1;
+cursor: pointer;
+width: 100px;
+height: 90px;
+}
+.borderRight
+{
+    float: right !important;
+    margin-top: 8%;
+}
+
+
+.seefullmargin
+{
+    line-height: 18px;
+    height: 20px;
+}
+
+@media (max-width: 480px) {
+    
+    #content .container
+    {
+        width:78%;
+    }
+    
+    .mapDownsliderbox
+    {
+        max-width: 100%  !important;
+        min-width: 92%  !important;
+        left: 1% !important;
+        top: 12% !important;
+        width: 92% !important;
+    }
+    
+    .portTitle{
+        padding-top: 18%;
+    }
+    
+    .portAddress h3{
+        font-size: 18px !important;
+    }
+    
+    #routeMaplinesholder{
+        margin-top: 10%;
+    }
+    
+    #routeMaplinesholder .span2{
+        padding-top: 8px;
+        float: left;
+        width: 15%;
+    }
+    
+    #routeMaplinesholder .span5
+    {
+        float: left;
+        width: 42.5% !important;
+    }
+    
+    .departureMapboxInner
+    {
+        margin-top: 12px;
+    }
+    .LinePadding .line, .detailBackLink, .detailShareLink
+    {
+        display: none !important;
+    }
+    .sliderCaption
+    {
+        text-align: left !important;
+        font-size: 40px !important;
+        line-height: 40px;
+    }
+    
+    .departureMapView
+    {
+        height: 200px;
+    }
+    .map
+    {
+        height: 200px !important;
+    }
+    #parkingDirectionsModal,#directionsModal
+    {
+        width: 98% !important;
+        margin-left: 0px;
+        position: absolute;
+        left: 1%;
+    }
+    .reoutemapDirectionsclosebutton{
+        right: 10px !important;
+        width: 20%;
+    }
+    .fullforcastclosebutton
+    {
+        width: 20%;
+    }
+    
+    .reoutemapDirectionsbox{
+      //  min-width: 93%;
+    }
+    
+    .reoutemapDirectionsboxInnerright, .reoutemapDirectionsbox
+    {
+        min-height: 300px !important;
+    }
+    .routemapContent
+    {
+        padding: 0px;
+    }
+    .mapOverlay
+    {
+        padding: 25px 0px;
+    }
+    
+    .whetherHolder{
+        width: 90% !important;
+        margin: 0 auto;
+        margin-top: 35px;
+        margin-bottom: 20px !important;
+}
+    
+    .whetherHolder img
+    {
+      float: left;
+      margin-top: 13px;
+    }
+    .reoutemapDirectionsbox
+    {
+    max-height:350px;
+    }
+
+}
+
+
+@media screen and (max-width: 767px) { 
+
+      .mapDownsliderbox
+    {
+        display: none;
+    }
+    .departureMapboxInner
+    {
+        margin-top: 0px;
+    }
+    .LinePadding .line, .detailBackLink, .detailShareLink
+    {
+        display: none !important;
+    }
+    .sliderCaption
+    {
+        text-align: left !important;
+        font-size: 40px !important;
+        line-height: 40px;
+    }
+    
+    #routeMaplinesholder .span5
+    {
+        float: left;
+        width: 40.42553191489362%;
+    }
+    #routeMaplinesholder .span2{
+        float: left;
+        width: 15%;
+    }
+    .departureMapView
+    {
+        height: 200px;
+    }
+    .map
+    {
+        height: 200px !important;
+    }
+    #parkingDirectionsModal
+    {
+        width: 85%;
+        margin-left: 0px;
+        position: absolute;
+    }
+    .reoutemapDirectionsclosebutton{
+        right:-10px;
+        width: 20%;
+    }
+    .fullforcastclosebutton
+    {
+        width: 20%;
+    }
+    .reoutemapDirectionsboxInnerright, .reoutemapDirectionsbox
+    {
+        min-height: 300px !important;
+    }
+    .routemapContent
+    {
+        padding: 0px;
+    }
+    .mapOverlay
+    {
+        padding: 25px 0px;
+    }
+     .whetherHolder
+    {
+        width: 80%;
+    }
+    .departureMapView #downArrow
+    {
+        display: none;
+    }
+    .borderRight{
+        display: none !important;
+    }
+/*    .whetherTitle
+    {
+        width: 100%;
+    }*/
+    .reoutemapDirectionsbox
+    {
+    max-height:450px;
+    }
+}
+
+@media (max-width: 979px) {
+    .departureMapboxInner .LinePadding {
+        padding-top:2%;
+    }
+    .whetherHolder
+    {
+        width: 95%;
+    }
+    .whetherTitle span
+    {
+        font-size: 28px;
+    }
+}
+
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+    
+    .whetherTitle span
+    {
+        font-size: 28px;
+    }
+}
+
+@media (min-width: 320px) and (max-width: 640px) {
+#content{
+    display: block  !important;
+   margin-top: 0% !important;
+}
+}
+
+
+.getdirections_form .form-item-to #edit-to{
+     readonly : true;
+}

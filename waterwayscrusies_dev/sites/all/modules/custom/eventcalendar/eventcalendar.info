@@ -1,0 +1,6 @@
+name = Event Calendar
+description = A Event Calendar
+core = 7.x
+package = WWC
+
+

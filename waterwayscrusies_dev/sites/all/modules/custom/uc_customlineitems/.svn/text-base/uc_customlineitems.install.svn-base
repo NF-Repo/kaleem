@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the uc_customlineitems module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function uc_customlineitems_schema() {
+  $schema = array();
+
+  $schema['uc_customlineitems'] = array(
+    'description' => 'Stores Line items information.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary key: Unique line item id.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The line item name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'amount' => array(
+        'description' => 'The line item rate .',
+        'type' => 'float',
+        'not null' => TRUE,
+        'default' => 0.0,
+      ),
+      
+      'weight' => array(
+        'description' => 'The weight of this line item in relation to other line items.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+   ),
+    'primary key' => array('id'),
+  );
+
+  
+
+  return $schema;
+}
+

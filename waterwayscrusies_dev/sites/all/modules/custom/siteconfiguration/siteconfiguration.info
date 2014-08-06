@@ -1,0 +1,5 @@
+name = Site Email Configuration Settings
+description = Site Email Configuration Settings
+core = 7.x
+version = VERSION
+package = WWC

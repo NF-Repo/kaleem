@@ -1,0 +1,386 @@
+{
+
+    "response": {
+        "version": "0.1",
+        "termsofService": "http://www.wunderground.com/weather/api/d/terms.html",
+        "features": {
+            "forecast": 1
+        }
+    },
+    "forecast": {
+        "txt_forecast": {
+            "date": "8:00 PM PDT",
+            "forecastday": [
+                {
+                    "period": 0,
+                    "icon": "partlycloudy",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+                    "title": "Sunday",
+                    "fcttext": "Partly cloudy in the morning, then clear. High of 81F. Winds from the WNW at 5 to 10 mph.",
+                    "fcttext_metric": "Partly cloudy in the morning, then clear. High of 27C. Winds from the WNW at 10 to 15 km/h.",
+                    "pop": "10"
+                },
+                {
+                    "period": 1,
+                    "icon": "clear",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/clear.gif",
+                    "title": "Sunday Night",
+                    "fcttext": "Clear in the evening, then overcast. Low of 59F. Winds less than 5 mph.",
+                    "fcttext_metric": "Clear in the evening, then overcast. Low of 15C. Winds less than 5 km/h.",
+                    "pop": "10"
+                },
+                {
+                    "period": 2,
+                    "icon": "partlycloudy",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+                    "title": "Monday",
+                    "fcttext": "Overcast in the morning, then clear. High of 79F. Winds less than 5 mph.",
+                    "fcttext_metric": "Overcast in the morning, then clear. High of 26C. Winds less than 5 km/h.",
+                    "pop": "0"
+                },
+                {
+                    "period": 3,
+                    "icon": "clear",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/clear.gif",
+                    "title": "Monday Night",
+                    "fcttext": "Clear. Low of 57F. Winds from the NNE at 5 to 10 mph.",
+                    "fcttext_metric": "Clear. Low of 14C. Winds from the NNE at 10 to 15 km/h.",
+                    "pop": "0"
+                },
+                {
+                    "period": 4,
+                    "icon": "clear",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/clear.gif",
+                    "title": "Tuesday",
+                    "fcttext": "Clear. High of 81F. Winds from the NNW at 5 to 10 mph.",
+                    "fcttext_metric": "Clear. High of 27C. Breezy. Winds from the NNW at 10 to 20 km/h.",
+                    "pop": "0"
+                },
+                {
+                    "period": 5,
+                    "icon": "clear",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/clear.gif",
+                    "title": "Tuesday Night",
+                    "fcttext": "Clear in the evening, then mostly cloudy. Low of 57F. Winds from the NNE at 5 to 15 mph.",
+                    "fcttext_metric": "Clear in the evening, then mostly cloudy. Low of 14C. Winds from the NNE at 5 to 20 km/h.",
+                    "pop": "10"
+                },
+                {
+                    "period": 6,
+                    "icon": "partlycloudy",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+                    "title": "Wednesday",
+                    "fcttext": "Mostly cloudy in the morning, then clear. High of 77F. Winds from the NNW at 5 to 10 mph.",
+                    "fcttext_metric": "Mostly cloudy in the morning, then clear. High of 25C. Winds from the NNW at 10 to 15 km/h.",
+                    "pop": "10"
+                },
+                {
+                    "period": 7,
+                    "icon": "clear",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/clear.gif",
+                    "title": "Wednesday Night",
+                    "fcttext": "Clear. Low of 54F. Winds less than 5 mph.",
+                    "fcttext_metric": "Clear. Low of 12C. Winds less than 5 km/h.",
+                    "pop": "0"
+                }
+            ]
+        },
+        "simpleforecast": {
+            "forecastday": [
+                {
+                    "date": {
+                        "epoch": "1373263200",
+                        "pretty": "11:00 PM PDT on July 07, 2013",
+                        "day": 7,
+                        "month": 7,
+                        "year": 2013,
+                        "yday": 187,
+                        "hour": 23,
+                        "min": "00",
+                        "sec": 0,
+                        "isdst": "1",
+                        "monthname": "July",
+                        "weekday_short": "Sun",
+                        "weekday": "Sunday",
+                        "ampm": "PM",
+                        "tz_short": "PDT",
+                        "tz_long": "America/Los_Angeles"
+                    },
+                    "period": 1,
+                    "high": {
+                        "fahrenheit": "81",
+                        "celsius": "27"
+                    },
+                    "low": {
+                        "fahrenheit": "59",
+                        "celsius": "15"
+                    },
+                    "conditions": "Partly Cloudy",
+                    "icon": "partlycloudy",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+                    "skyicon": "mostlysunny",
+                    "pop": 10,
+                    "qpf_allday": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "qpf_day": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "qpf_night": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "snow_allday": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "snow_day": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "snow_night": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "maxwind": {
+                        "mph": 6,
+                        "kph": 10,
+                        "dir": "NW",
+                        "degrees": 324
+                    },
+                    "avewind": {
+                        "mph": 5,
+                        "kph": 8,
+                        "dir": "NW",
+                        "degrees": 309
+                    },
+                    "avehumidity": 59,
+                    "maxhumidity": 75,
+                    "minhumidity": 44
+                },
+                {
+                    "date": {
+                        "epoch": "1373349600",
+                        "pretty": "11:00 PM PDT on July 08, 2013",
+                        "day": 8,
+                        "month": 7,
+                        "year": 2013,
+                        "yday": 188,
+                        "hour": 23,
+                        "min": "00",
+                        "sec": 0,
+                        "isdst": "1",
+                        "monthname": "July",
+                        "weekday_short": "Mon",
+                        "weekday": "Monday",
+                        "ampm": "PM",
+                        "tz_short": "PDT",
+                        "tz_long": "America/Los_Angeles"
+                    },
+                    "period": 2,
+                    "high": {
+                        "fahrenheit": "79",
+                        "celsius": "26"
+                    },
+                    "low": {
+                        "fahrenheit": "57",
+                        "celsius": "14"
+                    },
+                    "conditions": "Partly Cloudy",
+                    "icon": "partlycloudy",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+                    "skyicon": "mostlysunny",
+                    "pop": 0,
+                    "qpf_allday": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "qpf_day": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "qpf_night": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "snow_allday": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "snow_day": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "snow_night": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "maxwind": {
+                        "mph": 6,
+                        "kph": 10,
+                        "dir": "NNW",
+                        "degrees": 329
+                    },
+                    "avewind": {
+                        "mph": 5,
+                        "kph": 8,
+                        "dir": "WNW",
+                        "degrees": 284
+                    },
+                    "avehumidity": 55,
+                    "maxhumidity": 81,
+                    "minhumidity": 43
+                },
+                {
+                    "date": {
+                        "epoch": "1373436000",
+                        "pretty": "11:00 PM PDT on July 09, 2013",
+                        "day": 9,
+                        "month": 7,
+                        "year": 2013,
+                        "yday": 189,
+                        "hour": 23,
+                        "min": "00",
+                        "sec": 0,
+                        "isdst": "1",
+                        "monthname": "July",
+                        "weekday_short": "Tue",
+                        "weekday": "Tuesday",
+                        "ampm": "PM",
+                        "tz_short": "PDT",
+                        "tz_long": "America/Los_Angeles"
+                    },
+                    "period": 3,
+                    "high": {
+                        "fahrenheit": "81",
+                        "celsius": "27"
+                    },
+                    "low": {
+                        "fahrenheit": "57",
+                        "celsius": "14"
+                    },
+                    "conditions": "Clear",
+                    "icon": "clear",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/clear.gif",
+                    "skyicon": "sunny",
+                    "pop": 0,
+                    "qpf_allday": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "qpf_day": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "qpf_night": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "snow_allday": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "snow_day": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "snow_night": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "maxwind": {
+                        "mph": 10,
+                        "kph": 16,
+                        "dir": "NNW",
+                        "degrees": 335
+                    },
+                    "avewind": {
+                        "mph": 8,
+                        "kph": 13,
+                        "dir": "NNW",
+                        "degrees": 332
+                    },
+                    "avehumidity": 59,
+                    "maxhumidity": 86,
+                    "minhumidity": 45
+                },
+                {
+                    "date": {
+                        "epoch": "1373522400",
+                        "pretty": "11:00 PM PDT on July 10, 2013",
+                        "day": 10,
+                        "month": 7,
+                        "year": 2013,
+                        "yday": 190,
+                        "hour": 23,
+                        "min": "00",
+                        "sec": 0,
+                        "isdst": "1",
+                        "monthname": "July",
+                        "weekday_short": "Wed",
+                        "weekday": "Wednesday",
+                        "ampm": "PM",
+                        "tz_short": "PDT",
+                        "tz_long": "America/Los_Angeles"
+                    },
+                    "period": 4,
+                    "high": {
+                        "fahrenheit": "77",
+                        "celsius": "25"
+                    },
+                    "low": {
+                        "fahrenheit": "54",
+                        "celsius": "12"
+                    },
+                    "conditions": "Partly Cloudy",
+                    "icon": "partlycloudy",
+                    "icon_url": "http://icons-ak.wxug.com/i/c/k/partlycloudy.gif",
+                    "skyicon": "mostlysunny",
+                    "pop": 10,
+                    "qpf_allday": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "qpf_day": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "qpf_night": {
+                        "in": 0,
+                        "mm": 0
+                    },
+                    "snow_allday": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "snow_day": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "snow_night": {
+                        "in": 0,
+                        "cm": 0
+                    },
+                    "maxwind": {
+                        "mph": 9,
+                        "kph": 14,
+                        "dir": "NNW",
+                        "degrees": 338
+                    },
+                    "avewind": {
+                        "mph": 7,
+                        "kph": 11,
+                        "dir": "WNW",
+                        "degrees": 288
+                    },
+                    "avehumidity": 59,
+                    "maxhumidity": 80,
+                    "minhumidity": 46
+                }
+            ]
+        }
+    }
+
+}

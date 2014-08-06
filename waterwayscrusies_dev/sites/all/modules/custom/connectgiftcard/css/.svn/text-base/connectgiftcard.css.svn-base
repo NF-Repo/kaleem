@@ -1,0 +1,274 @@
+/* 
+    Document   : connectgiftcards
+    Created on : 06 August, 2013, 10:00:00 AM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+#content{
+    display: block  !important;
+    /*padding-bottom: 1%;*/
+}
+
+
+#menu
+{
+    position: static !important;
+}
+.connectMain
+{
+    width: 73.5% !important;
+    margin: 0px auto;
+}
+.connectTitle
+{
+    font-size: 46px;
+    font-family:georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 1.5%;
+    margin-top: 8%;
+}
+
+
+/* submenu css start here */
+
+.subMenu
+{
+    width:auto;
+    position:absolute;
+    border: #bc9b6a 1px solid;
+
+}
+.subMenu ul
+{
+    list-style:none;
+    margin:0px;
+}
+.subMenu ul li
+{
+    float: left;
+}
+.subMenu ul li a
+{
+    background:rgba(252,251,249,0.8);
+    color:#454444;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+}
+
+.subMenu ul li a:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+}
+
+.subMenu ul li a.active
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+}
+
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+    .connectMain
+    {
+        width: 100%;
+    }
+}
+
+@media (max-width: 979px){
+
+    .connectMain
+    {
+        width: 90% !important;
+    }
+}
+@media (max-width: 767px){
+    .connectMain
+    {
+        width: 100% !important;
+    }
+    .container
+    {
+        width: 100% !important;
+    }
+    .connectTitle
+    {
+        padding-left: 5px;
+    }
+    /* wedding css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+        margin-bottom: 30px;
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;     
+        border:0px; 
+    }
+
+}
+
+@media (max-width: 480px){
+    .connectMain
+    {
+        width: 100%;
+    }
+    .container
+    {
+        width: 100% !important;
+    }
+    .connectTitle
+    {
+        padding-left: 5px;
+    }
+    /* wedding css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+        margin-bottom: 30px;
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;     
+        border:0px; 
+    }
+
+}
+
+.purchase-steps{
+    list-style-type: none;
+    margin-left: 15%;
+}
+.purchase-steps li{
+    width: 15%;
+    float: left;
+    border: 1px solid #000;
+    background: #fff;
+    text-align: center;
+    cursor: pointer;
+}
+.purchase-steps li.active{
+    background: #ab323b;
+    color:#fff;
+}
+.check-balance{
+    margin-top: 5%;
+    padding-bottom: 5%;
+    border-bottom: 1px solid #000;
+}
+.balance-info{
+    clear:both;
+}
+.check-balance .span7{
+    margin-left:0 !important;
+}
+#purchaseForm {
+    width: 80%;
+    margin: 2% auto;
+    text-align: center;
+    position: relative;
+}
+#purchaseForm h3{
+    text-align: left; 
+}
+#purchaseForm fieldset {    
+    padding: 5% 2%;
+    margin: 2%;
+}
+#purchaseForm fieldset form {
+    background: white;
+    border: 0 none;
+    border-radius: 3px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 5% 8%;
+    /*    margin:5% 10%;*/
+    box-sizing: border-box;
+}
+#purchaseForm fieldset form label{
+    text-align:left;
+}
+label.input-medium{
+    text-align:center;
+}
+#purchaseForm fieldset:not(:first-of-type) {
+    display: none;
+}
+.next-form{
+    margin-left:10% !important;
+}
+
+#purchaseForm input.error,#purchaseForm select.error {
+    border: 1px solid red;
+}
+#purchaseForm label.error {
+    color: red;
+    display: none !important;
+}
+.prev-form,.submit-btn{
+    margin-left:40% !important;
+}
+#review-details form{
+    margin-bottom: 0;
+    margin-top: 0;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+.creditcard-fieldset .booknow{
+    margin-top:5%;
+}
+#review-details{
+  box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+}
+.amount-field{
+    margin-top:4%;
+}

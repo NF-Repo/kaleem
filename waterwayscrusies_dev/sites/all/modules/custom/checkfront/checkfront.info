@@ -1,0 +1,15 @@
+
+name = Checkfront
+description = "Integrates the Checkfront Online Booking System."
+version = "2.0"
+project = "checkfront"
+core = 7.x
+package = "E-Commerce"
+
+
+; Information added by drupal.org packaging script on 2012-07-17
+version = "7.x-1.1"
+core = "7.x"
+project = "checkfront"
+datestamp = "1342558278"
+

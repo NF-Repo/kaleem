@@ -1,0 +1,194 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function foodandbar_menu() {
+    $items = array();
+    $items['foodandbar'] = array(
+        'title' => 'Food and Bar',
+        'page callback' => 'foodandbar',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    $items['foodandbar/category/%'] = array(
+        'title' => 'Food and Bar',
+        'page callback' => 'foodandbar_category',
+//        'access callback' => 'user_access',
+        'page arguments' => array(2),
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function foodandbar_theme() {
+    $items['foodandbar'] = array(
+        'template' => 'foodandbar', // here comes your template name
+        'render element' => 'content'
+    );
+    $items['foodandbar_category'] = array(
+        'template' => 'foodandbar_category', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function foodandbar() {
+
+    try {
+
+        global $user;
+
+        //get the product load 
+        $foodbarevent = getFoodbarEvent();
+        return theme('foodandbar', array('loadfoodandbar' => $foodbarevent
+        ));
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+function template_preprocess_foodandbar(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'foodandbar') . '/css/foodandbar.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function foodandbar_category($category) {
+    try {
+
+        global $user;
+
+        //get the product load 
+        $foodbarevent = getFoodbarDetails($category);
+
+
+        $cateringmenu = CruisePackages::getBuffetMenuBytermId($category);
+//var_dump($cateringmenu);
+//exit();
+//        var_dump($foodbarevent);
+        return theme('foodandbar_category', array('loadfoodandbartitle' => $foodbarevent['title'],
+            'loadfoodandbardesc' => $foodbarevent["description"],
+            'loadslider' => $foodbarevent["slider"],
+            'loadmenu' => $foodbarevent["menu"],
+            'loadmenupdfurl' => $foodbarevent["menupdfurl"],
+            'buffetdetails' => $cateringmenu
+        ));
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+function template_preprocess_foodandbar_category(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'foodandbar') . '/css/foodandbar.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function getFoodbarContent() {
+
+    $ports = taxonomy_get_tree(8);
+    $portslist = array();
+    $total = array();
+    $protsdata = array();
+    foreach ($ports as $portvalues) {
+
+        if ($portvalues->parents[0] == 0) {
+            $protsdata['tid'] = $portvalues->tid;
+            $protsdata['name'] = $portvalues->name;
+
+            $portslist['children'] = taxonomy_term_load($portvalues->tid);
+            if ($protsdata['name'] == $portslist['children']->name) {
+                foreach ($portslist['children'] as $key => $portdetailsvalue) {
+
+                    if (is_array($portdetailsvalue)) {
+                        $protsdata[$key] = getArrayloop($portdetailsvalue);
+                    } else {
+                        $protsdata[$key] = $portdetailsvalue;
+                    }
+                }
+                $total[] = $protsdata;
+            }
+            $totalresutle[$portvalues->name] = $total;
+            unset($total);
+        }
+    }
+    return $totalresutle;
+}
+
+function getFoodbarEvent() {
+    $data = getFoodbarContent();
+    $html = '';
+    foreach ($data as $key => $revalue) {
+    	
+    	
+    	$foodandbarpath='false';
+    	$urlsource = "foodandbar/category/" . $revalue[0]["tid"];
+    	$urlAliasObject = UrlAlias::getUrlAliasDetailsBySource ( $urlsource );
+    	if($urlAliasObject){
+    		$foodandbarpath=$urlAliasObject->alias;
+    	}
+    	
+    	
+        $html.='<li><div class="sliderBox"><div class="sliderBoxout" style="background:url(' . file_create_url($revalue[0]['field_tileimage']) . ') no-repeat;background-size:cover;"><div class="event-bgimage"></div><div class="sliderBoxInner">' . $revalue[0]['name'] . '</div></div><div class="sliderBoxover" onclick="foodandbarDetails(' . $revalue[0]["tid"] . ',\''.$foodandbarpath.'\')" style="display: none;"><div class="sliderBox-first-inner"><img src="' . base_path() . 'sites/all/themes/waterways/assets/img/innerbox-top-img.png"><br>' . $revalue[0]['field_tiledescription'] . '<br><a>Click to Learn More</a><div class="line"></div></div></div></div></li>';
+    }
+    return $html;
+}
+
+function getFoodbarDetails($category) {
+    $data = taxonomy_term_load($category);
+
+    $foodmenufid = $data->field_menu_selection_pdf['und'][0]['fid'];
+    $foodmenufileload = file_load($foodmenufid);
+//    var_dump($foodmenufileload);
+//    exit();
+    $foodmenufilehttpurl = "";
+    if ($foodmenufileload == TRUE) {
+        $foodmenufilepath = $foodmenufileload->uri;
+        $foodmenufilehttpurl = file_create_url($foodmenufilepath);
+    } else {
+        $foodmenufilehttpurl = "javascript:viod(0)";
+    }
+
+    $result = '';
+    foreach ($data as $key => $listvalues) {
+        if (is_array($listvalues)) {
+            if ($key == "field_food_slider") {
+                $result[$key] = getFoodSlider($listvalues);
+            } else {
+                $result[$key] = getArrayloop($listvalues);
+            }
+        } else {
+            $result[$key] = $listvalues;
+        }
+    }
+//    var_dump($result);
+    return array('title' => $result['name'],
+        'description' => $result['field_pagedescription'],
+        'slider' => $result['field_food_slider'],
+        'menu' => $result['field_menu'],
+        'menupdfurl' => $foodmenufilehttpurl);
+}
+
+function getFoodSlider($sliderfields) {
+    $result = '';
+
+    foreach ($sliderfields as $field) {
+        foreach ($field as $fieldvalue) {
+            foreach ($fieldvalue as $key => $fieldvalues) {
+                if ($key == 'uri') {
+                    if ($fieldvalues) {
+                        $imgsrc = file_create_url($fieldvalues);
+                        $result.='<div class="item"  data="' . $tid . '" ><img src="' . $imgsrc . '"></div>';
+                    }
+                }
+            }
+        }
+    }
+    return $result;
+}

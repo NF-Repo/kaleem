@@ -1,0 +1,6 @@
+; $Id$
+name = Ports and Directions Details View
+description = "Waterways Ports and Directions Details View Template"
+core = 7.x
+version = VERSION
+package = WWC

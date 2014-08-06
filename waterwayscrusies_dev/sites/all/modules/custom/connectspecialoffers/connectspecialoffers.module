@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function connectspecialoffers_menu() {
+    $items = array();
+    $items['connectspecialoffers'] = array(
+        'title' => 'Connect Special Offers',
+        'page callback' => 'connect_specialoffers',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function connectspecialoffers_theme() {
+    $items['connectspecialoffers'] = array(
+        'template' => 'connectspecialoffers', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function connect_specialoffers() {
+
+    try {
+
+        global $user;
+        $menulist = getConnectMenu('SPECIAL OFFERS');
+        $events = getEvents();
+        $connectresources = array('menu' => $menulist['connectmenu'], 'mobilemenu' => $menulist['mobilemenu'], "dinner" => $events["dinner"], "brunch" => $events["brunch"]);
+        //get the product load 
+        return theme('connectspecialoffers', $connectresources);
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+function getEvents() {
+    $dinner = getEventsByItemIdinDetails(date(m), date("Y"), 44);
+    $brunch = getEventsByItemIdinDetails(date(m), date("Y"), 46);
+    return array("dinner" => $dinner, "brunch" => $brunch);
+}
+
+function getConnectMenu($currentactive) {
+
+    //Getting Connet Menu Arrays
+    $connectMenu = array(
+        'OVERVIEW' => 'connectoverview',
+        'BLOG' => 'connectblog',
+        'REVIEWS' => 'connectreview',
+        'SPECIAL OFFERS' => 'connectspecialoffers',
+        'GIFT CARDS' => 'purchasegiftcard'
+    );
+
+    $connecttree = taxonomy_get_tree(10);
+
+    $tid = '';
+    $connectmenuhtml = '';
+    $mobilemenuhtml = '';
+
+    foreach ($connecttree as $key => $treevalues) {
+        if ($treevalues->parents[0] == 0) {
+            $connectmenuhtml.='<li>';
+            
+            
+            if ($treevalues->name == $currentactive) {
+                $tid = $treevalues->tid;
+                $curenthref = $connectMenu[$treevalues->name];
+                $connectmenuhtml.='<a href="' . $curenthref . '" class="active">' . $treevalues->name . '</a>';
+                $mobilemenuhtml.='<option value="' . $curenthref . '" selected="selected">' . $treevalues->name . '</option>';
+            } else {
+            	if(isset($connectMenu[$treevalues->name])){
+            		$curenthref = $connectMenu[$treevalues->name];
+            		$connectmenuhtml.='<a href="' . $curenthref . '">' . $treevalues->name . '</a>';
+            		$mobilemenuhtml.='<option value="' . $curenthref . '">' . $treevalues->name . '</option>';
+            	}
+                
+            }
+
+            
+            
+            $connectmenuhtml.='</li>';
+        }
+    }
+    $connectmenucontent = array(
+        'connectmenu' => $connectmenuhtml,
+        'mobilemenu' => $mobilemenuhtml,
+        'tid' => $tid
+    );
+    return $connectmenucontent;
+    //Getting Connect Menu
+}
+
+function template_preprocess_connectspecialoffers(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'connectspecialoffers') . '/css/connectspecialoffers.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+

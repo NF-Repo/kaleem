@@ -1,0 +1,5 @@
+;$Id$
+name=vendorslist
+description = Implementing the vendorlist crud operations
+core = 7.x
+package = WWC

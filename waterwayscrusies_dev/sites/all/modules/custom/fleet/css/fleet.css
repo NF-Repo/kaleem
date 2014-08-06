@@ -1,0 +1,1561 @@
+/* 
+    Document   : cruisesdetailview
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content{
+    display: block  !important;
+}
+
+#menu
+{
+    position: static !important;
+}
+
+.sunset-slider-buttons ol.carousel-indicators{
+    display: none;
+}
+
+.mfp-zoom-out-cur, .mfp-zoom-out-cur .mfp-image-holder .mfp-close{
+    cursor: default !important;
+}
+
+.requset-proposal .sunsetLinePadding,.fleetDownsliderInner .sunsetLinePadding {
+    padding-top: 8px;
+}
+
+.requset-proposal .requestProposalauto{
+    width: auto !important;
+}
+
+/* gallery pop up css start*/
+.mfp-img{
+    padding:0 !important;
+}
+.mfp-close{
+    width: 65px !important;
+    font-size: 16px !important;
+    right:0px !important;
+    padding:2px !important;
+    background:#ab323b !important;
+    text-align: center !important;
+    opacity: 1 !important;
+    height: 32px !important;
+    color:#fff !important;
+    line-height: 21px !important;
+}
+
+.mfp-close.close-text{
+    border: 1px dotted #fff;
+margin: 3% !IMPORTANT;
+height: 21PX !important;
+width: 53px !Important;
+}
+.mfp-bottom-bar{
+    margin-top: -22px !important;   
+}
+.mfp-counter{
+    background: #fff;
+    font-weight: bold;
+    color:#ab323b !important;  
+    padding:2px 12px;
+}
+.mfp-content{
+    border:10px solid #bc9b6a;
+}
+.mfp-arrow-right{
+        background: url(../images/arrows.png) no-repeat -74px 0px !important;
+        right: 10% !important;
+        
+}
+
+.mfp-arrow-left{
+      background: url(../images/arrows.png) no-repeat 0px 0px !important;
+        left: 10% !important;
+}
+.mfp-figure:after{
+    box-shadow: none !important;
+    background:none !important;
+}
+.mfp-iframe-holder .mfp-close{
+    top:0 !important;
+}
+.mfp-arrow{
+   margin-top: 0 !important;
+   top:35% !important;
+   width:75px !important;
+   height:150px !Important;
+   opacity:1 !important;
+}
+.mfp-arrow:before, .mfp-arrow:after, .mfp-arrow .mfp-b, .mfp-arrow .mfp-a{
+    border:none !important;
+}
+.mfp-arrow-right:after, .mfp-arrow-right .mfp-a{
+    border:none !important;
+}
+/* gallery pop up css end*/
+
+
+/*.sunset-slider-buttons*/ 
+.cruiseDetailinfo #downArrow
+{
+    position:absolute;
+    left: 52%;
+    top: 30.5%;
+    z-index: 1;
+    /*cursor: pointer;*/
+    width: 100px;
+    height: 90px;
+}
+
+.cruiseDetailinfo #downArrow img{
+    cursor: pointer;
+}
+
+#upArrow
+{
+    position: relative;
+    left: 52%;
+    bottom: 3%;
+    z-index: 1;
+    cursor: pointer;
+    margin: 3% 0;
+    width: 100px;
+}
+
+#virualtourlist li.active{
+    font-weight: bold;
+    background-image: url("../images/side_arrow.png") !important;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+}
+
+#virualtourlist li a{
+    cursor: pointer;
+    color: #333;
+    line-height: 28px;
+    text-transform: uppercase;
+    font-size: 14px;
+    padding-left:5%;
+}
+
+#virualtourlist li a:hover{
+    cursor: pointer;
+    color: #333;
+    text-decoration: none;
+    line-height: 28px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.fleetDownslider ol.carousel-indicators .active{
+    background-color:  inherit !important;
+    background-image:url("../images/Indicators-active.png") !important;
+    background-repeat: no-repeat !important;
+    width: 12px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.fleetDownslider ol.carousel-indicators li{
+    background-color: inherit !important;
+    border-radius:0px !important;
+    background-image: url("../images/Indicators-inactive.png") !important;
+    background-repeat: no-repeat !important;
+    width: 11px !important;
+    height: 12px !important;
+    background-size: 100%;
+}
+
+.fleetDownslider a.carousel-control{
+    background: inherit !important;
+    border: solid 0px !important;
+}
+
+.fleetDownslider .carousel-control{
+    width: auto !important;
+    height: auto !important;
+}
+
+.fleetDownslider .carousel-indicators {
+    bottom: 20%;
+    left: 50%;
+    top: inherit;
+}
+
+
+.share-mobile {
+    position: absolute;
+    top: 5%;
+    height: 35px !important;
+    width: 70% !important;
+    margin-left: 18%;
+}
+.twitter-share {
+    position: absolute;
+    padding-left: 35%;
+    padding-top: 1.5%;
+}
+/*.share-text {
+    position: absolute;
+    margin-left: 70%;
+}*/
+.addthis_toolbox {
+    height:32px;
+}
+.contentDetail .carousel
+{
+    margin-bottom: 0px;
+}
+#cruiseBookNowDate.input-append{
+    margin-bottom:6px;
+}
+.sliderInnercontent{
+    margin-left:2%;
+}
+.sliderInnercontent img{
+    float: left;
+    margin-top: 7px;  
+}
+.sliderInnercontent .clickMapLink
+{
+    float: left;
+    width: 90%;
+}
+
+.departurePortsclosebutton
+{
+    position: absolute;
+    top: 10px;
+    right: 7px;
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.departurePortsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+#cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+    display: none;
+}
+
+
+
+
+/* fleet css start here */
+
+.fleetTitle
+{
+    font-size: 46px;
+    font-family:georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 3%;
+    margin-top: 14.5%;
+}
+
+.fleetSubTitle
+{
+    font-size: 26px;
+    font-family:georgia;
+    color: #818181;
+    line-height: 40px;
+    margin-top: 18%;
+}
+.fleetDescription
+{
+    font-size: 15px;
+    font-family:georgia;
+    color: #454444;
+    margin-bottom: 5%;
+}
+
+.contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+    height: 700px;
+    width: 100%;
+}
+
+.contentDetail .fleet-slider-buttons img{
+    height: 700px;
+    width: 100%;
+}
+/* submenu css start here */
+
+.subMenu
+{
+    width:auto;
+    position: absolute;
+    border: #bc9b6a 1px solid;
+    z-index: 10;
+
+}
+.subMenu ul
+{
+    list-style:none;
+    margin:0px;
+}
+.subMenu ul li
+{
+    float: left;
+}
+.subMenu ul li a
+{
+    background:rgba(252,251,249,0.8);
+    color:#454444;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:45px;
+    padding-right:45px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+}
+
+.subMenu ul li a:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:45px;
+    padding-right:45px;
+    text-shadow: none !important;
+}
+.line{
+    margin-top: 4% !important;
+}
+#routeMaplinesholder{
+    margin-top:6%;
+}
+.subMenu ul li a.active
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:45px;
+    padding-right:45px;
+    text-shadow: none !important;
+}
+
+
+/* Virtual Tour css start here */
+
+#virtualTourModal{
+    margin-left: -40%;
+    position: fixed;
+    width: 80%;
+    top:3% !important;
+    border:none;
+    box-shadow: none;
+}
+
+.virtualtour
+{
+    border: #ba9969 1px solid;
+    width: 75%;
+    margin: auto;
+    float: left;
+    margin-left: 33%;
+    padding: 10px;
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    left: 32%;
+}
+.virtualtourInner
+{
+    width: 100%;
+    margin: auto;
+    opacity: 0.8;
+    background-color: #fff;
+    height: 72px;
+}
+.virtualtourInner a{
+
+    text-align: center;
+    margin: 8px 15px 13px;
+    font-size: 19px;
+    color: #00529b !important;
+    text-decoration: none !important;
+    font-family: georgia;
+    line-height: 28px;
+    text-transform: uppercase;
+}
+
+.virtualtourInner a:hover{
+    color: #133659;
+}
+
+.fleetDownsliderbox{
+    max-width: auto !important;
+}
+
+
+.sliderCaption{
+    font-size: 21px !important;
+}
+#virtualTourModal .sliderCaption{
+    margin-top: 4%;
+    margin-bottom: 10%;
+}
+.fleet-slider-buttons
+{
+    position: relative;
+    top: 0px;
+}
+.fleetDownslider
+{
+    position: relative;
+}
+
+.fleetDownsliderbox{
+    position: absolute;
+    background: #fff;
+    top: 100px;
+    left: 11%;
+    max-width: 600px;
+    max-height: 363px;
+    border: 10px #bc9b6a solid;
+}
+
+#seeparkingDirectionsModal
+{
+    width: 700px;
+    left:46%;
+}
+.seereoutemapDirectionsclosebutton
+{
+    width:10%;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px;
+    cursor: pointer;
+}
+
+.seereoutemapDirectionsclosebuttoninner
+{
+    width:98%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+
+.reoutemapDirectionsclosebutton
+{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width:100px;
+    background-color:#ab323b;
+    float:right;
+    height:27px;
+    padding:2px 3px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.reoutemapDirectionsclosebuttoninner
+{
+    width:99%;
+    background-color:#ab323b;
+    margin:0px;
+    line-height:25px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:15px;
+    text-align:center; 
+    border:#f1dddf 1px dotted;
+}
+
+.plusholder
+{
+    position: absolute;
+    top: 0px;
+    right: 120px;
+    width:35px;
+    background-color:#dda9a7;
+    float:right;
+    height:28px;
+    padding:2px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.plusholder .plus
+{
+    background-color:#dda9a7;
+    margin:0px;
+    line-height:21px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:22px;
+    font-weight: bold;
+    text-align:center;
+}
+
+.minusholder
+{
+    position: absolute;
+    top: 0px;
+    right: 170px;
+    width:35px;
+    background-color:#dda9a7;
+    float:right;
+    height:28px;
+    padding:2px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.minusholder .minus
+{
+    background-color:#dda9a7;
+    margin:0px;
+    line-height:21px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:22px;
+    font-weight: bold;
+    text-align:center;
+}
+
+.reoutemapDirectionsbox
+{
+    background:#fff;
+    min-width:100%;
+    min-height:500px;
+    border:10px #bc9b6a solid;
+}
+
+.reoutemapDirectionsboxInner
+{
+    width:100%;
+    min-height:550px;
+}
+
+.reoutemapDirectionsboxInnerleft{
+    background: #fff;
+    min-height:550px;
+    padding: 2%;
+}
+
+.reoutemapDirectionsboxInnerright{
+    /*background: #bebebe;*/
+    min-height:550px !important;
+    overflow: hidden;
+    position: relative;
+}
+
+.routemapContent{
+    color: #000;
+    height: 550px;
+}
+
+
+.routemapContent .item{
+    margin-bottom: 10px;
+}
+
+.reoutemapDirectionsboxInnerleft .sliderCaption
+{
+    font-family:georgia;
+    font-weight:600;
+    font-size:19px;
+    text-align:left;
+}
+.reoutemapDirectionsboxInnerleft ul
+{
+    list-style: none;
+}
+#routmapSlider .item img{
+    height:626px;
+    width: 100%;
+}
+#routmapSlider{
+    height:626px;
+}
+.panImage{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
+    z-index:-1;
+}
+.panImage.active{
+    z-index:1;
+}
+.panImage img{
+    /*max-width:500%;*/
+}
+.diningBoxFirst
+{
+    background:rgba(1,65,122,0.5);
+    margin:5%;
+    border:#fff 10px solid;
+    -moz-box-shadow: 0 0 10px 0px #999;
+    -webkit-box-shadow: 0 0 10px 0px#999;
+    box-shadow: 0 0 10px 0px #999;
+    height: 250px;
+}
+.diningBoxFirstInner
+{
+    font-size:29px;
+    font-family:georgia;
+    color:#fff;
+    line-height:35px;
+    text-align:center;
+}
+.diningBoxFirstInner img{
+    height: 250px !important;
+}
+.accommodations{
+    display:none;
+}
+.accommodations.active{
+    display:block;
+}
+
+.panText{
+    color: #666;
+    font-size:14px;
+}
+
+.rightangleQuote{
+    color: #0080FF;
+    font-size: 18px;
+    font-weight: bold;
+}
+.fleetDownsliderInner {
+    padding: 5% !important;
+}
+
+.routeMaplinesholder .span2{
+    margin-top: -3px;
+}
+
+#routeMaplinesholder .span2{
+    margin-top: -7px;
+}
+
+
+.bx-wrapper img 
+{
+    height: 250px;
+}
+
+.fleetDownslidermargin
+{
+    margin-top: 5%;
+}
+
+.fleetDownslidermargin .bx-wrapper .bx-viewport{
+    padding-top: 15px;
+    height: 285px;
+}
+
+ul.fleetbxslider li .sliderBox{
+    margin: 5%;
+}
+
+ul.fleetbxslider li .sliderBox .sliderBoxout{
+    margin: 0px;
+}
+
+ul.fleetbxslider li .sliderBox .sliderBoxout:hover{
+    -moz-box-shadow: 0 0 20px 1px #888;
+    -webkit-box-shadow: 0 0 20px 1px#888;
+    box-shadow: 0 0 20px 1px #888;
+}
+
+/*.mfp-image-holder .mfp-close, .mfp-iframe-holder .mfp-close*/
+/*{*/
+/*    color: black !important;*/
+/*}*/
+
+.mfp-bg
+{
+    background: #fff !important;
+}
+
+.bx-wrapper .bx-next{
+    background:url(../images/gallery-leftarrow.png) no-repeat !important;
+    left:55% !important;
+}
+.bx-wrapper .bx-prev {
+    background: url(../images/gallery-rightarrow.png) no-repeat !important;
+    left:44% !important;
+}
+
+.bx-wrapper .bx-controls-direction a
+{
+    top: 106% !important;
+
+}
+.bx-wrapper .bx-pager.bx-default-pager a:hover, .bx-wrapper .bx-pager.bx-default-pager a.active
+{
+    background: #ab323b !important;
+    border: #ab323b 1px solid;
+}
+
+.bx-wrapper .bx-pager.bx-default-pager a
+{
+    border: #05559c 1px solid;
+    background-color: rgba(255,255,255,1) !important;
+    width: 8px !important;
+    height: 8px !important;
+}
+.bx-controls-direction a{
+    opacity:1 !important;
+}
+
+
+
+@media (max-width: 979px) and (min-width: 768px){
+    .fleetDownsliderInner .span8{
+        width:73% !Important;
+    }
+    .fleetDownsliderInner .span2 {
+        width:4% !important;
+    }
+    .requset-proposal {
+        margin-bottom: 5%;
+    }
+    #routeMaplinesholder{
+        padding-left:5%;
+    }
+    .fleetDownsliderInner .left-line-margin{
+
+        margin-left:8% !important;
+    }
+    .fleetDownsliderbox{
+        width:50%;
+        margin-left:25%;
+    }
+
+}
+@media (max-width: 979px) {
+    .bx-wrapper .bx-next
+    {
+        left: 70% !important;
+    }
+    .fleetDownsliderbox{
+        width:100% !important;
+        margin-left: 0 !important;
+        border-left: none;
+border-right: none;
+
+    }
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .requset-proposal .left-line-margin{
+        width:12% !important;
+        margin-left:21% !important;
+    }
+    .requset-proposal .right-line-margin{
+        width:12% !important;
+    }
+
+
+    .virtualtour{
+        display:none;
+    }
+    .contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+        height: auto !important;
+        width: 100%;
+    }
+    
+    .contentDetail .fleet-slider-buttons img{
+        height: auto !important;
+        width: 100%;
+    }
+
+    .request-proposal{
+        margin-bottom:6%;
+    }
+    .fleetDescription{
+        margin-left: 3%;
+    }
+    .fleetSubTitle{
+        margin-top: 10%;
+        margin-left:3%;
+    }
+    .fleetTitle{
+        margin-left:3%;
+        margin-right:3%;
+        margin-bottom: 4%;
+        margin-top: 4%;
+    }
+
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left ;
+        width: 30% ;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .fleetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+        margin-top: 5%;
+    }
+
+    /*    .fleetDownsliderInner .span2{
+            width: 22% !important;
+            float: left !important;
+            padding-top: 0px;
+        }*/
+    .fleetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        /*        width: 50% !important;*/
+    }
+    .fleetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 24px;
+    }
+    .clickMapLink{
+        font-size: 13px !important;
+    }
+
+
+    .sliderInnercontent a{
+        display: block;
+    }
+
+    .contentDetail .span6{
+        float: none !important;
+        width: 100% !important;
+        margin-left: 0px !important;
+    }
+    .requset-proposal .span6{
+        float:left !important; 
+        width:25% !important;
+        margin-left: 3% !important;
+    }
+    .sunsetBannerBooknow .row-fluid .span6{
+        margin-left: 0px !important;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span2{
+        display: none;
+    }
+    .cruiseDetailinfo .span6 .row-fluid .span10{
+        width: 100%;
+        margin-left: 0px;
+    }
+    .contentDetail #rightsliderImages img{
+        width: 100%;
+    }
+
+}
+
+@media screen and (max-width: 767px) { 
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    #cruiseDate{
+        width:177px !important;
+    }
+    .fleetDescription{
+        margin-left: 3%;
+        margin-right: 3%;
+    }
+    .sliderInnercontent{
+        margin-left:4%;
+    }
+    .requset-proposal{
+        margin-bottom: 5%;
+    }
+    #routeMaplinesholder .span5{
+        width: 40.4% !important;
+        float: left !important;
+    }
+    .fleetDownsliderbox{
+        border-left:none;
+        border-right:none;
+    }
+    .fleetDownsliderInner .span2{
+        width: 5% !important;
+        float: left !important;
+    }
+    .fleetDownsliderInner .span8{
+        width: 70% !Important;
+        float: left !Important;
+    }
+    .fleetDownsliderInner .left-line-margin{
+        margin-left: 10% !important; 
+    }
+    #routeMaplinesholder .span2{
+        width: 14.8% !important;
+        float: left !important;
+    }
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+     .requset-proposal .span4{
+        width:50% !important;
+        float: left !important;
+  }
+    .requset-proposal .left-line-margin{
+        width:12% !important;
+        margin-left: 12% !important;
+         padding-top: 8px;
+    }
+    .requset-proposal .right-line-margin{
+        width:12% !important;
+         padding-top: 8px;
+    }
+    .requset-proposal .span3{
+        float:left !important; 
+    }
+    .requset-proposal .span6{
+        float:left !important; 
+        width:35% !important;
+        margin-left: 1% !important;
+    }
+
+    .fleetSubTitle{
+        margin-top:5%;
+    }
+    .subMenu{
+        position:static;
+    }
+    .subMenu select {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;
+        border: 0px;
+    }
+
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 33% !important;
+    }
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+    .fleetDownsliderbox{
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+        margin-top: 5%;
+    }
+
+    /*    .fleetDownsliderInner .span2{
+            width: 25% !important;
+            float: left !important;
+            padding-top: 0px;
+        }*/
+    .fleetDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        /*        width: 50% !important;*/
+    }
+    .fleetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: block;
+    }
+
+    .sliderInnercontent img{
+        margin-top: 6px;
+        float: left;
+        margin-right: 6px;
+    }
+    .sliderInnercontent .clickMapLink
+    {
+        font-size: 14px !important;
+    }
+    .contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+        height: auto !important;
+        width: 100%;
+    }
+    
+    .contentDetail .fleet-slider-buttons img{
+        height: auto !important;
+        width: 100%;
+    }
+
+    #parkingDirectionsModal
+    {
+        margin-left:0px;
+        position: absolute;
+    }
+}
+@media (max-width: 480px) {
+    
+    #shareBtn{
+        display: block;
+    }
+
+    /* fleet css start here */
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+    }
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;   
+        padding-right:2%;
+        border:0px; 
+    }
+    .fleetDownsliderInner {
+        margin: 5% 0 !important;
+    }
+    .custom-row-fluid .sunsetLinePadding
+    {
+        float: left !important;
+        width: 20% !important;
+        text-align: center;
+    }
+    .custom-row-fluid .request-custom
+    {
+        float: left !important;
+        width: 60% !important;
+        text-align: center;
+        padding-left: 5%;
+        padding-right: 5%;
+        margin-bottom: 5%;
+    }
+    .virtualtour
+    {
+        display: none;
+    }
+    .contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+        height: auto !important;
+        width: 100%;
+    }
+    
+    .contentDetail .fleet-slider-buttons img{
+        height: auto !important;
+        width: 100%;
+    }
+    
+    .fleetDownsliderbox{
+        border-left:none;
+        border-right:none;
+    }
+    .fleetDescription{
+        margin-left: 3%;
+        margin-right: 3%;
+    }
+    #routeMaplinesholder .span5
+    {
+        width: 42%;
+        float: left;
+    }
+     .requset-proposal .span4{
+        width:50% !important;
+        float:left !important;
+        padding-top: 8px;
+    }
+    .requset-proposal .left-line-margin{
+        width:15% !important;
+        margin-left:9% !important;
+         padding-top: 20px;
+    }
+    .requset-proposal .right-line-margin{
+        width:15% !important;
+         padding-top: 20px;
+    }
+   
+    .requset-proposal .span6 {
+        float: left !important;
+        width: 45% !important;
+    }
+
+    .fleetDownsliderInner .span8{
+        width: 90% !Important;
+        float: left !Important;
+    }
+    .fleetDownslidermargin .bx-wrapper .bx-controls-direction a.disabled{
+        display:block !important;
+    }
+    .fleetDownsliderInner{
+      padding:3% !Important;  
+    }
+    .fleetDownsliderInner .left-line-margin{
+        margin-left: 0 !important; 
+    }
+    .fleetDownsliderInner .span2{  
+        width:5% !Important;
+    }
+    #routeMaplinesholder .span2
+    {
+        width: 14.8% !important;
+        float: left;
+    }
+
+
+    .sliderInnercontent
+    {
+        padding-left: 20px;
+    }
+    .fleetDescription
+    {
+        padding: 1%;
+    }
+
+    .bx-controls-direction .bx-next {
+        background: url("../fleet/images/carousol-rightarrow-mobile.png") no-repeat;
+        position: static;
+        top: 0%;
+        right: 0%;
+        z-index: 5;
+        width: 18px;
+        height: 33px;
+        border: none;
+    }
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .sunsetBannerBooknow{
+        font-size: 26px !important;
+        width:90%;
+        margin: 0px auto;
+
+    }
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .sunsetBooknowMobile .span4
+    {
+        float: left !important;
+        width: 33% !important;
+    }
+    #routeMaplinesholder .span5{
+        width: 40.5% !important;
+        float: left !important;
+    }
+
+    .groupResNote{
+        width: 90%;
+        margin: 0px auto;
+        padding: 20px 0px;
+    }
+    #downArrow, .share, .Reviews{
+        display: none;
+    }
+    #mydownCarousel{
+        display: none;
+    }
+
+    .fleetDownsliderInner .span8 .sliderCaption{ 
+        font-size: 16px;
+    }
+
+    .sunsetMapView #upArrow{
+        display: none;
+    }
+    .sliderInnercontent a{
+        display: none;
+    }
+
+
+    .bx-controls .bx-controls-direction{
+        display: block !important;
+    }
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+
+}
+
+@media (min-width: 979px){
+    .fleetDownsliderInner{
+        width: 450px !important;
+        margin: 15px !important;
+    } 
+   
+ .requset-proposal .span4 {
+        width:43% !important;
+    }
+     .requset-proposal .sunsetLinePadding {
+        width:25% !important;
+    }
+
+}
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+
+    .sunsetBannerBooknow{
+        padding-bottom: 10px !important;
+        padding-top: 10px !important;
+    }
+
+    .cruiseDetailinfo #downArrow{
+        top: 30%;
+        left: 47%;
+    }
+
+    .sunsetBannerBooknow .row-fluid .span6{
+        float: none;
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    .carousel{
+        margin-bottom: 0px !important;
+    }
+
+    .fleetDownsliderbox{
+        top: 4% !important;
+    }
+
+    .groupResNote{
+        margin-top: 12px;
+        margin-bottom: 10px;
+    }
+
+    .fleetDownslider .carousel-indicators{
+        bottom: 6%;
+    }
+
+    .sliderCaption{
+        font-size: 26px !important;;
+    }
+
+    .contentDetail{
+        padding-left: 0% !important;
+    }
+
+    .sunset-slider-buttons .share{
+        left: 32% !important;
+    }
+    .contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+        height: 630px;
+    }
+    
+    .contentDetail .fleet-slider-buttons img{
+        height: 630px;
+    }
+
+}
+
+@media (min-width: 1160px) and (max-width: 1200px) {
+
+    #cruiseMenuRender .bx-wrapper .bx-controls-direction a{
+        display: block !important;
+    }
+    .fleetDownsliderInner{
+        width: 450px !important;
+        margin: 15px !important;
+    }
+
+    .cruiseDetailinfo #downArrow{
+        top: 30%;
+        left: 52%;
+    }
+
+}
+
+.panzoombtn{
+    padding:0px!important;
+    border:none !important;
+    background:none!important;
+    box-shadow:none!important;
+}
+.panzoomresetbtn{
+    background: linear-gradient(#35B829, #298E1F) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border: 1px solid #23791B !important;
+    box-shadow: 0 1px 0 #5FD954 inset !important;
+    color: #FFFFFF !important;
+    text-shadow: 0 -1px 0 #164B11 !important;
+    padding:2px 4px;
+}
+.panzoomresetbtn:hover{
+     background: linear-gradient(#35B829, #298E1F) repeat scroll 0 0 rgba(0, 0, 0, 0) !important;
+    border: 1px solid #23791B !important;
+    box-shadow: 0 1px 0 #5FD954 inset !important;
+    color: #FFFFFF !important;
+    text-shadow: 0 -1px 0 #164B11 !important;
+}
+
+.panzoombtnminus {
+    background-color: #DDA9A7 !important;
+    color: #FFFFFF !important;
+    font-family: georgia !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+    line-height: 21px !important;
+    /*margin: 0 !important;*/
+    padding: 2px 8px 4px 8px;
+    text-align: center !important;
+}
+
+
+
+/*.facebook .stButton .stLarge {*/
+ .fbsharebtnimg {
+    /*background-image:url("../images/fb-share.png") no-repeat !important;*/
+    background: url("../images/fb-share.png") no-repeat !important;
+    margin: 5px 0 0 8px;
+    padding: 10px;
+    cursor: pointer;
+}
+/*.facebook .stButton .stLarge {*/
+.fb-like.facebook {
+    /*background: url("../images/fb-share.png") no-repeat !important;*/
+    cursor: pointer;
+    /*margin: 5px 0 0 8px;*/
+    /*padding: 0 20px 0 10px;*/
+    padding: 5px 1%;
+    width: 50px;
+    /*width: 62px;*/
+}
+/*.twitter .stButton .stLarge {*/
+.twitsharebtnimg {
+    /*background-image:url("../images/fb-share.png") no-repeat !important;*/
+    background: url("../images/tweet.png") no-repeat !important;
+    margin-top: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+/*.twitter .stButton .stLarge {*/
+.twitter{
+    /*background: url("../images/tweet.png") no-repeat !important;*/
+    /*margin-top: 5px;*/
+    /*padding-top: 5px;*/
+    padding: 5px 4% 0px 2%;
+    /*padding: 10px;*/
+    cursor: pointer;
+    width:22%;
+}
+.pinterest{
+    width:20%;
+    /*padding-top: 5px;*/
+    padding:5px 1% 0px 1%;
+}
+.sharetext {
+    color:#ffffff;
+    padding: 5px 3px 0px 5px;
+    width: 20%;
+    text-align:center;
+    cursor: pointer;
+}
+
+.buttonsdiv{
+    border: 1px dotted #F1DDDF;
+    height: 82%;
+    margin: 2px;
+    width: 98%;
+}
+.share-text {
+    color:#ffffff;
+    position: absolute;
+    /*margin-left: 70%;*/
+    /*margin-top: 5px;*/
+    padding: 5px 5px 0px 5px;
+    /*width: 25%;*/
+    text-align:center;
+    cursor: pointer;
+}
+
+.imgLink {
+    display:none;
+}
+#stwrapper{
+    left:5%;
+}
+
+
+
+
+
+/*
+.facebook .stButton .stLarge {
+ .fbsharebtnimg {
+    background-image:url("../images/fb-share.png") no-repeat !important;
+    background: url("../images/fb-share.png") no-repeat !important;
+    margin: 5px 0 0 8px;
+    padding: 10px;
+    cursor: pointer;
+}
+.facebook .stButton .stLarge {
+    background-image:url("../images/fb-share.png") no-repeat !important;
+    background: url("../images/fb-share.png") no-repeat !important;
+    margin: 5px 0 0 8px;
+    padding: 10px;
+    cursor: pointer;
+}
+.twitter .stButton .stLarge {
+.twitsharebtnimg {
+    background-image:url("../images/fb-share.png") no-repeat !important;
+    background: url("../images/tweet.png") no-repeat !important;
+    margin-top: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+.twitter .stButton .stLarge {
+    background-image:url("../images/fb-share.png") no-repeat !important;
+    background: url("../images/tweet.png") no-repeat !important;
+    margin-top: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.buttonsdiv{
+    border: 1px dotted #F1DDDF;
+    height: 82%;
+    margin: 2px;
+    width: 98%;
+}
+.share-text {
+    color:#ffffff;
+    position: absolute;
+    margin-left: 70%;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.imgLink {
+    display:none;
+}
+#stwrapper{
+    left:5%;
+}
+#stLframe{
+    width:310px; 
+    height:460px;
+    overflow:auto;
+}
+#stwrapper{
+    width:64%;
+}*/
+/*#stLframe html body #outerContainer{
+    width:270px !important;
+}*/
+/*#stLframe #outerContainer{
+    width:75%;
+}*/
+
+
+
+
+
+
+/*
+Make the Facebook Like box responsive (fluid width)
+https://developers.facebook.com/docs/reference/plugins/like-box/
+*/
+ 
+/* This element holds injected scripts inside iframes that in some cases may stretch layouts. So, we're just hiding it. */
+#fb-root {
+display: none;
+}
+ 
+/* To fill the container and nothing else */
+.fb_iframe_widget {
+width: 50px !important;
+}
+.fb_iframe_widget span,.fb_iframe_widget span iframe[style]{
+width: 100% !important;
+}

@@ -1,0 +1,14 @@
+<?php 
+function waterways_testmodule_menu() {
+    $items = array();
+    $items['bookingcarttest'] = array(
+        'title' => 'Booking Cart',
+        'page callback' => 'bookingcartpage',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    	'file'=>'inc/bookingcart.inc',
+    );
+    
+    return $items;
+    
+   }

@@ -1,0 +1,4 @@
+name = Reviewlist
+description = A module system for displaying the reviews.
+core = 7.x
+package = WWC

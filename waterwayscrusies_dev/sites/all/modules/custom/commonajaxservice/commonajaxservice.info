@@ -1,0 +1,6 @@
+name = Common Ajax Service Implementation
+description = A module for Code Common Ajax Service
+core = 7.x
+package = WWC
+
+

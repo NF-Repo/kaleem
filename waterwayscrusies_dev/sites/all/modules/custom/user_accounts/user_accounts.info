@@ -1,0 +1,4 @@
+name = User Accounts
+description = Extended Module for Drupal built in User Module
+core=7.x
+version=VERSION

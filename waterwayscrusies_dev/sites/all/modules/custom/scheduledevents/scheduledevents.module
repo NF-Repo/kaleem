@@ -1,0 +1,1208 @@
+<?php
+
+/**
+ * 
+ * Flow::
+  1.Creating the Cruise templates
+  2.Showing the Cruise Template List with hyper links (Edit,Scehdule)
+  3.By Clicking on the Schedule user will carry for the evenet magement section where user can implement the following operations
+  4.Event Management
+  a)Create the Events for Selected Cruise templates .
+  b) Providing the Multi-event date-picker selection so that user can selecte multiple dates for create multiple events
+  c)For the first time event creation we are allocating the same resources like (Port,Vessel,Inventory,Status..etc)
+  d)while creating events we are using the product nodes with unique sku on event date based selection
+  e)displaying the event list in the form list box view.
+  f)providing the single selection for the event list box by selcting the event the form fields get autofilled
+  g)By selecting paarticular event date and we can implement resource allocate override functionality includding inventory
+  h)we may have the chance of resources allocation using individual product sku.
+ * 
+ * Schedule Validator Implementation to avoid same event execution on different vessels with same time
+ * we have the following cases ::
+ *
+ * rule 1:check for the same date ,same time with same  vessel selected rule failed.
+ * Possible cases:
+ * On Same day we have same event execution on different timings.
+ * On Same day we have same event execution on same timings with different vessels.
+ * 
+ * 
+ *
+ * 
+ * 
+ */
+
+/**
+ * Class ScheduledeEvents
+ * @param id :Event Id(schedulevents Table)
+ * @param name:Event Name(EventTemplate Table)
+ * @param cruisetemplate_id:Cruise template Id(EventTemplate Table)
+ * @param vessel_id:Vessel Id loading from vessel taxonomy(schedulevents Table)
+ * @param port_id:Portid loading from Departure Ports Taxonomy(schedulevents table)
+ * @param departuretime:Departure time (schduledvents Tbale)
+ * @param return time:Return time of the event(schedulevents Table)
+ * @param boardingtiime:Event Boarding time(scheduledevents Table)
+ * @param ticketinventory:Tickets Inventory(scheduledevents Table)
+ * @param enhancement inventory:Enhancment Inventory (scheduledevents Table)
+ * @param onsalespripor:Event Sales Priority (scheduledevents Table)
+ * @param scheduleddate :Event execution date (scheduleevent_dates Table)
+ * @param eventtemplateid:eventtemplateid(EventTemplate Table)
+ * 
+ * 
+ * For Event Scheduled Management we have few Questions in case same event executes on
+ * same day on multiple timings
+ * 
+ * Based on previous discusion we are creating different sku product based on date selection 
+ * is this one is retiricted to date or time like what if event can excutes on same with different
+ * timing in this scenario how many produts we need to create single or multiple based on timings ?
+ * 
+ * Our assumption is creating different products based on timing also are we correct ?
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+class Scheduledevents {
+
+    public $id;
+    public $name;
+    public $cruisetemplate_id;
+    public $vessel_id;
+    public $port_id;
+    public $departuretime;
+    public $returntime;
+    public $boardingtime;
+    public $ticketinventory;
+    public $availabletickets;
+    public $soldtickets;
+    public $windowseatinventory;
+    public $availablewindowseats;
+    public $windowseatssold;
+    public $onsalesdaysprior;
+    public $onsaleshoursprior;
+    public $scheduleeventsdates;
+    public $selectedscheduleddate;
+
+    /**
+     * Scheduled events object constructor.
+     *
+     * 
+     */
+    function __construct($id = 0) {
+        $this->id = $id;
+    }
+
+    //Getting the Count of Available Tickets
+    public static function getAvailableTicketsCount($cruiseTempateID, $eventID) {
+        $result = false;
+        try {
+            $query = db_select('scheduledevents', 'se');
+            $query->join('scheduledevent_dates', 'sd', 'sd.scheduledevent_id = se.id');
+            $query->fields('se', array('availabletickets'));
+            $query->condition('sd.scheduledevent_id', $eventID, '=');
+            $query->condition('se.cruisetemplate_id', $cruiseTempateID, '=');
+            //$query->condition('se.scheduleddate',$eventDate, '=');
+            $result = $query->execute()->fetchField();
+        } catch (Exception $e) {
+            watchdog("scheduleevents", $e);
+        }
+        return (int) $result;
+    }
+
+    //Getting the available window entrees
+    public static function getAvailableWindowsCount($cruiseTempateID, $eventID) {
+        $result = false;
+        try {
+            $query = db_select('scheduledevents', 'se');
+            $query->join('scheduledevent_dates', 'sd', 'sd.scheduledevent_id = se.id');
+            $query->fields('se', array('availablewindowseats'));
+            $query->condition('sd.scheduledevent_id', $eventID, '=');
+            $query->condition('se.cruisetemplate_id', $cruiseTempateID, '=');
+            //$query->condition('se.scheduleddate',$eventDate, '=');
+            $result = $query->execute()->fetchField();
+        } catch (Exception $e) {
+            watchdog("scheduleevents", $e);
+        }
+        return (int) $result;
+    }
+
+    //Updating the Inventory
+    public static function updateInventory($cruiseTempateID, $eventID, $totalTickets, $totalWindows) {
+        try {
+            $res = db_update('scheduledevents')
+                    ->expression('soldtickets', 'soldtickets + :ticketssold', array(':ticketssold' => $totalTickets))
+                    ->expression('availabletickets', 'ticketinventory - soldtickets', array())
+                    ->expression('windowseatssold', 'windowseatssold + :windowssold', array(':windowssold' => $totalWindows))
+                    ->expression('availablewindowseats', 'windowseatinventory - windowseatssold', array())
+                    ->condition('cruisetemplate_id', $cruiseTempateID, '=')
+                    ->condition('id', $eventID, '=')
+                    ->execute();
+        } catch (Exception $e) {
+            watchdog("scheduledevents", $e);
+        }
+    }
+
+//Getting Event Date and Time By passing Event ID
+    public static function getEventDateNTimeTimeStamp($eventId) {
+        $query = db_select('scheduledevents', '');
+        $query->fields('scheduledevents', array('departuretime'));
+        $query->fields('scheduledevent_dates', array('scheduleddate', 'id'));
+        $query->innerJoin('scheduledevent_dates', '', 'scheduledevents.id = scheduledevent_dates.scheduledevent_id');
+        $query->condition('scheduledevent_id', $eventId);
+        $eventObject = $query->execute()->fetchObject();
+
+        $eventDate = $eventObject->scheduleddate;
+        $eventYMD = date("d-m-Y", $eventDate);
+        $eventDateNTime = $eventYMD . " " . $eventObject->departuretime;
+        $eventtimestamp = strtotime($eventDateNTime);
+
+        return $eventtimestamp;
+        //drupal_json_output($eventtimestamp); exit();
+    }
+
+    
+    //Getting the CruiseTemplate Id by Event Id
+    public static function getCruiseTemplateIdByEventId($event_id){
+    	$cruisetemplate_id='';
+    	try {
+    		$scheduledeventsObject = db_select ( 'scheduledevents', 's' )
+    		->fields ( 's', array (	'cruisetemplate_id') )
+    		->condition ( 'id', $event_id)
+    		->execute ()
+    		->fetchObject ();
+    		$cruisetemplate_id = $scheduledeventsObject->cruisetemplate_id;
+    	} catch ( Exception $e ) {
+}
+
+    	return $cruisetemplate_id;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}
+
+
+
+
+
+
+/**
+ * Implements hook_menu().
+ */
+function scheduledevents_menu() {
+
+    // Ticket Orders Table List View
+    $items ['scheduledevents'] = array(
+        'title' => 'Event scheduled dates',
+        'page callback' => 'scheduledevents_list_view',
+        'access arguments' => array(
+            'view scheduledevents entity'
+        )
+    );
+
+
+    $items ['cruise/%/schedule'] = array(
+        'title' => 'Cruise Name',
+        'page callback' => 'scheduledevents_add',
+        'page arguments' => array(1),
+        'access arguments' => array(
+            'create scheduledevents entities'
+        ),
+        'file' => 'scheduledevents.form.inc'
+    );
+
+
+
+    // Edit Ticket Orders
+    $items ['scheduledevents/%scheduledevents/edit'] = array(
+        'title' => 'Edit',
+        'load arguments' => array(
+            'scheduledevents'
+        ),
+        'type' => MENU_LOCAL_TASK,
+        'page callback' => 'scheduledevents_item_edit',
+        'access arguments' => array(
+            'edit scheduledevents entities'
+        ),
+        'page arguments' => array(
+            1
+        ),
+        'file' => 'scheduledevents.form.inc'
+    );
+
+    // Delete Ticket Orders
+    $items ['scheduledevents/%/delete'] = array(
+        'page callback' => 'scheduledevents_item_delete',
+        'access arguments' => array(
+            'delete scheduledevents entities'
+        ),
+        'page arguments' => array(
+            1
+        ),
+        'file' => 'scheduledevents.form.inc'
+    );
+
+    // Manage Ticket Orders through Admin Panel
+    $items ['admin/structure/scheduledevents/manage'] = array(
+        'title' => 'Scheduled events management system',
+        'description' => 'Schdueled event maganement system',
+        'page callback' => 'scheduledevents_admin_page',
+        'access arguments' => array(
+            'administer scheduledevents entities'
+        )
+    );
+
+    //scheduled redirect functionality
+    $items['scheduledevents/cruisetemplate/%'] = array(
+        'title' => 'Cruise template',
+        'page callback' => 'schedule_cruise_template_event',
+        'page arguments' => array(2),
+        //        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    
+    
+    $items['get_cruise_events_data_by_selecteddate'] = array(
+    		'title' => '',
+    		'page callback' => 'getCruiseEventsDataBySelectedDate',
+    		'access callback' => 'user_access',
+    		'access arguments' => array('access content'),
+    );
+    
+    $items['get_event_details_by_event_id'] = array(
+    		'title' => 'ajax call for Event html',
+    		'page callback' => 'getCruiseEventDetailsByEventId',
+    		'access callback' => 'user_access',
+    		'access arguments' => array('access content'),
+    );
+   
+    return $items;
+}
+
+
+
+function getCruiseEventsDataBySelectedDate(){
+	$selectedDate = $_POST['seldate'];
+	
+	
+	//2014-02-28
+	
+	$beginDateTime = strtotime($selectedDate . " 00:00:00");
+	$endDateTime = strtotime($selectedDate . " 23:59:59");
+	
+	$todayDate=time();
+	if($beginDateTime>=$todayDate){
+		$query = db_select('scheduledevents', '');
+		$query->fields('scheduledevents', array('id', 'name'));
+		$query->fields('cruise', array('cruise_title'));
+		$query->innerJoin('scheduledevent_dates', '', 'scheduledevents.id = scheduledevent_dates.scheduledevent_id');
+		$query->innerJoin('cruise', '', 'cruise.id = scheduledevents.cruisetemplate_id');
+		$query->condition('scheduledevent_dates.scheduleddate', $beginDateTime, '>=');
+		$query->condition('scheduledevent_dates.scheduleddate', $endDateTime, '<=');
+		
+		$result = $query->execute()->fetchAll();
+		
+		$data = array();
+		for ($i = 0; $i < count($result); $i++) {
+			
+			$eventdetails = scheduledevents_load($result[$i]->id);
+			$eventsacheduleddate = getScheduleddatebyeventId($cruiseeventid);
+			$cruisedeparturetime = $eventdetails->departuretime;
+			$cruisereturntime = $eventdetails->returntime;
+			$cruiseborading = $eventdetails->boardingtime;
+			$portId = $eventdetails->port_id;
+			$portData = loadportById($portId);
+			
+			$record=array();
+			$record['id']=$result[$i]->id;
+			$record['cruise_title']=$result[$i]->cruise_title;
+			$record['cruisedeparturetime']=$cruisedeparturetime;
+			$record['port']=$portData['portname'];
+			
+			
+			$data[] =$record;
+			//$result[$i]->name=$result[$i]->cruise_title;
+			//$data[] = $result[$i];
+		}
+	}else{
+		$data="illegaloperation";
+	}
+	
+	
+	drupal_json_output($data);
+	exit();
+}
+
+
+
+function getCruiseEventsDataBySelected_Date($selectedDate) {
+	//2014-02-28
+
+	$beginDateTime = strtotime($selectedDate . " 00:00:00");
+	$endDateTime = strtotime($selectedDate . " 23:59:59");
+
+
+
+	$query = db_select('scheduledevents', '');
+	$query->fields('scheduledevents', array('id', '`name`'));
+	$query->fields('cruise', array('cruise_title', 'id'));
+	$query->innerJoin('cruise', '', 'scheduledevents.cruisetemplate_id = cruise.id');
+	$query->innerJoin('scheduledevent_dates', '', 'scheduledevents.id = scheduledevent_dates.scheduledevent_id');
+	$query->condition('scheduledevent_dates.scheduleddate', $beginDateTime, '>=');
+	$query->condition('scheduledevent_dates.scheduleddate', $endDateTime, '<=');
+
+	$result = $query->execute()->fetchAll();
+
+	$data = array();
+	for ($i = 0; $i < count($result); $i++) {
+		$eventdetails = scheduledevents_load($result[$i]->id);
+		$eventsacheduleddate = getScheduleddatebyeventId($cruiseeventid);
+		$cruisedeparturetime = $eventdetails->departuretime;
+		$cruisereturntime = $eventdetails->returntime;
+		$cruiseborading = $eventdetails->boardingtime;
+		$portId = $eventdetails->port_id;
+		$portData = loadportById($portId);
+			
+		$record=array();
+		$record['id']=$result[$i]->id;
+		$record['cruise_title']=$result[$i]->cruise_title;
+		$record['cruisedeparturetime']=$cruisedeparturetime;
+		$record['port']=$portData['portname'];
+			
+			
+		$data[] =$record;
+		//$data[] = $result[$i];
+	}
+	return $data;
+}
+
+
+function getCruiseEventDetailsByEventId() {
+
+	//    $cruiseeventid = isset($form_state['values']['cruisetype']) ? $form_state['values']['cruisetype'] : '';
+	$cruiseeventid = isset($_POST['cruisetype']) ? $_POST['cruisetype'] : '';
+
+	$eventdetails = scheduledevents_load($cruiseeventid);
+	$eventsacheduleddate = getScheduleddatebyeventId($cruiseeventid);
+	$cruisedeparturetime = $eventdetails->departuretime;
+	$cruisereturntime = $eventdetails->returntime;
+	$cruiseborading = $eventdetails->boardingtime;
+	$bookingdate = date('m/d/Y', $eventsacheduleddate);
+
+	try {
+		$scheduledeventsObject = db_select('scheduledevents', 's')
+		->fields('s', array('cruisetemplate_id'))
+		->condition('id', $cruiseeventid)
+		->execute()->fetchObject();
+		$cruise_template_id = $scheduledeventsObject->cruisetemplate_id;
+	} catch (Exception $e) {
+		//_drupal_log_error($e);
+	}
+
+	//Get the cruise Data
+	$cruiseObject = cruise_load($scheduledeventsObject->cruisetemplate_id);
+	$cruisetitle = isset($cruiseObject->cruise_title) ? $cruiseObject->cruise_title : '';
+
+	$availablestock = $eventdetails->availabletickets;
+	$availablewindowstock = $eventdetails->availablewindowseats;
+
+
+	$portId = $eventdetails->port_id;
+	$portData = loadportById($portId);
+	$eventdetailshtml = '<table>
+    					<tr><td colspan="2"></td></tr>
+    					<tr><td class="tdalignright">Cruise Title :</td><td>'.$cruisetitle.'</td></tr>
+    					<tr><td class="tdalignright">Cruise Date :</td><td>'. date('m/d/Y', $eventsacheduleddate).'</td></tr>
+    					<tr><td class="tdalignright">Port :</td><td>'.$portData['portname'].'</td></tr>
+    					<tr><td class="tdalignright">Boarding Time:</td><td>'.$cruiseborading.'</td></tr>
+    					<tr><td class="tdalignright">Departure Time :</td><td>'.$cruisedeparturetime.'</td></tr>
+    					<tr><td class="tdalignright">Return Time :</td><td>'.$cruisereturntime.'</td></tr>
+						<tr><td>&nbsp;</td></tr>
+    					<tr><td class="tdalignright">Available Tickets :</td><td>'.$availablestock.'</td></tr>
+						<tr><td class="tdalignright">Available Windows :</td><td>'.$availablewindowstock.'</td></tr></table>';
+	
+	drupal_json_output($eventdetailshtml);
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function scheduledevents_permission() {
+    return array(
+        'administer scheduledevents entities' => array(
+            'title' => t('Administer scheduledevents entities'),
+            'restrict access' => TRUE
+        ),
+        'view scheduledevents entities' => array(
+            'title' => t('View scheduledevents Entities')
+        ),
+        'create scheduledevents entities' => array(
+            'title' => t('Create scheduledevents Entities')
+        ),
+        'delete scheduledevents entities' => array(
+            'title' => t('Delete scheduledevents Entities')
+        )
+    );
+}
+
+/**
+ * 
+ * Cruise template scheduled
+
+ */
+function schedule_cruise_template_event($templateid) {
+    //creating user session for creating the template id
+    $_SESSION['cruisetemplateid'] = $templateid;
+    drupal_goto('/scheduledevents/add');
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function scheduledevents_entity_info() {
+    $scheduledevents_info ['scheduledevents'] = array(
+        'label' => t('scheduledevents Entity'),
+        'controller class' => 'scheduledeventsController',
+        'base table' => 'scheduledevents',
+        'uri callback' => 'scheduledevents_uri',
+        'fieldable' => TRUE,
+        'entity keys' => array(
+            'id' => 'id'
+        ),
+        'static cache' => TRUE,
+        'bundles' => array(
+            'scheduledevents_bundle' => array(
+                'label' => 'scheduledevents',
+                'admin' => array(
+                    'path' => 'admin/structure/scheduledevents/manage',
+                    'access arguments' => array(
+                        'administer scheduledevents entities'
+                    )
+                )
+            )
+        ),
+        'view modes' => array(
+            'full' => array(
+                'label' => t('Full'),
+                'custom settings' => FALSE
+            )
+        ),
+// 			'access callback' => 'scheduledevents_access',
+    );
+    return $scheduledevents_info;
+}
+
+function scheduledevents_page_title($scheduledevents) {
+    return 'Event schduled dates';
+}
+
+function scheduledevents_load($id = NULL, $reset = FALSE) {
+    $ids = (isset($id) ? array(
+                $id
+                    ) : array());
+    $scheduledevents = scheduledevents_load_multiple($ids, array(), $reset);
+    return $scheduledevents ? reset($scheduledevents) : FALSE;
+}
+
+function scheduledevents_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+    return entity_load('scheduledevents', $ids, $conditions, $reset);
+}
+
+function scheduledevents_uri($scheduledevents) {
+    return array(
+        'path' => 'scheduledevents/' . $scheduledevents->id
+    );
+}
+
+function scheduledevents_item_delete($id) {
+    $msg = '';
+    try {
+        scheduledevents_delete($id);
+        $msg = 'Scheduled event deleted Successfully.';
+    } catch (Exception $e) {
+        $msg = 'Operation Failed.';
+    }
+    drupal_set_message($msg);
+    drupal_goto('admin/structure/scheduledevents/manage');
+}
+
+function scheduledevents_admin_page() {
+    // $output = 'Admin page for scheduledevents entities.<br/>';
+    $output = '';
+    $output .= '<a href="' . base_path() . 'scheduledevents/add">Add Event</a>';
+
+    $output .= scheduledevents_list_view();
+
+    return $output;
+}
+
+function scheduledevents_page_view($entity, $view_mode = 'tweaky') {
+
+    // var_dump($entity);
+    $entity_type = 'scheduledevents';
+    $entity->content = array(
+        '#view_mode' => $view_mode
+    );
+
+    field_attach_prepare_view($entity_type, array(
+        $entity->id => $entity
+            ), $view_mode);
+    entity_prepare_view($entity_type, array(
+        $entity->id => $entity
+    ));
+    $entity->content += field_attach_view($entity_type, $entity, $view_mode);
+    $entity->content ['id'] = array(
+        '#type' => 'item',
+        '#title' => t('id'),
+        '#markup' => $entity->id
+    );
+
+    $entity->content ['name'] = array(
+        '#type' => 'item',
+        '#title' => t('Event Name'),
+        '#value' => $entity->ticket_id
+    );
+
+    $entity->content ['cruisetemplate_id'] = array(
+        '#type' => 'item',
+        '#title' => t('TemplateId'),
+        '#value' => $entity->cruisetemplate_id
+    );
+
+    $entity->content ['vessel_id'] = array(
+        '#type' => 'item',
+        '#title' => t('Vessel'),
+        '#value' => $entity->vessel_id
+    );
+
+    $entity->content ['port_id'] = array(
+        '#type' => 'item',
+        '#title' => t('Port'),
+        '#value' => $entity->port_id
+    );
+
+    $entity->content ['departuretime'] = array(
+        '#type' => 'item',
+        '#title' => t('Departure'),
+        '#value' => $entity->departuretime
+    );
+
+    $entity->content ['returntime'] = array(
+        '#type' => 'item',
+        '#title' => t('Return'),
+        '#value' => $entity->returntime
+    );
+
+    $entity->content ['boardingtime'] = array(
+        '#type' => 'item',
+        '#title' => t('Borading'),
+        '#value' => $entity->boardingtime
+    );
+
+
+
+    $entity->content ['ticketinventory'] = array(
+        '#type' => 'item',
+        '#title' => t('Ticket Inventory'),
+        '#value' => $entity->ticketinventory
+    );
+
+
+
+    $entity->content ['availabletickets'] = array(
+        '#type' => 'item',
+        '#title' => t('Tickets available'),
+        '#value' => $entity->availabletickets
+    );
+
+    $entity->content ['soldtickets'] = array(
+        '#type' => 'item',
+        '#title' => t('Tickets sold'),
+        '#value' => $entity->soldtickets
+    );
+
+
+    $entity->content ['windowseatinventory'] = array(
+        '#type' => 'item',
+        '#title' => t('Window Inventory'),
+        '#value' => $entity->windowseatinventory
+    );
+
+
+    $entity->content ['availablewindowseats'] = array(
+        '#type' => 'item',
+        '#title' => t('Window seats available'),
+        '#value' => $entity->availablewindowseats
+    );
+
+    $entity->content ['windowseatssold'] = array(
+        '#type' => 'item',
+        '#title' => t('Window seats sold'),
+        '#value' => $entity->windowseatssold
+    );
+
+    $entity->content ['onsalesdaysprior'] = array(
+        '#type' => 'item',
+        '#title' => t('onsalesdaysprior'),
+        '#value' => $entity->onsalesdaysprior
+    );
+
+    $entity->content ['onsaleshoursprior'] = array(
+        '#type' => 'item',
+        '#title' => t('onsaleshoursprior'),
+        '#value' => $entity->onsaleshoursprior
+    );
+
+    global $language;
+    $langcode = $language->language;
+    module_invoke_all('entity_view', $entity, $entity_type, $view_mode, $langcode);
+    // drupal_alter(array('userdocuments_view', 'entity_view'), $entity->content, $entity_type);
+    return $entity->content;
+}
+
+function scheduledevents_item_edit($scheduledevents) {
+    drupal_set_title(t('<em>Edit Events </em> @title', array(
+        '@title' => ''
+            )), PASS_THROUGH);
+    return drupal_get_form('scheduledevents_add_form', $scheduledevents);
+}
+
+function scheduledevents_field_extra_fields() {
+    $form_elements ['id'] = array(
+        'label' => t('id'),
+        'description' => t('id (an extra form field)'),
+        'weight' => - 5
+    );
+    // Event Type
+    $form_elements ['name'] = array(
+        'label' => t('EventName'),
+        'description' => t('eventname (an extra form field)'),
+        'weight' => - 5
+    );
+    $form_elements ['cruisetemplate_id'] = array(
+        'label' => t('Template ID'),
+        'description' => t('cruisetemplate_id (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    //
+	$form_elements ['vessel_id'] = array(
+        'label' => t('Vessel'),
+        'description' => t('vessel_id (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    $form_elements ['port_id'] = array(
+        'label' => t('Port'),
+        'description' => t('Port (an extra form field)'),
+        'weight' => - 5
+    );
+
+    //
+    $form_elements ['departuretime'] = array(
+        'label' => t('Departuretime'),
+        'description' => t('departuretime (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    $form_elements ['returntime'] = array(
+        'label' => t('Returntime'),
+        'description' => t('returntime (an extra form field)'),
+        'weight' => - 5
+    );
+
+    //
+    $form_elements ['boardingtime'] = array(
+        'label' => t('Boardingtime'),
+        'description' => t('boardingtime (an extra form field)'),
+        'weight' => - 5
+    );
+
+
+
+    $form_elements ['ticketinventory'] = array(
+        'label' => t('Ticket Inventory'),
+        'description' => t('Ticketinventory (an extra form field)'),
+        'weight' => - 5
+    );
+
+
+
+    // bestTimetoCall
+    $form_elements ['availabletickets'] = array(
+        'label' => t('availabletickets'),
+        'description' => t('Availabletickets (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    //
+	$form_elements ['preferredTimeofEvent'] = array(
+        'label' => t('preferredTimeofEvent'),
+        'description' => t('preferredTimeofEvent (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    $form_elements ['soldtickets'] = array(
+        'label' => t('Soldtickets'),
+        'description' => t('soldtickets (an extra form field)'),
+        'weight' => - 5
+    );
+
+
+    $form_elements ['windowseatinventory'] = array(
+        'label' => t('Windowseat Inventory'),
+        'description' => t('Windowseatinventory (an extra form field)'),
+        'weight' => - 5
+    );
+
+
+
+    //
+    $form_elements ['availablewindowseats'] = array(
+        'label' => t('Availablewindowseats'),
+        'description' => t('availablewindowseats (an extra form field)'),
+        'weight' => - 5
+    );
+
+    $form_elements ['windowseatssold'] = array(
+        'label' => t('Windowseatssold'),
+        'description' => t('windowseatssold (an extra form field)'),
+        'weight' => - 5
+    );
+
+    //
+    $form_elements ['onsalesdaysprior'] = array(
+        'label' => t('onsalesdaysprior'),
+        'description' => t('onsalesdaysprior (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    $form_elements ['onsaleshoursprior'] = array(
+        'label' => t('onsaleshoursprior'),
+        'description' => t('onsaleshoursprior (an extra form field)'),
+        'weight' => - 5
+    );
+
+    //
+    // displayments
+
+    $display_elements ['id'] = array(
+        'label' => t('id'),
+        'description' => t('id (an extra form field)'),
+        'weight' => - 5
+    );
+    // Event Type
+    $display_elements ['name'] = array(
+        'label' => t('EventName'),
+        'description' => t('eventname (an extra form field)'),
+        'weight' => - 5
+    );
+    $display_elements ['cruisetemplate_id'] = array(
+        'label' => t('Template ID'),
+        'description' => t('cruisetemplate_id (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    //
+	$display_elements ['vessel_id'] = array(
+        'label' => t('Vessel'),
+        'description' => t('vessel_id (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    $display_elements ['port_id'] = array(
+        'label' => t('Port'),
+        'description' => t('Port (an extra form field)'),
+        'weight' => - 5
+    );
+
+    //
+    $display_elements ['departuretime'] = array(
+        'label' => t('Departuretime'),
+        'description' => t('departuretime (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    $display_elements ['returntime'] = array(
+        'label' => t('Returntime'),
+        'description' => t('returntime (an extra form field)'),
+        'weight' => - 5
+    );
+
+    //
+    $display_elements ['boardingtime'] = array(
+        'label' => t('Boardingtime'),
+        'description' => t('boardingtime (an extra form field)'),
+        'weight' => - 5
+    );
+
+    $display_elements ['ticketinventory'] = array(
+        'label' => t('Ticket Inventory'),
+        'description' => t('Ticketinventory (an extra form field)'),
+        'weight' => - 5
+    );
+
+    // bestTimetoCall
+    $display_elements ['availabletickets'] = array(
+        'label' => t('availabletickets'),
+        'description' => t('Availabletickets (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    //
+	$display_elements ['preferredTimeofEvent'] = array(
+        'label' => t('preferredTimeofEvent'),
+        'description' => t('preferredTimeofEvent (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    $display_elements ['soldtickets'] = array(
+        'label' => t('Soldtickets'),
+        'description' => t('soldtickets (an extra form field)'),
+        'weight' => - 5
+    );
+
+
+    $display_elements ['windowseatinventory'] = array(
+        'label' => t('Windowseat Inventory'),
+        'description' => t('Windowseatinventory (an extra form field)'),
+        'weight' => - 5
+    );
+
+    //
+    $display_elements ['availablewindowseats'] = array(
+        'label' => t('Availablewindowseats'),
+        'description' => t('availablewindowseats (an extra form field)'),
+        'weight' => - 5
+    );
+
+    $display_elements ['windowseatssold'] = array(
+        'label' => t('Windowseatssold'),
+        'description' => t('windowseatssold (an extra form field)'),
+        'weight' => - 5
+    );
+
+    //
+    $display_elements ['onsalesdaysprior'] = array(
+        'label' => t('onsalesdaysprior'),
+        'description' => t('onsalesdaysprior (an extra form field)'),
+        'weight' => - 5
+    );
+    //
+    $display_elements ['onsaleshoursprior'] = array(
+        'label' => t('onsaleshoursprior'),
+        'description' => t('onsaleshoursprior (an extra form field)'),
+        'weight' => - 5
+    );
+
+    // Since we have only one bundle type, we'll just provide the extra_fields
+    // for it here.
+    $extra_fields ['scheduledevents'] ['scheduledevents_bundle'] ['form'] = $form_elements;
+    $extra_fields ['scheduledevents'] ['scheduledevents_bundle'] ['display'] = $display_elements;
+    return $extra_fields;
+}
+
+function scheduledevents_save(&$scheduledevents) {
+    return entity_get_controller('scheduledevents')->save($scheduledevents);
+}
+
+function scheduledevents_delete($id) {
+    return entity_get_controller('scheduledevents')->delete($id);
+}
+
+function scheduledevents_list_view() {
+    $output = '';
+    $header = array(
+        array(
+            'data' => 'Id',
+            'field' => 'id'
+        ),
+        array(
+            'data' => 'EventName',
+            'field' => 'name'
+        ),
+        array(
+            'data' => 'Actions'
+        )
+    );
+    if (isset($_GET ['sort']) && isset($_GET ['order'])) {
+        if ($_GET ['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+        switch ($_GET ['order']) {
+            case 'Id' :
+                $order = 'id';
+                break;
+            case 'Ticket ID' :
+                $order = 'ticket_id';
+                break;
+        }
+    } else {
+        $sort = 'ASC';
+        $order = 'id';
+    }
+
+    $query = db_select("scheduledevents", "n");
+    $query->fields('n', array(
+        'id',
+        'name'
+    ));
+    $query->orderBy($order, $sort);
+    $query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
+    $result = $query->execute()->fetchAll();
+
+    // var_dump($result[0]->ticket_id);
+    // exit();
+
+    global $base_url;
+    $rows = array();
+    if (count($result) > 0) {
+        for ($i = 0; $i < count($result); $i ++) {
+            $rows [] = array(
+                $result [$i]->id,
+                $result [$i]->name,
+                '<a href="' . $base_url . '/scheduledevents/' . $result [$i]->id . '/edit">Edit |</a>
+                <a href="' . $base_url . '/scheduledevents/' . $result [$i]->id . '/delete">Delete</a>'
+            );
+        }
+    }
+
+    $output .= '<div class="">';
+    $output .= '<div class="">';
+
+    $output .= '</div>';
+    $output .= theme_table(array(
+                'header' => $header,
+                'rows' => $rows,
+                'attributes' => array(
+                    'class' => array(
+                        ''
+                    )
+                ),
+                'sticky' => true,
+                'caption' => '',
+                'colgroups' => array(),
+                'empty' => t("No Records!")
+            )) . theme('pager');
+
+    $output .= '</div>';
+
+    return $output;
+}
+
+/**
+ * Inersting the scduled events
+ *
+ */
+function scheduled_events_dates_save($eventdates) {
+
+    if (isset($eventdates->id) && ($eventdates->id != null)) {
+        try {
+            drupal_write_record('scheduledevent_dates', $eventdates, array('id'));
+            field_attach_update('scheduledevent_dates', $eventdates);
+        } catch (Exception $e) {
+            watchdog("scheduledevents", "Error while Updating the Scheduled events");
+        }
+    } else {
+        try {
+            drupal_write_record('scheduledevent_dates', $eventdates);
+        } catch (Exception $e) {
+            watchdog("scheduledevents", "Error while Inserting the Scheduled events" . $e);
+        }
+    }
+
+    return $eventdates;
+}
+
+function getScheduledresults($templateid) {
+// 	$templateid='4';
+    $query = db_select('scheduledevents', 's');
+    $query->join('scheduledevent_dates', 'e', 's.id = e.scheduledevent_id');
+    //scheduled events fields
+    $query->addField('s', 'id', 'scheduledeventid');
+    $query->addField('s', 'name', 'scheduledeventname');
+    $query->addField('s', 'cruisetemplate_id', 'eventtemplate');
+    $query->addField('s', 'vessel_id', 'vessel');
+    $query->addField('s', 'port_id', 'port');
+    $query->addField('s', 'departuretime', 'departuretime');
+    $query->addField('s', 'returntime', 'returntime');
+    $query->addField('s', 'boardingtime', 'boradingtime');
+    $query->addField('s', 'ticketinventory', 'totaltickets');
+    $query->addField('s', 'availabletickets', 'availabletickets');
+    $query->addField('s', 'soldtickets', 'soldtickets');
+    $query->addField('s', 'windowseatinventory', 'totlwindowseats');
+    $query->addField('s', 'availablewindowseats', 'avaialblewindowseats');
+    $query->addField('s', 'windowseatssold', 'soldwindowseats');
+    $query->addField('s', 'onsalesdaysprior', 'daysprior');
+    $query->addField('s', 'onsaleshoursprior', 'hoursprior');
+
+
+
+    $query->addField('e', 'id', 'eventdatescheduledid');
+    $query->addField('e', 'scheduleddate', 'scheduleddate');
+    $query->addField('e', 'scheduledevent_id', 'scheduledevent_id');
+
+// 	$query->fields('s');
+// 	$query->fields('e');
+    $query->condition('s.cruisetemplate_id', $templateid);
+
+    $result = $query->execute();
+    $output = array();
+    $totalresults = array();
+    foreach ($result as $keyvalue => $value) {
+
+        $output[$keyvalue] = $value;
+    }
+    return $output;
+}
+
+/**
+ * 
+ * 
+ * getting th scheduled event ports
+ */
+function eventportsBytemplateid($templateid) {
+    $portslist = getScheduledresults($templateid);
+    $portsresultset = array();
+    foreach ($portslist as $ports) {
+        $portname = getPortdetails($ports->port);
+        $portsresultset[$ports->port] = $portname['title'];
+    }
+
+
+    return $portsresultset;
+}
+
+/**
+ * 
+ * 
+ * 
+ * 
+ */
+function getEventTimeslotsbyDate($selecteddate, $portid, $templateid) {
+    $query = db_select('scheduledevents', 'sd');
+    $query->join('scheduledevent_dates', 'e', 'sd.id = e.scheduledevent_id');
+    $query->fields('sd');
+    $query->fields('e');
+    $query->condition('sd.cruisetemplate_id', $templateid, '=');
+
+    $result = $query->execute();
+    $totalresults = array();
+    $cruisetemplates = array();
+    $scheduleddates = array();
+    foreach ($result as $cruiseentity) {
+
+        $currentdate = date('m/d/Y', $cruiseentity->scheduleddate);
+
+// 	return $cruiseentity->port_id;
+
+
+        $calendartag = getCalendartag($cruiseentity->cruisetemplate_id);
+
+        if ($currentdate == $selecteddate && $portid == $cruiseentity->port_id && $calendartag != null) {
+
+
+            //Departuretime---boradingtime---returntime
+
+            $totalresults[$cruiseentity->scheduledevent_id] = $cruiseentity->departuretime . '---' . $cruiseentity->boardingtime . '---' . $cruiseentity->returntime;
+        }
+    }
+    return $totalresults;
+}
+
+/**
+ * Loading schduledate by eventid
+ */
+function getScheduleddatebyeventId($eventid) {
+    $resultsset = array();
+    $result = db_select('scheduledevent_dates', 'c')
+            ->fields('c', array(scheduleddate))
+            ->condition('scheduledevent_id', $eventid, '=')
+            ->execute();
+
+    foreach ($result as $value) {
+        $scheduleddate = $value->scheduleddate;
+    }
+    return $scheduleddate;
+}
+
+/* * get Multiple event dates of particular event occurs
+ * 
+ */
+
+function getMultipleEventDatesByeventId($eventid) {
+    $resultsset = array();
+    $result = db_select('scheduledevent_dates', 'c')
+            ->fields('c', array(scheduleddate))
+            ->condition('scheduledevent_id', $eventid, '=')
+            ->execute();
+
+    foreach ($result as $value) {
+        $resultsset[] = $value->scheduleddate;
+    }
+    return $resultsset;
+}
+
+/**
+ * 
+ * Loding the Template tickets using eventid
+ * 
+ */
+function getEventtemplateTicketsByeventId($eventid) {
+    $query = db_select('scheduledevents', 'se');
+    $query->join('cruise_template_tickets', 'ct', 'se.cruisetemplate_id=ct.cruisetemplateid');
+    $query->join('cruisetickets', 'tc', 'ct.ticketid=tc.id');
+    $query->condition('se.id', $eventid, '=');
+    $query->condition('tc.ticket_status', '1', '=');
+//  $query->fields('se');
+    $query->fields('ct');
+    $query->fields('tc');
+    $result = $query->execute();
+
+    $totalresults = array();
+    foreach ($result as $tickets) {
+        $totalresults[] = $tickets;
+    }
+    return $totalresults;
+}
+
+/*   get the cruise scheduled event data by templateId and Date   */
+
+function getScheduledeventby_template_and_date($templateid, $eventdate) {
+//    SELECT s.*,FROM_UNIXTIME( d.scheduleddate,'%Y-%d-%m') FROM `scheduledevents` s,scheduledevent_dates d where d.scheduledevent_id=s.id and s.cruisetemplate_id=1
+    $query = db_select('scheduledevents', 's');
+    $query->join('scheduledevent_dates', 'd', 's.id=d.scheduledevent_id');
+    $query->condition('s.cruisetemplate_id', $templateid, '=');
+    $query->fields('s');
+    $query->fields('d');
+    $result = $query->execute();
+
+    $totalresults = array();
+    foreach ($result as $row) {
+        $eventdatestr='';
+        $eventdatestr=date('m/d/Y',$row->scheduleddate);
+//        echo $eventdatestr.'----'.$eventdate.'<br/>';
+        if($eventdatestr==$eventdate){
+             $totalresults[] = $row;
+        }       
+    }
+//    exit();
+    return $totalresults;
+}

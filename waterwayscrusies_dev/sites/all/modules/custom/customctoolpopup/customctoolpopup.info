@@ -1,0 +1,19 @@
+name = Customctoolspopups
+description = This module opens a popup box using ctools and modal_forms modules.
+core = 7.x
+package = custom
+files[] = customctoolpopup.module
+dependencies[] = modal_forms
+core = "7.x"
+
+
+
+
+
+
+
+
+
+
+
+
