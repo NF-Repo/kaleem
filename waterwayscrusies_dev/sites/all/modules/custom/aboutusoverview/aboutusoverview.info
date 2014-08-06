@@ -1,0 +1,6 @@
+; $Id$
+name = About Us Overview
+description = "About Us Overview Page"
+core = 7.x
+version = VERSION
+package = WWC

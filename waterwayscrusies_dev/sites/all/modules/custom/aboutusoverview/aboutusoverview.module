@@ -1,0 +1,185 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function aboutusoverview_menu() {
+  $items = array();
+  $items['aboutusoverview'] = array(
+      'title' => 'About Us Overview',
+      'page callback' => 'aboutus_overview',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+
+function aboutusoverview_theme() {
+    $items['aboutusoverview'] = array(
+        'template' => 'aboutusoverview', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function aboutus_overview() {
+    
+  try {
+    
+    
+    global $user;
+    
+    
+    //Loading the About us Overview concepts
+     $aboutusOverview=  taxonomy_vocabulary_machine_name_load('aboutusoverview');
+     $overview_elements=taxonomy_get_tree($aboutusOverview->vid);
+     
+      foreach ($overview_elements as $element) {
+            $overviewterm=taxonomy_term_load($element->tid);
+            $overname=$overviewterm->name;
+            
+            $topsliders=getSliders($overviewterm->tid, 'field_heroimage');
+            $middlesliders=getSliders($overviewterm->tid, 'field_slider_image');
+            
+            $contenttitle1=getArrayloop($overviewterm->field_title);
+            $contenttitle2=getArrayloop($overviewterm->field_title2);
+            $sliderbox1content1=getArrayloop($overviewterm->field_sliderboxcontent);
+            $sliderbox1content2=getArrayloop($overviewterm->field_middle_content);
+         
+      }
+    
+    //End of About Us Overview
+    
+//    overviewheroimage ,overviewsliders
+    //Get the Overview Content
+    //end of getting the Overview Content
+    
+        $loadaboutus = getAboutsMenu("Overview");
+//        $overviewid = 130;
+        $templateresources = array(
+            'loadmenu' => $loadaboutus['aboutusmenu'],
+            'mobilemenu' => $loadaboutus['mobilemenu'],
+            'overviewheroimage' => $topsliders,//getSliders($overviewid, 'field_slider_image'),
+            'overviewsliders' => $middlesliders,//getOverviewfieldContent($overviewid, 'field_heroimage'),
+            'overviewherocontent' => $sliderbox1content1,//getOverviewfieldContent($overviewid, 'field_introdescription'),
+            'overviewslidercontent' => $sliderbox1content2,//getOverviewfieldContent($overviewid, 'field_sliderboxcontent')
+            'firstTitle'=>$contenttitle1,
+            'secondTitle'=>$contenttitle2,
+                
+            );
+    
+    
+    
+    //get the product load 
+        return theme('aboutusoverview', $templateresources);
+  } catch (Exception $ex) {
+      
+    drupal_json_output('The exception ' . $ex);
+  }
+}
+
+function getOverviewfieldContent($tid, $fieldname) {
+
+    $results = array();
+    $sliderHtml = '';
+    $sliders = taxonomy_term_load($tid);
+    
+    switch ($fieldname) {
+    case "field_heroimage":
+        foreach ($sliders->$fieldname as $sliderfields) {
+
+        foreach ($sliderfields as $sliderdata) {
+          foreach ($sliderdata as $key => $fieldvalues) {
+         if ($key == 'uri') {
+                            $sliderHtml.='<div class="item"><img src="' . file_create_url($fieldvalues) . '"/></div>';
+        }
+          }
+        }
+    }
+        break;
+    case "field_sliderboxcontent":
+       foreach ($sliders->$fieldname as $sliderfields) {
+
+        foreach ($sliderfields as $sliderdata) {
+          foreach ($sliderdata as $key => $fieldvalues) {
+         if ($key == 'value') {
+            $sliderHtml.=$fieldvalues;
+        }
+          }
+        }
+    }
+        
+        break;
+    case "field_introdescription":
+         foreach ($sliders->$fieldname as $sliderfields) {
+
+        foreach ($sliderfields as $sliderdata) {
+          foreach ($sliderdata as $key => $fieldvalues) {
+         if ($key == 'value') {
+            $sliderHtml.=$fieldvalues;
+        }
+          }
+        }
+    }
+        break;
+}
+
+return $sliderHtml;
+
+
+}
+
+function getAboutsMenu($name) {
+
+    $aboutusMenu = array(
+        'Overview' => 'aboutusoverview',
+        'Our Crew' => 'crewview',
+        'Careers' => 'aboutuscareers',
+        'Affiliations' => 'aboutusaffiliations',
+        'Corporate Giving' => 'aboutuscorporate',
+        'Vendors' => 'aboutusvendors',
+        "FAQ's" => 'faq-page'
+    );
+
+    $results = array();
+    $aboutusmenu = array();
+    $aboutstree = taxonomy_get_tree(9);
+ 
+    $aboutusmenuhtml = '';
+    $mobilemenuhtml = '';
+    $curenthref = '';
+  foreach ($aboutstree as $key => $treevalues) {
+        if ($treevalues->parents[0] == 0) {
+   
+    $aboutusmenuhtml.='<li>';
+          
+            if ($treevalues->name == $name) {
+  $curenthref = $aboutusMenu[$treevalues->name];
+                $aboutusmenuhtml.='<a href="' . $curenthref . '" class="active">' . $treevalues->name . '</a>';
+                $mobilemenuhtml.='<option selected value="' . $curenthref . '">' . $treevalues->name . '</option>';
+            } else {
+                  $curenthref = $aboutusMenu[$treevalues->name];
+                $aboutusmenuhtml.='<a href="' . $curenthref . '">' . $treevalues->name . '</a>';
+                $mobilemenuhtml.='<option value="' . $curenthref . '">' . $treevalues->name . '</option>';
+    }
+     $aboutusmenuhtml.='</li>';
+   }
+    }
+    $aboutuscontent = array(
+        'aboutusmenu' => $aboutusmenuhtml,
+        'mobilemenu' => $mobilemenuhtml
+   );
+  return $aboutuscontent;
+}
+
+function template_preprocess_aboutusoverview(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'aboutusoverview') . '/css/aboutusoverview.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
