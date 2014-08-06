@@ -1,0 +1,316 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function aboutuscareers_menu() {
+    $items = array();
+    $items['aboutuscareers'] = array(
+        'title' => 'About Us Careers',
+        'page callback' => 'aboutus_careers',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    
+    $items['aboutuscareers/jobid/%'] = array(
+        'title' => 'Career Job Details',
+        'page callback' => 'aboutus_careers_template',
+        'page arguments' => array(2),
+//        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function aboutuscareers_theme() {
+    $items['aboutuscareers'] = array(
+        'template' => 'aboutuscareers', // here comes your template name
+        'render element' => 'content'
+    );
+    
+    $items['aboutuscareers_template'] = array(
+        'template' => 'aboutuscareers_template', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function aboutus_careers() {
+
+    try {
+
+
+        global $user;
+        
+        
+
+$careersvoca=  taxonomy_vocabulary_machine_name_load('careers');
+
+     $careers_elements=taxonomy_get_tree($careersvoca->vid);
+     
+      foreach ($careers_elements as $element) {
+            $careerterm=taxonomy_term_load($element->tid);
+            $featuredjobid=$careerterm->tid;
+           $title=getArrayloop($careerterm->field_title);
+//           var_dump(getArrayloop($careerterm->field_sliderboxcontent));
+//           var_dump(file_create_url(getArrayloop($careerterm->field_heroimage)));
+       
+            
+          }
+      
+      
+
+
+        //Get the Overview Content
+        //end of getting the Overview Content
+
+        $loadaboutus = getAboutsMenu("Careers");
+//        $featuredjobid = 191;
+        $templateresources = array(
+            'loadmenu' => $loadaboutus['aboutusmenu'],
+            'mobilemenu' => $loadaboutus['mobilemenu'],
+            'careersheroimage' => getCareersContent($featuredjobid, 'field_heroimage'),
+            'careersherocontent' => getCareersContent($featuredjobid, 'field_sliderboxcontent'),
+            'featuredjobs' =>  getCareersFeaturedjobs(),
+            'boxtitle'=>$title
+        );
+
+//        var_dump($templateresources['featuredjobs']);
+//        exit();
+
+        //get the product load 
+        return theme('aboutuscareers', $templateresources);
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+
+function aboutus_careers_template($jobid){
+    
+    try{
+        global $user;
+        
+        $templateresourses = array(
+            'jobtemplatedetails' => jobtemplateDetails($jobid)
+        );
+        
+        
+        return theme('aboutuscareers_template', $templateresourses);
+        
+    }catch(Exception $exh){
+        drupal_json_output('The exception'.$exh);
+    }
+    
+}
+
+function getCareersContent($tid, $fieldname) {
+
+    $results = array();
+    $sliderHtml = '';
+    $sliders = taxonomy_term_load($tid);
+
+    switch ($fieldname) {
+        case "field_heroimage":
+            foreach ($sliders->$fieldname as $sliderfields) {
+
+                foreach ($sliderfields as $sliderdata) {
+                    foreach ($sliderdata as $key => $fieldvalues) {
+                        if ($key == 'uri') {
+                            $sliderHtml.='<img src="' . file_create_url($fieldvalues) . '"/>';
+                        }
+                    }
+                }
+            }
+            break;
+        
+        case "field_introdescription":
+            foreach ($sliders->$fieldname as $sliderfields) {
+
+                foreach ($sliderfields as $sliderdata) {
+                    foreach ($sliderdata as $key => $fieldvalues) {
+                        if ($key == 'value') {
+                            $sliderHtml.=$fieldvalues;
+                        }
+                    }
+                }
+            }
+            break;
+            
+            
+            case "field_sliderboxcontent":
+            foreach ($sliders->$fieldname as $sliderfields) {
+
+                foreach ($sliderfields as $sliderdata) {
+                    foreach ($sliderdata as $key => $fieldvalues) {
+                        if ($key == 'value') {
+                            $sliderHtml.=$fieldvalues;
+                        }
+                    }
+                }
+            }
+            break;
+    }
+    return $sliderHtml;
+}
+
+
+function getCareersFeaturedjobs(){
+$jobTemplate=  taxonomy_vocabulary_machine_name_load('job_template');
+        $jobtemplates=  taxonomy_get_tree($jobTemplate->vid);
+        $termdatahtml='';
+        $featuredjobshtml = '';
+        foreach ($jobtemplates as $jobs) {
+            $joblist=taxonomy_term_load($jobs->tid);
+            $jobname=$joblist->name;
+             $jobapplyemail=getArrayloop($joblist->field_applynowemail);
+             $jobsdescription=getArrayloop($joblist->field_jobdescription);
+            $jobsresponsibilities=getArrayloop($joblist->field_jobresponsibilities);
+            $jobcompanydescription=getArrayloop($joblist->field_jobcompanydescription);
+             $jobdesiredskills=getArrayloop($joblist->field_jobdesiredskills);
+            $jobrequired=getArrayloop($joblist->field_jobrequiredskills);
+            
+    
+    
+//        var_dump($jobs->name);
+//          var_dump($jobs->description);
+//            var_dump(getArrayloop($jobs->field_applynowemail));
+        $templateurl = base_path().'aboutuscareers/jobid/'.$joblist->tid;
+       
+        $featuredjobshtml .= '<div class="jobContainer"><h4>'.$jobs->name.'</h4><p>'.limit_words($jobsdescription,30).'</p><span><a href="'.$templateurl.'">Read More </a> <img class="dot-icon" src="'.base_path().'sites/all/themes/waterways/assets/img/dot.png"> </span><span><a href="mailto:'.$jobapplyemail.'">Apply Now </a></span></div>';
+
+    
+    
+        }
+
+    return $featuredjobshtml;
+    
+}
+
+
+function getCareersFeaturedjobs1($termid){
+//    var_dump($termid);
+    $featuredjobschildren = taxonomy_get_children($termid);
+    $featuredjobshtml = '';
+    $featuredjobslist=array();
+    
+    foreach ($featuredjobschildren as $jobs) {
+//        var_dump($jobs->name);
+//          var_dump($jobs->description);
+//            var_dump(getArrayloop($jobs->field_applynowemail));
+        $templateurl = base_path().'aboutuscareers/jobid/'.$jobs->tid;
+        
+        $fieldjobdescription = getArrayloop($jobs->field_jobdescription);
+        
+        $getApplynowemail = getArrayloop($jobs->field_applynowemail);
+        $featuredjobshtml .= '<div class="jobContainer"><h4>'.$jobs->name.'</h4><p>'.limit_words($fieldjobdescription,30).'</p><span><a href="'.$templateurl.'">Read More </a> <img class="dot-icon" src="'.base_path().'sites/all/themes/waterways/assets/img/dot.png"> </span><span><a href="mailto:'.$getApplynowemail.'">Apply Now </a></span></div>';
+
+    }
+    
+//   exit();
+    return $featuredjobshtml;
+    
+}
+
+
+
+
+function jobtemplateDetails($tid){
+    
+    //job_template
+        
+       
+            $joblist=taxonomy_term_load($tid);
+            $jobname=$joblist->name;
+             $jobapplyemail=getArrayloop($joblist->field_applynowemail);
+             $jobsdescription=getArrayloop($joblist->field_jobdescription);
+            $jobsresponsibilities=getArrayloop($joblist->field_jobresponsibilities);
+            $jobcompanydescription=getArrayloop($joblist->field_jobcompanydescription);
+             $jobdesiredskills=getArrayloop($joblist->field_jobdesiredskills);
+            $jobrequired=getArrayloop($joblist->field_jobrequiredskills);
+          
+             
+        
+        //job_template ends
+    $termdatahtml .= '<div class="row-fluid"><div class="span2 responsiveWeb"></div>';
+    $termdatahtml .= '<div class="span7"><h2>'.$jobname.'</h2>';
+    if($jobsdescription != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Job Description</h3><p>'.$jobsdescription.'</p></div>';
+    }
+    if($jobsresponsibilities != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Job Responsibilities</h3><p>'.$jobsresponsibilities.'</p></div>';
+    }
+    if($jobrequired != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Required Skills & Experience</h3><p>'.$jobrequired.'</p></div>';
+    }
+    if($jobdesiredskills != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Desired Skills & Experience</h3><p>'.$jobdesiredskills.'</p></div>';
+    }
+    if($jobcompanydescription != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Company Description</h3><p>'.$jobcompanydescription.'</p></div>';
+    }
+    $termdatahtml .= '<div><span><a href="mailto:'.$jobapplyemail.'">APPLY NOW <span class="readMoreArrow">&#8250;</span></a></span></div></div>';
+    $termdatahtml .= '<div class="span3 responsiveWeb"></div></div>';
+    
+        
+    return $termdatahtml;
+}
+
+
+
+function jobtemplateDetails1($jobid){
+    
+    $termdata = taxonomy_term_load($jobid);
+    $termdatahtml = '';
+    $getArrayemail = getArrayloop($termdata->field_applynowemail);
+    $fieldjobdescription = getArrayloop($termdata->field_jobdescription);
+    $fieldjobresponsibilities = getArrayloop($termdata->field_jobresponsibilities);
+    $fieldjobrequiredskills = getArrayloop($termdata->field_jobrequiredskills);
+    $fieldjobdesiredskills = getArrayloop($termdata->field_jobdesiredskills);
+    $fieldjobcompanydescription = getArrayloop($termdata->field_jobcompanydescription);
+    
+    $termdatahtml .= '<div class="row-fluid"><div class="span2 responsiveWeb"></div>';
+    $termdatahtml .= '<div class="span7"><h2>'.$termdata->name.'</h2>';
+    if($fieldjobdescription != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Job Description</h3><p>'.$fieldjobdescription.'</p></div>';
+    }
+    if($fieldjobresponsibilities != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Job Responsibilities</h3><p>'.$fieldjobresponsibilities.'</p></div>';
+    }
+    if($fieldjobrequiredskills != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Required Skills & Experience</h3><p>'.$fieldjobrequiredskills.'</p></div>';
+    }
+    if($fieldjobdesiredskills != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Desired Skills & Experience</h3><p>'.$fieldjobdesiredskills.'</p></div>';
+    }
+    if($fieldjobcompanydescription != ""){
+        $termdatahtml .= '<div class="descriptionWidget"><h3>Company Description</h3><p>'.$fieldjobcompanydescription.'</p></div>';
+    }
+    $termdatahtml .= '<div><span><a href="mailto:'.$getArrayemail.'">APPLY NOW <span class="readMoreArrow">&#8250;</span></a></span></div></div>';
+    $termdatahtml .= '<div class="span3 responsiveWeb"></div></div>';
+    
+    return $termdatahtml;
+}
+
+function limit_words($string, $word_limit)
+{
+    $words = explode(" ",$string);
+    return implode(" ", array_splice($words, 0, $word_limit));
+}
+
+
+function template_preprocess_aboutuscareers(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'aboutuscareers') . '/css/aboutuscareers.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
+function template_preprocess_aboutuscareers_template(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'aboutuscareers') . '/css/aboutuscareers.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}

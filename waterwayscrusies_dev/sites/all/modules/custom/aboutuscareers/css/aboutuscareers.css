@@ -1,0 +1,534 @@
+/* 
+    Document   : About Us Careers Page
+    Created on : 18 Mar, 2013, 7:00:46 PM
+    Author     : lsnsoft
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+#content{
+    display: block  !important;
+}
+
+#menu
+{
+    position: absolute !important;
+}
+
+
+.readMoreArrow{
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 11px;
+    vertical-align: bottom;
+}
+.careersheroimage img
+{
+    width:100%;
+}
+
+#routeMaplinesholder img{
+    width: auto;
+}
+
+.cruiseDetailinfo{
+    width:80% !important;
+    margin-left: 16.5% !important;
+    position: absolute;
+    z-index: 1;
+}
+
+.aboutusDownsliderInner {
+    padding: 5% !important;
+}
+
+.routeMaplinesholder .span2{
+    margin-top: -3px;
+}
+
+#routeMaplinesholder .span2{
+    margin-top: -7px;
+}
+.dot-icon{
+    margin:0 1.5%;
+    margin-bottom: 3px;
+}
+
+.contentDetail .carousel
+{
+    margin-bottom: 0px;
+    margin-top:5%;
+}
+
+.aboutusDownsliderbox{
+    position: absolute;
+    background: #fff;
+    top: 16%;
+    left: 45%;
+    max-width: 450px;
+    max-height: 500px;
+    border: 10px #bc9b6a solid;
+    overflow-y: auto;
+}
+
+.sliderInnercontent{
+    margin-left:2%;
+}
+.sliderInnercontent img{
+    float: left;
+    margin-top: 7px;  
+}
+
+.contentbox-inner-template{
+    width: 90% !important;
+    margin-left: 8%;
+    padding-top: 0%;
+    padding-bottom: 5%;
+}
+.jobContainerMargins .span7{
+    padding-right: 5%;
+}
+/* aboutus css start here */
+
+.aboutusTitle
+{
+    font-size: 46px;
+    font-family:georgia;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #454444;
+    margin-bottom: 1%;
+    margin-top: 6.5%;
+}
+
+.contentDetail #rightsliderImages, .contentDetail #rightsliderImages img{
+    height: 630px;
+    width: 100%;
+}
+/* submenu css start here */
+
+.subMenu
+{
+    width:auto;
+    position: absolute;
+    border: #bc9b6a 1px solid;
+    z-index: 10;
+}
+.subMenu ul
+{
+    list-style:none;
+    margin:0px;
+}
+.subMenu ul li
+{
+    float: left;
+}
+.subMenu ul li a
+{
+    background:rgba(252,251,249,0.8);
+    color:#454444;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+}
+
+.subMenu ul li a:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+}
+.line{
+    margin-top: 4% !important;
+}
+.subMenu ul li a.active
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:20px;
+    padding-right:20px;
+    text-shadow: none !important;
+}
+
+.sliderCaption{
+    font-size: 22px !important;
+}
+#routeMaplinesholder .span2{
+    margin-top: -7px;
+}
+.featuredJobs{
+    margin-top: 6%;
+}
+
+.careers-container .jobContainer{
+
+    background-color: #fff;
+    padding: 2%;
+    width: 50%;
+    margin: 3%;
+    margin-left: 15%;
+
+}
+.descriptionWidget{
+    margin-bottom: 3%;
+}
+
+.jobContainer h4{
+    font-family: georgia;
+    font-size: 22px;
+    color:#00529b;
+    margin-bottom: 5px;
+    line-height: 30px;
+
+}
+.careers-container .jobContainer h4{
+    margin:0;
+}
+
+.careers-container .jobContainer p{
+    margin-bottom:2%;
+}
+
+.jobContainer p{
+    margin: 0px;
+    margin-bottom:2%;
+}
+.jobContainer a{
+    color:#00529b;
+    font-weight: bold;
+}
+.jobContainer h2{
+    font-family: georgia;
+    font-size: 38px;
+    color:#454444;
+    margin-bottom: 30px;
+    line-height: 40px;
+    text-transform: uppercase;
+}
+
+.jobContainer h3{
+    font-family: georgia;
+    font-size: 19px;
+    color:#454444;
+    margin-bottom: 6px;
+    line-height: 30px;
+}
+
+@media (min-width: 979px) and (max-width: 1160px){
+
+    .subMenu ul li a{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .subMenu ul li a:hover{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .subMenu ul li a:active{
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        font-size: 14px !important;
+    }
+
+    .aboutusTitle{
+        margin-left: 0%;
+        margin-top: 2%;
+    }
+    .aboutusDownsliderbox{
+        width:50%;
+    }
+
+    .subMenu{
+        margin-left: 0%;
+    }
+
+}
+
+
+@media (max-width: 979px) {
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .cruiseDetailinfo {
+        position: relative;
+        width: 97% !important;
+        margin-left: 3% !important;
+    }
+    .careerscontent{
+        margin-top: 10%;
+    }
+    .aboutusTitle{
+        margin-bottom: 1%;
+        margin-top: 2%;
+    }
+
+    .subMenu ul li a{
+        padding-left: 13px !important;
+        padding-right: 13px !important;
+        font-size: 13px !important;
+    }
+
+    .subMenu ul li a:hover{
+        padding-left: 13px !important;
+        padding-right: 13px !important;
+        font-size: 13px !important;
+    }
+    .careers-container .jobContainer{
+        width:70%;
+    }
+    .subMenu ul li a:active{
+        padding-left: 13px !important;
+        padding-right: 13px !important;
+        font-size: 13px !important;
+    }
+    .aboutusDownsliderbox {
+        position: relative;
+        max-width: 100%;
+        top: 0px;
+        left: 0px;
+        margin-top: 5%;
+    }
+    .subMenu{
+        margin-left: 0%;
+    }
+
+    .jobContainer h4{
+        font-size: 26px;
+    }
+    .aboutusDownsliderbox{
+        margin-bottom:20px; 
+    }
+    .aboutusDownsliderInner .span8{
+        float: left !important;
+        font-size: 18px;
+        /*        width: 50% !important;*/
+    }
+    .aboutusDownsliderInner .span8 .sliderCaption{ 
+        font-size: 24px;
+    }
+
+}
+
+@media screen and (max-width: 767px) {
+
+    .container
+    {
+        width: auto !important;
+    }
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+    .cruiseDetailinfo {
+        width: 100% !important;
+        margin-left: 0% !important;
+    }
+    .featuredJobs{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .careers-container .jobContainer{
+        width: 88%;
+        margin: 5% 3%;
+        padding: 3%;
+    }
+    .detailBackLink{
+        display:block;
+    }
+    .careers-container .featuredJobs{
+        padding:0;
+    }
+    .aboutusTitle{
+        margin-left: 3% !important;
+        margin-top: 5% !important;
+        margin-bottom: 5%;
+    }
+    .careerscontent,.aboutusDownsliderbox {
+    margin-top: 7%;
+    }
+    .subMenu{
+        position:static;
+        margin-left: 0px !important;
+    }
+
+    .subMenu select {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;
+        border: 0px;
+    }
+
+    .aboutusDownsliderbox{
+        border-left:none;
+        border-right:none;
+        position: static !important;
+        max-height: auto !important;
+        max-width: 100% !important;
+
+    }
+
+    .contentDetail
+    {
+        padding-left: 0px !important;
+        width: 100%;
+        margin: auto 0px;
+    }
+    .aboutusDownsliderInner .span2{
+        width: 5% !important;
+        float: left !important;
+    }
+    .aboutusDownsliderInner .span8{
+        width: 70% !Important;
+        float: left !Important;
+    }
+    .aboutusDownsliderInner .left-line-margin{
+        margin-left: 10% !important; 
+    }
+    #routeMaplinesholder .span5{
+        width: 40.4% !important;
+        float: left !important;
+    }
+    #routeMaplinesholder .span2{
+        width: 14.8% !important;
+        float: left !important;
+    }
+
+}
+@media (max-width: 480px) {
+
+    .subMenu
+    {
+        width: 100%;
+        position: static;
+        border-left:0px; 
+        border-right:0px; 
+    }
+
+    .subMenu select
+    {
+        width: 100%;
+        margin-bottom: 0px;
+        border-radius: 0px;
+        height: 47px;
+        font-size: 19px;   
+        padding-right:2%;
+        border:0px; 
+    }
+
+    #content
+    {
+        display: block !important;
+        margin-top: 0px !important;
+    }
+
+    .featuredJobs{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .jobContainer h4{
+        font-size: 24px;
+        margin-bottom: 0px;
+    }
+    .aboutusDownsliderbox{
+        height:auto;
+    }
+    .aboutusDownsliderInner {
+        margin: 5% 0 !important;
+    }
+    .aboutusDownsliderInner .span8{
+        width: 85% !Important;
+        float: left !Important;
+    }
+    .aboutusDownsliderInner .left-line-margin{
+        margin-left: 0 !important; 
+    }
+    .aboutusDownsliderInner .span2{  
+        width:5% !Important;
+    }
+    #routeMaplinesholder .span5
+    {
+        width: 42%;
+        float: left;
+    }
+    #routeMaplinesholder .span2
+    {
+        width: 14.8% !important;
+        float: left;
+    }
+    #routeMaplinesholder .span5{
+        width: 40.5% !important;
+        float: left !important;
+    }
+
+}
+
+@media (max-width: 979px) and (min-width: 768px){
+    .aboutusDownsliderInner .span8{
+        width:73% !Important;
+    }
+    .aboutusDownsliderInner .span2 {
+        width:4% !important;
+    }
+    .aboutusDownsliderInner .left-line-margin{
+        margin-left:8% !important;
+    }
+}
+@media (min-width: 979px) and (max-width: 1160px) { 
+
+    .featuredJobs{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+}
+
+@media (min-width: 1160px) and (max-width: 1200px) {
+
+    .featuredJobs{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .aboutusDownsliderInner{
+        width: 450px !important;
+        margin: 40px !important;
+    }
+
+}
+/*laxmi**/
+.contentDetail{
+    padding-left:0% !important;
+}

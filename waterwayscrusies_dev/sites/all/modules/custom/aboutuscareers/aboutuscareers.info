@@ -1,0 +1,6 @@
+; $Id$
+name = About Us Careers
+description = "About Us Careers"
+core = 7.x
+version = VERSION
+package = WWC
