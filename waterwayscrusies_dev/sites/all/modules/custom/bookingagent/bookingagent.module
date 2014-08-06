@@ -1,0 +1,705 @@
+<?php
+
+module_load_include('inc', 'bookingagent', 'includes/bookingagent.navigation');
+module_load_include('inc', 'bookingagent', 'includes/bookingagent.validate');
+module_load_include('inc', 'bookingagent', 'includes/bookingagent.submit');
+
+
+
+
+//Implements hook_menu()
+function bookingagent_menu() {
+    $items = array();
+    $items['admin-booking'] = array(
+        'title' => 'Waterways Cruises and Events',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('bookingagent_form'),
+        'access arguments' => array('new booking'),
+        'file' => 'includes/bookingagent.form.inc',
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['adminconfirmation/orderid/%/%'] = array(
+        'title' => 'Confirmation Page',
+        'page callback' => 'bookingagentconfirmation',
+        'page arguments' => array(2, 3),
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+
+function bookingagent_permission() {
+	return array (
+		'new booking' => array (
+			'title' => t ( 'New Booking' ),
+		),
+	);
+}
+
+
+
+
+
+function bookingagent_theme() {
+    $items['bookingagentconfirmation'] = array(
+        'template' => 'bookingagentconfirmation', // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+
+
+
+
+
+function bookingagentconfirmation($orderid, $sessionid) {
+	drupal_add_css(drupal_get_path('module', 'bookingagent') . '/css/bookingagent-mediaqueries.css');
+    drupal_add_css(drupal_get_path('module', 'bookingagent') . '/css/bookingagent.css');
+
+    $reservationData = Reservation :: getReservationData($orderid)->fetchObject();
+    $r_eventid = $reservationData->eventid;
+    $r_bookingdate = $reservationData->bookingdate;
+    $r_bookingdate = $reservationData->bookingdate;
+    $r_orderid = $reservationData->orderid;
+    $r_uid = $reservationData->uid;
+    $r_bookedby = $reservationData->bookedby;
+    $r_data = unserialize($reservationData->data);
+
+    //Redirecting the user if the User Refresh Page, Otherwise somedivs content is missing,
+    //Uncomment This if you want to test the confirmations page more than once 
+   
+   if (!isset($_SESSION['formstage'])) {
+       global $base_url;
+       drupal_goto($base_url);
+       exit();
+   }
+
+
+
+    $orderdetails = uc_order_load($orderid);
+    //Billing and Payments information
+    $data = array();
+    $data['eventname'] = '';
+    $data['portid'] = '';
+    $data['departuretime'] = '';
+    $data['returntime'] = '';
+    $data['boardingtime'] = '';
+    $data['eventdate'] = '';
+    $data['portname'] = '';
+    $data['portdescription'] = '';
+    $data['portColor'] = '';
+    $data['portAddress'] = '';
+    $data['portState'] = '';
+    $data['portCity'] = '';
+    $data['portPostalCode'] = '';
+    $data['parkingdownloadpdf'] = '';
+
+
+    $scheduledEventObject = scheduledevents_load($r_eventid);
+    if (!is_null($scheduledEventObject) && isset($scheduledEventObject)) {
+        $data['eventname'] = $scheduledEventObject->name;
+        $data['portid'] = $scheduledEventObject->port_id;
+        $data['departuretime'] = $scheduledEventObject->departuretime;
+        $data['returntime'] = $scheduledEventObject->returntime;
+        $data['boardingtime'] = $scheduledEventObject->boardingtime;
+        $eventTimeUnix = strtotime($_SESSION['bookingInput']->date);
+        $eventdate = date("F d, Y", $eventTimeUnix);
+        $data['eventdate'] = $eventdate;
+
+        //Port Details
+        $portData = loadportById($data['portid']);
+
+        $data['portname'] = $portData['portname'];
+        $data['portdescription'] = $portData['portdescription'];
+        $data['portColor'] = $portData['portColor'];
+        $data['portAddress'] = $portData['portAddress'];
+        $data['portState'] = $portData['portState'];
+        $data['portCity'] = $portData['portCity'];
+        $data['portPostalCode'] = $portData['portPostalCode'];
+        $data['parkingdownloadpdf'] = $portData['parkingdownloadpdf'];
+    }
+
+    
+    
+    $parkingpdf = $data['parkingdownloadpdf'];
+
+    $cruisehtml = '<div class="cruiseDetailsInnerbox">';
+    $cruisehtml.='<div class="row-fluid package-heading">';
+    $cruisehtml.='<div class="span2 sunsetLinePadding"><div class="line"></div></div>';
+    $cruisehtml.='<div class="span8"><div class="adminconfirmationsliderCaption">' . $data['eventname'] . '</div></div>';
+    $cruisehtml.='<div class="span2 sunsetLinePadding"><div class="line"></div></div>';
+    $cruisehtml.='</div>';
+    $cruisehtml.='<div class="row-fluid">';
+    $cruisehtml.='<div class="span6">';
+    $cruisehtml.='<h3 class="bookingagentheader2">' . $data['eventdate'] . '</h3>';
+    $cruisehtml.='<p class="bookingagentheader2">Departure Port: <br> ' . $data['portname'] . '</p>';
+    $cruisehtml.='</div>';
+    $cruisehtml.='<div class="span3">';
+    $cruisehtml.= '<h3 class="bookingagentheader2" style="background: url(' . base_path() . path_to_theme() . '/assets/img/dot.png) no-repeat right 12px; padding-right: 5px;">Depart ' . $data['departuretime'] . '</h3>';
+    $cruisehtml.='</div>';
+    $cruisehtml.='<div class="span3">';
+    $cruisehtml.='<h3 class="bookingagentheader2">Return ' . $data['returntime'] . '</h3>';
+    $cruisehtml.='</div>';
+    $cruisehtml.='</div>';
+    $cruisehtml.='<div class="row-fluid textmarginTop">';
+    $cruisehtml.='<div class="span12">';
+    $cruisehtml.='<p>Your cruise departs from <b>' . $data['portname'] . '</b> <br/> <b>' . $data['portAddress'] . '</b> <b>' . $data['portCity'] . '' . $data['portState'] . ' ' . $data['portPostalCode'] . '</b><br/>';
+    $cruisehtml.='<i>Located on the south end of Lake Union in downtown Seattle</i>';
+    $cruisehtml.='</p>';
+    $cruisehtml.='<p class="textmarginTop"><i>*Please see Map & Directions for address, directions and parking information. Please arrive at least 30 minutes prior to your cruises departure time, to allow time for parking and boarding. Boarding starts 30 minutes prior to departure.</i></p>';
+    $cruisehtml.='</div>';
+    $cruisehtml.='</div>';
+    $cruisehtml.='<div class="row-fluid" id="routeMaplinesholder">';
+    $cruisehtml.='<div class="span5 "><div class="line"></div></div>';
+    $cruisehtml.='<div class="span2" align="center"><img src="' . base_path() . path_to_theme() . '/assets/img/banner-icon-img.png"></div>';
+    $cruisehtml.='<div class="span5 "><div class="line"></div></div>  </div> </div>';
+
+
+
+   if($orderdetails->payment_method=="free_order"){
+   	$creditcard = '<div class="span6">';
+   	$creditcard.='<div class="bookingagentheader3">No Charge Order</div>';
+   	$creditcard.='</div>';
+   }
+   
+   
+   if($orderdetails->payment_method=="credit"){
+   	$creditcard = '<div class="span6">';
+   	$creditcard.='<div class="bookingagentheader3">Credit Card Details</div>';
+   	$creditcard.='<div class="paymentUserDetails textmarginTop">';
+   	$creditcard.='<h5>*Card Type:</h5>';
+   	$creditcard.='<h5 class="paymentUsernames">' . $orderdetails->payment_details['cc_type'] . '</h5>';
+   	$creditcard.='</div>';
+   	$creditcard.='<div class="paymentUserDetails">';
+   	$creditcard.='<h5>*Card Number:</h5>';
+   	$creditcard.='<h5 class="paymentUsernames">**** *** *** ' . $orderdetails->payment_details['cc_number'] . '</h5>';
+   	$creditcard.='</div>';
+   	$creditcard.='<div class="paymentUserDetails">';
+   	$creditcard.='<h5>*Expiration Date:</h5>';
+   	$creditcard.='<h5 class="paymentUsernames">' . $orderdetails->payment_details['cc_exp_month'] . '/' . $orderdetails->payment_details['cc_exp_year'] . '</h5>';
+   	$creditcard.='</div>';
+   	$creditcard.='</div>';
+   }
+
+
+   
+
+
+
+   
+
+
+
+
+    //Ticket Widget gets here
+    $ticketshtml = '<table cellpadding="0" cellspacing="0" border="0">';
+    $ticketshtml.='<tr>';
+    $ticketshtml.='<td class="bookingagentheader2">Quantity</td>';
+    $ticketshtml.='<td class="bookingagentheader2">Ticket</td>';
+    $ticketshtml.='<td class="bookingagentheader2">Entree</td>';
+    $ticketshtml.='<td class="bookingagentheader2"></td>';
+    $ticketshtml.='<td class="bookingagentheader2">Price</td>';
+    $ticketshtml.='</tr>';
+    $ticketsresult = array();
+
+
+    //********************** TICKETS ******************************
+    $ticketsdata = unserialize(CartSession::getTickets($sessionid));
+    for ($i = 0; $i < count($ticketsdata); $i++) {
+        $ticketId = $ticketsdata[$i]['ticketid'];
+        $noOfTickets = (int) $ticketsdata[$i]['qty'];
+
+        if ($noOfTickets > 0) {
+            $price = $ticketsdata[$i]['price'];
+            //$ticketName = cruisetickets_load($ticketsdata[$i]['ticketid'])->title;
+            $ticketName = $ticketsdata[$i]['ticketname'];
+            for ($j = 0; $j < $noOfTickets; $j++) {
+                $id = $ticketsdata[$i]['ticketentreeids'][$j];
+                $cruiseEntreeObject = cruiseentrees_load($id);
+                $entreeName = $cruiseEntreeObject->title;
+                $commentsString = $ticketsdata[$i]['ticketentreescomments'][$j];
+                $commentArray = explode('-', $commentsString);
+                $comment = '';
+                if (isset($commentArray[2]) && $commentArray[2] != '') {
+                    $comment = '<p class="ticketdesc"><b>Dietary restrictions:</b>' . $commentArray[2] . '</p>';
+                }
+                $ticketshtml.='<tr>';
+                $ticketshtml .= '<td>1</td>';
+                $ticketshtml .= '<td>' . $ticketName . '</td>';
+                $ticketshtml .= '<td>' . $entreeName . '</td>';
+                $ticketshtml .= '<td>' . $comment . '</td>';
+                $ticketshtml .= '<td> $' . _wwcFormatPrice($price) . '</td>';
+                $ticketshtml .= '</tr>';
+            }
+        }
+    }
+
+    $specialcommentArray = Reservation::reservation_get_ticketspage_comments($orderid);
+    $specialcomment = $specialcommentArray['specialcomments'];
+
+    $occasionalcommentsArray = Reservation::reservation_get_enhancementspage_comments($orderid);
+    $occasionalcomments = $occasionalcommentsArray['ocassionaldescription'];
+
+    $ticketshtml.='<tr>';
+    $ticketshtml.='<td colspan="5">';
+    $ticketshtml.='<div class="textmarginTop">';
+    $ticketshtml.='<textarea placeholder="Special Concerns..." rows="5" class="forminputCL" readonly>' . $specialcomment . '</textarea>';
+    $ticketshtml.='<textarea placeholder="Comments..." rows="5" class="forminputCL forminputCLRight" readonly>' . $occasionalcomments . '</textarea>';
+    $ticketshtml.='</div>';
+    $ticketshtml.='</td>';
+    $ticketshtml.='</tr>';
+    $ticketshtml.='</table>';
+
+
+   
+
+
+    //********************** Enhancements ******************************
+    $enhancementData = unserialize(CartSession::getEnhancements($sessionid));
+    
+    if(count($enhancementData)>0){
+    	//Enhancement Widget gets here
+    	$enhancementhtml = '<table cellpadding="0" cellspacing="0" border="0">';
+    	$enhancementhtml.='<tr>';
+    	$enhancementhtml.='<td class="bookingheader2">Quantity</td>';
+    	$enhancementhtml.='<td class="bookingheader2">Enhancement Name</td>';
+    	$enhancementhtml.='<td class="bookingheader2">Comments</td>';
+    	$enhancementhtml.='<td class="bookingheader2">Unit price</td>';
+    	$enhancementhtml.='<td class="bookingheader2">Price</td>';
+    	$enhancementhtml.='</tr>';
+    	$ticketsresult = array();
+    	
+    	for ($i = 0; $i < count($enhancementData); $i++) {
+    		$totalPrice = $enhancementData[$i]['qty'] * $enhancementData[$i]['price'];
+    		$enhancementhtml.='<tr>';
+    		$enhancementhtml .= '<td>' . $enhancementData[$i]['qty'] . '</td>';
+    		$enhancementhtml .= '<td>' . $enhancementData[$i]['name'] . '</td>';
+    		$enhancementhtml .= '<td>' . $enhancementData[$i]['comments'] . '</td>';
+    		$enhancementhtml .= '<td>$' . _wwcFormatPrice($enhancementData[$i]['price']) . '</td>';
+    		$enhancementhtml .= '<td>$' . _wwcFormatPrice($totalPrice) . '</td>';
+    		$enhancementhtml .= '</tr>';
+    		$ticketId = $ticketsdata[$i]['ticketid'];
+    		$noOfTickets = (int) $ticketsdata[$i]['qty'];
+    	}
+    	$enhancementhtml.='</table>';
+    }
+  
+
+   
+
+    $chargeswidget = '<div class="span7 printcssfee">';
+
+    
+
+    //tax Line Item
+    $taxLineItemSerialized = CartSession::getTaxLineItem($sessionid);
+	if ($taxLineItemSerialized) {
+		$taxLineItemArray = unserialize ( $taxLineItemSerialized );
+		$taxlineitem = reset ( $taxLineItemArray );
+		
+		if(!empty($taxlineitem ['amt']) && $taxlineitem ['amt']!=0){
+			$chargeswidget.= '<div class="span7">';
+			$chargeswidget .= '<div class="chargesWrapper">';
+			$chargeswidget .= '<h3 class="chargesWrapperLeft bookingheader3">' . $taxlineitem ['taxname'] . '</h3><span></span><h3 class="chargesWrapperRight bookingheader3">$' . _wwcFormatPrice ( $taxlineitem ['amt'] ) . '</h3>';
+			$chargeswidget .= '</div>';
+		}
+		
+	}
+
+
+
+
+
+
+    //discount Line Item
+    $discountLineItemSerialized = CartSession::getDiscountLineItem($sessionid);
+	if ($discountLineItemSerialized) {
+		$discountLineItemArray = unserialize ( $discountLineItemSerialized );
+		$discountlineitem = reset ( $discountLineItemArray );
+		if(!empty($discountlineitem ['amt']) && $discountlineitem ['amt']!=0){
+			$chargeswidget .= '<div class="chargesWrapper">';
+			$chargeswidget .= '<h3 class="chargesWrapperLeft bookingheader3">' . $discountlineitem ['discountname'] . '</h3><span></span><h3 class="chargesWrapperRight bookingheader3">-$' . _wwcFormatPrice ( $discountlineitem ['amt'] ) . '</h3>';
+			$chargeswidget .= '</div>';
+		}
+		
+	}
+
+
+
+
+
+    //*******************   CRUISE FEE  ***********************
+    $cruiseFeeItems = CartSession::getCruiseFeeItems($sessionid);
+    $totalCruisefeeAmt = 0;
+    foreach ($cruiseFeeItems as $item) {
+
+        $feeName = $item['title'];
+        $price = $item['totalamt'];
+        $amountFormattedString = number_format($price, 2);
+
+        $amtArray = explode('.', $amountFormattedString);
+        $amtWholeNumber = 0;
+        $amtDecimalNumber = 0;
+        if (isset($amtArray)) {
+            $amtWholeNumber = $amtArray[0];
+            $amtDecimalNumber = $amtArray[1];
+        }
+        $calamt = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+        $chargeswidget.='<div class="chargesWrapper">';
+        $chargeswidget.='<h3 class="chargesWrapperLeft bookingheader3">' . $feeName . '</h3><span></span><h3 class="chargesWrapperRight bookingheader3">$' . $calamt . '</h3>';
+        $chargeswidget.= '</div>';
+    }
+
+
+
+    //*************************** COUPON *********************************
+    $cpn = unserialize(CartSession::getPromocode($sessionid));
+    $cpncode = false;
+    $cpndiscount = false;
+    foreach ($cpn as $key => $value) {
+        $cpncode = $key;
+        $cpndiscount = $value;
+    }
+    if ($cpndiscount) {
+        $amountFormattedString = number_format($cpndiscount, 2);
+        $amtArray = explode('.', $amountFormattedString);
+        $amtWholeNumber = 0;
+        $amtDecimalNumber = 0;
+        if (isset($amtArray)) {
+            $amtWholeNumber = $amtArray[0];
+            $amtDecimalNumber = $amtArray[1];
+        }
+        $calamt = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+        $chargeswidget .= '<div class="chargesWrapper">';
+        $chargeswidget .= '<h3 class="chargesWrapperLeft bookingheader3">Promocode</h3><span></span><h3 class="chargesWrapperRight bookingheader3">-$' . $calamt . '</h3>';
+        $chargeswidget.='</div>';
+    }
+
+
+    //*************************** GIFT CARD *********************************
+
+    $giftCardSerialized = CartSession::getGiftCard($sessionid);
+    if ($giftCardSerialized) {
+        $giftCardArray = unserialize($giftCardSerialized);
+        $giftCardCode = '';
+        $giftCardAmount = '';
+
+        foreach ($giftCardArray as $key => $values) {
+            //var_dump($giftCardArray['4101000000000001']['deductedamount']);
+            $giftCardCode = $key;
+            $giftCardAmount = $giftCardArray[$key]['deductedamount'];
+            $amountFormattedString = number_format($giftCardAmount, 2);
+            $amtArray = explode('.', $amountFormattedString);
+            $amtWholeNumber = 0;
+            $amtDecimalNumber = 0;
+            if (isset($amtArray)) {
+                $amtWholeNumber = $amtArray[0];
+                $amtDecimalNumber = $amtArray[1];
+            }
+            $calamt = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+
+            $chargeswidget.='<div class="chargesWrapper">';
+            $chargeswidget.='<h3 class="chargesWrapperLeft bookingheader3">Gift Card</h3><span></span><h3 class="chargesWrapperRight bookingheader3">-$' . $calamt . '</h3>';
+            $chargeswidget.='</div>';
+        }
+    }
+
+
+
+    //voucher codes
+    $vouchercodesserialized = CartSession::getVoucherCodes($sessionid);
+    if ($vouchercodesserialized) {
+        $vouchercodes = unserialize($vouchercodesserialized);
+        foreach ($vouchercodes as $code => $amt) {
+            $amountFormattedString = number_format($amt, 2);
+            $amtArray = explode('.', $amountFormattedString);
+            $amtWholeNumber = 0;
+            $amtDecimalNumber = 0;
+            if (isset($amtArray)) {
+                $amtWholeNumber = $amtArray[0];
+                $amtDecimalNumber = $amtArray[1];
+            }
+            $calamt = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+            $chargeswidget.='<div class="chargesWrapper">';
+            $chargeswidget.='<h3 class="chargesWrapperLeft bookingheader3">Voucher:' . $code . '</h3><span></span><h3 class="chargesWrapperRight bookingheader3">-$' . $calamt . '</h3>';
+            $chargeswidget.='</div>';
+        }
+    }
+
+
+
+
+
+
+
+    //*************************** SUB TOTAL *********************************
+    $orderSubTotal = CartSession::getOrderSubTotal($sessionid);
+    $amountFormattedString = number_format($orderSubTotal, 2);
+    $amtArray = explode('.', $amountFormattedString);
+    $amtWholeNumber = 0;
+    $amtDecimalNumber = 0;
+    if (isset($amtArray)) {
+        $amtWholeNumber = $amtArray[0];
+        $amtDecimalNumber = $amtArray[1];
+    }
+    $calamt = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+    $chargeswidget.='<div class="chargesWrapper">';
+    $chargeswidget.='<h3 class="chargesWrapperLeft bookingagentheader3">Subtotal</h3><span></span><h3 class="chargesWrapperRight bookingagentheader3">$' . $calamt . '</h3>';
+    $chargeswidget.='</div>';
+
+    //Tax
+    $totalTaxamt = CartSession::getTaxAmt($sessionid);
+    $calamt = _wwcFormatPrice($totalTaxamt);
+    $chargeswidget.='<div class="chargesWrapper">';
+    $chargeswidget.='<h3 class="chargesWrapperLeft bookingheader3">Tax</h3><span></span><h3 class="chargesWrapperRight bookingheader3">$' . $calamt . '</h3>';
+    $chargeswidget.='</div>';
+
+
+    //*************************** TOTAL *********************************
+    $orderTotal = CartSession::getOrderTotal($sessionid);
+    $amountFormattedString = number_format($orderTotal, 2);
+    $amtArray = explode('.', $amountFormattedString);
+    $amtWholeNumber = 0;
+    $amtDecimalNumber = 0;
+    if (isset($amtArray)) {
+        $amtWholeNumber = $amtArray[0];
+        $amtDecimalNumber = $amtArray[1];
+    }
+    $calamt = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+
+    $chargeswidget.='<div class="row-fluid textmarginTop">';
+    $chargeswidget.='<div class="span12" align="right">';
+    $chargeswidget.='<span class="bookingagentheader1">Total</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="bookingagentheader1">$' . $calamt . '</span>';
+    $chargeswidget.='</div>';
+    $chargeswidget.='</div>';
+    $chargeswidget.='</div></div>';
+
+
+    
+
+    //$guestdob=Reservation :: reservation_get_user_personal_information($orderid)['dob'];
+
+    $guestdobArray = Reservation :: reservation_get_user_personal_information($orderid);
+    $guestdob = $guestdobArray['dob'];
+    $templateresouces = array(
+        'orderid' => $orderid,
+        'cruiseboxwidget' => $cruisehtml,
+        'billingwidget' => _addressfilteration($orderdetails, 'billing', $guestdob),
+        'guestwidget' => _addressfilteration($orderdetails, 'guest', $guestdob),
+        'creditwidget' => $creditcard,
+        'ticketswidget' => $ticketshtml,
+        'enhancementwidget' => $enhancementhtml,
+        'subcharges' => $chargeswidget,
+        'parkingpdf' => $parkingpdf,
+        'directions' => $parkingDirections,
+        'parkingImg' => $parkingImg,
+        'cruiseportid' => $data['portid'],
+        'cruiseportname' => $cruisePortname,
+        'cruiseportaddrs' => $cruisePortAddress,
+        'cruiseportpdfdownload' => $cruisePortDownloadpdf
+    );
+
+
+
+    unset($_SESSION['cruisecardsession']);
+    unset($_SESSION['formstage']);
+
+    
+    return theme('bookingagentconfirmation', $templateresouces);
+}
+
+function _wwcFormatPrice($price) {
+	
+	$price=(double)$price;
+	$u_price=sprintf("%.2f",$price);
+	//$amountFormattedString = number_format($u_price, 2);
+	$amtArray = explode('.', $u_price);
+	$amtWholeNumber = 0;
+	$amtDecimalNumber = 0;
+	if (isset($amtArray)) {
+		$amtWholeNumber = $amtArray[0];
+		$amtDecimalNumber = $amtArray[1];
+	}
+	$formattedAmount = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+	
+	
+//     $amountFormattedString = number_format($price, 2);
+//     $amtArray = explode('.', $amountFormattedString);
+//     $amtWholeNumber = 0;
+//     $amtDecimalNumber = 0;
+//     if (isset($amtArray)) {
+//         $amtWholeNumber = $amtArray[0];
+//         $amtDecimalNumber = $amtArray[1];
+//     }
+//     $formattedAmount = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+
+    return $formattedAmount;
+}
+
+//Mask Credit Card (xxxxx1234)
+function _maskCreditCard($cc) {
+    $cc_length = strlen($cc);
+    // Replace all characters of credit card except the last four
+    for ($i = 0; $i < $cc_length - 4; $i++) {
+        $cc[$i] = 'X';
+    }
+    // Return the masked Credit Card #
+    return $cc;
+}
+
+//get total amount
+function _getcalculatedamt($subtotal) {
+
+    $totalamt = 0;
+    $taxes = uc_taxes_rate_load();
+    foreach ($taxes as $taxvalue) {
+        $totalamt+=$subtotal * $taxvalue->rate;
+    }
+
+
+    //load custom line items
+    $cruiseid = $_SESSION['bookingInput']->eventid;
+    $cruiselineitems = uc_cruise_fees_load($cruiseid);
+//    $cuistomline = uccustomlineitems_load();
+    foreach ($cruiselineitems as $linevalue) {
+        $totalamt+=$linevalue->amount;
+    }
+
+
+    //look for Giftcard line item get minius and also promotion code
+    return $totalamt + $subtotal;
+}
+
+function _addressfilteration($order, $type, $guestdob) {
+    switch ($type) {
+        case 'billing':
+            //Guest Details
+            $addressthtml = '<div class="span6 cpaddContainer billingmargintop">';
+            $addressthtml.='<div class="bookingheader3">Billing Address</div>';
+            $addressthtml.='<div class="paymentUserDetails textmarginTop">';
+            $addressthtml.='<h5>*First Name:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->billing_first_name . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Last Name:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->billing_last_name . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Address:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->billing_street1 . '</h5>';
+            $addressthtml.='</div>';
+            
+            
+            if(!empty($order->billing_street2)){
+            	$addressthtml.='<div class="paymentUserDetails">';
+            	$addressthtml.='<h5>&nbsp; Address 2:</h5>';
+            	$addressthtml.='<h5 class="paymentUsernames">' . $order->billing_street2 . '</h5>';
+            	$addressthtml.='</div>';
+            }
+            
+            
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*City:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->billing_city . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*State/province:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . uc_zone_get_by_id($order->billing_zone) . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Zip:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->billing_postal_code . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Phone Number:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->billing_phone . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Email Address:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->primary_email . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='</div>';
+
+            return $addressthtml;
+            break;
+        case 'guest':
+        	
+        	
+        	$guestmail='';
+        	$account=user_load($order->uid);
+        	$guestmail=isset($account->mail) ? $account->mail : '';
+        	
+        	
+            $addressthtml = '<div class="span6 cpaddContainer">';
+            $addressthtml.='<div class="bookingheader3">Guest Details</div>';
+            $addressthtml.='<div class="paymentUserDetails textmarginTop">';
+            $addressthtml.='<h5>*First Name:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->delivery_first_name . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Last Name:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->delivery_last_name . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Address:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->delivery_street1 . '</h5>';
+            $addressthtml.='</div>';
+            
+            if(!empty($order->delivery_street2)){
+            	$addressthtml.='<div class="paymentUserDetails">';
+            	$addressthtml.='<h5>&nbsp; Address 2:</h5>';
+            	$addressthtml.='<h5 class="paymentUsernames">' . $order->delivery_street2 . '</h5>';
+            	$addressthtml.='</div>';
+            }
+            
+            
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*City:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->delivery_city . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*State/province:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . uc_zone_get_by_id($order->delivery_zone) . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Zip:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->delivery_postal_code . '</h5>';
+            $addressthtml.='</div>';
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Phone Number:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $order->delivery_phone . '</h5>';
+            $addressthtml.='</div>';
+
+            $addressthtml.='<div class="paymentUserDetails">';
+            $addressthtml.='<h5>*Email Address:</h5>';
+            $addressthtml.='<h5 class="paymentUsernames">' . $guestmail . '</h5>';
+            $addressthtml.='</div>';
+            
+            if($guestdob!=""){
+            	$addressthtml.='<div class="paymentUserDetails">';
+            	$addressthtml.='<h5>Birth Date:</h5>';
+            	$dayandMonth=explode('-',$guestdob);
+            	$month=$dayandMonth[0];
+            	$day=$dayandMonth[1];
+            	 
+            	$result["month"] = $month;
+            	$monthNum = sprintf("%02s", $result["month"]);
+            	$timestamp = mktime(0, 0, 0, $monthNum, 10);
+            	$monthName = date("F", $timestamp);
+            	$dob=$monthName."-".$day;
+            	 
+            	$addressthtml.='<h5 class="paymentUsernames">' . $dob. '</h5>';
+            	$addressthtml.='</div>';
+            	
+            }
+            $addressthtml.='</div>';
+         
+            return $addressthtml;
+            break;
+
+
+        default:
+            break;
+    }
+}

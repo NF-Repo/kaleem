@@ -1,0 +1,729 @@
+/* 
+    Document   : bookingagent-mediaqueries
+    Created on : Oct 4, 2013, 11:03:30 AM
+    Author     : LSN5
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* Ipad mini portrait resolution styles */
+@media (min-width: 767px) and (max-width: 979px) {
+    #edit-steptwo .span7{
+	width: 100%;
+}
+    .subMenu ul li{
+        padding-left:13px !important;
+        padding-right:13px !important;
+    }
+    #edit-stepone .span7{
+    width: 100%;
+    }
+    /*suresh Style changed Star Here*/
+    
+/*    .subMenu ul li.active{
+        padding-left:13px !important;
+        padding-right:13px !important;
+    }*/
+    responsiveMobile groupmarginTop
+    /*suresh Style changed End Here*/
+    
+    .contentbox-inner .row-fluid fieldset .fieldset-wrapper .span7{
+        width: 100%;
+        float: none;
+    }
+    .contentbox-inner .row-fluid fieldset .fieldset-wrapper .span5{
+        width: 100%;
+        float: none;
+        margin-left: 0px;
+        margin-top: 5%;
+    }
+    
+    .contentbox-inner .row-fluid .span7.bookingagentPaymentDetails{
+        width: 79%;
+        float: none;
+    }
+    .contentbox-inner .row-fluid .span5{
+        width: 100%;
+        float: none;
+        margin-left: 0px;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+    .bookfield{
+        height: auto;
+        overflow: hidden;
+    }
+    .ordersummaryBox .sliderBoxout{
+        margin: 5% 5% 5% 0%; 
+    }
+    
+    /* Confirmation page styles */
+    .confirmationWrapper .connectMain{
+        width: 95%;
+    }
+    
+    .confirmationContainer .confirmationContainerleft{
+        width: 100% !important;
+        float: none;
+    }
+    
+    .confirmationContainer .confirmationContainerright{
+        width: 60% !important;
+        float: none;
+    }
+    
+    .bookingagentTicketDetails{
+        width: 100% !important;
+        float: none;
+    }
+    
+    .confirmPricingDetails .span7{
+        width: 100% !important;
+    }
+    .chargesWrapper h3.chargesWrapperLeft{
+        line-height: 32px;
+    }
+    
+    
+	.paymentSubmitButton{
+        width: 100% !important;
+    }
+    
+    .paymentSubmitButton .row-fluid .span4{
+        width: 100%;
+        float: left;
+    }
+    
+    .paymentSubmitButton .row-fluid .booknow.span4{
+        width: 100%;
+        float: left;
+    }
+    
+    control-group .bookingagentPaymentBtnWrapper .row-fluid .span3 .line{
+        margin-top: 13px !important;
+    }
+        .row-fluid .span4 {
+   width: 13.914894% !important;
+}
+
+}
+
+/*Suresh Style Start Here for media qurie 767px*/
+@media (max-width: 767px) {
+ 
+    .subMenu ul li {
+        font-size: 13px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+    .subMenu ul li.active {
+        font-size: 13px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+    .cpaddContainer{
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+      .row-fluid .span4 {
+   width: 30.914894% !important;
+}
+    
+/*    .widgettitleHeader{
+        margin-top:-43px !important;
+        margin-botton:-12px !important;
+    }*/
+    
+}
+
+
+@media screen and (min-width: 480px) and (max-width: 767px){
+
+    .paymentSubmitButton .booknow {
+width: 30.33% !important;
+    }
+    
+   .responsiveMobile {
+      display: inline!important;
+       color: #555555;
+        padding: 4px 6px;
+        vertical-align: middle;
+      }
+      
+     .responsiveWeb ul {
+        display: none !important;
+         }
+   
+   .menuRelative{
+        height: 45px !important;
+    }
+    
+    .bookfield select{
+        margin-left: 0px !important;
+    }
+
+    .mobilebookingagentContainer .textareaStyleMedium{
+        width: 100% !important;
+}
+    
+    .mobilebookingagentContainer #reservationCheckboxPopup{
+        top: 10% !important;
+       /* width: 283px !important;*/
+       width: auto !important;
+    }
+    
+    #reservationCheckboxPopup .booknow{
+        height: 31px;
+    }
+    
+    #reservationCheckboxPopup .resCheckboxshare{
+        width: 104px !important;
+    }
+    
+/*    .ordersummaryBox{
+        width: 100% !important;
+        margin-bottom: 20px;
+    }*/
+    
+    .ordersummaryBox .sliderBoxout{
+        margin: 0%;
+    }
+    
+    .ordersummaryBox .orderBoxInner{
+        width: 92% !important;
+        padding: 4%;
+    }
+    
+    .ordersummaryBox .orderBoxInner .widgettitleHeader .span2{
+        width: 10% !important;
+        float: left;
+    }
+    
+    .ordersummaryBox .orderBoxInner .widgettitleHeader .span8{
+        width: 72% !important;
+        float: left;
+    }
+    
+    .paymentSubmitButton{
+        width: 100% !important;
+    }
+    
+    .paymentSubmitButton .row-fluid .span4{
+        width: 20%;
+        float: left;
+    }
+    
+    .paymentSubmitButton .row-fluid .span4 .line{
+        margin-top: 13%;
+    }
+    
+    .paymentSubmitButton .row-fluid .booknow.span4{
+        width: 60%;
+        float: left;
+    }
+    
+    .ordersummaryBox .widgettitleHeader .span8 h2{
+        font-size: 21px !important;
+    }
+    
+    /* enhancement page styles */
+    .bookingagentPaymentBtnWrapper{
+        width: 100% !important;
+        margin-top: 10%;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .span3{        
+        width: 10%;
+        float: left;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .span3 .line{        
+        margin-top: 14px;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .booknowBack{        
+        width: 98px !important;
+        margin-right: 3px;
+        float: left;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .booknowBack .booknowBack-inner{        
+        width: 91px !important;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .booknow{
+        float: left;
+        width: 48%;
+    }
+    
+    .ordersummaryBox .widgetBody .taxCharges .chargesWrapper span{
+        width: 42%;
+    }
+    
+    .ordersummaryBox .widgetBody .totalDetails h2{
+        font-size: 22px !important;
+    }
+    
+    .paymentLable{
+        line-height: 1.8em !important;
+    }
+    
+    /* payment page styles */
+  /*  .bookingagentPaymentDetails .paymentPromoCode{
+        float: none !important;
+    }*/
+    .promocodeVoucherWrapper .booknow{
+        width: 100px !important;
+        margin-top: 5px;
+    }
+    
+    .promocodeVoucherWrapper .booknow{
+	    margin-left: 27px !important;
+		float: left !important;
+		width: 15% !important;
+	}
+    
+    /*.guestDetailscontent .form-item-guest-firstname, .guestDetailscontent .form-item-guest-city, .guestDetailscontent .form-item-guest-zipcode, .guestDetailscontent .form-item-guest-dob{
+        float: none !important;
+    }*/
+    
+    .billingDetailscontent .form-item-billing-firstname, .billingDetailscontent .form-item-billing-city, .billingDetailscontent .form-item-billing-zipcode{
+        float: none !important;
+    }
+    
+    .creditdatesWrapholder{
+        margin-left: 0px !important;
+    }
+    
+    /*.bookingagentPaymentDetails .inputfieldLarge{
+        width: 230px !important;
+    }*/
+    
+    .guestDetailscontent fieldset legend, .billingDetailscontent fieldset legend, .creditDetailscontent fieldset legend{
+        margin-bottom: 0px !important;
+        margin-top: 10px;
+    }
+    
+    /* confirmation page styles */
+    .bookingagentSubTitle{
+        font-size: 20px !important;
+    }
+    
+    .bookingagentheader1{
+        font-size: 22px !important;
+    }
+    
+    .cruiseDetailsInnerbox .row-fluid .span2{
+        width: 10%;
+        float: left;
+    }
+    
+    .cruiseDetailsInnerbox .row-fluid .span2 .line{
+        margin-top: 50%;
+    }
+    
+    .cruiseDetailsInnerbox .row-fluid .span8{
+        width: 80%;
+        float: left;
+    }
+    
+    .cruiseDetailsInnerbox #routeMaplinesholder .span5{
+        width: 40%;
+        float: left;
+    }
+    
+    .cruiseDetailsInnerbox #routeMaplinesholder .span5 .line{
+        margin-top: 14%;
+    }
+    
+    .cruiseDetailsInnerbox #routeMaplinesholder .span2{
+        width: 20%;
+        float: left;
+    }
+    
+    .confirmationContainerright .row-fluid .span3{
+        float: left;
+        width: 32%;
+    }
+    
+    .confirmationContainerright .row-fluid .span9{
+        float: left;
+        width: 68% !important;
+    }
+    
+    .confirmationContainerright .groupdirectiondesc{
+        width: 100% !important;
+    }
+    
+    .billingmargintop{
+        margin-top: 5%;
+    }
+    
+    .chargesWrapper span{
+        width: 38% !important;
+    }
+    
+    .cpaddContainer{
+        height: auto;
+        overflow: hidden;
+    }
+    
+  
+/*        .line{
+         height: 0px !important;
+         width: 100%;
+         margin-top: 1% ;
+          background: #bc9b6a;
+          margin-bottom: -30px;
+        }*/
+}
+/*Suresh Style End Here for media qurie 767px*/
+
+/* Iphone portrait and landscape resolution styles */
+@media (max-width: 480px) {
+    
+    .menuRelative{
+        height: 45px !important;
+    }
+    
+     .responsiveMobile {
+      display: inline!important;
+       color: #555555;
+        padding: 4px 6px;
+        vertical-align: middle;
+      }
+      
+     .responsiveWeb ul {
+     display: none !important;
+}
+
+.row-fluid .span4 {
+width: 13.914894% !important;
+}
+    .menuRelative{
+        height: 45px !important;
+    }
+    
+    .bookfield select{
+        margin-left: 0px !important;
+    }
+
+    .mobilebookingagentContainer .textareaStyleMedium{
+        width: 100% !important;
+}
+    
+    .mobilebookingagentContainer #reservationCheckboxPopup{
+        top: 10% !important;
+      /*  width: 283px !important;*/
+      width: auto !important;
+    }
+    
+    #reservationCheckboxPopup .booknow{
+        height: 31px;
+    }
+    
+    #reservationCheckboxPopup .resCheckboxshare{
+        width: 104px !important;
+    }
+    
+    .ordersummaryBox{
+        width: 100% !important;
+        margin-bottom: 20px;
+    }
+    
+    .ordersummaryBox .sliderBoxout{
+        margin: 0%;
+    }
+    
+    .ordersummaryBox .orderBoxInner{
+        width: 92% !important;
+        padding: 4%;
+    }
+    
+    .ordersummaryBox .orderBoxInner .widgettitleHeader .span2{
+        width: 10% !important;
+        float: left;
+    }
+    
+    .ordersummaryBox .orderBoxInner .widgettitleHeader .span8{
+        width: 80% !important;
+        float: left;
+    }
+    
+    .paymentSubmitButton{
+        width: 100% !important;
+    }
+    
+    .paymentSubmitButton .row-fluid .span4{
+        width: 20%;
+        float: left;
+    }
+    
+    .paymentSubmitButton .row-fluid .span4 .line{
+        margin-top: 25%;
+    }
+    
+    .paymentSubmitButton .row-fluid .booknow.span4{
+        width: 60%;
+        float: left;
+    }
+    
+    .ordersummaryBox .widgettitleHeader .span8 h2{
+        font-size: 21px !important;
+    }
+    
+    /* enhancement page styles */
+    .bookingagentPaymentBtnWrapper{
+        width: 100% !important;
+        margin-top: 10%;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .span3{        
+        width: 10%;
+        float: left;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .span3 .line{        
+        margin-top: 14px;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .booknowBack{        
+        width: 98px !important;
+        margin-right: 3px;
+        float: left;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .booknowBack .booknowBack-inner{        
+        width: 91px !important;
+    }
+    
+    .bookingagentPaymentBtnWrapper .row-fluid .booknow{
+        float: left;
+        width: 48%;
+    }
+    
+    .ordersummaryBox .widgetBody .taxCharges .chargesWrapper span{
+        width: 42%;
+    }
+    
+    .ordersummaryBox .widgetBody .totalDetails h2{
+        font-size: 22px !important;
+    }
+    
+    .paymentLable{
+        line-height: 1.8em !important;
+    }
+    
+    /* payment page styles */
+    .bookingagentPaymentDetails .paymentPromoCode{
+        float: none !important;
+    }
+    .promocodeVoucherWrapper .booknow{
+        width: 100px !important;
+        margin-top: 5px;
+    }
+    
+    .promocodeVoucherWrapper .booknow{
+	    margin-left: 27px !important;
+		float: left !important;
+		width: 15% !important;
+	}
+    
+    .guestDetailscontent .form-item-guest-firstname, .guestDetailscontent .form-item-guest-city, .guestDetailscontent .form-item-guest-zipcode, .guestDetailscontent .form-item-guest-dob{
+        float: none !important;
+    }
+    
+    .billingDetailscontent .form-item-billing-firstname, .billingDetailscontent .form-item-billing-city, .billingDetailscontent .form-item-billing-zipcode{
+        float: none !important;
+    }
+    
+    .creditdatesWrapholder{
+        margin-left: 0px !important;
+    }
+    
+    .bookingagentPaymentDetails .inputfieldLarge{
+        width: 230px !important;
+    }
+    
+    .guestDetailscontent fieldset legend, .billingDetailscontent fieldset legend, .creditDetailscontent fieldset legend{
+        margin-bottom: 0px !important;
+        margin-top: 10px;
+    }
+    
+    /* confirmation page styles */
+    .bookingagentSubTitle{
+        font-size: 20px !important;
+    }
+    
+    .bookingagentheader1{
+        font-size: 22px !important;
+    }
+    
+    .cruiseDetailsInnerbox .row-fluid .span2{
+        width: 10%;
+        float: left;
+    }
+    
+    .cruiseDetailsInnerbox .row-fluid .span2 .line{
+        margin-top: 50%;
+    }
+    
+    .cruiseDetailsInnerbox .row-fluid .span8{
+        width: 80%;
+        float: left;
+    }
+    
+    .cruiseDetailsInnerbox #routeMaplinesholder .span5{
+        width: 40%;
+        float: left;
+    }
+    
+    .cruiseDetailsInnerbox #routeMaplinesholder .span5 .line{
+        margin-top: 14%;
+    }
+    
+    .cruiseDetailsInnerbox #routeMaplinesholder .span2{
+        width: 20%;
+        float: left;
+    }
+    
+    .confirmationContainerright .row-fluid .span3{
+        float: left;
+        width: 32%;
+    }
+    
+    .confirmationContainerright .row-fluid .span9{
+        float: left;
+        width: 68% !important;
+    }
+    
+    .confirmationContainerright .groupdirectiondesc{
+        width: 100% !important;
+    }
+    
+    .billingmargintop{
+        margin-top: 5%;
+    }
+    
+    .chargesWrapper span{
+        width: 38% !important;
+    }
+    
+    .cpaddContainer{
+        height: auto;
+        overflow: hidden;
+    }
+
+}
+.mobilebookingagentContainer textarea.span6{
+	width: 96% !important;
+}
+@media (min-width: 767px) and (max-width: 979px) {
+	.lineitemcharge input,.lineitemcharge  select{
+	width: 150px;
+	}
+}
+.lineitemcharge caption{
+	text-align: left;
+}
+@media (max-width: 534px){
+	.billingDetailscontent .form-item,#edit-credit .form-item,.guestDetailscontent .form-item{
+	width: 100% !important;
+	}
+	
+	
+@media screen and (max-width: 560px) {
+.unitPriceClass{
+	display: none !important;
+}
+.commentsClass{
+	float: left !important;
+}
+.quantityHeader,.quantityClass{
+	width: 26% !important;
+float: left !important;
+text-align: center;
+}
+.ticketHeader,.ticketClass{
+	width: 48% !important;
+float: left !important;
+text-align: center;
+}
+.entreeHeader{
+	width: 0% !important;
+float: left !important;
+text-align: center;
+display: none !important;
+}
+.entreeCheckBoxHeader{
+	width: 0% !important;
+float: left !important;
+}
+.priceHeader{
+	float: left !important;
+width: 25% !important;
+text-align: center;
+}
+
+.entreeClass{
+	width: 75% !important;
+}
+.entreeCheckBoxClass{
+	width: 75% !important;
+float: left !important;
+text-align: left;
+}
+.priceClass{
+	float: left !important;
+width: 25% !important;
+margin-top: -71px !important;
+text-align: center;
+}
+.bookingTicketDetails .priceClass{
+	margin-top: -29px !important;
+}
+}
+
+
+@media (min-width: 560px){
+	.unitPriceClass{
+	display: block;
+}
+.quantityHeader,.quantityClass,.priceClass,.ticketHeader,.ticketClass{
+	width: 15% !important;
+	float: left !important;
+	text-align: center;
+	margin-left:0px !important;
+}
+.entreeHeader{
+	width: 29% !important;
+display: block !important;
+float: left !important;
+	text-align: center;
+	margin-left:0px !important;
+}
+.entreeCheckBoxHeader{
+	width: 25% !important;
+	float: left !important;
+	margin-left:0px !important;
+}
+.priceHeader{
+width: 15% !important;
+float: left !important;
+	text-align: center;
+	margin-left:0px !important;
+}
+
+.entreeClass{
+	width: 29% !important;
+	float: left !important;
+	text-align: center;
+	margin-left:0px !important;
+}
+.entreeCheckBoxClass{
+	width: 26% !important;
+	float: left !important;
+	text-align: left;
+	margin-left:0px !important;
+}
+}

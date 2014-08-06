@@ -1,0 +1,5 @@
+name = Agent Booking System
+description = Admin User Staffadmin/Aget Booking Multistep Form
+core = 7.x
+version = VERSION
+package = WWC

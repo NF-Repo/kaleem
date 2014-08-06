@@ -1,0 +1,1634 @@
+/* 
+    Document   : customer_survey.css
+    Created on : 30-Apr-2012, 10:23:09
+    Author     : j.davidson
+
+*/
+#content{
+  display: block  !important;
+}
+
+.contentbox-inner{
+    padding-top: 0px !important;
+}
+
+#menu
+{
+  position: static !important;
+}
+
+#bookingagent-form #edit-stepmenu ul
+{
+  /*list-style: none;*/
+}
+#bookingagent-form #edit-stepmenu ul li
+{
+/*  float: left;
+  padding-left: 5px;*/
+}
+
+#bookingagent-form #edit-stepmenu ul li.active {
+/*  font-weight:bold;
+  color:red;*/
+}
+
+.thumbscontainer {
+  float: left;
+  width: 50%;
+}
+
+
+/*laxmi*/
+/*.ticketmenu
+{
+    list-style: none;
+}*/
+
+.menuRelative{
+    position: relative;
+    width: 100%;
+    height: 150px;
+}
+
+.ticketTitle
+{
+  font-size: 50px;
+  font-family:"CrimsonSemiBold";
+  line-height: 50px;
+  text-transform: uppercase;
+  color: #454444;
+  margin-bottom:0px;
+  margin-top: 2%;
+}
+.subMenu
+{
+  width:auto;
+  position:absolute;
+  border: #bc9b6a 1px solid;
+  top: 87px;
+  left: 0px;
+}
+.subMenu ul
+{
+  list-style:none;
+  margin:0px;
+}
+
+.subMenu ul li 
+{
+  float: left;
+  background:rgba(252,251,249,0.8);
+  color:#454444;
+  font-family:georgia;
+  font-size:15px;
+  float:left;
+  line-height:37px;
+  text-decoration:none;
+  padding-left:25px;
+  padding-right:25px;
+  text-shadow: none !important;
+  text-transform: uppercase;
+  /*cursor: pointer;*/
+  transition: all ease-in-out 0.3s;
+  -webkit-transition: all ease-in-out 0.3s;
+  -moz-transition: all ease-in-out 0.3s;
+  -o-transition: all ease-in-out 0.3s;
+}
+
+/*.subMenu ul li:hover
+{
+    background: #454444 !important;
+    color:#FFF;
+    font-family:georgia;
+    font-size:15px;
+    float:left;
+    line-height:37px;
+    text-decoration:none;
+    padding-left:25px;
+    padding-right:25px;
+    text-shadow: none !important;
+}*/
+
+.subMenu ul li.active
+{
+  background: #454444 !important;
+  color:#FFF;
+  font-family:georgia;
+  font-size:15px;
+  float:left;
+  line-height:37px;
+  text-decoration:none;
+  padding-left:25px;
+  padding-right:25px;
+  text-shadow: none !important;
+}
+
+.share{
+    position: relative !important;
+    left: 0% !important;
+    top: 0% !important;
+}
+
+.shreBtnmargin{
+    margin-bottom: 30px;
+}
+
+.shareBtnWidth{
+    width: 130px !important;
+}
+
+/* Parchase Tickets page styles */
+.ticketpriceqty{
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 195px 10px;
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    height: 32px;
+    line-height: 20px;
+}
+
+/*.inputsWWC{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+}*/
+
+.forminputTextarea{
+    border: #c9ae87 1px solid;
+    margin-bottom: 0px;
+    border-radius: 0px;
+}
+
+.form-item .grippie{
+    display: none;
+}
+
+.paymentSubmitButton{
+    width: 100%;
+    max-width:500px;
+    height: auto;
+    margin: 0px auto;
+}
+/*Suresh Style Start Here*/
+.paymentSubmitButton .span4{
+    width: 33.3% !important;
+    float: left !important;
+    margin-left: 0px !important;
+}
+
+.paymentSubmitButton .booknow{
+    width: 31.33% !important;
+    margin-left: 1% !important;
+    margin-right: 1%;
+    float: left;
+}
+/*Suresh Style End Here*/
+
+.booknow .booknow-inner .btn{
+    padding: 0px;
+    background: none;
+    background-color: transparent;
+    border: 0px;
+    border-radius: 0px;
+    text-shadow: none;
+    box-shadow: none;
+    color: #fff;
+    width: 100%;
+}
+
+.booknowBack .booknowBack-inner .goBackbtn{
+    padding: 0px;
+    background: none;
+    background-color: transparent;
+    border: 0px;
+    border-radius: 0px;
+    text-shadow: none;
+    box-shadow: none;
+    color: #fff;
+    width: 100%;
+}
+
+.booknowBack
+{
+    width: 126px !important;
+    background-color: #818181;
+    height:28px;
+    padding:2px;
+}
+
+.booknowBack-inner
+{
+    width: 98% !important;
+    background-color: #818181;
+    margin:0px;
+    line-height:24px;
+    color:#ffffff;
+    font-family:georgia;
+    font-size:16px;
+    text-align:center;	
+    border:#f1dddf 1px dotted;
+    display: block;
+    cursor: pointer;
+}
+
+.bookingagentPaymentDetails .paymentPromoCode{
+    float: left;
+    width: 67%;
+}
+.bookingagentPaymentDetails .paymentPromoCode .form-item{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.voucherWrap{
+    height: 38px;
+}
+
+.voucherSubmit .btn{
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #00529b !important;
+    font-family: georgia !important;
+    font-size: 13px !important;
+    padding-left: 0px !important;
+}
+
+/*Div Table css*/
+.divTable
+{
+  width: 100%;
+  display:block;
+}
+
+.divRow
+{
+  width: 99%; 
+  display:block;
+  padding-bottom:5px;
+}
+
+.divColumn
+{
+  float: left;
+  width: 24%;
+  display:block;
+}
+
+.divColumn input[type="text"] {
+  width:40px;
+}
+
+.divColumn select{
+  width:115px;
+}
+
+.entrywidget{
+  background-color: #fff;
+  height: auto;
+  margin-bottom: 12%;
+  margin-top: 5%;
+}
+
+#ticketentreesDiv{
+    margin-bottom: 4%;
+}
+
+#entreestartdiv{
+    margin-bottom: 4%;
+}
+
+.purchaseTicketDetails .form-type-select select{
+    width: 140px;
+}
+
+.form-type-checkbox label{
+    display: inline;
+}
+
+#edit-specialinstructions label{
+    line-height: 30px;
+}
+
+#edit-specialinstructions {
+    margin-bottom: 2%;
+}
+
+/**Div table css ends**/
+
+.purchaseTicketDetails{
+    background: #fff;
+    padding: 2%;
+    border: 1px solid #BC9B6A;
+}
+
+.purchaseTicketDetails table{
+    font-size: 14px;
+}
+
+.purchaseTicketDetails table tbody{
+    border-top: 0px;
+}
+
+.purchaseTicketDetails table tbody td{
+    vertical-align: top;
+    color: #818181;
+    width: 22%;
+    padding-left: 10px;
+}
+
+.purchaseTicketDetails table tbody td .dietarycheckboxcl{
+    float: left;;
+}
+
+.purchaseTicketDetails table tbody td .ticketpriceqty{
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 110px 10px;
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    padding-right: 6px;
+    height: 32px;
+    line-height: 20px;
+    width: 135px;
+}
+
+.purchaseTicketDetails table tbody td.bookingagentheader2{
+    color: #454444;
+    font-size: 16px;
+}
+
+.purchaseTicketDetails .ticketdesc{
+    color: #333;
+    width: 135px;
+    padding: 0px 5% 0px 5%;
+    line-height: 16px;
+    display: block;
+}
+
+.legendTitle legend{
+    border-bottom: 0px;
+}
+
+.legendTitle legend .fieldset-legend{
+    font-family: georgia;
+    font-size: 28px;
+    color:#454444;
+    font-weight: normal;
+    height: auto;
+    text-align: left;
+    position: static;
+    padding-left:0px;
+}
+
+.dietarywrap{
+    margin-top: 7px;
+}
+
+#reservationCheckboxPopup{
+    position: fixed;
+    top: 25% !important;
+    width: 600px;
+}
+
+#reservationCheckboxPopup h4{
+    font-size: 28px;
+    line-height: 1.2em;
+}
+
+#reservationCheckboxPopup label{
+    font-size: 16px;
+}
+
+.reservationCheckBackdrop{
+    display: none;
+}
+
+.resCheckbox-booknow-inner{
+    width: 100px !important;
+    background-color: #ab323b;
+    margin: 0px;
+    line-height: 25px;
+    color: #ffffff;
+    font-family: georgia;
+    font-size: 16px;
+    text-align: center;
+    border: #f1dddf 1px dotted;
+    display: block;
+    cursor: pointer;
+    padding: 0px;
+    height: 27px;
+}
+
+.resCheckboxshare{
+    width: 100px !important;
+    padding: 2px !important;
+}
+
+
+/* Enhancement page styles */
+
+.enhancementWrapper .fieldset-wrapper a.fieldset-title{
+    font-family: georgia;
+    font-size: 28px;
+    color:#454444;
+    font-weight: normal;
+    height: auto;
+    text-align: left;
+    display: block;
+}
+
+.enhancementWrapper .optionItemBorder{
+    border-bottom: 1px solid #bc9b6a;
+    margin-bottom: 6%;
+    padding-bottom: 5%;
+}
+
+.enhancementWrapper .optionItemBorder .span12 .collapsible a.fieldset-title{
+    background: url('../images/minus.png') no-repeat right top;
+}
+
+
+.enhancementWrapper .optionItemBorder .span12 .collapsed a.fieldset-title{
+    background: url('../images/plus.png') no-repeat right top !important;
+}
+
+.enhancementWrapper .fieldset-wrapper > fieldset.collapsed{
+    border-bottom-width: 1px;
+}
+
+.enhancementWrapper .fieldset-wrapper a:hover{
+    color:#454444;
+}
+
+.enhancementWrapper .fieldset-wrapper legend{
+    border-bottom: none;
+    margin-bottom: 10px;
+    height: 35px;
+}
+
+.enhancementWrapper .fieldset-wrapper legend .fieldset-legend{
+    background: none !important;
+    padding-left: 0px !important;
+}
+
+/*.optionItemWrapper{
+	background: #f1f1f1;
+	border: 1px solid #d1d1d1;
+}*/
+
+.enhancementWrapper .optionItemWrapper .blogInner{
+    width: 90%;
+    /*margin-top: 54px;*/
+    padding-top: 0px;
+}
+
+.enhancementWrapper .fieldset-wrapper .span7 .optionItemWrapper .blogInner .blogTitle span{
+    font-family: georgia;
+    font-size: 20px;
+    color: #00529b;
+    font-weight: normal;
+    height: auto;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.optionItemWrapper .optionQuantityWrapper{    
+    margin-top: 10px;
+}
+
+.optionItemWrapper .optionQuantityWrapper label{
+    float: left;
+    width: 30%;
+    font-family: georgia;
+    font-size: 18px;
+    color:#818181;
+    font-weight: bold;
+    height: auto;
+    text-align: left;
+    margin-bottom: 0px;
+    line-height: 25px;
+}
+
+.optionItemWrapper .optionQuantityWrapper .selectFieldStyle{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    height: 32px;
+    line-height: 20px;
+}
+
+.optionItemWrapper .optionQuantityWrapper .selectFieldSmall{
+    width: 150px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 125px 10px;
+}
+
+.textareaStyleSmall{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    width: 35% !important;
+}
+
+.textareaStyleMedium{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    width: 60% !important;
+}
+
+.bookingagentPaymentBtnWrapper.groupmarginTop{
+    margin-top: 8%;
+}
+
+.enhancementWrapper .fieldset-wrapper .span7 .optionItemWrapper .blogInner .blogTitle span.blogtitleCaption{
+	font-family: georgia;
+	font-size: 12px;
+	color: #818181;
+	text-transform: inherit;
+	margin-bottom: 10px;
+	display: block;
+}
+
+.enhancementWrapper .fieldset-wrapper .span7 .optionItemWrapper .blogInner .blogTitle span{
+    font-family: georgia;
+    font-size: 20px;
+    color: #00529b;
+    font-weight: normal;
+    height: auto;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.optionItemWrapper .optionQuantityWrapper label{
+    float: left;
+    width: 30%;
+    font-family: georgia;
+    font-size: 18px;
+    color:#818181;
+    font-weight: bold;
+    height: auto;
+    text-align: left;
+    margin-bottom: 0px;
+    line-height: 25px;
+}
+
+.optionItemWrapper .optionQuantityWrapper .selectFieldStyle{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    height: 32px;
+    line-height: 20px;
+}
+
+.optionItemWrapper .optionQuantityWrapper .selectFieldSmall{
+    width: 150px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 125px 10px;
+}
+
+.textareaStyleSmall{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    width: 35% !important;
+}
+
+.textareaStyleMedium{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    width: 60% !important;
+}
+
+.bookingagentPaymentBtnWrapper.groupmarginTop{
+    margin-top: 8%;
+}
+
+
+
+/* bookingagent Confirmation page styles */
+
+sub, sup{
+    font-size: 65% !important;
+}
+
+.purchasecontent{
+    font-size: 15px;
+}
+
+.purchaseSubTitle, .bookingagentSubTitle
+{
+    font-size: 26px;
+    font-family:georgia;
+    color: #818181;
+    line-height: 25px;
+    margin-top: 0%;
+    margin-bottom: 2%;
+}
+
+.purchaseSubTitle, .bookingSubTitle
+{
+    font-size: 24px;
+    font-family:georgia;
+    color: #818181;
+    line-height: 25px;
+    margin-top: 0%;
+    margin-bottom: 2%;
+}
+
+.bookingagentheader1
+{
+    border-bottom: none;
+    font-family: georgia;
+    font-size: 25px;
+    color:#454444;
+    font-weight: normal;
+    height: auto;
+    text-align: left;
+    margin-bottom: 0px;
+}
+
+.bookingagentheader2
+{
+    border-bottom: none;
+    font-family: georgia;
+    font-size: 14px;
+    color:#454444;
+    font-weight: bold;
+    height: auto;
+    text-align: left;
+    margin-bottom: 0px;
+    line-height: 25px;
+}
+
+.bookingagentheader3
+{
+    border-bottom: none;
+    font-family: georgia;
+    font-size: 18px;
+    color:#818181;
+    font-weight: bold;
+    height: auto;
+    text-align: left;
+    margin-bottom: 0px;
+    line-height: 25px;
+}
+
+.bookingagentheader4
+{
+    font-family: georgia;
+    font-size: 28px;
+    color:#454444;
+    font-weight: normal;
+    height: auto;
+    text-align: left;
+}
+
+#bookingagent-form fieldset.collapsible .fieldset-legend a:before{
+	content: '';
+}
+
+#bookingagent-form fieldset.collapsible .fieldset-legend a:hover{
+	text-decoration: none;
+}
+
+.textmarginTop{
+    margin-top: 3%;
+}
+
+.groupresButton{
+    margin-bottom: 1%;
+}
+.groupresButton a{
+    font-size:120%;
+    font-family: georgia;
+}
+.cruisedetailviewBtn a{
+    font-size:120%;
+    font-family: georgia;
+}
+.cruisedetailviewBtn a:hover , .groupresButton a:hover {
+    text-decoration:none;
+}
+
+
+/* box design styles */
+.cruiseDetailsOuterbox {
+    background: #fff;
+    width: 95%;
+    height: auto;
+    border: 10px #bc9b6a solid;
+    background: url("../images/calendar-pop-bgimg.png") no-repeat scroll 0 0 / cover  rgba(0, 0, 0, 0);
+    background-size: cover;
+    -moz-box-shadow: 0 0 10px 0px #999;
+    -webkit-box-shadow: 0 0 10px 0px#999;
+    box-shadow: 0 0 10px 0px #999;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.cruiseDetailsInnerbox{
+    margin: 10% 8%;
+}
+
+.cruiseDetailsOuterbox i{
+    font-size: 12px;
+}
+
+.groupdirection{
+    margin-left: 0px !important;
+    width: 52% !important;
+}
+
+.groupdirection h5{
+    margin: 0px;
+}
+
+.groupdirection p{
+    margin: 0px;
+    color: #818181;
+}
+
+.groupdirectiondesc{
+    margin-left: 0px !important;
+    width: 65% !important;
+}
+
+.groupdirectiondesc h5{
+    margin: 0px;
+}
+
+.groupdirectiondesc p{
+    margin: 0px;
+    color: #818181;
+}
+
+.groupmarginTop{
+    margin-top: 5%;
+}
+
+
+.bookingagentTicketDetails{
+    background: #fff;
+    padding: 2%;
+}
+
+.bookingagentTicketDetails table{
+    font-size: 14px;
+}
+
+.bookingagentTicketDetails table tbody{
+    border-top: 0px;
+}
+
+.bookingagentTicketDetails table tbody td{
+    vertical-align: top;
+    color: #818181;
+    width: 23%
+}
+
+.bookingagentTicketDetails table tbody td.bookingagentheader2{
+    color: #454444;
+    font-size: 16px;
+}
+
+.bookingagentTicketDetails .ticketdesc{
+    color: #333;
+    width: 90%;
+    padding: 0px 5% 0px 5%;
+    line-height: 16px;
+}
+
+.forminputCL{
+    border: #c9ae87 1px solid;
+    margin-bottom: 0px;
+    width: 44%;
+    margin-right: 5%;
+}
+
+.forminputCLRight{
+    margin-right: 0%;
+}
+
+.chargesWrapper{
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.chargesWrapper h3.chargesWrapperLeft{
+  display: inline-block;
+  float: left;
+  margin: 0px;
+   color: #999999;
+}
+
+.chargesWrapper h4{
+  display: inline-block;
+  float: left;
+  margin: 0px;
+  color: #333;
+  font-size: 12px;
+  line-height: 28px;
+}
+
+.chargesWrapper span{
+  display: inline-block;
+  border-bottom: 1px dotted #BC9B6A;
+  float: left;
+  height: 22px;
+  width: 68%;
+}
+
+.bookingagentheader3 span{
+  display: inline-block;
+  border-bottom: 1px dotted #BC9B6A;
+  float: left;
+  height: 22px;
+  width: 16%;
+}
+
+.chargesWrapper h3.chargesWrapperRight{
+  display: inline;
+  float: right;
+  margin: 0px;
+  color: #999999;
+}
+
+.paymentUserDetails h5{
+    margin: 0px;
+    width: 50%;
+    float: left;
+    font-size: 12px;
+    line-height: 24px;
+    word-wrap: break-word;
+}
+
+.paymentUserDetails h5.paymentUsernames{
+    margin: 0px;
+    color: #818181;
+}
+
+.paymentdescription{
+    margin-top: 8%;
+    margin-bottom: 10%;
+}
+
+.paymentdescription i{
+    font-size: 12px;
+}
+
+/*.guestDetailscontent .form-item-guest-firstname, .guestDetailscontent .form-item-guest-city, .guestDetailscontent .form-item-guest-zipcode, .guestDetailscontent .form-item-guest-dob{
+    float: left;
+    width: 50%;
+}*/
+
+.guestDetailscontent .form-item-guest-firstname, .guestDetailscontent .form-item-guest-city, .guestDetailscontent .form-item-guest-dob{
+    float: left;
+    width: 50%;
+}
+
+.guestDetailscontent .form-item{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.paymentLable{
+    font-size: 14px;
+    font-family:georgia;
+    color: #818181;
+    line-height: 2.8em;
+}
+
+/*.billingDetailscontent .form-item-billing-firstname, .billingDetailscontent .form-item-billing-city, .billingDetailscontent .form-item-billing-zipcode{
+    float: left;
+    width: 50%;
+}*/
+
+.billingDetailscontent .form-item-sameascheckbox{
+    margin-bottom: 10px !important;
+}
+
+.billingDetailscontent fieldset legend {
+    margin-bottom: 0px !important;
+}
+
+.billingDetailscontent .form-item-billing-firstname, .billingDetailscontent .form-item-billing-city{
+    float: left;
+    width: 50%;
+}
+
+.billingDetailscontent .form-item{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.billingDetailscontent .form-item-billing-areacode label{
+    display: block; 
+    width: 150px;
+    color: #818181;
+}
+
+.guestDetailscontent .form-item-guest-areacode label{
+    display: block; 
+    width: 150px;
+    color: #818181;
+}
+
+.creditDetailscontent .form-item-creditFirstName{
+    float: left;
+    width: 50%;
+}
+
+.creditDetailscontent .form-item{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.creditDetailscontent .form-item-creditcid{
+    position: relative;
+    width: 230px;
+}
+
+.creditDetailscontent .form-item-creditcid .description{
+    color: #00529B;
+    font-size: 18px;
+    position: absolute;
+    right: 0;
+    top: 1px;
+    z-index: 1;
+}
+
+.creditDetailscontent .form-item-creditcid .description abbr.initialism{
+    border-bottom: 0px;
+}
+
+.creditDetailscontent .form-item-creditcid p{
+    color: #00529B;
+    font-size: 18px;
+    position: absolute;
+    right: 0;
+    top: 6px;
+    z-index: 1;
+}
+
+.creditDetailscontent .form-item-creditcid p abbr.initialism{
+    border-bottom: 0px;
+}
+
+.paymentSubmitButton .booknow{
+    float: left;
+}
+
+.bookingagentPaymentBtnWrapper{
+    width: 600px;
+    height: auto;
+    margin: 0px auto;
+}
+
+.bookingagentPaymentBtnWrapper .booknow-inner{
+    height: auto;
+    line-height: 22px;
+}
+
+
+/*Suresh Style Start Here*/
+.bookingagentPaymentBtnWrapper .span3{
+    width: 24% !important;
+    float: left !important;
+    margin-left: 0px !important;
+}
+.bookingagentPaymentBtnWrapper .booknowBack{
+    width: 23% !important;
+    float: left !important;
+    margin-left: 1% !important;
+    margin-right: 1% !important;
+}
+#bookingagent-form .mobilebookingagentContainer .bookingagentPaymentBtnWrapper .booknow{
+    margin-left: 1% !important;
+margin-right: 1% !important;
+width: 25% !important;
+}
+
+/*Suresh Style End Here*/
+
+
+
+/* bookingagentPaymentDetails page styles */
+
+.bookingagentPaymentDetails .container-inline-date{
+    clear: none;
+}
+
+.bookingagentPaymentDetails .container-inline-date > .form-item{
+    margin-right: 0em;
+}
+
+.bookingagentPaymentDetails .container-inline-date .date-padding{
+    padding: 0px;
+}
+
+.bookingagentPaymentDetails .container-inline-date .date-padding .inputfieldMedium{
+    width: 230px !important;
+}
+
+.bookingagentPaymentDetails .container-inline-date .date-padding .description{
+    display: none;
+}
+
+.bookingagentPaymentDetails .inputfiledStyle{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    /*padding-left: 5px;*/
+    padding: 3px 6px;
+    height: 22px;
+    line-height: 20px;
+}
+
+.bookingagentPaymentDetails .promocodeVoucherWrapper .inputfiledStyle{
+    margin-bottom: 0px;
+}
+
+.promocodeVoucherWrapper{
+    margin-bottom: 10px;
+    height: auto;
+    overflow: hidden;
+}
+
+/*Suresh Style Start Here*/
+
+
+
+.giftcardVoucherWrapper{
+    margin-bottom: 10px;
+}
+
+.bookingagentPaymentDetails .inputfieldVerySmall{
+    width: 66px;
+    margin-right: 3px;
+}
+
+.bookingagentPaymentDetails .inputfieldVerySmall.error{
+    border-color: #f00;
+}
+
+.bookingagentPaymentDetails .selectFieldVerySmall.error{
+    border-color: #f00;
+}
+
+.bookingagentPaymentDetails .inputfieldSmallxl{
+    width: 106px;
+}
+
+.bookingagentPaymentDetails .inputfieldSmallxl.error{
+    border-color: #f00;
+}
+
+.bookingagentPaymentDetails .inputfieldSmall{
+    width: 150px;
+}
+
+.bookingagentPaymentDetails .inputfieldMedium{
+    width: 230px;
+}
+
+.bookingagentPaymentDetails .inputfieldMedium.error{
+    border-color: #f00;
+}
+
+.bookingagentPaymentDetails .inputfieldLarge{
+    width: 320px;
+}
+
+.creditdatesWrapholder{
+    margin-left: 286px;
+}
+
+.bookingagentPaymentDetails .dateFieldStyle{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    padding-left: 5px;
+    height: 22px;
+    line-height: 20px;
+}
+
+.bookingagentPaymentDetails .dateFieldMedium{
+    width: 237px !important;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 220px 10px;
+    padding: 4px 0px 4px 6px;
+}
+
+.bookingagentPaymentDetails .selectFieldStyle{
+    background-color: #fff;
+    border: 1px solid #BC9B6A;
+    border-radius: 0px;
+    -webkit-appearance: none;
+    height: 30px;
+    line-height: 20px;
+    padding: 0px;
+}
+
+.bookingagentPaymentDetails .selectFieldVerySmall{
+    width: 120px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 95px 12px;
+    margin-right: 3px;
+}
+
+.bookingagentPaymentDetails .selectFieldSmall{
+    width: 150px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 140px 10px;
+}
+
+.bookingagentPaymentDetails .selectFieldMedium{
+    width: 243px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 220px 10px;
+    
+}
+
+.bookingagentPaymentDetails .selectFieldLarge{
+    width: 320px;
+    background-image: url('../images/dropdown-arrow.png');
+    background-repeat: no-repeat;
+    background-position: 310px 10px;
+}
+
+#balanceCheckerPopup{
+    position: fixed;
+    top: 25% !important;
+    width: 600px;
+}
+
+#balanceCheckerPopup h4{
+    font-size: 28px;
+    line-height: 1.2em;
+}
+
+#balanceCheckerPopup label{
+    font-size: 16px;
+}
+
+.balanceCheckerBackdrop{
+    display: none;
+}
+
+/* Drupal AJAX & Throbber CSS */
+.progress-disabled {
+  float: none;
+  display:inline;
+}
+
+.ajax-progress {
+  float: none;
+  display:inline;
+  position: absolute;
+  margin-top: 2px;
+  margin-left: 15px;
+}
+.ajax-progress .throbber {
+  float: none;
+  height: 15px;
+  margin: 2px;
+  width: 15px;
+  display:inline-block;
+}
+.ajax-progress .message{
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*.bookfield{
+    min-height: 85px;
+}*/
+
+.bookfield label
+{
+  float:left;
+  width: 220px;
+  /*line-height: 30px;*/
+  color: #454444;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left !important;
+}
+.bookfield select
+{
+
+  margin-left:20px;
+}
+
+.ordersummaryBox{
+  width:350px;
+}
+
+.line{
+   // margin-top:-7% !important;
+}
+.ordersummaryBox .sliderBoxout{
+  height: auto !important;
+  background:#fff !important;
+  border:#bc9b6a 10px solid; 
+  margin-top:17px;
+}
+
+.widgettitleHeader {
+  height: auto;
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 2%;
+}
+
+
+.ordersummaryBox .orderBoxInner{
+  width: 300px;
+  margin: 15px auto;
+}
+.ordersummaryBox .sliderBox-first-inner{
+  padding-top:12%;
+}
+.ordersummaryBox .orderBoxInner span,.ordersummaryBox .title {
+  color: #00529b;
+}
+
+.ordersummaryBox .widgetBody .timingDetails h3 span{
+    color: #333333;
+}
+
+.ordersummaryBox .widgettitleHeader .span2{
+  padding-top: 17px;
+}
+
+.ordersummaryBox .widgettitleHeader .span8 h2{
+    //font-family:georgia;
+  font-size: 23px;
+  margin: 6px;
+}
+
+.ordersummaryBox .widgetBody h2{
+  text-transform: uppercase;
+  font-size: 18px;
+  margin: 0px;
+  padding: 0px;
+  line-height: 26px;
+}
+
+.ordersummaryBox .widgetBody h3{
+  font-size: 16px;
+  margin: 0px;
+  padding: 0px;
+  line-height: 26px;
+}
+
+.ordersummaryBox .widgetBody h4{
+  font-size: 12px;
+  margin: 0px;
+  padding: 0px;
+  line-height: 26px;
+}
+
+.ordersummaryBox .widgetBody .timingDetails h3{
+  font-size: 16px;
+  margin: 15px 0px;
+  padding: 0px;
+  line-height: 26px;
+  width: 45%;
+  float: left;
+}
+
+.ordersummaryBox .widgetBody .timingDetails h4{
+  font-size: 16px;
+  margin: 15px 0px;
+  padding: 0px;
+  line-height: 26px;
+  width: 8%;
+  float: left;
+  padding-left: 2%;
+}
+
+.ordersummaryBox .widgetBody .ticketDetails {
+  height: auto;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ordersummaryBox .widgetBody .ticketDetails h3{
+  font-size: 16px;
+  margin: 5px 0px 5px 0px;
+  padding: 0px;
+  line-height: 26px;
+  width: 50%;
+  float: left;
+}
+
+.ordersummaryBox .widgetBody .line{
+  margin-top: 0px;
+  height: 0.5px;
+}
+
+.ordersummaryBox .widgetBody .ticketDetails h3 span{
+  font-size: 12px;
+  line-height: 22px;
+  color: #999999;
+}
+
+.ordersummaryBox .widgetBody .taxCharges{
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  margin: 15px 0px;
+}
+
+.ordersummaryBox .widgetBody .taxCharges .chargesWrapper{
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.ordersummaryBox .widgetBody .taxCharges .chargesWrapper h3.chargesWrapperLeft{
+  display: inline-block;
+  color: #999999;
+  font-size: 16px;
+  float: left;
+}
+
+.ordersummaryBox .widgetBody .taxCharges .chargesWrapper h3.chargesWrapperRight{
+  display: inline;
+  color: #999999;
+  font-size: 16px;
+  float: right;
+}
+
+.ordersummaryBox .widgetBody .taxCharges .chargesWrapper span{
+  display: inline-block;
+  border-bottom: 1px dotted #BC9B6A;
+  float: left;
+  height: 18px;
+  width: 50%;
+}
+
+.ordersummaryBox .widgetBody .totalDetails{
+  height: auto;
+  overflow: hidden;
+}
+
+.ordersummaryBox .widgetBody .totalDetails h2{
+  font-size: 26px;
+  margin: 15px 0px;
+  padding: 0px;
+  width: 50%;
+  float: left;
+}
+
+.ordersummaryBox .widgetBody .ticketOrderLink a{
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+
+
+/*laxmi*/
+
+
+/* Review Order CSS Styles */
+.guestDetails h3, .creditCardDetails h3, .cancellationPolicy h3{
+  color: #454444;
+  font-family: "CrimsonSemiBold";
+  font-size: 22px;
+  line-height: 22px;
+  margin-bottom: 3%;
+  margin-top: 4%;
+}
+
+.guestDetails .span12, .creditCardDetails .span12{
+  margin-left: 0%;
+}
+
+.creditCardDetails .creditcardvalue{
+  color: #818181;
+}
+
+.optionItemWrapper .fieldset-wrapper .blogInner img{
+    width: 100%;
+}
+
+
+/* Booking form styles */
+
+#bookingagent-form fieldset{
+	border: none;
+}
+
+.paymentSubmitButton .booknow, .bookingPaymentBtnWrapper .booknowBack, .bookingPaymentBtnWrapper .booknow, .bookingagentPaymentBtnWrapper .booknowBack, .bookingagentPaymentBtnWrapper .booknow{
+	height: auto;
+}
+
+.paymentSubmitButton .booknow #edit-next{
+	background: transparent !important;
+	border: none !important;
+	border-radius: 0px !important;
+	box-shadow: none !important;
+}
+
+#bookingagent-form .mobilebookingagentContainer #edit-header, #bookingagent-form .mobilebookingagentContainer .form-wrapper{
+	padding-top: 15px;
+	margin:0px;
+}
+
+#bookingagent-form .mobilebookingagentContainer .headercontent .shreBtnmargin{
+	display: none;
+}
+
+.radio input[type="radio"], .checkbox input[type="checkbox"]{
+	margin-left: 0px !important;
+}
+
+.purchaseTicketDetails {
+	background: #fcfbf9;
+}
+
+.purchaseTicketDetails .form-type-select{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.purchaseTicketDetails .form-item, .form-actions{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.purchaseTicketDetails table tr td{
+	border-top: none;
+}
+
+#reservationCheckboxPopup .modal-body{
+	overflow-y: inherit;
+}
+
+.enhancementWrapper .fieldset-wrapper legend .fieldset-legend{
+	border-bottom: 0px;
+}
+
+.enhancementWrapper .fieldset-wrapper a.fieldset-title{
+	font-size: 24px;
+	height: 35px;
+}
+
+.booknowBack .booknowBack-inner .goBackbtn, .booknowBack .booknowBack-inner #edit-next, .bookingagentPaymentBtnWrapper .booknow #edit-next,
+.promocodeVoucherWrapper .booknow .btn
+{
+	background: transparent !important;
+	border: none !important;
+	border-radius: 0px !important;
+	box-shadow: none !important;
+	text-shadow: none !important;
+	color: inherit !important;
+}
+/*Suresh Style Start Here*/
+.promocodeVoucherWrapper .booknow{
+	margin-left: 5% !important;
+        width: 18% !important;
+background-color: #ab323b;
+float: left !important;
+height: 27px;
+padding: 2px 3px 2px 2px;
+}
+
+/*Suresh Style End Here*/
+
+
+
+.promocodeVoucherWrapper .booknow .btn{
+	padding: 0px !important;
+}
+
+.giftcardVoucherWrapper a{
+	color: #00529b;
+	font-family: georgia;
+	display: block;
+	margin-top: 5px;
+}
+
+.mobilebookingagentContainer .bookingagentPaymentBtnWrapper .booknow{
+	width: 25% !important;
+}
+
+.paymentLable{
+	line-height: inherit;
+}
+
+.guestDetailscontent fieldset legend, .billingDetailscontent fieldset legend, .creditDetailscontent fieldset legend{
+	height: 35px;
+}
+
+.guestDetailscontent fieldset legend span, .billingDetailscontent fieldset legend span, .creditDetailscontent fieldset legend span{
+	background: transparent !important;
+	border-bottom: none;
+}
+
+.purchaseSubTitle a{
+	color: #00529b;
+	font-size: 16px;
+}
+
+.adminconfirmationsliderCaption {
+    font-family: georgia;
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    line-height:28px;
+}
+
+
+.bookingheader3
+{
+    border-bottom: none;
+    font-family: georgia;
+    font-size: 18px;
+    color:#818181;
+    font-weight: bold;
+    height: auto;
+    text-align: left;
+    margin-bottom: 0px;
+    line-height: 25px;
+}
+
+.ticketTitle {
+    color: #454444;
+    font-family: "CrimsonSemiBold";
+    font-size: 50px;
+    line-height: 50px;
+    margin-bottom: 3%;
+    margin-top: 0;
+    text-transform: uppercase;
+}
+
+.feeTitle{
+    font-family: georgia;
+    font-size: 25px;
+    font-weight: normal;
+    height: auto;
+    text-align: left;
+    text-transform: uppercase;
+
+}
+
+.feeitemfields{
+    font-family: georgia;
+}
+
+.paymentpagetitle{
+	color: #454444;
+    font-family: georgia;
+    font-size: 28px;
+    font-weight: normal;
+    height: auto;
+    padding-left: 0;
+    position: static;
+    text-align: left;
+}
+
+/*Suresh Style*/
+
