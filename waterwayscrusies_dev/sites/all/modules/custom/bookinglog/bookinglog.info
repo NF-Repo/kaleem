@@ -1,0 +1,5 @@
+name= Booking Order Logs
+description = logging the booking (agent and customer) order details
+core=7.x
+version = VERSION
+package = WWC

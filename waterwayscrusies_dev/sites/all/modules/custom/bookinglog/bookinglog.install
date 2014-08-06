@@ -1,0 +1,336 @@
+<?php
+
+/**
+ * Implements hook_schema()
+ */
+function bookinglog_schema() {
+    $schema = array();
+    //Booked Tickets
+    	$schema['bookinglog_tickets'] = array(
+        'description' => 'The base table for ticketorders.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'ticket_id' => array(
+                'description' => 'Ticket ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            
+            'ticket_qty' => array(
+                'description' => 'Ticket Quantity',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            
+            
+            'ticket_price' => array(
+                'description' => 'Ticket Price',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            
+          'order_id' => array(
+                'description' => 'Ubercart Order ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            
+            'event_id' => array(
+                'description' => 'Event ID',
+                'type' => 'varchar',
+                'length' => 255,
+
+            ),
+            
+            'bookingtype' => array(
+                'description' => 'Booking Type',
+                'type' => 'varchar',
+                'length' => 255,
+
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+    
+    
+    //Ticket Entrees
+    $schema['bookinglog_ticketentrees'] = array(
+        'description' => 'The base table for ticket entrees.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'entree_id' => array(
+                'description' => 'Entree ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            
+            'ref_id' => array(
+    			'description' => 'The Entree Id of The Ticket Entree selection',
+    			'type' => 'int',
+    			'unsigned' => TRUE,
+    			'not null' => TRUE,
+    			'default' => 0,
+    		),
+    		
+    		'comments' => array(
+    			'type' => 'text',
+    			'size' => 'big',
+    			'not null' => TRUE
+    		),
+        ),
+        'primary key' => array('id'),
+    );
+    
+    
+    //Booked Enhancements
+    $schema['bookinglog_enhancements'] = array(
+        'description' => 'The base table for enhancements.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'enhancement_id' => array(
+                'description' => 'Enhancement ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            
+            'enhancement_qty' => array(
+                'description' => 'Enhancement Quantity',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            
+            'enhancement_price' => array(
+                'description' => 'Enhacnement Price',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            
+            'comments' => array(
+    			'type' => 'text',
+    			'size' => 'big',
+    			'not null' => TRUE
+    		),
+    		
+    		
+            'order_id' => array(
+                'description' => 'Ubercart Order ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'event_id' => array(
+                'description' => 'Event ID',
+                'type' => 'varchar',
+                'length' => 255,
+
+            ),
+            
+            
+            
+        ),
+        'primary key' => array('id'),
+    );
+    
+    //Booking User Choices
+    $schema['bookinglog_userchoices'] = array(
+        'description' => 'Booking Order User Choices',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'order_id' => array(
+                'description' => 'Ubercart Order ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'uid' => array(
+                'description' => 'User ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'celebration_comments' => array(
+                'type' => 'text',
+                'size' => 'big',
+                'not null' => TRUE
+            ),
+            'receive_email_notification_flag' => array(
+                'description' => 'opt_receive_email_notification',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'customer_email' => array(
+                'description' => 'Customer Email',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+            'limited_mobility_flag' => array(
+                'description' => 'opt_limited_mobility',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'food_allergy_flag' => array(
+                'description' => 'opt_food_allergy',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'another_party_flag' => array(
+                'description' => 'opt_another_party',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'another_party_comments' => array(
+                'type' => 'text',
+                'size' => 'big',
+                'not null' => TRUE
+            ),
+            
+            'celebration_flag' => array(
+                'description' => 'opt_celebration',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'what_they_brought' => array(
+                'description' => 'what_they_brought',
+                'type' => 'text',
+                'size' => 'big',
+                'not null' => TRUE
+            ),
+            
+            'order_total' => array(
+                'description' => 'The total amount to be paid for the order.',
+                'type' => 'numeric',
+                'precision' => 16,
+                'scale' => 5,
+                'not null' => TRUE,
+                'default' => 0.0,
+            ),
+            'event_id' => array(
+                'description' => 'Event ID',
+                'type' => 'varchar',
+                'length' => 255,
+
+            ),
+            'referal' => array(
+            		'description' => 'Referal',
+            		'type' => 'varchar',
+            		'length' => 255,
+            		'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+    
+    
+    
+    //Giftcards
+    $schema['bookinglog_giftcards'] = array(
+        'description' => 'The base table for giftcard orders.',
+        'fields' => array(
+            'id' => array(
+                'description' => 'Primary key.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'giftcard_account' => array(
+                'description' => 'giftcard_account',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'giftcard_totalamt' => array(
+                'description' => 'giftcard_totalamt',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'giftcard_deductedamt' => array(
+                'description' => 'giftcard_deductedamt',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'status' => array(
+                'description' => 'status',
+                'type' => 'varchar',
+                'length' => 255,
+            ),
+            'order_id' => array(
+                'description' => 'Ubercart Order ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'uid' => array(
+                'description' => 'User ID',
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'default' => 0,
+            ),
+            'created' => array(
+                'description' => 'created',
+                'type' => 'int',
+            ),
+            'data' => array(
+                'type' => 'text',
+                'size' => 'big',
+                'not null' => TRUE
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+
+
+
+    return $schema;
+}

@@ -1,0 +1,282 @@
+<?php
+
+/*
+ * Tickets
+ */
+class Tickets{
+	public $id;
+	public $ticket_id;
+	public $ticket_qty;
+	public $ticket_price;
+	//public $ticketentreeid;
+	//public $dietaryrestriction;
+	public $order_id;
+	public $bookingtype;
+	public $event_id;
+}
+
+
+/*
+ * Ticket Entress
+ */
+class TicketEntrees{
+	public $id;
+	public $ref_id;
+	public $entree_id;
+	public $comments;
+	
+}
+
+/*
+ * Enhancements
+ */
+
+class Enhancements{
+	public $id;
+	public $enhancement_id;
+	public $enhancement_qty;
+	public $enhancement_price;
+	public $comments;
+	public $order_id;
+	public $event_id;
+}
+
+
+/*
+ * Gift Cards
+ */
+class GiftCardBookingOrder{
+    public $id;
+    public $giftcard_account;
+    public $giftcard_totalamt;
+    public $giftcard_deductedamt;
+    public $status;
+    public $order_id;
+    public $uid;
+    public $created;
+    public $data;
+}
+
+
+/*
+ * User Choices
+ */
+
+class UserChoices{
+	public $id;
+	public $uid;
+	public $order_id;
+	public $celebration_comments;
+	public $receive_email_notification_flag;
+	public $customer_email;
+	public $limited_mobility_flag;
+	public $food_allergy_flag;
+	public $another_party_flag;
+	public $another_party_comments;
+	public $celebration_flag;
+	public $what_they_brought;
+	public $order_total;
+	public $event_id;
+	
+	
+	
+	
+}
+class BookingLog{
+	
+	//Tickets
+	public static function logTickets($ticketObj) {
+	    $id = false;
+        try {
+            $id = db_insert('bookinglog_tickets')
+                    ->fields(array(
+                        'ticket_id' => $ticketObj->ticket_id,
+                        'ticket_qty' => $ticketObj->ticket_qty,
+                        'ticket_price' => $ticketObj->ticket_price,
+                        //'ticketentreeid'=>$ticketObj->ticketentreeid,
+                        //'dietaryrestriction'=>$ticketObj->dietaryrestriction,
+                        'order_id' => $ticketObj->order_id,
+                        'bookingtype' => $ticketObj->bookingtype,
+                        'event_id' => $ticketObj->event_id,
+                    ))
+                    ->execute();
+        } catch (Exception $e) {
+            watchdog("Error while inserting the tickets data in booking log table", $e);
+        }
+
+        return $id;
+    }
+    
+    
+    
+    //Delete Tickets
+    public static function deleteLogTickets($order_id){
+    	try{
+    		$numOfRowsDeleted = db_delete('bookinglog_tickets')
+    		->condition('order_id', $order_id)
+    		->execute();
+    	}catch(Exception $e){
+    		watchdog("Bookinglog",$e);
+    	}
+    }
+
+    //Enhancements
+	public static function logEnhancements($enhancementsObj){
+		
+		
+		try{
+		$insertresults = db_insert('bookinglog_enhancements')
+                ->fields(array(
+		'enhancement_id'=>$enhancementsObj->enhancement_id,
+		'enhancement_price'=>$enhancementsObj->enhancement_price,
+		'enhancement_qty'=>$enhancementsObj->enhancement_qty,
+		'event_id'=>$enhancementsObj->event_id,
+		'order_id'=>$enhancementsObj->order_id,
+		'comments'=>$enhancementsObj->comments
+		))
+		->execute();
+		}catch(Exception $e){
+			watchdog("Error while inserting the tickets data in booking log table", $e);
+		}
+	}
+	
+	
+	//Delete Enhancements
+	public static function deleteLogEnhancements($order_id){
+		try{
+			$numOfRowsDeleted = db_delete('bookinglog_enhancements')
+			->condition('order_id', $order_id)
+			->execute();
+		}catch(Exception $e){
+			watchdog("Bookinglog",$e);
+	
+		}
+	}
+	
+	//Logging Ticket Entrees
+	
+	public static function logTicketEntrees($ticketEntreesObj){
+	try{
+		$insertresults = db_insert('bookinglog_ticketentrees')
+		->fields(array(
+		'ref_id'=>$ticketEntreesObj->ref_id,
+		'entree_id'=>$ticketEntreesObj->entree_id,
+		'comments'=>$ticketEntreesObj->comments,
+		))
+		->execute();
+		}catch(Exception $e){
+			watchdog("Error while inserting the tickets data in booking log table", $e);
+		}
+	}
+	
+	
+	
+	public static function getUserChoices($order_id){
+		try{
+			$result = db_select('bookinglog_userchoices', 'b')
+			->fields('b')
+			->condition('order_id', $order_id,'=')
+			->execute()->fetchObject();
+			}catch(Exception $e){
+			
+		}
+		return $result;
+	}
+	
+	
+	
+	public static function updateUserChoices($userChoicesObject){
+            $num_updated='';
+		
+		//var_dump($userChoicesObject); exit();
+		try{
+			$num_updated = db_update('bookinglog_userchoices')
+			->fields(array(
+					'celebration_comments' => $userChoicesObject->celebration_comments,
+					'receive_email_notification_flag' => $userChoicesObject->receive_email_notification_flag,
+					'customer_email' => $userChoicesObject->customer_email,
+					'limited_mobility_flag' => $userChoicesObject->limited_mobility_flag,
+					'food_allergy_flag' => $userChoicesObject->food_allergy_flag,
+					'another_party_flag' => $userChoicesObject->another_party_flag,
+					'another_party_comments' => $userChoicesObject->another_party_comments,
+					'celebration_flag' => $userChoicesObject->celebration_flag,
+					'referal'=>$userChoicesObject->referal,
+			))
+			->condition('order_id',$userChoicesObject->order_id , '=')
+			->execute();
+		}catch(Exception $e){
+			//var_dump($e);
+		}
+		
+		//var_dump($num_updated); exit();
+                
+                return $num_updated;
+	}
+	
+	
+	//User Choices
+	public static function logUserChoices($userChoicesObject){
+		
+	
+		//$userChoicesObject=new UserChoices($userChoicesObject);
+	try{
+		$insertresults = db_insert('bookinglog_userchoices')
+		->fields(array(
+		'uid'=>$userChoicesObject->uid,
+		'order_id'=>$userChoicesObject->order_id,
+		'receive_email_notification_flag'=>$userChoicesObject->receive_email_notification_flag,
+		'customer_email'=>$userChoicesObject->customer_email,
+		'limited_mobility_flag'=>$userChoicesObject->limited_mobility_flag,
+		'food_allergy_flag'=>$userChoicesObject->food_allergy_flag,
+		'another_party_flag'=>$userChoicesObject->another_party_flag,
+		'another_party_comments'=>$userChoicesObject->another_party_comments,
+		'celebration_flag'=>$userChoicesObject->celebration_flag,
+		'celebration_comments'=>$userChoicesObject->celebration_comments,
+		'what_they_brought'=>$userChoicesObject->what_they_brought,
+		'order_total'=>$userChoicesObject->order_total,
+		'event_id'=>$userChoicesObject->event_id,
+		'referal'=>$userChoicesObject->referal,		
+		
+		
+		))
+		->execute();
+		}catch(Exception $e){
+			watchdog("Error while inserting the tickets data in booking log table", $e);
+		}
+	}
+        
+        //Logging Gift Card Details in Booking 
+        //Table Name : bookinglog_giftcards
+        public static function logGiftCard($giftCardObj) {
+        $id = false;
+        try {
+            $id = db_insert('bookinglog_giftcards')
+                    ->fields(array(
+                        'giftcard_account' => $giftCardObj->giftcard_account,
+                        'giftcard_totalamt' => $giftCardObj->giftcard_totalamt,
+                        'giftcard_deductedamt' => $giftCardObj->giftcard_deductedamt,
+                        'status' => $giftCardObj->status,
+                        'order_id'=> $giftCardObj->order_id,
+                        'uid'=>$giftCardObj->uid,
+                        'created'=>$giftCardObj->created,
+                        'data'=>$giftCardObj->data,
+                    ))
+                    ->execute();
+        } catch (Exception $e) {
+            watchdog("Error while inserting the Giftcard data in booking log table", $e);
+        }
+       
+        return $id;
+    }
+        
+	
+}
+
+
+
+
+
+
+
+
+
