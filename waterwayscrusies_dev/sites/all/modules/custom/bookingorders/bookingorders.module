@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function bookingorders_menu() {
+    $items['bookingorders'] = array(
+        'title' => 'Booking Orders',
+        'page callback' => 'bookedorders_view',
+        'access arguments' => array('view booking orders'),
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function bookingorders_permission() {
+    return array(
+        'view booking orders' => array(
+            'title' => t('View Booking Orders'),
+        ),
+    );
+}
+
+function bookedorders_view() {
+    global $user;
+    $userid = $user->uid;
+    $title = 'Bookings';
+    drupal_set_title($title, CHECK_PLAIN);
+    $commissionrate = variable_get('WWCAGENTCOMMVALUE', '10');
+    $header = array(
+        array('data' => 'Order ID', 'field' => 'order_id'),
+        array('data' => 'Guest Name'),
+        array('data' => 'Total'),
+        array('data' => 'Booked Date'),
+        array('data' => 'Purchase Date'),
+        array('data' => 'Status'),
+    );
+    if (in_array('agent', $user->roles)) {
+        $header = array(
+            array('data' => 'Order ID', 'field' => 'order_id'),
+            array('data' => 'Guest Name'),
+            array('data' => 'Total'),
+            array('data' => 'Commission'),
+            array('data' => 'Booked Date'),
+            array('data' => 'Purchase Date'),
+            array('data' => 'Status'),
+        );
+    }
+    if (isset($_GET['sort']) && isset($_GET['order'])) {
+        if ($_GET['sort'] == 'asc')
+            $sort = 'ASC';
+        else
+            $sort = 'DESC';
+
+
+        switch ($_GET['order']) {
+            case 'Order ID':
+                $order = 'order_id';
+                break;
+            default:
+                $order = 'order_id';
+        }
+    } else {
+        $sort = 'ASC';
+        $order = 'order_id';
+    }
+
+    $query = db_select("uc_orders", "u");
+
+    $query->join('reservation', 'r', 'r.orderid=u.order_id');
+    $query->fields('u', array('order_id', 'created', 'order_status', 'delivery_first_name', 'delivery_last_name', 'order_total'));
+    $query->fields('r', array('bookingdate'));
+    $query->condition('r.uid', $userid, '=');
+    $result = $query->execute();
+
+    $rows = array();
+    while ($data = $result->fetchObject()) {
+        $OrderStatusMessage = $data->order_status;
+        $ordermsgarr = explode('_', $OrderStatusMessage);
+        $finalstr = '';
+        foreach ($ordermsgarr as $str) {
+            $finalstr.=$str . " ";
+        }
+        $guestName = $data->delivery_first_name . ' ' . $data->delivery_last_name;
+
+        if (in_array('agent', $user->roles)) {
+            $ordertaxdata = getcruiseordertax($data->order_id);
+            $ordertax = isset($ordertaxdata[0]->amount) ? $ordertaxdata[0]->amount : 0;
+            $rows[] = array(
+                $data->order_id,
+                $guestName,
+                uc_currency_format($data->order_total),
+                uc_currency_format(($data->order_total - $ordertax) * $commissionrate / 100),
+                date('F j, Y', $data->bookingdate),
+                date('F j, Y', $data->created),
+                ucwords($finalstr),
+            );
+        } else {
+            $rows[] = array(
+                $data->order_id,
+                $guestName,
+                uc_currency_format($data->order_total),
+                date('F j, Y', $data->bookingdate),
+                date('F j, Y', $data->created),
+                ucwords($finalstr),
+            );
+        }
+    }
+
+
+
+    $output .= theme_table(
+                    array(
+                        'header' => $header,
+                        'rows' => $rows,
+                        'attributes' => array('class' => array('table table-striped table-bordered')),
+                        'sticky' => true,
+                        'caption' => '',
+                        'colgroups' => array(),
+                        'empty' => t("No records found!")
+                    )
+            ) . theme('pager');
+    return $output;
+}

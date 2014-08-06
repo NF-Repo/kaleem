@@ -1,0 +1,4 @@
+name = Booking orders
+description = Showing Booking Orders Created by Agent/Staff
+core = 7.x
+package = WWC
