@@ -1,0 +1,65 @@
+<?php
+
+/**
+ * Implementing hook_menu()
+ */
+function agentcommconfig_menu() {
+
+    $items['agentcommconfig'] = array(
+        'title' => t('Agent Commission Configuration'),
+        'description' => t(''),
+        'page callback' => 'agentcomm_config_page',
+        'access arguments' => array('manage agent commission configuration'),
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function agentcommconfig_permission() {
+    return array(
+        'manage agent commission configuration' => array(
+            'title' => t('manage agent commission configuration'),
+        ),
+    );
+}
+
+function agentcomm_config_page() {
+    return drupal_get_form('agentcommconfig_form');
+}
+
+/**
+ * Building the form 
+ */
+function agentcommconfig_form($form, &$form_state) {
+
+    $agentcommvalue = variable_get('WWCAGENTCOMMVALUE', '10');
+
+    $form['agentcommvalue'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Agent Commission Value (Calculated in Percentage)'),
+        '#default_value' => $agentcommvalue,
+        '#required' => TRUE,
+    );
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save'),
+    );
+    return $form;
+}
+
+function agentcommconfig_form_validate($form, &$form_state) {
+    $agentcommvalue = trim($form_state['values']['agentcommvalue']);
+
+    if (!is_numeric($agentcommvalue)) {
+        form_set_error('agentcommvalue', 'Invalid Value');
+    }
+}
+
+function agentcommconfig_form_submit($form, &$form_state) {
+    $agentcommvalue = trim($form_state['values']['agentcommvalue']);
+    variable_set("WWCAGENTCOMMVALUE", $agentcommvalue);
+    drupal_set_message("Agent Commission Configured Successfully.");
+}

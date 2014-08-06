@@ -1,0 +1,4 @@
+name = Agent commission Configuration
+description = Provides configuration view for Agent commission
+core = 7.x
+package = WWC
