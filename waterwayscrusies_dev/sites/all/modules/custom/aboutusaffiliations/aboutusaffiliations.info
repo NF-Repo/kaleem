@@ -1,0 +1,6 @@
+; $Id$
+name = About Us Affiliations
+description = "About Us Affiliations"
+core = 7.x
+version = VERSION
+package = WWC
