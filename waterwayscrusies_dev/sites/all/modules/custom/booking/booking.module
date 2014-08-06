@@ -1,0 +1,405 @@
+<?php
+
+
+module_load_include('inc', 'booking', 'includes/booking.navigation');
+module_load_include('inc', 'booking', 'includes/booking.validate');
+module_load_include('inc', 'booking', 'includes/booking.submit');
+
+
+
+/**
+ * Implements hook_menu().
+ */
+function booking_menu() {
+
+    $items = array();
+    $items['booking'] = array(
+        'title' => 'Waterways Cruises and Events',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('booking_form'),
+        'access arguments' => array('access content'),
+        'file' => 'includes/booking.form.inc',
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['confirmation/orderid/%/%'] = array(
+        'title' => 'Confirmation Page',
+        'page callback' => 'bookingconfirmation',
+        'page arguments' => array(2, 3),
+        'access arguments' => array('access content'),
+    	'file'=>'bookingconfirmationpage.inc',
+    );
+
+
+    $items['booknow/date/%/item/%'] = array(
+        'title' => 'BookNow',
+        'page callback' => 'wwc_booknow',
+        'page arguments' => array(2, 4),
+        'access arguments' => array('access content'),
+    );
+
+
+
+    $items['loadbooklingentrees'] = array(
+        'title' => 'Loading Booking Entress',
+        'page callback' => 'load_entreesbyId',
+//       'page arguments' => array(2),
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+
+    
+  //Ctool Modal Popup for Enhancement comments checkbox
+  $items['booking/page'] = array(
+    'page callback' => 'mymodule_page',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+ 
+  $items['booking/%ctools_js'] = array(
+    'page callback' => 'booking_callback',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  //End of Ctool Modal Popup Enhanament Comments Check Box
+    
+    return $items;
+}
+
+
+
+
+function wwc_booknow($date, $eventId)
+{
+
+	
+	if(isset($_SESSION['formstage'])){
+		unset($_SESSION['formstage']);
+	}
+	//unset($_SESSION['cruisecardsession']);
+	
+
+	if($eventId!='' && !is_null($eventId)){
+		$template_id='';
+		//Getting Template id by Event id
+		try{
+			$scheduledeventsObject = db_select('scheduledevents', 's')
+			->fields('s', array('cruisetemplate_id'))
+			->condition('id',$eventId)
+			->execute()->fetchObject();
+			$template_id=$scheduledeventsObject->cruisetemplate_id;
+		}catch (Exception $e){
+			watchdog("booking", $e);
+		}
+
+		$bookingInputobj = (object) array(
+				'date' => $date,
+				'eventid' => $eventId,
+				'templateid' => $template_id,
+		);
+
+		//@session_start();
+		
+
+		global $user;
+		
+		//drupal_json_output($user); exit();
+		if(in_array('agent',$user->roles) || in_array('staff admin',$user->roles) ){
+			$_SESSION['bookingInput'] = $bookingInputobj;
+			drupal_goto('admin-booking');
+		}else{
+			session_unset();
+			session_destroy();
+			$_SESSION['bookingInput'] = $bookingInputobj;
+			drupal_goto('booking');
+		}
+		
+		
+	}else{
+		drupal_goto('wwccalendar');
+	}
+}
+
+
+
+
+
+
+
+
+function booking_theme() {
+    $items['bookingconfirmation'] = array(
+        'template' => 'bookingconfirmation', // here comes your template name
+        'render element' => 'content'
+    );
+    $items['booking_enhancement_table'] = array(
+          'render element' => 'element'
+    );
+    $items['booking_product_table'] = array(
+          'render element' => 'element'
+    );
+       
+
+    
+    $items['booking_cruiseevent_calendar'] = array(
+          'render element' => 'element'
+    );
+   
+    return $items;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* * *******end of product node alters************* */
+
+//end of node form alters
+
+/* * *Load Existing the Vessels*************** */
+//Currently This is Feet Page
+
+function getVesselsdropdown() {
+    $results = array();
+    $vesselslist = getFleetEvents();
+    foreach ($vesselslist as $key => $vessels) {
+        foreach ($vessels as $vessel) {
+            $results[$vessel['parenttid']] = $vessel['parentname'];
+        }
+    }
+    return $results;
+}
+
+//load vessel byId
+function loadvesselById($vesselid) {
+    $results = array();
+    $vessels = taxonomy_term_load($vesselid);
+    $results['vesselid'] = $vessels->tid;
+    $results['vesselname'] = $vessels->name;
+
+    return $results;
+}
+
+
+function wwcFormatPrice($price) {
+	$price=(double)$price;
+        $u_price=sprintf("%.2f",$price);
+    //$amountFormattedString = number_format($u_price, 2);
+    $amtArray = explode('.', $u_price);
+    $amtWholeNumber = 0;
+    $amtDecimalNumber = 0;
+    if (isset($amtArray)) {
+        $amtWholeNumber = $amtArray[0];
+        $amtDecimalNumber = $amtArray[1];
+    }
+    $formattedAmount = $amtWholeNumber . '.<sup>' . $amtDecimalNumber . '</sup>';
+    
+    return $formattedAmount;
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * Mask Credit Card (xxxxx1234)
+ */
+function maskCreditCard($cc) {
+ $cc_length = strlen($cc);
+ // Replace all characters of credit card except the last four
+ for ($i = 0; $i < $cc_length - 4; $i++) {
+  $cc[$i] = 'X';
+ }
+ // Return the masked Credit Card #
+ return $cc;
+}
+
+
+
+/**
+ * 
+ * @param type $css
+ * Getting the 
+ * 
+ * 
+ */
+
+
+function booking_css_alter(&$css) {
+    unset($css[drupal_get_path('module','system').'/system.theme.css']);
+//    unset($css[drupal_get_path('module','system').'/system.base.css']);
+    unset($css[drupal_get_path('module','system').'/system.menus.css']);
+}
+
+
+
+
+
+
+
+/**
+ * Get CruiseEventId by Using OrderId
+ * 
+ * 
+ * 
+ * 
+ */
+function getCruiseEventIdByOrderId($orderid)
+{
+  
+  
+$query = db_select("reservation", "c");
+	// Adding fields
+	$query->fields('c',array('eventid'));
+        $query->condition('orderid',$orderid,'=');
+	$result = $query->execute();
+	
+  
+  $eventsresult=array();
+  foreach ($result as $events) {
+    $eventsresult[]=$events;
+  }
+ return $eventsresult[0];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class UserLog{
+	public $id;
+	public $uid;
+	public $location;
+	public $message;
+	public $referer;
+	public $type;
+	public $ipaddress;
+	public $timestamp;
+	public $data;
+	public $status;
+
+
+	public static function logUserActivity($userObject){
+
+		if($userObject->id==""){
+			$record = array(
+					'uid' => $userObject->uid,
+					'location' => $userObject->location,
+					'message' => $userObject->message,
+					'referer' => $userObject->referer,
+					'type' => $userObject->type,
+					'ipaddress' => $userObject->ipaddress,
+					'timestamp' => $userObject->timestamp,
+					'data' => $userObject->data,
+					'status' => $userObject->status,
+			);
+			$result = db_insert('user_logs') // Table name no longer needs {}
+			->fields($record)
+			->execute();
+
+
+		}else{
+			$record = array(
+					//'message' => $userObject->message,
+					'data' => $userObject->data,
+					'status' => $userObject->status,
+			);
+			$result = db_update('user_logs') // Table name no longer needs {}
+			->fields($record)
+			->condition('id',$userObject->id,'=')
+			->execute();
+		}
+
+		return $result;
+
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+function load_entreesbyId() {
+
+
+	$ssid = $_POST['ssid'];
+	$query = db_select('ticketentrees', 'p');
+	$query->fields('p');
+	$query->condition('cartsession', $ssid, '=');
+	$ticketentrees = $query->execute();
+	$results = array();
+	foreach ($ticketentrees as $ticketvalue) {
+		$results[] = $ticketvalue;
+	}
+
+	if (count($results) > 0) {
+		//         drupal_json_output($results);
+		//         exit();
+	}
+}
+
+
+

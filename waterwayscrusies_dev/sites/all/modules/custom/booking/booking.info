@@ -1,0 +1,17 @@
+name = Booking System (Guest User)
+description = Booking System
+core = 7.x
+version = VERSION
+package = Booking System
+
+files[]=classes/BookingCart.class.inc
+files[]=classes/BookingWidgets.class.inc
+files[]=classes/_EnhancementsLog.class.inc
+files[]=classes/_GiftCard.class.inc
+files[]=classes/_Groupons.class.inc
+files[]=classes/_Inventory.class.inc
+files[]=classes/_ReservationLog.class.inc
+files[]=classes/_TicketsLog.class.inc
+
+
+

@@ -1,0 +1,38 @@
+<?php
+function booking_schema() {
+	$schema = array ();
+	$schema ['booking_cart'] = array (
+			'fields' => array (
+					'id' => array (
+							'type' => 'serial',
+							'unsigned' => TRUE,
+							'not null' => TRUE 
+					),
+					'orderId' => array (
+							'type' => 'varchar',
+							'length' => 255,
+							'description' => '' 
+					),
+					'cartId' => array (
+							'type' => 'varchar',
+							'length' => 255,
+							'description' => '' 
+					),
+					'created' => array (
+							'type' => 'varchar',
+							'length' => 255,
+							'description' => '' 
+					),
+					'cartData' => array (
+							'type' => 'text',
+							'size' => 'big',
+							'description' => '' 
+					) 
+			)
+			,
+			'primary key' => array (
+					'id' 
+			) 
+	);
+	return $schema;
+}
