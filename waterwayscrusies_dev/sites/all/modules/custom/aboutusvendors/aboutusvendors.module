@@ -1,0 +1,118 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function aboutusvendors_menu() {
+    $items = array();
+    $items['aboutusvendors'] = array(
+        'title' => 'About Us Vendors',
+        'page callback' => 'aboutus_vendors',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+function aboutusvendors_theme() {
+    $items['aboutusvendors'] = array(
+        'template' => 'aboutusvendors', // here comes your template name
+        'render element' => 'content'
+    );
+
+    return $items;
+}
+
+/**
+ * This is the function which is used
+ * for creating for creating Product dynamically
+ * @param Object $product Description
+ * @return type Json boolean Object
+ * 
+ */
+function aboutus_vendors() {
+
+    try {
+
+
+        global $user;
+        
+        
+    
+        //end of loading terms ids
+        
+        
+        
+        
+        //Get the Overview Content
+        //end of getting the Overview Content
+
+        $loadaboutus = getAboutsMenu("Vendors");
+        $overviewid =134;//$loadaboutus['tid'];
+        $templateresources = array(
+            'loadmenu' => $loadaboutus['aboutusmenu'],
+            'mobilemenu' => $loadaboutus['mobilemenu'],
+            'vendorlist' => getVendorList()
+        );
+
+
+
+        //get the product load 
+        return theme('aboutusvendors', $templateresources);
+    } catch (Exception $ex) {
+
+        drupal_json_output('The exception ' . $ex);
+    }
+}
+
+
+
+function getVendorList()
+{
+     $vendorList="";
+    
+        //Loading the term ids
+        $vendorcategories=  taxonomy_vocabulary_machine_name_load('vendor_categories');
+
+     $vendor_elements=taxonomy_get_tree($vendorcategories->vid);
+     foreach ($vendor_elements as $vendors) {
+
+         $vendorList .= '<div class="vendorsListGroup">';
+        $vendorList.='<div class="vendorTitle">'.$vendors->name.'</div>';
+        $taxononomy_nodes=  taxonomy_select_nodes($vendors->tid);
+         
+         
+     
+        if(count($taxononomy_nodes) > 0)
+        { 
+            foreach ($taxononomy_nodes as $nodeelement) {
+                $node=node_load($nodeelement);
+               $vendorList.='<div class="vendorlinks"><a href="'.getArrayloop($node->field_vendor_webpage_link).'" target="_blank"">'.$node->title.'</a></div>';
+               
+            }
+             $vendorList .= '</div>';
+        }
+        
+     }
+    return $vendorList;
+}
+function getVendorList1($tid) {
+    $vendorList="";
+    $childrens = taxonomy_get_children($tid);
+    foreach ($childrens as $keys => $values) {
+        $vendorList .= '<div class="vendorsListGroup">';
+        $vendorList.='<div class="vendorTitle">'.$values->name.'</div>';
+          $subchildrens = taxonomy_get_children($values->tid);
+          foreach ($subchildrens as $key => $value) {
+            $link=getArrayloop($value->field_vendorlink);
+
+           $vendorList.='<div class="vendorlinks"><a href="'.$link.'" target="_balnk"">'.$value->name.'</a></div>';
+          }
+        $vendorList .= '</div>';
+    }
+    return $vendorList;
+}
+
+function template_preprocess_aboutusvendors(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'aboutusvendors') . '/css/aboutusvendors.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
