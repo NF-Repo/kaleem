@@ -1,0 +1,4 @@
+name = Home Page drag
+description = Home Page drag
+core = 7.x
+package= Home Page Content

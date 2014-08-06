@@ -1,0 +1,67 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 30, 2014, 11:46:00 AM
+    Author     : LSN14
+*/
+
+#edit-divslidstart,.nav-border{
+      padding: 10px 10px 10px;
+     background-color: #FFF;
+    box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+   -moz-box-shadow: 0 1px 2px rgba(34,25,25,0.4);
+   -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+}
+
+.homepageview{
+    margin-top: 40px;
+     padding: 10px 10px 10px;
+     background-color: #FFF;
+    box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+   -moz-box-shadow: 0 1px 2px rgba(34,25,25,0.4);
+   -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+}
+
+#edit-tabmenuhtml .nav-pills > li {
+    float:none !important;
+}
+
+.row-fluid #edit-buttoncontent, .row-fluid #edit-slidecontent {
+    padding: 0.5em 0.625em 0.35em;
+}
+
+.homesliderborder{
+    border: 1px solid silver;
+   margin: 0 2px;
+   padding: 0.35em 0.625em 0.75em;
+}
+#edit-divslidstart #edit-sliderimage-ajax-wrapper{
+     border: 1px solid silver;
+    margin-top: 10px;
+    margin-bottom: 10px;
+   padding: 0.35em 0.625em 0.75em;
+}
+.imagesizeslider{
+    width: 200px;
+    height: 100px;
+}
+
+#HomeModal{
+    width:50%;
+}
+
+.home_nav .nav-pills > li{
+  float:none!important;  
+}
+
+.home_nav{
+    padding-top:14px;
+}
+
+.filterslider #edit-filterset{
+    padding:0px;
+    border:none;
+}

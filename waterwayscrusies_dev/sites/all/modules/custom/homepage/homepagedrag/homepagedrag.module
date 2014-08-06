@@ -1,0 +1,218 @@
+<?php
+
+
+function homepagedrag_menu() {
+    $items = array();
+    $items['homepagedrag'] = array(
+        'title' => '',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('homepagedrag_manage'),
+        'access arguments' => array('homepages drag'),
+    );
+    $items['homepagedrag/%/%/status'] = array(
+			'title' => '',
+			'page callback' => 'homepage_status_page',
+			'file'=>'inc/home_slider_show_hide.inc',
+			'access arguments' => array('homepages drag'),
+			'page arguments' => array (1,2),
+	);
+    return $items;
+
+}
+
+
+function homepagedrag_permission() {
+	return array (
+            'homepages drag'=>array(
+                'title' => t ('Home page View') ,
+            ),
+		
+	);
+}
+
+function homepagedrag_manage() {
+	
+	drupal_set_title('Front Page Configuration');
+    drupal_add_css(drupal_get_path('module', 'homepagesliders') . '/css/homepagesliders.css');
+      $acitiveinactive=isset($_COOKIE["filter"])?$_COOKIE["filter"]:1;
+  
+   // $db_result = db_query( "SELECT Id ,image,status,sliderlayout, position FROM  homepage_sliders  WHERE status=$acitiveinactive ORDER BY position"); 
+
+    
+    $result=db_select('homepage_sliders','h')
+    ->fields('h')
+    ->condition('status',$acitiveinactive,'=')
+    ->orderBy('h.position')
+    ->execute()
+    ->fetchAll();
+    
+    
+   // var_dump($result); exit();
+    // create array and add one element called data
+   global $base_url;
+   $form['filterset'] = array(
+          '#type' => 'fieldset',
+         '#prefix' => '<div class="filterslider">',
+         
+       );
+     $form['filterset']['filteroptions']=array(
+			'#id'=>'filteroptions',
+			'#type'=>'select',
+			'#options'=>array('1'=>'Active','0'=>'Inactive'),
+			"#limit_validation_errors" => array(),
+			'#default_value'=>$acitiveinactive,
+	);
+	
+	$form['filterset']['btn'] = array(
+			'#type' => 'submit',
+			 '#value' => 'Go',
+                          '#submit' => array('our_callback_for_filteration_button'),
+			 
+	);
+    $title='';
+    $rows= array();
+    $form['#tree'] = TRUE;
+    $max = 60;
+   
+    
+    if(count($result)>0){
+    	foreach($result as $row){
+    		 
+    		$id = $row->Id;
+    		$sliderlayout =$row->sliderlayout;
+    		$sliderimage = $row->image;
+    		$status=$row->status;
+    		$hideshow="";
+    		$hideshowclass="";
+    		if($status==1){
+    			$hideshow=0;
+    			$hideshowclass="icon-eye-open";
+    		}else{
+    			$hideshow=1;
+    			$hideshowclass="icon-eye-close";
+    		}
+    	
+    	
+    		if(strlen($title)>$max)
+    			 
+    			$title = substr($title,0,$max).' ...';
+    		 
+    		$form['slides'][$row->Id]['Id'] = array(
+    				'#type' => 'hidden',
+    				'#default_value' => $row->Id,
+    		);
+    		// Textfield to hold content id.
+    		$form['slides'][$row->Id]['sliderlayout'] = array(
+    				'#type' => 'item',
+    				'#title' => $sliderlayout
+    		);
+    		//slider image
+    		$form['slides'][$row->Id]['slierimage'] = array(
+    				'#type' => 'item',
+    				'#title' => '<div class="imagesizeslider"><img class="img-polaroid" width="100px" src="'  . file_create_url($sliderimage) . '"/></div>',
+    		);
+    		$form['slides'][$row->Id]['editdelete'] = array(
+    				'#type' => 'item',
+    				'#title' => '<a href="' . $base_url . '/homepage-sliders/' . $id . '/edit"><i class="icon-edit"></i></a>|
+                          <a href="' . $base_url . '/homepagedrag/'.$id.'/'.$hideshow.'/status"><i class="'.$hideshowclass.'"></i></a>|
+                         <a href="' . $base_url . '/homepage-sliders/' . $id . '/delete"><i class="icon-trash"></i></a>',
+    		);
+    		//end of slider image
+    		// This field is invisible, but contains sort info (weights).
+    		$form['slides'][$row->Id]['weight'] = array(
+    				'#type' => 'weight',
+    				'#title' => t('Weight'),
+    				'#title_display' => 'invisible',
+    				'#default_value' => $row->position,
+    		);
+    	
+    	}
+    }
+  
+    
+    $form['submit'] = array('#type' => 'submit', '#value' => t('Save changes'));
+    return $form;
+}
+
+
+
+function homepagedrag_theme($existing, $type, $theme, $path) {
+    return array(
+        'homepagedrag_manage' => array(
+            'render element' => 'form',
+        ),
+    );
+}
+
+function our_callback_for_filteration_button($form, &$form_state) {
+      $setactive=isset($form_state['values']['filterset']['filteroptions'])?$form_state['values']['filterset']['filteroptions']:"";
+      setcookie("filter", $setactive);
+}
+function theme_homepagedrag_manage($variables) {
+  
+    $form = $variables['form'];
+    $rows = array();
+    foreach (element_children($form['slides']) as $nid) {
+        $form['slides'][$nid]['weight']['#attributes']['class'] = array('slides-order-weight');
+        $rows[] = array(
+           
+            'data' => array(
+                array('class' => array('slide-cross')),               
+                    drupal_render($form['slides'][$nid]['sliderlayout']),
+                    drupal_render($form['slides'][$nid]['weight']),
+                    drupal_render($form['slides'][$nid]['slierimage']),  
+                    drupal_render($form['slides'][$nid]['editdelete']), 
+                ),
+            'class' => array('draggable'),
+        );
+        
+    }
+     
+    $header = array(t('Order'),t('Slider Type'),t('position'),t('Image'),t('Actions'));
+    $output = drupal_render($form['note']);
+    $output .= Homepagenav::getHomesliderMenu();
+    $output .= drupal_render($form['filterset']);
+    
+    $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('Id' => 'slides-order')));
+    $output .= drupal_render_children($form);
+  
+    drupal_add_tabledrag('slides-order', 'order', 'sibling', 'slides-order-weight');
+  
+    return $output;
+}
+
+
+
+
+
+
+function homepagedrag_manage_submit($form, &$form_state) {
+    
+    $slides = array(); 
+    foreach ($form_state['values']['slides'] as $slide) {   
+        $slides[] = array(
+            'id' => $slide['Id'],       
+            'weight' => $slide['weight'],
+        );         
+    }  
+    if (!empty($slides)) {
+        usort($slides, '_homepagedrag_arraysort');
+    }  
+    $position = 1;
+    foreach($slides as $slide){
+        $id = $slide['id'];
+        $sql = "UPDATE homepage_sliders SET position={$position} WHERE Id = {$id}";
+        db_query($sql);
+        $position++;
+    }
+
+    drupal_set_message(t('Saved Successfully.'));
+}
+ 
+// Custom array sort function by weight.
+function _homepagedrag_arraysort($a, $b) {
+    if (isset($a['weight']) && isset($b['weight'])) {
+        return $a['weight'] < $b['weight'] ? -1 : 1;
+    }
+    return 0;
+}

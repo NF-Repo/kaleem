@@ -1,0 +1,10 @@
+name = Home Page Sliders
+description = Home Page Sliders
+core = 7.x
+files[]=classes/homepageslider.class.inc
+files[]=classes/homepagenav.class.inc
+files[]=classes/homecontent.class.inc
+files[]=classes/homepagesliderdelete.class.inc
+
+
+package= Home Page Content

@@ -1,0 +1,65 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+
+function homepagesliders_schema() {
+    $schema = array();
+    
+    
+       $schema['homepage_sliders'] = array(
+        'description' => 'The base table for Private Events menu',
+           
+        'fields' => array(
+            'Id' => array(
+                'description' => 'Primary key of the menuid.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'length'=>10
+            ),
+            'sliderlayout' => array(
+                'description' => 'menu Name',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => ''
+            ),
+            
+             'image'=>array(
+                'description'=>'image path',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+          
+             'data'=>array(
+                'description'=>'Data',
+                 'type' => 'text',
+                 'size' => 'big'
+            ),
+            'position'=>array(
+                'description' => 'position of sliders',
+                'type' => 'int',
+                'length' => 11,
+                'default' => NULL
+            ),
+             'status'=>array(
+                'description' => 'status',
+                'type' => 'int',
+                'length' => 11,
+                'default' => 1
+            ),
+            
+           ),
+        'primary key' => array('Id'),
+    );
+       
+       return $schema;
+    
+    
+}
