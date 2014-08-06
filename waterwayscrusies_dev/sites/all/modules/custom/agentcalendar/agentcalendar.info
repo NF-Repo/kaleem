@@ -1,0 +1,6 @@
+; $Id$
+name = agentcalendar
+description = "Agent Calendar"
+core = 7.x
+version = VERSION
+package = Agent

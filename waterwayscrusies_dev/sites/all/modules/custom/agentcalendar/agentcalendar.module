@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function agentcalendar_menu() {
+  $items = array();
+  $items['agentcalendar'] = array(
+      'title' => 'Agent Calendar',
+      'page callback' => 'calendar_table',
+      'access callback' => 'user_access',
+      'access arguments' => array('access content'),
+  );
+  return $items;
+}
+function agentcalendar_theme() {
+    $items['agentcalendar'] = array(
+        'template' => 'agentcalendar',   // here comes your template name
+        'render element' => 'content'
+    );
+    return $items;
+}
+/**
+ * This is the function which is used
+ * 
+ * 
+ */
+function calendar_table() {
+    
+  try {
+    
+    global $user;
+    //get the product load 
+    return theme('agentcalendar');
+    
+  } catch (Exception $ex) {
+      
+    drupal_json_output('The exception ' . $ex);
+    
+  }
+  
+}
+
+function template_preprocess_agentcalendar(&$variables) {
+    drupal_add_css(drupal_get_path('module', 'agentcalendar') . '/agentcalendar.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+}
+
